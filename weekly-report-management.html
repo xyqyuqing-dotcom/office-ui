@@ -1,0 +1,1374 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval' blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; style-src 'unsafe-inline' blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; img-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; font-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; media-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; worker-src blob:; connect-src blob: data:; frame-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<title>Weekly Report Fill V10</title>
+<style>:root{color-scheme:light dark;background:light-dark(rgb(255 255 255), rgb(24 24 24))}html,body{margin:0;width:100%;height:100%}body{box-sizing:border-box;background:inherit}iframe{display:block;width:100%;height:100vh;margin:0;border:0}</style>
+</head>
+<body>
+<iframe referrerpolicy="no-referrer" title="Weekly Report Fill V10" srcdoc="&lt;!doctype html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+&lt;meta name=&quot;referrer&quot; content=&quot;no-referrer&quot;&gt;
+&lt;meta http-equiv=&quot;Content-Security-Policy&quot; content=&quot;default-src &#x27;none&#x27;; script-src &#x27;unsafe-inline&#x27; &#x27;unsafe-eval&#x27; &#x27;wasm-unsafe-eval&#x27; blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; style-src &#x27;unsafe-inline&#x27; blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; img-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; font-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; media-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; worker-src blob:; connect-src blob: data:; frame-src &#x27;none&#x27;; object-src &#x27;none&#x27;; base-uri &#x27;none&#x27;; form-action &#x27;none&#x27;&quot;&gt;
+&lt;title&gt;Weekly Report Fill V10&lt;/title&gt;
+&lt;style&gt;:root {
+  color-scheme: light dark;
+  background-color: var(--background) !important;
+
+  /* Agent-facing contract; keep in sync with SKILL.md. */
+  --background: light-dark(rgb(255 255 255), rgb(24 24 24));
+  --foreground: light-dark(rgb(26 28 31), rgb(255 255 255));
+  --card: color-mix(in oklab, var(--foreground) 5%, transparent);
+  --card-foreground: var(--foreground);
+  --popover: light-dark(rgb(255 255 255), rgb(45 45 45));
+  --popover-foreground: var(--foreground);
+  --primary: light-dark(rgb(51 156 255), rgb(131 195 255));
+  --primary-foreground: light-dark(rgb(255 255 255), rgb(13 13 13));
+  --secondary: light-dark(rgb(255 255 255 / 96%), rgb(54 54 54 / 96%));
+  --secondary-foreground: var(--foreground);
+  --muted: color-mix(in srgb, var(--foreground) 10%, transparent);
+  --muted-foreground: light-dark(
+    rgb(26 28 31 / 49.4%),
+    rgb(255 255 255 / 49.8%)
+  );
+  --accent: light-dark(rgb(229 242 255), rgb(13 39 63));
+  --accent-foreground: var(--primary);
+  --destructive: light-dark(rgb(226 85 7), rgb(255 133 73));
+  --border: light-dark(rgb(26 28 31 / 8%), rgb(255 255 255 / 8.2%));
+  --input: light-dark(
+    rgb(26 28 31 / 11.8%),
+    color-mix(in oklab, rgb(0 0 0) 10%, transparent)
+  );
+  --ring: light-dark(rgb(51 156 255), rgb(131 195 255 / 76%));
+  --font-size-base: 14px;
+  --viz-series-1: var(--primary);
+  --viz-series-2: light-dark(rgb(243 136 59), rgb(245 154 86));
+  --viz-series-3: light-dark(rgb(93 201 119), rgb(116 213 139));
+  --viz-series-4: light-dark(rgb(235 119 177), rgb(240 143 192));
+  --viz-series-5: light-dark(rgb(155 121 236), rgb(170 145 239));
+  --viz-series-6: light-dark(rgb(58 185 177), rgb(90 203 194));
+
+  /* Internal implementation variables; not part of the agent contract. */
+  --font-sans: -apple-system, system-ui, &quot;Segoe UI&quot;, sans-serif;
+  --font-mono:
+    ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, &quot;Liberation Mono&quot;,
+    monospace;
+  --font-size-normal: max(11px, var(--font-size-base));
+  --font-size-tooltip: calc(var(--font-size-base) - 1px);
+  --font-size-small: max(11px, calc(var(--font-size-base) - 2px));
+  --font-size-h1: calc(var(--font-size-normal) * 1.7142857143);
+  --font-size-h2: calc(var(--font-size-normal) * 1.4285714286);
+  --font-size-h3: calc(var(--font-size-normal) * 1.2857142857);
+  --font-weight-normal: 430;
+  --font-weight-medium: 500;
+  --line-height-normal: calc(var(--font-size-normal) * 1.5);
+  --line-height-tooltip: calc(var(--font-size-tooltip) * 1.4285714286);
+  --line-height-small: calc(var(--font-size-small) + 4px);
+  --radius: 12.5px;
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-2xl: calc(var(--radius) * 1.6);
+  --radius-full: 9999px;
+  --shadow-sm: 0 1px 2px -1px rgb(0 0 0 / 8%);
+  --checkmark-image: url(&quot;data:image/svg+xml,%3Csvg xmlns=&#x27;http://www.w3.org/2000/svg&#x27; viewBox=&#x27;0 0 17 17&#x27;%3E%3Cpath d=&#x27;M12.8961 3.64101C13.1297 3.41418 13.4984 3.37523 13.7779 3.56581C14.0571 3.75635 14.1554 4.11331 14.0299 4.41347L13.9615 4.53847L7.71151 13.7045C7.59411 13.8767 7.4063 13.9877 7.19881 14.0072C6.99136 14.0267 6.78564 13.9533 6.63826 13.806L2.88826 10.056L2.79842 9.9457C2.6192 9.67407 2.64927 9.30496 2.88826 9.06581C3.12738 8.82669 3.49647 8.79676 3.76815 8.97597L3.8785 9.06581L7.03084 12.2182L12.8053 3.74941L12.8961 3.64101Z&#x27;/%3E%3C/svg%3E&quot;);
+
+  /* Legacy aliases; not part of the current agent contract. */
+  --viz-bg: transparent;
+  --viz-panel: var(--card);
+  --viz-border: var(--border);
+  --viz-text: var(--foreground);
+  --viz-muted: var(--muted-foreground);
+  --viz-accent: var(--primary);
+  --viz-accent-text: var(--primary-foreground);
+  --viz-accent-bg: var(--accent);
+  --viz-font-size: var(--font-size-base);
+  --viz-warning: var(--destructive);
+  --color-background-primary: var(--background);
+  --color-text-primary: var(--foreground);
+  --color-border-secondary: var(--border);
+}
+
+:root[data-theme=&quot;light&quot;] {
+  color-scheme: light;
+}
+
+:root[data-theme=&quot;dark&quot;] {
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html &gt; body {
+  margin: 0;
+  padding: 5px;
+  color: var(--foreground);
+  background: transparent !important;
+  font-family: var(--font-sans);
+  font-size: var(--font-size-normal);
+  font-weight: var(--font-weight-normal);
+  line-height: var(--line-height-normal);
+}
+
+a {
+  color: color-mix(in srgb, var(--viz-accent) 80%, var(--viz-text) 20%);
+  cursor: pointer;
+  font-weight: var(--viz-font-weight-medium);
+  text-decoration: none;
+  text-underline-offset: 2px;
+}
+
+a:is(:hover, :focus-visible) {
+  text-decoration-line: underline;
+  text-decoration-style: dashed;
+  text-decoration-thickness: 0.5px;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  margin-block: 0;
+}
+
+h1 {
+  font-size: var(--font-size-h1);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.25;
+}
+
+h2 {
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.25;
+}
+
+h3,
+h4,
+h5,
+h6 {
+  font-size: var(--font-size-h3);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.3;
+}
+
+b,
+strong,
+th {
+  font-weight: var(--font-weight-medium);
+}
+
+code:not(pre code) {
+  display: inline;
+  padding: 1px 6px;
+  border-radius: var(--radius-sm);
+  corner-shape: superellipse(1.5);
+  background: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.92em;
+  overflow-wrap: anywhere;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  word-break: break-word;
+}
+
+#widget {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  padding: 0;
+  background: transparent !important;
+}
+
+.card {
+  min-width: 0;
+  padding: 12px;
+  overflow: hidden;
+  overflow-wrap: break-word;
+  border-radius: var(--radius-2xl);
+  corner-shape: superellipse(1.5);
+  color: var(--card-foreground);
+  background: var(--card);
+}
+
+#widget &gt; :not(.card) {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.tooltip {
+  position: fixed;
+  z-index: 50;
+  top: 0;
+  left: 0;
+  width: max-content;
+  max-width: min(
+    20rem,
+    var(--tooltip-available-width, calc(100vw - 10px)),
+    calc(100vw - 10px)
+  );
+  max-height: min(
+    var(--tooltip-available-height, calc(100vh - 10px)),
+    calc(100vh - 10px)
+  );
+  padding: 4px 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  corner-shape: superellipse(1.5);
+  color: var(--popover-foreground);
+  background: var(--popover);
+  box-shadow: none;
+  font-size: var(--font-size-tooltip);
+  line-height: var(--line-height-tooltip);
+  overflow-wrap: break-word;
+  white-space: normal;
+  pointer-events: none;
+  user-select: none;
+}
+
+.viz-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(max(180px, 24%), 1fr));
+  gap: 10px;
+}
+
+.viz-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.viz-stat-value {
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.25;
+}
+
+.viz-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.viz-badge {
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+  color: var(--accent-foreground);
+  background: var(--accent);
+  font-weight: var(--font-weight-medium);
+}
+
+small,
+.text-small,
+.viz-badge {
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+}
+
+.text-muted {
+  color: var(--muted-foreground);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.viz-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.viz-controls &gt; .form-label {
+  display: grid;
+  min-width: min(100%, 260px);
+  flex: 1 1 280px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: 2px 12px;
+  margin-bottom: 0;
+}
+
+.viz-controls &gt; .form-label &gt; :is(.form-control, .form-range, .form-select) {
+  grid-column: 1 / -1;
+}
+
+.btn,
+.form-check-input,
+.form-control,
+.form-range,
+.form-select {
+  font: inherit;
+}
+
+.btn {
+  appearance: button;
+  display: inline-flex;
+  inline-size: fit-content;
+  max-inline-size: 100%;
+  min-height: 28px;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  margin: 0;
+  padding: 0 8px;
+  -webkit-app-region: no-drag;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-lg);
+  corner-shape: superellipse(1.5);
+  color: var(--secondary-foreground);
+  background: var(--secondary);
+  cursor: var(--cursor-interaction, pointer);
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  user-select: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+.btn:is(.btn-block, .viz-tile) {
+  inline-size: 100%;
+}
+
+.btn.viz-tile {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+a.btn {
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.btn:not(:disabled):hover {
+  background: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.btn-primary {
+  border-color: transparent;
+  color: var(--primary-foreground);
+  background: var(--foreground);
+  background-clip: padding-box;
+}
+
+.btn-primary .text-muted {
+  color: color-mix(in srgb, var(--primary-foreground) 50%, transparent);
+}
+
+.btn-primary:not(:disabled):hover {
+  background: color-mix(in srgb, var(--foreground) 80%, transparent);
+  background-clip: padding-box;
+}
+
+.btn-ghost {
+  border-color: transparent;
+  color: var(--muted-foreground);
+  background: transparent;
+}
+
+.btn-ghost:not(:disabled):hover {
+  color: var(--foreground);
+  background: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+[data-lucide] {
+  stroke-width: 1.6;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--foreground);
+}
+
+.form-control {
+  display: block;
+  width: 100%;
+  min-height: 28px;
+  padding: 0 8px;
+  outline: none;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-lg);
+  corner-shape: superellipse(1.5);
+  color: var(--foreground);
+  background: var(--secondary);
+}
+
+.form-control::placeholder {
+  color: var(--muted-foreground);
+}
+
+.form-control[type=&quot;file&quot;] {
+  padding: 0;
+  overflow: hidden;
+  cursor: var(--cursor-interaction, pointer);
+}
+
+.form-control[type=&quot;file&quot;]::file-selector-button {
+  min-height: 26px;
+  margin-right: 8px;
+  padding: 0 8px;
+  border: 0;
+  border-right: 1px solid var(--input);
+  color: var(--secondary-foreground);
+  background: var(--secondary);
+  cursor: inherit;
+  font: inherit;
+}
+
+.form-control[type=&quot;file&quot;]:not(:disabled):hover::file-selector-button {
+  background: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.form-control-color[type=&quot;color&quot;] {
+  width: 40px;
+  height: 28px;
+  padding: 3px;
+  cursor: var(--cursor-interaction, pointer);
+}
+
+.form-control-color[type=&quot;color&quot;]::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+.form-control-color[type=&quot;color&quot;]::-webkit-color-swatch {
+  border: 0;
+  border-radius: calc(var(--radius-lg) - 4px);
+  corner-shape: superellipse(1.5);
+}
+
+textarea.form-control {
+  height: auto;
+  min-height: 72px;
+  padding: 8px 10px;
+  resize: vertical;
+}
+
+.form-control:focus-visible {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-control:disabled,
+.form-select:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.form-select {
+  appearance: none;
+  display: block;
+  width: 100%;
+  min-height: 28px;
+  margin: 0;
+  padding: 0 32px 0 8px;
+  outline: none;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-lg);
+  corner-shape: superellipse(1.5);
+  color: var(--foreground);
+  background-color: var(--secondary);
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--muted-foreground) 50%),
+    linear-gradient(135deg, var(--muted-foreground) 50%, transparent 50%);
+  background-position:
+    calc(100% - 14px) 50%,
+    calc(100% - 10px) 50%;
+  background-repeat: no-repeat;
+  background-size: 4px 4px;
+  cursor: var(--cursor-interaction, default);
+}
+
+.form-select:not(:disabled):hover {
+  background-color: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.form-select:focus-visible {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-check {
+  display: flex;
+  min-height: 20px;
+  align-items: center;
+  gap: 6px;
+}
+
+.form-check-input {
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  flex: 0 0 auto;
+  margin: 0;
+  border: 1px solid var(--input);
+  color: var(--primary-foreground);
+  background-color: transparent;
+  cursor: var(--cursor-interaction, default);
+  transition:
+    background-color 150ms,
+    border-color 150ms,
+    box-shadow 150ms;
+}
+
+.form-check:not(.form-switch) .form-check-input[type=&quot;checkbox&quot;] {
+  border-color: var(--input);
+  border-radius: var(--radius-sm);
+  corner-shape: superellipse(1.5);
+  background-color: var(--secondary);
+  box-shadow: var(--shadow-sm);
+}
+
+.form-check:not(.form-switch)
+  .form-check-input:not(:disabled):not(:checked):hover {
+  background-color: var(--card);
+}
+
+.form-check:not(.form-switch) .form-check-input[type=&quot;checkbox&quot;]:checked {
+  border-color: var(--primary);
+  background-color: var(--primary);
+}
+
+.form-check:not(.form-switch)
+  .form-check-input[type=&quot;checkbox&quot;]:checked::before {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--primary-foreground);
+  content: &quot;&quot;;
+  mask: var(--checkmark-image) center / 12px 12px no-repeat;
+}
+
+.form-check-input[type=&quot;radio&quot;] {
+  width: 14px;
+  height: 14px;
+  border-radius: var(--radius-full);
+}
+
+.form-check-input[type=&quot;radio&quot;]:checked {
+  border: 2px solid var(--primary);
+  background:
+    radial-gradient(circle, var(--primary-foreground) 0 2.5px, transparent 3px),
+    var(--primary);
+}
+
+.form-check:not(.form-switch) .form-check-input:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.form-check:not(.form-switch) .form-check-input:disabled {
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.form-check:not(.form-switch) .form-check-input:disabled + .form-check-label {
+  cursor: not-allowed;
+}
+
+.form-switch .form-check-input:disabled,
+.form-switch .form-check-input:disabled + .form-check-label {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.form-check-label {
+  color: var(--foreground);
+  cursor: var(--cursor-interaction, default);
+}
+
+.form-switch .form-check-input {
+  position: relative;
+  width: 32px;
+  height: 20px;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: var(--muted);
+  box-shadow: none;
+  transition: background-color 200ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.form-switch .form-check-input::before {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 16px;
+  height: 16px;
+  box-sizing: border-box;
+  border: 1px solid light-dark(var(--primary-foreground), var(--foreground));
+  border-radius: var(--radius-full);
+  background: light-dark(var(--primary-foreground), var(--foreground));
+  box-shadow: var(--shadow-sm);
+  content: &quot;&quot;;
+  transform: translate(2px, -50%);
+  transition: transform 200ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.form-switch .form-check-input:checked {
+  background: var(--primary);
+}
+
+.form-switch .form-check-input:checked::before {
+  transform: translate(14px, -50%);
+}
+
+.form-switch .form-check-input:focus-visible {
+  box-shadow: 0 0 0 2px var(--ring);
+}
+
+.form-range {
+  appearance: none;
+  display: block;
+  width: 100%;
+  height: 28px;
+  flex: 1;
+  margin: 0;
+  padding: 0;
+  outline: none;
+  border: 0;
+  accent-color: var(--primary);
+  background: linear-gradient(
+      color-mix(in srgb, var(--foreground) 7%, transparent),
+      color-mix(in srgb, var(--foreground) 7%, transparent)
+    )
+    center / 100% 2px no-repeat;
+}
+
+.form-range::-webkit-slider-runnable-track {
+  height: 28px;
+  background: transparent;
+}
+
+.form-range::-webkit-slider-thumb {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  margin-top: 4px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  background: light-dark(var(--primary-foreground), var(--foreground));
+}
+
+.form-range:focus-visible::-webkit-slider-thumb {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-range::-moz-range-track {
+  height: 28px;
+  background: transparent;
+}
+
+.form-range::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  background: light-dark(var(--primary-foreground), var(--foreground));
+}
+
+.form-range:focus-visible::-moz-range-thumb {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-range:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.btn:not(.btn-primary, .viz-tile):is(
+    [aria-pressed=&quot;true&quot;],
+    [aria-selected=&quot;true&quot;],
+    .is-selected
+  ) {
+  border-color: var(--primary);
+  color: var(--primary-foreground);
+  background: var(--primary);
+}
+
+.btn.viz-tile:is([aria-pressed=&quot;true&quot;], [aria-selected=&quot;true&quot;], .is-selected) {
+  border-color: var(--primary);
+  box-shadow: inset 0 0 0 1px var(--primary);
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+#widget &gt; svg {
+  width: 100%;
+}
+
+.text-warning,
+.text-destructive {
+  color: var(--destructive);
+}
+
+html&gt;body{padding:0}&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div id=&quot;weekly-report-v3&quot;&gt;
+  &lt;style&gt;
+    #weekly-report-v3{
+      color-scheme:light dark;
+      --primary:light-dark(#1689f8,#4096ff);
+      --primary-foreground:#fff;
+      --wr-page:light-dark(#f2f5f8,#101820);
+      --wr-panel:light-dark(#fff,#18222c);
+      --wr-soft:light-dark(#f7f9fb,#202b36);
+      --wr-border:light-dark(#e2e6eb,#344250);
+      --wr-text:light-dark(#20242a,#f3f5f7);
+      --wr-sub:light-dark(#68717c,#aab5c0);
+      --wr-blue-soft:light-dark(#eaf4ff,#102e4c);
+      min-height:100vh;background:var(--wr-page);color:var(--wr-text);
+      font-family:-apple-system,BlinkMacSystemFont,&quot;Segoe UI&quot;,&quot;Microsoft YaHei&quot;,sans-serif;
+    }
+    #weekly-report-v3 *{box-sizing:border-box}
+    #weekly-report-v3 button,#weekly-report-v3 input,#weekly-report-v3 select,#weekly-report-v3 textarea{font-family:inherit;font-size:inherit;line-height:inherit}
+    #weekly-report-v3 .wr-top{height:64px;background:linear-gradient(110deg,var(--primary),color-mix(in srgb,var(--primary) 72%,light-dark(#0656b3,#76baff)));color:var(--primary-foreground);display:flex;align-items:center;justify-content:space-between;padding:0 32px;box-shadow:0 4px 14px color-mix(in srgb,var(--primary) 28%,transparent)}
+    #weekly-report-v3 .wr-brand,#weekly-report-v3 .wr-user,#weekly-report-v3 .wr-row{display:flex;align-items:center;gap:10px}
+    #weekly-report-v3 .wr-brand-mark{width:34px;height:34px;display:grid;place-items:center;border:1px solid color-mix(in srgb,var(--primary-foreground) 58%,transparent);border-radius:8px}
+    #weekly-report-v3 .wr-appbody{display:grid;grid-template-columns:220px minmax(0,1fr);min-height:calc(100vh - 64px)}
+    #weekly-report-v3 .wr-sidebar{background:var(--wr-panel);border-right:1px solid var(--wr-border);padding:22px 14px}
+    #weekly-report-v3 .wr-menu-root{display:flex;align-items:center;gap:9px;padding:10px 12px;font-weight:500;color:var(--wr-text)}
+    #weekly-report-v3 .wr-menu-list{display:grid;gap:5px;margin-top:6px}
+    #weekly-report-v3 .wr-menu-item{display:flex;align-items:center;gap:9px;padding:11px 14px 11px 36px;border-radius:7px;color:var(--wr-sub);text-decoration:none}
+    #weekly-report-v3 .wr-menu-item:hover,#weekly-report-v3 .wr-menu-item.is-active{background:var(--wr-blue-soft);color:var(--primary)}
+    #weekly-report-v3 .wr-shell{padding:28px 32px;min-width:0}
+    #weekly-report-v3 .wr-main{width:100%;max-width:1800px;margin:0 auto;padding:30px 34px;background:var(--wr-panel);border:1px solid color-mix(in srgb,var(--primary) 10%,var(--wr-border));border-radius:12px;box-shadow:0 10px 30px color-mix(in srgb,var(--wr-text) 9%,transparent)}
+    #weekly-report-v3 .wr-titlebar{display:flex;justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap;margin-bottom:18px;padding:20px 22px;background:linear-gradient(100deg,var(--wr-blue-soft),color-mix(in srgb,var(--wr-panel) 90%,var(--primary)));border:1px solid color-mix(in srgb,var(--primary) 16%,var(--wr-border));border-radius:10px}
+    #weekly-report-v3 .wr-titlebar h2,#weekly-report-v3 .wr-titlebar h3{margin:0 0 6px}
+    #weekly-report-v3 .wr-page-title{display:flex;align-items:center;gap:14px}
+    #weekly-report-v3 .wr-title-icon{width:42px;height:42px;display:grid;place-items:center;border-radius:10px;background:var(--primary);color:var(--primary-foreground);box-shadow:0 5px 14px color-mix(in srgb,var(--primary) 24%,transparent)}
+    #weekly-report-v3 .wr-sub{color:var(--wr-sub)}
+    #weekly-report-v3 .wr-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-bottom:18px}
+    #weekly-report-v3 .wr-summary-item{display:flex;align-items:center;gap:13px;padding:15px 18px;background:var(--wr-panel);border:1px solid var(--wr-border);border-radius:9px}
+    #weekly-report-v3 .wr-summary-icon{width:38px;height:38px;display:grid;place-items:center;border-radius:9px;background:var(--wr-blue-soft);color:var(--primary)}
+    #weekly-report-v3 .wr-summary-value{font-size:22px;font-weight:500}
+    #weekly-report-v3 .wr-filter{display:grid;grid-template-columns:200px 200px minmax(280px,1fr) auto;gap:24px;align-items:end;padding:20px 24px;background:var(--wr-panel);border:1px solid var(--wr-border);border-radius:8px;margin-bottom:24px;box-shadow:0 2px 8px color-mix(in srgb,var(--wr-text) 4%,transparent)}
+    #weekly-report-v3 .wr-field{display:grid;gap:8px}
+    #weekly-report-v3 .wr-field&gt;span{color:var(--wr-sub)}
+    #weekly-report-v3 .wr-filter .form-select,#weekly-report-v3 .wr-filter option{background-color:var(--wr-panel);color:var(--wr-text)}
+    #weekly-report-v3 .wr-filter-actions{display:flex;gap:10px;padding-left:22px;border-left:1px solid var(--wr-border)}
+    #weekly-report-v3 .wr-toolbar{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:18px}
+    #weekly-report-v3 .wr-table{overflow-x:auto;border:1px solid var(--wr-border)}
+    #weekly-report-v3 table{width:100%;border-collapse:collapse;min-width:1000px}
+    #weekly-report-v3 th,#weekly-report-v3 td{padding:14px 16px;text-align:left;border-right:1px solid var(--wr-border);border-bottom:1px solid var(--wr-border)}
+    #weekly-report-v3 th:last-child,#weekly-report-v3 td:last-child{border-right:0}
+    #weekly-report-v3 tbody tr:last-child td{border-bottom:0}
+    #weekly-report-v3 th{background:color-mix(in srgb,var(--wr-soft) 82%,var(--primary));font-weight:500;white-space:nowrap}
+    #weekly-report-v3 tbody tr:hover{background:var(--wr-blue-soft)}
+    #weekly-report-v3 .wr-company-row td{background:var(--wr-blue-soft);font-weight:500}
+    #weekly-report-v3 .wr-link{appearance:none;border:0;background:transparent;color:var(--primary);padding:2px 0;cursor:pointer}
+    #weekly-report-v3 .wr-sep{color:var(--wr-border);margin:0 8px}
+    #weekly-report-v3 .wr-state{display:inline-flex;align-items:center;padding:3px 9px;border:1px solid var(--wr-border);border-radius:4px;white-space:nowrap}
+    #weekly-report-v3 .wr-state.saved{color:var(--primary);background:var(--wr-blue-soft);border-color:color-mix(in srgb,var(--primary) 44%,var(--wr-border))}
+    #weekly-report-v3 .wr-state.done{color:light-dark(#389e0d,#73d13d);background:light-dark(#f6ffed,#162312);border-color:light-dark(#b7eb8f,#274916)}
+    #weekly-report-v3 .wr-state.pending{color:light-dark(#d46b08,#ffc069);background:light-dark(#fff7e6,#2b1d0e);border-color:light-dark(#ffd591,#704214)}
+    #weekly-report-v3 .wr-state.empty{color:light-dark(#cf1322,#ff7875);background:light-dark(#fff1f0,#2a1215);border-color:light-dark(#ffa39e,#7b282c)}
+    #weekly-report-v3 .wr-state.custom{color:light-dark(#722ed1,#b37feb);background:light-dark(#f9f0ff,#220d35);border-color:light-dark(#d3adf7,#51258f)}
+    #weekly-report-v3 .wr-state.admin{color:var(--primary);background:var(--wr-blue-soft);border-color:color-mix(in srgb,var(--primary) 40%,var(--wr-border))}
+    #weekly-report-v3 .wr-group{display:inline-flex;padding:3px 8px;border-radius:4px;background:var(--wr-blue-soft);color:var(--primary);border:1px solid color-mix(in srgb,var(--primary) 25%,var(--wr-border));white-space:nowrap}
+    #weekly-report-v3 .wr-view{display:none}
+    #weekly-report-v3 .wr-view.is-active{display:block}
+    #weekly-report-v3 .wr-editor-bar{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;flex-wrap:wrap;padding-bottom:20px;border-bottom:1px solid var(--wr-border);margin-bottom:22px}
+    #weekly-report-v3 .wr-editor-title{display:flex;align-items:flex-start;gap:14px}
+    #weekly-report-v3 .wr-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    #weekly-report-v3 .wr-period{display:flex;gap:22px;align-items:center;flex-wrap:wrap;padding:14px 18px;background:var(--wr-soft);border:1px solid var(--wr-border);border-radius:6px;margin-bottom:20px}
+    #weekly-report-v3 .wr-mode-field{display:flex;align-items:center;gap:10px;flex-wrap:nowrap;white-space:nowrap;min-width:300px}
+    #weekly-report-v3 .wr-mode-field .form-select{width:190px;flex:0 0 190px;background-color:var(--wr-panel);color:var(--wr-text)}
+    #weekly-report-v3 .wr-meta-field{display:flex;align-items:center;gap:8px;white-space:nowrap}
+    #weekly-report-v3 .wr-meta-field .form-control{width:150px;background:var(--wr-panel);color:var(--wr-text)}
+    #weekly-report-v3 .wr-meta-field .wr-date{width:140px}
+    #weekly-report-v3 .wr-lines{display:grid;gap:20px}
+    #weekly-report-v3 .wr-line{border:1px solid var(--wr-border);border-radius:8px;background:var(--wr-panel);overflow:hidden}
+    #weekly-report-v3 .wr-line-head{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:16px 20px;background:var(--wr-soft);border-bottom:1px solid var(--wr-border)}
+    #weekly-report-v3 .wr-line-name{display:flex;align-items:center;gap:10px;min-width:0;flex:1}
+    #weekly-report-v3 .wr-line-name input{max-width:340px}
+    #weekly-report-v3 .wr-line-body{display:grid;grid-template-columns:220px minmax(0,1fr);gap:22px;padding:20px}
+    #weekly-report-v3 .wr-anchor{align-self:start;position:sticky;top:16px;border-right:1px solid var(--wr-border);padding-right:18px}
+    #weekly-report-v3 .wr-anchor-title{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+    #weekly-report-v3 .wr-anchor-list{display:grid;gap:4px}
+    #weekly-report-v3 .wr-anchor-btn{appearance:none;border:0;border-left:3px solid transparent;background:transparent;color:var(--wr-sub);text-align:left;padding:9px 10px;cursor:pointer}
+    #weekly-report-v3 .wr-anchor-btn:hover,#weekly-report-v3 .wr-anchor-btn.is-active{color:var(--primary);background:var(--wr-blue-soft);border-left-color:var(--primary)}
+    #weekly-report-v3 .wr-modules{display:grid;gap:16px;min-width:0}
+    #weekly-report-v3 .wr-module{border:1px solid var(--wr-border);border-radius:6px;overflow:hidden;scroll-margin-top:16px}
+    #weekly-report-v3 .wr-module-head{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 14px;background:var(--wr-soft);border-bottom:1px solid var(--wr-border)}
+    #weekly-report-v3 .wr-module-title{display:flex;align-items:center;gap:8px;min-width:0}
+    #weekly-report-v3 .wr-module-tools{display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+    #weekly-report-v3 .wr-editor{padding:14px}
+    #weekly-report-v3 .wr-richbar{display:flex;gap:5px;flex-wrap:wrap;padding-bottom:10px;border-bottom:1px solid var(--wr-border);margin-bottom:10px}
+    #weekly-report-v3 textarea{width:100%;min-height:112px;resize:vertical;border:0;background:transparent;color:var(--wr-text);padding:4px;outline:none}
+    #weekly-report-v3 .wr-line-foot{display:flex;justify-content:flex-end;padding-top:16px}
+    #weekly-report-v3 dialog{width:min(560px,90%);border:0;border-radius:10px;padding:0;background:var(--wr-panel);color:var(--wr-text);box-shadow:0 16px 48px color-mix(in srgb,var(--wr-text) 28%,transparent)}
+    #weekly-report-v3 #wr-preview-dialog{width:min(920px,92%)}
+    #weekly-report-v3 dialog::backdrop{background:color-mix(in srgb,var(--wr-text) 45%,transparent)}
+    #weekly-report-v3 .wr-dialog-head{display:flex;justify-content:space-between;align-items:center;padding:17px 20px;border-bottom:1px solid var(--wr-border)}
+    #weekly-report-v3 .wr-dialog-body{display:grid;gap:18px;padding:20px}
+    #weekly-report-v3 .wr-preview-document{max-width:760px;margin:0 auto;padding:22px 34px 36px;background:var(--wr-panel);color:var(--wr-text);font-family:&quot;SimSun&quot;,&quot;宋体&quot;,serif;line-height:1.5}
+    #weekly-report-v3 .wr-preview-doc-title{text-align:center;font-family:&quot;SimHei&quot;,&quot;黑体&quot;,&quot;Microsoft YaHei&quot;,sans-serif;font-size:26px;font-weight:500;margin:0 0 10px}
+    #weekly-report-v3 .wr-preview-doc-meta{text-align:center;color:var(--wr-sub);font-family:&quot;Microsoft YaHei&quot;,sans-serif;font-size:14px;padding-bottom:18px;border-bottom:1px solid var(--wr-border);margin-bottom:24px}
+    #weekly-report-v3 .wr-preview-line-title{font-family:&quot;SimHei&quot;,&quot;黑体&quot;,&quot;Microsoft YaHei&quot;,sans-serif;font-size:18px;font-weight:500;margin:22px 0 12px}
+    #weekly-report-v3 .wr-preview-module{margin-bottom:22px}
+    #weekly-report-v3 .wr-preview-module-title{font-family:&quot;SimHei&quot;,&quot;黑体&quot;,&quot;Microsoft YaHei&quot;,sans-serif;font-size:20px;font-weight:500;margin:0 0 10px}
+    #weekly-report-v3 .wr-preview-body-text{font-family:&quot;SimSun&quot;,&quot;宋体&quot;,serif;font-size:16px;line-height:1.5;white-space:pre-wrap;margin:0;text-align:justify}
+    #weekly-report-v3 .wr-dialog-foot{display:flex;justify-content:flex-end;gap:10px;padding:14px 20px;border-top:1px solid var(--wr-border)}
+    #weekly-report-v3 .wr-toast{display:none;position:absolute;right:48px;top:82px;padding:10px 16px;background:var(--wr-panel);border:1px solid var(--wr-border);border-radius:6px;box-shadow:0 6px 20px color-mix(in srgb,var(--wr-text) 15%,transparent)}
+    #weekly-report-v3 .wr-toast.is-show{display:block}
+    @media(max-width:980px){
+      #weekly-report-v3 .wr-appbody{grid-template-columns:1fr}
+      #weekly-report-v3 .wr-sidebar{display:none}
+      #weekly-report-v3 .wr-shell{padding:20px}
+      #weekly-report-v3 .wr-filter{grid-template-columns:1fr 1fr}
+      #weekly-report-v3 .wr-summary{grid-template-columns:1fr}
+      #weekly-report-v3 .wr-filter-actions{padding-left:0;border-left:0}
+      #weekly-report-v3 .wr-line-body{grid-template-columns:1fr}
+      #weekly-report-v3 .wr-anchor{position:static;border-right:0;border-bottom:1px solid var(--wr-border);padding:0 0 14px}
+      #weekly-report-v3 .wr-anchor-list{display:flex;flex-wrap:wrap}
+      #weekly-report-v3 .wr-anchor-btn{border-left:0;border-bottom:2px solid transparent}
+      #weekly-report-v3 .wr-anchor-btn.is-active{border-bottom-color:var(--primary)}
+    }
+    @media(max-width:560px){
+      #weekly-report-v3 .wr-top{padding:0 16px}
+      #weekly-report-v3 .wr-user span{display:none}
+      #weekly-report-v3 .wr-shell{padding:12px}
+      #weekly-report-v3 .wr-main{padding:20px 14px}
+      #weekly-report-v3 .wr-filter{grid-template-columns:1fr}
+      #weekly-report-v3 .wr-line-head{align-items:flex-start;flex-direction:column}
+      #weekly-report-v3 .wr-line-name{width:100%}
+      #weekly-report-v3 .wr-line-name input{max-width:none}
+    }
+  &lt;/style&gt;
+
+  &lt;header class=&quot;wr-top&quot;&gt;
+    &lt;div class=&quot;wr-brand&quot;&gt;&lt;span class=&quot;wr-brand-mark&quot;&gt;&lt;i data-lucide=&quot;file-text&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;&lt;/span&gt;&lt;strong&gt;公司周报管理&lt;/strong&gt;&lt;/div&gt;
+    &lt;div class=&quot;wr-user&quot;&gt;&lt;i data-lucide=&quot;bell&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;&lt;span&gt;周报填报人&lt;/span&gt;&lt;i data-lucide=&quot;circle-user-round&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;&lt;/div&gt;
+  &lt;/header&gt;
+
+  &lt;div class=&quot;wr-appbody&quot;&gt;
+    &lt;aside class=&quot;wr-sidebar&quot; aria-label=&quot;周报菜单&quot;&gt;
+      &lt;div class=&quot;wr-menu-root&quot;&gt;&lt;i data-lucide=&quot;folder-kanban&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;周报&lt;/div&gt;
+      &lt;nav class=&quot;wr-menu-list&quot;&gt;
+        &lt;a class=&quot;wr-menu-item is-active&quot; href=&quot;weekly-report-management.html&quot; target=&quot;_top&quot;&gt;&lt;i data-lucide=&quot;square-pen&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;周报填写与管理&lt;/a&gt;
+        &lt;a class=&quot;wr-menu-item&quot; href=&quot;weekly-report-viewer.html&quot; target=&quot;_top&quot;&gt;&lt;i data-lucide=&quot;book-open&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;周报阅览&lt;/a&gt;
+        &lt;a class=&quot;wr-menu-item&quot; href=&quot;weekly-report-subscriptions.html&quot; target=&quot;_top&quot;&gt;&lt;i data-lucide=&quot;bell-ring&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;周报订阅&lt;/a&gt;
+        &lt;a class=&quot;wr-menu-item&quot; href=&quot;weekly-report-branches.html&quot; target=&quot;_top&quot;&gt;&lt;i data-lucide=&quot;network&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;分支机构管理&lt;/a&gt;
+        &lt;a class=&quot;wr-menu-item&quot; href=&quot;weekly-report-periods.html&quot; target=&quot;_top&quot;&gt;&lt;i data-lucide=&quot;calendar-cog&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;报告周期设置&lt;/a&gt;
+      &lt;/nav&gt;
+    &lt;/aside&gt;
+    &lt;div class=&quot;wr-shell&quot;&gt;
+    &lt;main class=&quot;card wr-main&quot;&gt;
+      &lt;section id=&quot;wr-list&quot; class=&quot;wr-view is-active&quot;&gt;
+        &lt;div class=&quot;wr-titlebar&quot;&gt;&lt;div class=&quot;wr-page-title&quot;&gt;&lt;span class=&quot;wr-title-icon&quot;&gt;&lt;i data-lucide=&quot;notebook-pen&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;&lt;/span&gt;&lt;div&gt;&lt;h2&gt;周报填写与管理&lt;/h2&gt;&lt;div class=&quot;wr-sub&quot;&gt;管理员可查看并编辑全部机构；报告人可编辑本机构；其他用户仅可查看&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;span class=&quot;wr-state admin&quot;&gt;管理员视图&lt;/span&gt;&lt;/div&gt;
+        &lt;div class=&quot;wr-summary&quot;&gt;
+          &lt;div class=&quot;wr-summary-item&quot;&gt;&lt;span class=&quot;wr-summary-icon&quot;&gt;&lt;i data-lucide=&quot;building-2&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;&lt;/span&gt;&lt;div&gt;&lt;div class=&quot;wr-sub&quot;&gt;本期机构&lt;/div&gt;&lt;div class=&quot;wr-summary-value&quot;&gt;9&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+          &lt;div class=&quot;wr-summary-item&quot;&gt;&lt;span class=&quot;wr-summary-icon&quot;&gt;&lt;i data-lucide=&quot;circle-check-big&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;&lt;/span&gt;&lt;div&gt;&lt;div class=&quot;wr-sub&quot;&gt;已确认&lt;/div&gt;&lt;div id=&quot;wr-stat-confirmed&quot; class=&quot;wr-summary-value&quot;&gt;6&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+          &lt;div class=&quot;wr-summary-item&quot;&gt;&lt;span class=&quot;wr-summary-icon&quot;&gt;&lt;i data-lucide=&quot;clock-3&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;&lt;/span&gt;&lt;div&gt;&lt;div class=&quot;wr-sub&quot;&gt;待处理&lt;/div&gt;&lt;div id=&quot;wr-stat-pending&quot; class=&quot;wr-summary-value&quot;&gt;3 &lt;span class=&quot;text-small wr-sub&quot;&gt;2待确认 · 1未填写&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;wr-filter&quot;&gt;
+          &lt;label class=&quot;wr-field&quot;&gt;&lt;span&gt;年 *&lt;/span&gt;&lt;select id=&quot;wr-year&quot; class=&quot;form-select&quot;&gt;&lt;option&gt;2026&lt;/option&gt;&lt;option&gt;2025&lt;/option&gt;&lt;option&gt;2024&lt;/option&gt;&lt;/select&gt;&lt;/label&gt;
+          &lt;label class=&quot;wr-field&quot;&gt;&lt;span&gt;月&lt;/span&gt;&lt;select id=&quot;wr-month&quot; class=&quot;form-select&quot;&gt;&lt;option value=&quot;7&quot;&gt;7月&lt;/option&gt;&lt;option value=&quot;6&quot;&gt;6月&lt;/option&gt;&lt;option value=&quot;5&quot;&gt;5月&lt;/option&gt;&lt;/select&gt;&lt;/label&gt;
+          &lt;label class=&quot;wr-field&quot;&gt;&lt;span&gt;周次&lt;/span&gt;&lt;select id=&quot;wr-week&quot; class=&quot;form-select&quot;&gt;&lt;option value=&quot;3&quot;&gt;第3周 07-13至07-19&lt;/option&gt;&lt;option value=&quot;2&quot;&gt;第2周 07-06至07-12&lt;/option&gt;&lt;option value=&quot;1&quot;&gt;第1周 07-01至07-05&lt;/option&gt;&lt;option value=&quot;4&quot;&gt;第4周 07-20至07-26&lt;/option&gt;&lt;/select&gt;&lt;/label&gt;
+          &lt;div class=&quot;wr-filter-actions&quot;&gt;&lt;button id=&quot;wr-query&quot; class=&quot;btn btn-primary&quot; type=&quot;button&quot;&gt;&lt;i data-lucide=&quot;search&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;查询&lt;/button&gt;&lt;button id=&quot;wr-reset&quot; class=&quot;btn&quot; type=&quot;button&quot;&gt;重置&lt;/button&gt;&lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;wr-toolbar&quot;&gt;&lt;div class=&quot;wr-row&quot;&gt;&lt;span class=&quot;wr-sub&quot;&gt;第3周完成情况：&lt;/span&gt;&lt;strong id=&quot;wr-complete-count&quot;&gt;6/9 已确认&lt;/strong&gt;&lt;/div&gt;&lt;div class=&quot;wr-actions&quot;&gt;&lt;button id=&quot;wr-confirm-all&quot; class=&quot;btn&quot; type=&quot;button&quot;&gt;&lt;i data-lucide=&quot;check-check&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;一键确认全部&lt;/button&gt;&lt;button id=&quot;wr-generate-company&quot; class=&quot;btn btn-primary&quot; type=&quot;button&quot;&gt;&lt;i data-lucide=&quot;wand-sparkles&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;一键生成公司级周报&lt;/button&gt;&lt;button class=&quot;btn wr-download&quot; type=&quot;button&quot; data-type=&quot;Word&quot;&gt;&lt;i data-lucide=&quot;download&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;下载 Word&lt;/button&gt;&lt;button class=&quot;btn wr-download&quot; type=&quot;button&quot; data-type=&quot;HTML&quot;&gt;&lt;i data-lucide=&quot;download&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;下载 HTML&lt;/button&gt;&lt;/div&gt;&lt;/div&gt;
+        &lt;div class=&quot;wr-table&quot;&gt;
+          &lt;table&gt;
+            &lt;thead&gt;&lt;tr&gt;&lt;th&gt;年度&lt;/th&gt;&lt;th&gt;月份&lt;/th&gt;&lt;th&gt;周次&lt;/th&gt;&lt;th&gt;所属分组&lt;/th&gt;&lt;th&gt;分支机构&lt;/th&gt;&lt;th&gt;填写状态&lt;/th&gt;&lt;th&gt;最后保存时间&lt;/th&gt;&lt;th&gt;操作&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
+            &lt;tbody id=&quot;wr-report-body&quot;&gt;
+              &lt;tr data-week=&quot;3&quot; data-department=&quot;信息技术部&quot; data-status=&quot;已保存&quot;&gt;&lt;td&gt;2026年&lt;/td&gt;&lt;td&gt;7月&lt;/td&gt;&lt;td&gt;第3周&lt;/td&gt;&lt;td&gt;总部支持服务部门&lt;/td&gt;&lt;td&gt;信息技术部&lt;/td&gt;&lt;td&gt;&lt;span class=&quot;wr-state pending&quot;&gt;已保存（待确认）&lt;/span&gt;&lt;/td&gt;&lt;td&gt;2026-07-18 17:55&lt;/td&gt;&lt;td&gt;&lt;button class=&quot;wr-link wr-open&quot; type=&quot;button&quot; data-department=&quot;信息技术部&quot;&gt;继续填写&lt;/button&gt;&lt;span class=&quot;wr-sep&quot;&gt;|&lt;/span&gt;&lt;button class=&quot;wr-link wr-preview&quot; type=&quot;button&quot;&gt;预览&lt;/button&gt;&lt;/td&gt;&lt;/tr&gt;
+              &lt;tr data-week=&quot;3&quot; data-department=&quot;综合管理部&quot; data-status=&quot;已确认&quot;&gt;&lt;td&gt;2026年&lt;/td&gt;&lt;td&gt;7月&lt;/td&gt;&lt;td&gt;第3周&lt;/td&gt;&lt;td&gt;总部支持服务部门&lt;/td&gt;&lt;td&gt;综合管理部&lt;/td&gt;&lt;td&gt;&lt;span class=&quot;wr-state done&quot;&gt;已确认&lt;/span&gt;&lt;/td&gt;&lt;td&gt;2026-07-18 17:40&lt;/td&gt;&lt;td&gt;&lt;button class=&quot;wr-link wr-open&quot; type=&quot;button&quot; data-department=&quot;综合管理部&quot;&gt;编辑&lt;/button&gt;&lt;span class=&quot;wr-sep&quot;&gt;|&lt;/span&gt;&lt;button class=&quot;wr-link wr-preview&quot; type=&quot;button&quot;&gt;预览&lt;/button&gt;&lt;/td&gt;&lt;/tr&gt;
+              &lt;tr data-week=&quot;3&quot; data-department=&quot;资产管理部&quot; data-status=&quot;已确认&quot;&gt;&lt;td&gt;2026年&lt;/td&gt;&lt;td&gt;7月&lt;/td&gt;&lt;td&gt;第3周&lt;/td&gt;&lt;td&gt;总部业务部门&lt;/td&gt;&lt;td&gt;资产管理部&lt;/td&gt;&lt;td&gt;&lt;span class=&quot;wr-state done&quot;&gt;已确认&lt;/span&gt;&lt;/td&gt;&lt;td&gt;2026-07-18 17:18&lt;/td&gt;&lt;td&gt;&lt;button class=&quot;wr-link wr-open&quot; type=&quot;button&quot; data-department=&quot;资产管理部&quot;&gt;编辑&lt;/button&gt;&lt;span class=&quot;wr-sep&quot;&gt;|&lt;/span&gt;&lt;button class=&quot;wr-link wr-preview&quot; type=&quot;button&quot;&gt;预览&lt;/button&gt;&lt;/td&gt;&lt;/tr&gt;
+              &lt;tr data-week=&quot;3&quot; data-department=&quot;投资部&quot; data-status=&quot;未填写&quot;&gt;&lt;td&gt;2026年&lt;/td&gt;&lt;td&gt;7月&lt;/td&gt;&lt;td&gt;第3周&lt;/td&gt;&lt;td&gt;总部业务部门&lt;/td&gt;&lt;td&gt;投资部&lt;/td&gt;&lt;td&gt;&lt;span class=&quot;wr-state empty&quot;&gt;未填写&lt;/span&gt;&lt;/td&gt;&lt;td&gt;—&lt;/td&gt;&lt;td&gt;&lt;button class=&quot;wr-link wr-open&quot; type=&quot;button&quot; data-department=&quot;投资部&quot;&gt;开始填写&lt;/button&gt;&lt;span class=&quot;wr-sep&quot;&gt;|&lt;/span&gt;&lt;button class=&quot;wr-link wr-preview&quot; type=&quot;button&quot;&gt;预览&lt;/button&gt;&lt;/td&gt;&lt;/tr&gt;
+              &lt;tr data-week=&quot;3&quot; data-department=&quot;营销管理服务部&quot; data-status=&quot;已确认&quot;&gt;&lt;td&gt;2026年&lt;/td&gt;&lt;td&gt;7月&lt;/td&gt;&lt;td&gt;第3周&lt;/td&gt;&lt;td&gt;总部支持服务部门&lt;/td&gt;&lt;td&gt;营销管理服务部&lt;/td&gt;&lt;td&gt;&lt;span class=&quot;wr-state done&quot;&gt;已确认&lt;/span&gt;&lt;/td&gt;&lt;td&gt;2026-07-18 16:48&lt;/td&gt;&lt;td&gt;&lt;button class=&quot;wr-link wr-open&quot; type=&quot;button&quot; data-department=&quot;营销管理服务部&quot;&gt;编辑&lt;/button&gt;&lt;span class=&quot;wr-sep&quot;&gt;|&lt;/span&gt;&lt;button class=&quot;wr-link wr-preview&quot; type=&quot;button&quot;&gt;预览&lt;/button&gt;&lt;/td&gt;&lt;/tr&gt;
+              &lt;tr data-week=&quot;3&quot; data-department=&quot;研究所&quot; data-status=&quot;已保存&quot;&gt;&lt;td&gt;2026年&lt;/td&gt;&lt;td&gt;7月&lt;/td&gt;&lt;td&gt;第3周&lt;/td&gt;&lt;td&gt;总部业务部门&lt;/td&gt;&lt;td&gt;研究所&lt;/td&gt;&lt;td&gt;&lt;span class=&quot;wr-state pending&quot;&gt;已保存（待确认）&lt;/span&gt;&lt;/td&gt;&lt;td&gt;2026-07-18 16:32&lt;/td&gt;&lt;td&gt;&lt;button class=&quot;wr-link wr-open&quot; type=&quot;button&quot; data-department=&quot;研究所&quot;&gt;继续填写&lt;/button&gt;&lt;span class=&quot;wr-sep&quot;&gt;|&lt;/span&gt;&lt;button class=&quot;wr-link wr-preview&quot; type=&quot;button&quot;&gt;预览&lt;/button&gt;&lt;/td&gt;&lt;/tr&gt;
+              &lt;tr data-week=&quot;3&quot; data-department=&quot;深圳分公司&quot; data-status=&quot;已确认&quot;&gt;&lt;td&gt;2026年&lt;/td&gt;&lt;td&gt;7月&lt;/td&gt;&lt;td&gt;第3周&lt;/td&gt;&lt;td&gt;子公司&lt;/td&gt;&lt;td&gt;深圳分公司&lt;/td&gt;&lt;td&gt;&lt;span class=&quot;wr-state done&quot;&gt;已确认&lt;/span&gt;&lt;/td&gt;&lt;td&gt;2026-07-18 16:10&lt;/td&gt;&lt;td&gt;&lt;button class=&quot;wr-link wr-open&quot; type=&quot;button&quot; data-department=&quot;深圳分公司&quot;&gt;编辑&lt;/button&gt;&lt;span class=&quot;wr-sep&quot;&gt;|&lt;/span&gt;&lt;button class=&quot;wr-link wr-preview&quot; type=&quot;button&quot;&gt;预览&lt;/button&gt;&lt;/td&gt;&lt;/tr&gt;
+              &lt;tr data-week=&quot;3&quot; data-department=&quot;金融大街营业部&quot; data-status=&quot;已确认&quot;&gt;&lt;td&gt;2026年&lt;/td&gt;&lt;td&gt;7月&lt;/td&gt;&lt;td&gt;第3周&lt;/td&gt;&lt;td&gt;直属分支机构&lt;/td&gt;&lt;td&gt;金融大街营业部&lt;/td&gt;&lt;td&gt;&lt;span class=&quot;wr-state done&quot;&gt;已确认&lt;/span&gt;&lt;/td&gt;&lt;td&gt;2026-07-18 15:46&lt;/td&gt;&lt;td&gt;&lt;button class=&quot;wr-link wr-open&quot; type=&quot;button&quot; data-department=&quot;金融大街营业部&quot;&gt;编辑&lt;/button&gt;&lt;span class=&quot;wr-sep&quot;&gt;|&lt;/span&gt;&lt;button class=&quot;wr-link wr-preview&quot; type=&quot;button&quot;&gt;预览&lt;/button&gt;&lt;/td&gt;&lt;/tr&gt;
+              &lt;tr data-week=&quot;3&quot; data-department=&quot;世纪大道营业部&quot; data-status=&quot;已确认&quot;&gt;&lt;td&gt;2026年&lt;/td&gt;&lt;td&gt;7月&lt;/td&gt;&lt;td&gt;第3周&lt;/td&gt;&lt;td&gt;IB分支机构&lt;/td&gt;&lt;td&gt;世纪大道营业部&lt;/td&gt;&lt;td&gt;&lt;span class=&quot;wr-state done&quot;&gt;已确认&lt;/span&gt;&lt;/td&gt;&lt;td&gt;2026-07-18 15:20&lt;/td&gt;&lt;td&gt;&lt;button class=&quot;wr-link wr-open&quot; type=&quot;button&quot; data-department=&quot;世纪大道营业部&quot;&gt;编辑&lt;/button&gt;&lt;span class=&quot;wr-sep&quot;&gt;|&lt;/span&gt;&lt;button class=&quot;wr-link wr-preview&quot; type=&quot;button&quot;&gt;预览&lt;/button&gt;&lt;/td&gt;&lt;/tr&gt;
+            &lt;/tbody&gt;
+          &lt;/table&gt;
+        &lt;/div&gt;
+      &lt;/section&gt;
+
+      &lt;section id=&quot;wr-editor-view&quot; class=&quot;wr-view&quot;&gt;
+        &lt;div class=&quot;wr-editor-bar&quot;&gt;
+          &lt;div class=&quot;wr-editor-title&quot;&gt;&lt;button id=&quot;wr-back&quot; class=&quot;btn btn-ghost&quot; type=&quot;button&quot;&gt;&lt;i data-lucide=&quot;arrow-left&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;返回&lt;/button&gt;&lt;div&gt;&lt;h2 id=&quot;wr-editor-department&quot;&gt;人力资源部周报填写&lt;/h2&gt;&lt;div class=&quot;wr-sub&quot;&gt;管理员可调整部门内容；页面保存的系统内容即为正式内容&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+          &lt;div class=&quot;wr-actions&quot;&gt;&lt;span id=&quot;wr-current-state&quot; class=&quot;wr-state saved&quot;&gt;已保存&lt;/span&gt;&lt;button id=&quot;wr-add-line&quot; class=&quot;btn&quot; type=&quot;button&quot;&gt;&lt;i data-lucide=&quot;plus&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;添加条线&lt;/button&gt;&lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;wr-period&quot;&gt;&lt;span&gt;&lt;span class=&quot;wr-sub&quot;&gt;年度：&lt;/span&gt;2026年&lt;/span&gt;&lt;span&gt;&lt;span class=&quot;wr-sub&quot;&gt;月份：&lt;/span&gt;7月&lt;/span&gt;&lt;span&gt;&lt;span class=&quot;wr-sub&quot;&gt;周次：&lt;/span&gt;第3周&lt;/span&gt;&lt;label class=&quot;wr-mode-field&quot;&gt;&lt;span class=&quot;wr-sub&quot;&gt;填写方式：&lt;/span&gt;&lt;select id=&quot;wr-line-mode&quot; class=&quot;form-select&quot;&gt;&lt;option value=&quot;none&quot;&gt;不区分条线&lt;/option&gt;&lt;option value=&quot;lines&quot;&gt;按条线填写&lt;/option&gt;&lt;/select&gt;&lt;/label&gt;&lt;label class=&quot;wr-meta-field&quot;&gt;&lt;span class=&quot;wr-sub&quot;&gt;报告人：&lt;/span&gt;&lt;input id=&quot;wr-reporter&quot; class=&quot;form-control&quot; value=&quot;张晨&quot;&gt;&lt;/label&gt;&lt;label class=&quot;wr-meta-field&quot;&gt;&lt;span class=&quot;wr-sub&quot;&gt;报告日期：&lt;/span&gt;&lt;input class=&quot;form-control wr-date&quot; value=&quot;2026-07-17&quot; readonly&gt;&lt;/label&gt;&lt;/div&gt;
+        &lt;div id=&quot;wr-lines&quot; class=&quot;wr-lines&quot; aria-live=&quot;polite&quot;&gt;&lt;/div&gt;
+        &lt;div class=&quot;wr-toolbar&quot; style=&quot;margin-top:22px;margin-bottom:0&quot;&gt;&lt;div id=&quot;wr-readonly-tip&quot; class=&quot;wr-sub&quot;&gt;&lt;/div&gt;&lt;div class=&quot;wr-actions&quot;&gt;&lt;button class=&quot;btn wr-preview&quot; type=&quot;button&quot;&gt;&lt;i data-lucide=&quot;eye&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;预览&lt;/button&gt;&lt;button class=&quot;btn wr-download&quot; type=&quot;button&quot; data-type=&quot;Word&quot;&gt;下载 Word&lt;/button&gt;&lt;button class=&quot;btn wr-download&quot; type=&quot;button&quot; data-type=&quot;HTML&quot;&gt;下载 HTML&lt;/button&gt;&lt;button id=&quot;wr-save&quot; class=&quot;btn&quot; type=&quot;button&quot;&gt;保存&lt;/button&gt;&lt;button id=&quot;wr-submit&quot; class=&quot;btn btn-primary&quot; type=&quot;button&quot;&gt;提交确认&lt;/button&gt;&lt;/div&gt;&lt;/div&gt;
+      &lt;/section&gt;
+    &lt;/main&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;dialog id=&quot;wr-module-dialog&quot;&gt;
+    &lt;div class=&quot;wr-dialog-head&quot;&gt;&lt;strong&gt;添加模块&lt;/strong&gt;&lt;button id=&quot;wr-module-x&quot; class=&quot;btn btn-ghost&quot; type=&quot;button&quot; aria-label=&quot;关闭&quot;&gt;&lt;i data-lucide=&quot;x&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;&lt;/button&gt;&lt;/div&gt;
+    &lt;div class=&quot;wr-dialog-body&quot;&gt;
+      &lt;label class=&quot;wr-field&quot;&gt;&lt;span&gt;从常用模块中选择&lt;/span&gt;&lt;select id=&quot;wr-module-select&quot; class=&quot;form-select&quot;&gt;&lt;option value=&quot;&quot;&gt;请选择&lt;/option&gt;&lt;option&gt;本周核心产出&lt;/option&gt;&lt;option&gt;业务赋能工具&lt;/option&gt;&lt;option&gt;政策宣导&lt;/option&gt;&lt;option&gt;下周重点工作&lt;/option&gt;&lt;option&gt;系统优化&lt;/option&gt;&lt;option&gt;风险事项&lt;/option&gt;&lt;option&gt;团队建设&lt;/option&gt;&lt;/select&gt;&lt;/label&gt;
+      &lt;label class=&quot;wr-field&quot;&gt;&lt;span&gt;或手填自定义模块标题&lt;/span&gt;&lt;input id=&quot;wr-module-custom&quot; class=&quot;form-control&quot; placeholder=&quot;如：专项项目复盘&quot;&gt;&lt;/label&gt;
+      &lt;div class=&quot;wr-sub&quot;&gt;手填标题优先；新增后可继续调整顺序或删除。&lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;wr-dialog-foot&quot;&gt;&lt;button id=&quot;wr-module-cancel&quot; class=&quot;btn&quot; type=&quot;button&quot;&gt;取消&lt;/button&gt;&lt;button id=&quot;wr-module-ok&quot; class=&quot;btn btn-primary&quot; type=&quot;button&quot;&gt;添加&lt;/button&gt;&lt;/div&gt;
+  &lt;/dialog&gt;
+
+  &lt;dialog id=&quot;wr-preview-dialog&quot;&gt;
+    &lt;div class=&quot;wr-dialog-head&quot;&gt;&lt;strong&gt;部门周报预览&lt;/strong&gt;&lt;button id=&quot;wr-preview-x&quot; class=&quot;btn btn-ghost&quot; type=&quot;button&quot; aria-label=&quot;关闭&quot;&gt;&lt;i data-lucide=&quot;x&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;&lt;/button&gt;&lt;/div&gt;
+    &lt;div id=&quot;wr-preview-body&quot; class=&quot;wr-dialog-body&quot;&gt;&lt;/div&gt;
+    &lt;div class=&quot;wr-dialog-foot&quot;&gt;&lt;button id=&quot;wr-preview-close&quot; class=&quot;btn btn-primary&quot; type=&quot;button&quot;&gt;关闭&lt;/button&gt;&lt;/div&gt;
+  &lt;/dialog&gt;
+  &lt;dialog id=&quot;wr-confirm-dialog&quot;&gt;
+    &lt;div class=&quot;wr-dialog-head&quot;&gt;&lt;strong&gt;操作提醒&lt;/strong&gt;&lt;button id=&quot;wr-confirm-x&quot; class=&quot;btn btn-ghost&quot; type=&quot;button&quot; aria-label=&quot;关闭&quot;&gt;&lt;i data-lucide=&quot;x&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;&lt;/button&gt;&lt;/div&gt;
+    &lt;div class=&quot;wr-dialog-body&quot;&gt;&lt;div id=&quot;wr-confirm-message&quot;&gt;&lt;/div&gt;&lt;div class=&quot;wr-sub&quot;&gt;该提醒不作强制拦截，确认后可继续操作。&lt;/div&gt;&lt;/div&gt;
+    &lt;div class=&quot;wr-dialog-foot&quot;&gt;&lt;button id=&quot;wr-confirm-cancel&quot; class=&quot;btn&quot; type=&quot;button&quot;&gt;取消&lt;/button&gt;&lt;button id=&quot;wr-confirm-ok&quot; class=&quot;btn btn-primary&quot; type=&quot;button&quot;&gt;仍然继续&lt;/button&gt;&lt;/div&gt;
+  &lt;/dialog&gt;
+  &lt;div id=&quot;wr-toast&quot; class=&quot;wr-toast&quot; role=&quot;status&quot;&gt;&lt;/div&gt;
+
+  &lt;script&gt;
+    (() =&gt; {
+      const root = document.getElementById(&#x27;weekly-report-v3&#x27;);
+      const previewPageUrl = &#x27;weekly-report-viewer.html&#x27;;
+      const list = root.querySelector(&#x27;#wr-list&#x27;);
+      const editor = root.querySelector(&#x27;#wr-editor-view&#x27;);
+      const lineBox = root.querySelector(&#x27;#wr-lines&#x27;);
+      const moduleDialog = root.querySelector(&#x27;#wr-module-dialog&#x27;);
+      const previewDialog = root.querySelector(&#x27;#wr-preview-dialog&#x27;);
+      const confirmDialog = root.querySelector(&#x27;#wr-confirm-dialog&#x27;);
+      const toast = root.querySelector(&#x27;#wr-toast&#x27;);
+      let currentLineId = null;
+      let readonly = false;
+      let useLines = false;
+      let uid = 20;
+      let pendingAction = null;
+      const departmentLine = {id:0,name:&#x27;部门周报内容&#x27;,modules:[
+        {id:101,title:&#x27;本周核心产出&#x27;,source:&#x27;admin&#x27;,content:&#x27;1. 重点项目阶段性交付\n（1）完成统一数据平台一期功能验收，核心指标校验通过率达到99.6%；\n（2）完成移动办公门户新版发布，覆盖总部及分支机构用户。\n2. 经营管理支持\n（1）完成本月经营数据复核及异常数据修正；\n（2）形成重点任务进展清单并完成跨部门确认。&#x27;},
+        {id:102,title:&#x27;业务赋能工具&#x27;,source:&#x27;admin&#x27;,content:&#x27;1. 数据分析工具\n（1）上线业务经营看板2.0，新增分组、机构和时间维度筛选；\n（2）补充部门负责人专属视图及数据导出功能。\n2. 协同效率工具\n（1）完成周报结构化填写组件优化；\n（2）新增模块排序、自定义模块及内容预览能力。&#x27;},
+        {id:103,title:&#x27;政策宣导&#x27;,source:&#x27;admin&#x27;,content:&#x27;1. 制度宣贯\n（1）组织开展数据安全管理制度专题宣导；\n（2）完成新修订制度重点条款解读及答疑。\n2. 落实情况\n（1）各机构已完成制度学习确认；\n（2）收集并整理执行建议12项，纳入后续优化计划。&#x27;},
+        {id:104,title:&#x27;下周重点工作&#x27;,source:&#x27;admin&#x27;,content:&#x27;1. 推进重点项目验收及试运行问题闭环；\n2. 完成分支机构用户培训和操作手册发布；\n3. 启动第三季度系统优化需求评审；\n4. 持续跟踪经营数据质量并形成周度分析报告。&#x27;},
+        {id:105,title:&#x27;系统优化&#x27;,source:&#x27;custom&#x27;,content:&#x27;1. 性能优化\n（1）优化批量数据导入流程，缩短任务处理时间；\n（2）调整查询缓存策略，提升高频页面响应速度。\n2. 体验优化\n（1）统一表单、按钮和提示信息的交互规范；\n（2）完善移动端页面适配及异常状态提示。&#x27;}
+      ]};
+      const data = [
+        {id:1,name:&#x27;招聘与人才发展条线&#x27;,modules:[
+          {id:1,title:&#x27;本周核心产出&#x27;,source:&#x27;admin&#x27;,content:&#x27;1. 完成校园招聘12名新员工入职安排；\n2. 推进3个重点岗位招聘，本周完成8人次面试；\n3. 完成半年度绩效数据复核。&#x27;},
+          {id:2,title:&#x27;业务赋能工具&#x27;,source:&#x27;admin&#x27;,content:&#x27;发布招聘进度看板V2，新增部门负责人查看视图。&#x27;},
+          {id:3,title:&#x27;政策宣导&#x27;,source:&#x27;admin&#x27;,content:&#x27;完成新版员工手册意见收集，并向各部门宣导休假制度调整。&#x27;},
+          {id:4,title:&#x27;下周重点工作&#x27;,source:&#x27;admin&#x27;,content:&#x27;1. 推进绩效结果沟通；\n2. 完成新员工培训；\n3. 确认第三季度培训计划。&#x27;},
+          {id:5,title:&#x27;系统优化&#x27;,source:&#x27;custom&#x27;,content:&#x27;优化人事系统入职材料批量导入流程。&#x27;}
+        ]},
+        {id:2,name:&#x27;员工关系与组织条线&#x27;,modules:[
+          {id:6,title:&#x27;本周核心产出&#x27;,source:&#x27;admin&#x27;,content:&#x27;完成组织架构信息复核及员工关系月度台账更新。&#x27;},
+          {id:7,title:&#x27;政策宣导&#x27;,source:&#x27;admin&#x27;,content:&#x27;组织开展劳动用工风险专题宣导。&#x27;},
+          {id:8,title:&#x27;业务赋能工具&#x27;,source:&#x27;admin&#x27;,content:&#x27;&#x27;},
+          {id:9,title:&#x27;下周重点工作&#x27;,source:&#x27;admin&#x27;,content:&#x27;完成第三季度员工沟通会方案。&#x27;},
+          {id:10,title:&#x27;团队建设&#x27;,source:&#x27;custom&#x27;,content:&#x27;策划部门内部经验分享活动。&#x27;}
+        ]}
+      ];
+
+      const esc = value =&gt; String(value).replaceAll(&#x27;&amp;&#x27;,&#x27;&amp;amp;&#x27;).replaceAll(&#x27;&lt;&#x27;,&#x27;&amp;lt;&#x27;).replaceAll(&#x27;&gt;&#x27;,&#x27;&amp;gt;&#x27;).replaceAll(&#x27;&quot;&#x27;,&#x27;&amp;quot;&#x27;);
+      const cnIndex = index =&gt; [&#x27;一&#x27;,&#x27;二&#x27;,&#x27;三&#x27;,&#x27;四&#x27;,&#x27;五&#x27;,&#x27;六&#x27;,&#x27;七&#x27;,&#x27;八&#x27;,&#x27;九&#x27;,&#x27;十&#x27;][index] || String(index+1);
+      const showToast = message =&gt; { toast.textContent = message; toast.classList.add(&#x27;is-show&#x27;); window.setTimeout(() =&gt; toast.classList.remove(&#x27;is-show&#x27;),1400); };
+      const ask = (message,action) =&gt; { root.querySelector(&#x27;#wr-confirm-message&#x27;).textContent=message; pendingAction=action; confirmDialog.showModal(); };
+      const activeLines = () =&gt; useLines ? data : [departmentLine];
+      const findLine = id =&gt; activeLines().find(item =&gt; item.id === id);
+      const syncInputs = () =&gt; {
+        root.querySelectorAll(&#x27;.wr-module-text&#x27;).forEach(el =&gt; {
+          const line = findLine(Number(el.dataset.line));
+          const mod = line &amp;&amp; line.modules.find(item =&gt; item.id === Number(el.dataset.module));
+          if(mod) mod.content = el.value;
+        });
+        root.querySelectorAll(&#x27;.wr-line-input&#x27;).forEach(el =&gt; {
+          const line = findLine(Number(el.dataset.line));
+          if(line) line.name = el.value;
+        });
+      };
+      const moduleHtml = (line,module,index) =&gt; &#x27;&lt;section id=&quot;wr-module-&#x27;+line.id+&#x27;-&#x27;+module.id+&#x27;&quot; class=&quot;wr-module&quot;&gt;&lt;div class=&quot;wr-module-head&quot;&gt;&lt;div class=&quot;wr-module-title&quot;&gt;&lt;strong&gt;&#x27;+cnIndex(index)+&#x27;、&#x27;+esc(module.title)+&#x27;&lt;/strong&gt;&lt;span class=&quot;wr-state &#x27;+(module.source===&#x27;admin&#x27;?&#x27;admin&#x27;:&#x27;custom&#x27;)+&#x27;&quot;&gt;&#x27;+(module.source===&#x27;admin&#x27;?&#x27;管理员配置&#x27;:&#x27;部门自定义&#x27;)+&#x27;&lt;/span&gt;&lt;/div&gt;&lt;div class=&quot;wr-module-tools&quot;&gt;&lt;button class=&quot;btn btn-ghost wr-move-up&quot; type=&quot;button&quot; data-line=&quot;&#x27;+line.id+&#x27;&quot; data-module=&quot;&#x27;+module.id+&#x27;&quot; aria-label=&quot;上移&quot;&gt;↑ 上移&lt;/button&gt;&lt;button class=&quot;btn btn-ghost wr-move-down&quot; type=&quot;button&quot; data-line=&quot;&#x27;+line.id+&#x27;&quot; data-module=&quot;&#x27;+module.id+&#x27;&quot; aria-label=&quot;下移&quot;&gt;↓ 下移&lt;/button&gt;&lt;button class=&quot;wr-link wr-delete-module&quot; type=&quot;button&quot; data-line=&quot;&#x27;+line.id+&#x27;&quot; data-module=&quot;&#x27;+module.id+&#x27;&quot;&gt;删除&lt;/button&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;wr-editor&quot;&gt;&lt;div class=&quot;wr-richbar&quot;&gt;&lt;button class=&quot;btn btn-ghost&quot; type=&quot;button&quot;&gt;&lt;strong&gt;B&lt;/strong&gt;&lt;/button&gt;&lt;button class=&quot;btn btn-ghost&quot; type=&quot;button&quot;&gt;• 列表&lt;/button&gt;&lt;button class=&quot;btn btn-ghost&quot; type=&quot;button&quot;&gt;图片&lt;/button&gt;&lt;button class=&quot;btn btn-ghost&quot; type=&quot;button&quot;&gt;表格&lt;/button&gt;&lt;/div&gt;&lt;textarea class=&quot;wr-module-text&quot; data-line=&quot;&#x27;+line.id+&#x27;&quot; data-module=&quot;&#x27;+module.id+&#x27;&quot; placeholder=&quot;请输入&#x27;+esc(module.title)+&#x27;内容&quot;&gt;&#x27;+esc(module.content)+&#x27;&lt;/textarea&gt;&lt;/div&gt;&lt;/section&gt;&#x27;;
+      const lineHtml = line =&gt; &#x27;&lt;article class=&quot;wr-line&quot;&gt;&lt;div class=&quot;wr-line-head&quot;&gt;&lt;label class=&quot;wr-line-name&quot;&gt;&lt;strong&gt;条线名称&lt;/strong&gt;&lt;input class=&quot;form-control wr-line-input&quot; data-line=&quot;&#x27;+line.id+&#x27;&quot; value=&quot;&#x27;+esc(line.name)+&#x27;&quot;&gt;&lt;/label&gt;&lt;div class=&quot;wr-actions&quot;&gt;&lt;span class=&quot;wr-sub&quot;&gt;&#x27;+line.modules.length+&#x27;个模块&lt;/span&gt;&lt;button class=&quot;wr-link wr-delete-line&quot; type=&quot;button&quot; data-line=&quot;&#x27;+line.id+&#x27;&quot;&gt;删除条线&lt;/button&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;wr-line-body&quot;&gt;&lt;aside class=&quot;wr-anchor&quot;&gt;&lt;div class=&quot;wr-anchor-title&quot;&gt;&lt;strong&gt;模块锚点&lt;/strong&gt;&lt;span class=&quot;wr-sub&quot;&gt;可调整顺序&lt;/span&gt;&lt;/div&gt;&lt;nav class=&quot;wr-anchor-list&quot; aria-label=&quot;&#x27;+esc(line.name)+&#x27;模块导航&quot;&gt;&#x27;+line.modules.map((module,index)=&gt;&#x27;&lt;button class=&quot;wr-anchor-btn &#x27;+(index===0?&#x27;is-active&#x27;:&#x27;&#x27;)+&#x27;&quot; type=&quot;button&quot; data-target=&quot;wr-module-&#x27;+line.id+&#x27;-&#x27;+module.id+&#x27;&quot;&gt;&#x27;+cnIndex(index)+&#x27;、&#x27;+esc(module.title)+&#x27;&lt;/button&gt;&#x27;).join(&#x27;&#x27;)+&#x27;&lt;/nav&gt;&lt;/aside&gt;&lt;div&gt;&lt;div class=&quot;wr-modules&quot;&gt;&#x27;+line.modules.map((module,index)=&gt;moduleHtml(line,module,index)).join(&#x27;&#x27;)+&#x27;&lt;/div&gt;&lt;div class=&quot;wr-line-foot&quot;&gt;&lt;button class=&quot;btn wr-add-module&quot; type=&quot;button&quot; data-line=&quot;&#x27;+line.id+&#x27;&quot;&gt;+ 添加模块（选择或手填）&lt;/button&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/article&gt;&#x27;;
+      const plainHtml = line =&gt; &#x27;&lt;article class=&quot;wr-line&quot;&gt;&lt;div class=&quot;wr-line-head&quot;&gt;&lt;div&gt;&lt;strong&gt;部门周报内容&lt;/strong&gt;&lt;div class=&quot;wr-sub&quot;&gt;当前部门不区分条线，直接按模块填写&lt;/div&gt;&lt;/div&gt;&lt;span class=&quot;wr-sub&quot;&gt;&#x27;+line.modules.length+&#x27;个模块&lt;/span&gt;&lt;/div&gt;&lt;div class=&quot;wr-line-body&quot;&gt;&lt;aside class=&quot;wr-anchor&quot;&gt;&lt;div class=&quot;wr-anchor-title&quot;&gt;&lt;strong&gt;模块锚点&lt;/strong&gt;&lt;span class=&quot;wr-sub&quot;&gt;可调整顺序&lt;/span&gt;&lt;/div&gt;&lt;nav class=&quot;wr-anchor-list&quot; aria-label=&quot;部门模块导航&quot;&gt;&#x27;+line.modules.map((module,index)=&gt;&#x27;&lt;button class=&quot;wr-anchor-btn &#x27;+(index===0?&#x27;is-active&#x27;:&#x27;&#x27;)+&#x27;&quot; type=&quot;button&quot; data-target=&quot;wr-module-&#x27;+line.id+&#x27;-&#x27;+module.id+&#x27;&quot;&gt;&#x27;+cnIndex(index)+&#x27;、&#x27;+esc(module.title)+&#x27;&lt;/button&gt;&#x27;).join(&#x27;&#x27;)+&#x27;&lt;/nav&gt;&lt;/aside&gt;&lt;div&gt;&lt;div class=&quot;wr-modules&quot;&gt;&#x27;+line.modules.map((module,index)=&gt;moduleHtml(line,module,index)).join(&#x27;&#x27;)+&#x27;&lt;/div&gt;&lt;div class=&quot;wr-line-foot&quot;&gt;&lt;button class=&quot;btn wr-add-module&quot; type=&quot;button&quot; data-line=&quot;&#x27;+line.id+&#x27;&quot;&gt;+ 添加模块（选择或手填）&lt;/button&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/article&gt;&#x27;;
+
+      const render = () =&gt; {
+        lineBox.innerHTML = useLines ? data.map(lineHtml).join(&#x27;&#x27;) : plainHtml(departmentLine);
+        root.querySelectorAll(&#x27;.wr-line-input,.wr-module-text&#x27;).forEach(el =&gt; el.disabled = readonly);
+        root.querySelectorAll(&#x27;.wr-add-module,.wr-delete-module,.wr-delete-line,.wr-move-up,.wr-move-down&#x27;).forEach(el =&gt; el.style.display = readonly?&#x27;none&#x27;:&#x27;&#x27;);
+        root.querySelector(&#x27;#wr-add-line&#x27;).style.display = readonly || !useLines ? &#x27;none&#x27; : &#x27;&#x27;;
+        bindDynamic();
+        if(globalThis.lucide) globalThis.lucide.createIcons({attrs:{width:16,height:16}});
+      };
+      const moveModule = (lineId,moduleId,delta) =&gt; {
+        syncInputs();
+        const line = findLine(lineId);
+        const index = line.modules.findIndex(item=&gt;item.id===moduleId);
+        const next = index+delta;
+        if(next&lt;0||next&gt;=line.modules.length){showToast(delta&lt;0?&#x27;已经是第一个模块&#x27;:&#x27;已经是最后一个模块&#x27;);return;}
+        const picked = line.modules.splice(index,1)[0]; line.modules.splice(next,0,picked); render();
+      };
+      const bindDynamic = () =&gt; {
+        root.querySelectorAll(&#x27;.wr-anchor-btn&#x27;).forEach(btn=&gt;btn.addEventListener(&#x27;click&#x27;,()=&gt;{
+          btn.closest(&#x27;.wr-anchor-list&#x27;).querySelectorAll(&#x27;.wr-anchor-btn&#x27;).forEach(el=&gt;el.classList.toggle(&#x27;is-active&#x27;,el===btn));
+          root.querySelector(&#x27;#&#x27;+btn.dataset.target).scrollIntoView({behavior:&#x27;smooth&#x27;,block:&#x27;start&#x27;});
+        }));
+        root.querySelectorAll(&#x27;.wr-add-module&#x27;).forEach(btn=&gt;btn.addEventListener(&#x27;click&#x27;,()=&gt;{currentLineId=Number(btn.dataset.line);root.querySelector(&#x27;#wr-module-select&#x27;).value=&#x27;&#x27;;root.querySelector(&#x27;#wr-module-custom&#x27;).value=&#x27;&#x27;;moduleDialog.showModal();}));
+        root.querySelectorAll(&#x27;.wr-move-up&#x27;).forEach(btn=&gt;btn.addEventListener(&#x27;click&#x27;,()=&gt;moveModule(Number(btn.dataset.line),Number(btn.dataset.module),-1)));
+        root.querySelectorAll(&#x27;.wr-move-down&#x27;).forEach(btn=&gt;btn.addEventListener(&#x27;click&#x27;,()=&gt;moveModule(Number(btn.dataset.line),Number(btn.dataset.module),1)));
+        root.querySelectorAll(&#x27;.wr-delete-module&#x27;).forEach(btn=&gt;btn.addEventListener(&#x27;click&#x27;,()=&gt;{syncInputs();const line=findLine(Number(btn.dataset.line));const remove=()=&gt;{line.modules=line.modules.filter(item=&gt;item.id!==Number(btn.dataset.module));render();};if(line.modules.length===1)ask(&#x27;删除后将没有可填写模块，仍要删除吗？&#x27;,remove);else remove();}));
+        root.querySelectorAll(&#x27;.wr-delete-line&#x27;).forEach(btn=&gt;btn.addEventListener(&#x27;click&#x27;,()=&gt;{ask(&#x27;确认删除该条线及其全部模块内容吗？&#x27;,()=&gt;{const index=data.findIndex(item=&gt;item.id===Number(btn.dataset.line));data.splice(index,1);render();});}));
+      };
+
+      const openEditor = (department,isReadonly) =&gt; {readonly=isReadonly;root.querySelector(&#x27;#wr-editor-department&#x27;).textContent=(department||&#x27;人力资源部&#x27;)+&#x27;周报填写&#x27;;root.querySelector(&#x27;#wr-current-state&#x27;).textContent=readonly?&#x27;已确认&#x27;:&#x27;管理员编辑中&#x27;;root.querySelector(&#x27;#wr-current-state&#x27;).className=readonly?&#x27;wr-state done&#x27;:&#x27;wr-state saved&#x27;;root.querySelector(&#x27;#wr-save&#x27;).style.display=readonly?&#x27;none&#x27;:&#x27;&#x27;;root.querySelector(&#x27;#wr-submit&#x27;).style.display=readonly?&#x27;none&#x27;:&#x27;&#x27;;root.querySelector(&#x27;#wr-readonly-tip&#x27;).textContent=readonly?&#x27;当前用户仅有查看权限。&#x27;:&#x27;&#x27;;list.classList.remove(&#x27;is-active&#x27;);editor.classList.add(&#x27;is-active&#x27;);render();};
+      root.querySelectorAll(&#x27;#wr-report-body tr[data-status=&quot;已确认&quot;] .wr-open&#x27;).forEach(btn=&gt;{btn.textContent=&#x27;查看&#x27;;btn.dataset.readonly=&#x27;true&#x27;;});
+      root.querySelectorAll(&#x27;.wr-open&#x27;).forEach(btn=&gt;btn.addEventListener(&#x27;click&#x27;,()=&gt;{const isReadonly=btn.dataset.readonly===&#x27;true&#x27;;openEditor(btn.dataset.department,isReadonly);root.querySelector(&#x27;#wr-reporter&#x27;).disabled=isReadonly;root.querySelector(&#x27;#wr-line-mode&#x27;).disabled=isReadonly;}));
+      root.querySelector(&#x27;#wr-back&#x27;).addEventListener(&#x27;click&#x27;,()=&gt;{syncInputs();editor.classList.remove(&#x27;is-active&#x27;);list.classList.add(&#x27;is-active&#x27;);});
+      root.querySelector(&#x27;#wr-query&#x27;).addEventListener(&#x27;click&#x27;,()=&gt;{const selected=root.querySelector(&#x27;#wr-week&#x27;).value;root.querySelectorAll(&#x27;#wr-report-body tr&#x27;).forEach(row=&gt;row.style.display=row.dataset.week===selected?&#x27;&#x27;:&#x27;none&#x27;);showToast(&#x27;已查询所选周次&#x27;);});
+      root.querySelector(&#x27;#wr-reset&#x27;).addEventListener(&#x27;click&#x27;,()=&gt;{root.querySelector(&#x27;#wr-year&#x27;).value=&#x27;2026&#x27;;root.querySelector(&#x27;#wr-month&#x27;).value=&#x27;7&#x27;;root.querySelector(&#x27;#wr-week&#x27;).value=&#x27;3&#x27;;root.querySelectorAll(&#x27;#wr-report-body tr&#x27;).forEach(row=&gt;row.style.display=&#x27;&#x27;);});
+      root.querySelector(&#x27;#wr-line-mode&#x27;).addEventListener(&#x27;change&#x27;,event=&gt;{syncInputs();useLines=event.target.value===&#x27;lines&#x27;;render();showToast(useLines?&#x27;已切换为按条线填写&#x27;:&#x27;已切换为不区分条线&#x27;);});
+      root.querySelector(&#x27;#wr-add-line&#x27;).addEventListener(&#x27;click&#x27;,()=&gt;{syncInputs();uid+=1;data.push({id:uid,name:&#x27;新条线&#x27;,modules:[{id:uid+100,title:&#x27;本周核心产出&#x27;,source:&#x27;admin&#x27;,content:&#x27;&#x27;},{id:uid+101,title:&#x27;下周重点工作&#x27;,source:&#x27;admin&#x27;,content:&#x27;&#x27;}]});render();showToast(&#x27;已添加新条线&#x27;);});
+      root.querySelector(&#x27;#wr-module-ok&#x27;).addEventListener(&#x27;click&#x27;,()=&gt;{syncInputs();const custom=root.querySelector(&#x27;#wr-module-custom&#x27;).value.trim();const selected=root.querySelector(&#x27;#wr-module-select&#x27;).value;const title=custom||selected;if(!title){showToast(&#x27;请选择或输入模块标题&#x27;);return;}const line=findLine(currentLineId);uid+=1;line.modules.push({id:uid,title,source:&#x27;custom&#x27;,content:&#x27;&#x27;});moduleDialog.close();render();showToast(&#x27;模块已添加&#x27;);});
+      root.querySelector(&#x27;#wr-module-cancel&#x27;).addEventListener(&#x27;click&#x27;,()=&gt;moduleDialog.close());
+      root.querySelector(&#x27;#wr-module-x&#x27;).addEventListener(&#x27;click&#x27;,()=&gt;moduleDialog.close());
+      const emptyCount = () =&gt; {syncInputs();return activeLines().reduce((sum,line)=&gt;sum+line.modules.filter(module=&gt;!module.content.trim()).length,0);};
+      root.querySelector(&#x27;#wr-save&#x27;).addEventListener(&#x27;click&#x27;,()=&gt;{const count=emptyCount();const action=()=&gt;showToast(&#x27;周报已保存&#x27;);if(count)ask(&#x27;当前有&#x27;+count+&#x27;个模块未填写，仍要保存吗？&#x27;,action);else action();});
+      const finishSubmit=()=&gt;{readonly=true;root.querySelector(&#x27;#wr-current-state&#x27;).textContent=&#x27;已确认&#x27;;root.querySelector(&#x27;#wr-current-state&#x27;).className=&#x27;wr-state done&#x27;;render();root.querySelector(&#x27;#wr-add-line&#x27;).style.display=&#x27;none&#x27;;root.querySelector(&#x27;#wr-save&#x27;).style.display=&#x27;none&#x27;;root.querySelector(&#x27;#wr-submit&#x27;).style.display=&#x27;none&#x27;;root.querySelector(&#x27;#wr-readonly-tip&#x27;).textContent=&#x27;该周报已确认，当前仅可查看。&#x27;;showToast(&#x27;周报已提交确认&#x27;);};
+      root.querySelector(&#x27;#wr-submit&#x27;).addEventListener(&#x27;click&#x27;,()=&gt;{const count=emptyCount();if(count)ask(&#x27;当前有&#x27;+count+&#x27;个模块未填写，仍要提交确认吗？&#x27;,finishSubmit);else finishSubmit();});
+      const buildPreviewDocument = (title,lines) =&gt; &#x27;&lt;article class=&quot;wr-preview-document&quot;&gt;&lt;h1 class=&quot;wr-preview-doc-title&quot;&gt;&#x27;+esc(title)+&#x27;&lt;/h1&gt;&lt;div class=&quot;wr-preview-doc-meta&quot;&gt;2026年7月第3周　｜　系统正式内容&lt;/div&gt;&#x27;+lines.map(line=&gt;&#x27;&lt;section&gt;&#x27;+(useLines?&#x27;&lt;h2 class=&quot;wr-preview-line-title&quot;&gt;&#x27;+esc(line.name)+&#x27;&lt;/h2&gt;&#x27;:&#x27;&#x27;)+line.modules.map((module,index)=&gt;&#x27;&lt;div class=&quot;wr-preview-module&quot;&gt;&lt;h3 class=&quot;wr-preview-module-title&quot;&gt;&#x27;+cnIndex(index)+&#x27;、&#x27;+esc(module.title)+&#x27;&lt;/h3&gt;&lt;p class=&quot;wr-preview-body-text&quot;&gt;&#x27;+(esc(module.content)||&#x27;未填写&#x27;)+&#x27;&lt;/p&gt;&lt;/div&gt;&#x27;).join(&#x27;&#x27;)+&#x27;&lt;/section&gt;&#x27;).join(&#x27;&#x27;)+&#x27;&lt;/article&gt;&#x27;;
+      const openPreview = event =&gt; {syncInputs();const row=event&amp;&amp;event.currentTarget?event.currentTarget.closest(&#x27;tr&#x27;):null;const department=row&amp;&amp;row.dataset.department?row.dataset.department:root.querySelector(&#x27;#wr-editor-department&#x27;).textContent.replace(&#x27;周报填写&#x27;,&#x27;&#x27;);root.querySelector(&#x27;#wr-preview-body&#x27;).innerHTML=buildPreviewDocument(department+&#x27;周报&#x27;,activeLines());previewDialog.showModal();};
+      const navigatePreview = event =&gt; {const row=event&amp;&amp;event.currentTarget?event.currentTarget.closest(&#x27;tr&#x27;):null;const cells=row?row.querySelectorAll(&#x27;td&#x27;):null;const group=cells?cells[3].textContent.trim():&#x27;总部支持服务部门&#x27;;const branch=row&amp;&amp;row.dataset.department?row.dataset.department:root.querySelector(&#x27;#wr-editor-department&#x27;).textContent.replace(&#x27;周报填写&#x27;,&#x27;&#x27;);const reporter=root.querySelector(&#x27;#wr-reporter&#x27;).value||&#x27;张晨&#x27;;const query=&#x27;?year=2026&amp;month=7&amp;week=3&amp;group=&#x27;+encodeURIComponent(group)+&#x27;&amp;branch=&#x27;+encodeURIComponent(branch)+&#x27;&amp;reporter=&#x27;+encodeURIComponent(reporter);window.top.location.href=previewPageUrl+query;};
+      root.querySelectorAll(&#x27;.wr-preview&#x27;).forEach(btn=&gt;btn.addEventListener(&#x27;click&#x27;,navigatePreview));
+      root.querySelector(&#x27;#wr-preview-close&#x27;).addEventListener(&#x27;click&#x27;,()=&gt;previewDialog.close());
+      root.querySelector(&#x27;#wr-preview-x&#x27;).addEventListener(&#x27;click&#x27;,()=&gt;previewDialog.close());
+      const previewCompany = () =&gt; {
+        const departments=[...root.querySelectorAll(&#x27;#wr-report-body tr:not(.wr-company-row)&#x27;)].map(row=&gt;row.dataset.department);
+        root.querySelector(&#x27;#wr-preview-body&#x27;).innerHTML=&#x27;&lt;article class=&quot;wr-preview-document&quot;&gt;&lt;h1 class=&quot;wr-preview-doc-title&quot;&gt;2026年7月第3周公司级周报&lt;/h1&gt;&lt;div class=&quot;wr-preview-doc-meta&quot;&gt;系统根据全部已确认机构内容自动生成&lt;/div&gt;&#x27;+departments.map((name,index)=&gt;&#x27;&lt;section class=&quot;wr-preview-module&quot;&gt;&lt;h3 class=&quot;wr-preview-module-title&quot;&gt;&#x27;+cnIndex(index)+&#x27;、&#x27;+esc(name)+&#x27;&lt;/h3&gt;&lt;p class=&quot;wr-preview-body-text&quot;&gt;1. 本周重点工作完成情况\n（1）已完成本机构确认后的周报内容汇总；\n（2）重点任务及协同事项已纳入公司级周报。\n2. 下周工作安排\n（1）按计划推进重点项目；\n（2）持续跟踪风险事项和经营指标。&lt;/p&gt;&lt;/section&gt;&#x27;).join(&#x27;&#x27;)+&#x27;&lt;/article&gt;&#x27;;
+        previewDialog.showModal();
+      };
+      root.querySelector(&#x27;#wr-confirm-all&#x27;).addEventListener(&#x27;click&#x27;,()=&gt;{
+        const pendingRows=[...root.querySelectorAll(&#x27;#wr-report-body tr:not(.wr-company-row)&#x27;)].filter(row=&gt;row.dataset.status!==&#x27;已确认&#x27;);
+        if(!pendingRows.length){showToast(&#x27;全部机构均已确认&#x27;);return;}
+        ask(&#x27;将当前未填写和待确认的&#x27;+pendingRows.length+&#x27;份周报统一设为“已确认”，是否继续？&#x27;,()=&gt;{
+          pendingRows.forEach(row=&gt;{
+            row.dataset.status=&#x27;已确认&#x27;;
+            const state=row.querySelector(&#x27;.wr-state&#x27;);
+            state.textContent=&#x27;已确认&#x27;;
+            state.className=&#x27;wr-state done&#x27;;
+            const action=row.querySelector(&#x27;.wr-open&#x27;);
+            action.textContent=&#x27;查看&#x27;;
+            action.dataset.readonly=&#x27;true&#x27;;
+            const cells=row.querySelectorAll(&#x27;td&#x27;);
+            if(cells[6].textContent.trim()===&#x27;—&#x27;) cells[6].textContent=&#x27;刚刚确认&#x27;;
+          });
+          root.querySelector(&#x27;#wr-complete-count&#x27;).textContent=&#x27;9/9 已确认&#x27;;
+          root.querySelector(&#x27;#wr-stat-confirmed&#x27;).textContent=&#x27;9&#x27;;
+          root.querySelector(&#x27;#wr-stat-pending&#x27;).textContent=&#x27;0&#x27;;
+          const button=root.querySelector(&#x27;#wr-confirm-all&#x27;);
+          button.textContent=&#x27;全部已确认&#x27;;
+          button.disabled=true;
+          showToast(&#x27;全部机构周报已确认，可生成公司级周报&#x27;);
+        });
+      });
+      root.querySelector(&#x27;#wr-generate-company&#x27;).addEventListener(&#x27;click&#x27;,()=&gt;{
+        const departmentRows=[...root.querySelectorAll(&#x27;#wr-report-body tr:not(.wr-company-row)&#x27;)];
+        const incomplete=departmentRows.filter(row=&gt;row.dataset.status!==&#x27;已确认&#x27;);
+        if(incomplete.length){showToast(&#x27;仍有&#x27;+incomplete.length+&#x27;个部门未确认，暂不能生成&#x27;);return;}
+        if(root.querySelector(&#x27;#wr-company-row&#x27;)){showToast(&#x27;公司级周报已生成并置顶&#x27;);return;}
+        const row=document.createElement(&#x27;tr&#x27;);
+        row.id=&#x27;wr-company-row&#x27;;row.className=&#x27;wr-company-row&#x27;;row.dataset.week=&#x27;3&#x27;;row.dataset.status=&#x27;待发布&#x27;;
+        row.innerHTML=&#x27;&lt;td&gt;2026年&lt;/td&gt;&lt;td&gt;7月&lt;/td&gt;&lt;td&gt;第3周&lt;/td&gt;&lt;td&gt;全公司&lt;/td&gt;&lt;td&gt;-&lt;/td&gt;&lt;td&gt;&lt;span class=&quot;wr-state saved wr-company-state&quot;&gt;待发布&lt;/span&gt;&lt;/td&gt;&lt;td&gt;刚刚生成&lt;/td&gt;&lt;td&gt;&lt;button class=&quot;wr-link wr-company-preview&quot; type=&quot;button&quot;&gt;预览&lt;/button&gt;&lt;span class=&quot;wr-sep&quot;&gt;|&lt;/span&gt;&lt;button class=&quot;wr-link wr-company-publish&quot; type=&quot;button&quot;&gt;确认发布&lt;/button&gt;&lt;/td&gt;&#x27;;
+        root.querySelector(&#x27;#wr-report-body&#x27;).prepend(row);
+        row.querySelector(&#x27;.wr-company-preview&#x27;).addEventListener(&#x27;click&#x27;,()=&gt;{window.top.location.href=previewPageUrl+&#x27;?year=2026&amp;month=7&amp;week=3&amp;group=&#x27;+encodeURIComponent(&#x27;全公司&#x27;)+&#x27;&amp;branch=-&#x27;;});
+        row.querySelector(&#x27;.wr-company-publish&#x27;).addEventListener(&#x27;click&#x27;,()=&gt;ask(&#x27;公司级周报发布后状态将变为“已发布”，确认发布吗？&#x27;,()=&gt;{row.dataset.status=&#x27;已发布&#x27;;const state=row.querySelector(&#x27;.wr-company-state&#x27;);state.textContent=&#x27;已发布&#x27;;state.className=&#x27;wr-state done wr-company-state&#x27;;row.querySelector(&#x27;.wr-company-publish&#x27;).remove();showToast(&#x27;公司级周报已发布&#x27;);}));
+        const generate=root.querySelector(&#x27;#wr-generate-company&#x27;);generate.textContent=&#x27;公司级周报已生成&#x27;;generate.disabled=true;
+        showToast(&#x27;公司级周报已生成并置顶&#x27;);
+      });
+      root.querySelector(&#x27;#wr-confirm-cancel&#x27;).addEventListener(&#x27;click&#x27;,()=&gt;{pendingAction=null;confirmDialog.close();});
+      root.querySelector(&#x27;#wr-confirm-x&#x27;).addEventListener(&#x27;click&#x27;,()=&gt;{pendingAction=null;confirmDialog.close();});
+      root.querySelector(&#x27;#wr-confirm-ok&#x27;).addEventListener(&#x27;click&#x27;,()=&gt;{const action=pendingAction;pendingAction=null;confirmDialog.close();if(action)action();});
+      root.querySelectorAll(&#x27;.wr-download&#x27;).forEach(btn=&gt;btn.addEventListener(&#x27;click&#x27;,()=&gt;showToast(&#x27;已触发&#x27;+btn.dataset.type+&#x27;下载（原型演示）&#x27;)));
+      render();
+    })();
+  &lt;/script&gt;
+&lt;/div&gt;
+
+&lt;script src=&quot;https://unpkg.com/@floating-ui/core@1.7.3/dist/floating-ui.core.umd.min.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;https://unpkg.com/@floating-ui/dom@1.7.4/dist/floating-ui.dom.umd.min.js&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+(() =&gt; {
+  if (window.FloatingUIDOM == null) {
+    return;
+  }
+  const { autoUpdate, computePosition, flip, offset, shift, size } =
+    window.FloatingUIDOM;
+  const tooltipPlacements = new Set([&quot;top&quot;, &quot;right&quot;, &quot;bottom&quot;, &quot;left&quot;]);
+  const tooltipId = `codex-visualization-tooltip-${
+    window.crypto?.randomUUID?.() ?? Date.now().toString(36)
+  }`;
+  const tooltipGap = 5;
+  const hoverDelay = 700;
+  const skipDelay = 300;
+  let activeTrigger = null;
+  let pendingTrigger = null;
+  let tooltip = null;
+  let openTimeout = null;
+  let autoUpdateCleanup = null;
+  let positionRequest = 0;
+  let skipDelayUntil = 0;
+
+  const getTrigger = (target) =&gt;
+    target?.nodeType === Node.ELEMENT_NODE
+      ? target.closest(&quot;[data-tooltip]&quot;)
+      : null;
+  const containsTarget = (trigger, target) =&gt;
+    target?.nodeType != null &amp;&amp; trigger.contains(target);
+  const getContent = (trigger) =&gt;
+    trigger.getAttribute(&quot;data-tooltip&quot;)?.trim() ?? &quot;&quot;;
+  const getPlacement = (trigger) =&gt; {
+    const placement = trigger.getAttribute(&quot;data-tooltip-placement&quot;);
+    return tooltipPlacements.has(placement) ? placement : &quot;top&quot;;
+  };
+  const getTooltip = () =&gt; {
+    if (tooltip == null) {
+      tooltip = document.createElement(&quot;div&quot;);
+      tooltip.id = tooltipId;
+      tooltip.className = &quot;tooltip&quot;;
+      tooltip.setAttribute(&quot;role&quot;, &quot;tooltip&quot;);
+    }
+    return tooltip;
+  };
+  const setDescribedBy = (trigger, described) =&gt; {
+    const ids = new Set(
+      (trigger.getAttribute(&quot;aria-describedby&quot;) ?? &quot;&quot;)
+        .split(/\s+/)
+        .filter(Boolean),
+    );
+    if (described) {
+      ids.add(tooltipId);
+    } else {
+      ids.delete(tooltipId);
+    }
+    if (ids.size === 0) {
+      trigger.removeAttribute(&quot;aria-describedby&quot;);
+    } else {
+      trigger.setAttribute(&quot;aria-describedby&quot;, [...ids].join(&quot; &quot;));
+    }
+  };
+  const clearOpenTimeout = () =&gt; {
+    if (openTimeout != null) {
+      window.clearTimeout(openTimeout);
+      openTimeout = null;
+    }
+    pendingTrigger = null;
+  };
+  const closeTooltip = (activateSkipDelay = true) =&gt; {
+    clearOpenTimeout();
+    positionRequest += 1;
+    autoUpdateCleanup?.();
+    autoUpdateCleanup = null;
+    if (activeTrigger == null) {
+      return;
+    }
+    setDescribedBy(activeTrigger, false);
+    activeTrigger = null;
+    tooltip?.remove();
+    if (activateSkipDelay) {
+      skipDelayUntil = Date.now() + skipDelay;
+    }
+  };
+  const updatePosition = (trigger, floating) =&gt; {
+    const request = ++positionRequest;
+    void computePosition(trigger, floating, {
+      middleware: [
+        offset(tooltipGap),
+        flip({ padding: tooltipGap }),
+        shift({ padding: tooltipGap }),
+        size({
+          padding: tooltipGap,
+          apply({ availableHeight, availableWidth, elements }) {
+            elements.floating.style.setProperty(
+              &quot;--tooltip-available-width&quot;,
+              `${Math.max(0, availableWidth)}px`,
+            );
+            elements.floating.style.setProperty(
+              &quot;--tooltip-available-height&quot;,
+              `${Math.max(0, availableHeight)}px`,
+            );
+          },
+        }),
+      ],
+      placement: getPlacement(trigger),
+      strategy: &quot;fixed&quot;,
+    })
+      .then(({ x, y }) =&gt; {
+        if (activeTrigger !== trigger || request !== positionRequest) {
+          return;
+        }
+        const scale = window.devicePixelRatio || 1;
+        floating.style.transform = `translate(${Math.round(x * scale) / scale}px, ${Math.round(y * scale) / scale}px)`;
+        floating.style.visibility = &quot;visible&quot;;
+      })
+      .catch(() =&gt; {
+        if (activeTrigger === trigger &amp;&amp; request === positionRequest) {
+          closeTooltip(false);
+        }
+      });
+  };
+  const openTooltip = (trigger) =&gt; {
+    const content = getContent(trigger);
+    if (!trigger.isConnected || content.length === 0) {
+      return;
+    }
+    clearOpenTimeout();
+    if (activeTrigger === trigger) {
+      return;
+    }
+    closeTooltip();
+    const floating = getTooltip();
+    floating.textContent = content;
+    floating.style.visibility = &quot;hidden&quot;;
+    floating.style.transform = &quot;translate(0, 0)&quot;;
+    document.body.appendChild(floating);
+    activeTrigger = trigger;
+    setDescribedBy(trigger, true);
+    autoUpdateCleanup = autoUpdate(trigger, floating, () =&gt; {
+      updatePosition(trigger, floating);
+    });
+  };
+  const requestOpen = (trigger, immediate = false) =&gt; {
+    if (
+      getContent(trigger).length === 0 ||
+      activeTrigger === trigger ||
+      pendingTrigger === trigger
+    ) {
+      return;
+    }
+    clearOpenTimeout();
+    pendingTrigger = trigger;
+    const delay =
+      immediate || activeTrigger != null || Date.now() &lt; skipDelayUntil
+        ? 0
+        : hoverDelay;
+    if (delay === 0) {
+      openTooltip(trigger);
+      return;
+    }
+    openTimeout = window.setTimeout(() =&gt; {
+      openTimeout = null;
+      pendingTrigger = null;
+      openTooltip(trigger);
+    }, delay);
+  };
+  const handlePointerOpen = (event) =&gt; {
+    if (event.pointerType === &quot;touch&quot;) {
+      return;
+    }
+    const trigger = getTrigger(event.target);
+    if (trigger == null || containsTarget(trigger, event.relatedTarget)) {
+      return;
+    }
+    requestOpen(trigger);
+  };
+  const handleLeave = (event) =&gt; {
+    const trigger = getTrigger(event.target);
+    if (trigger == null || containsTarget(trigger, event.relatedTarget)) {
+      return;
+    }
+    if (activeTrigger === trigger || pendingTrigger === trigger) {
+      closeTooltip();
+    }
+  };
+  const handleFocusIn = (event) =&gt; {
+    const trigger = getTrigger(event.target);
+    if (trigger?.matches(&quot;:focus-visible&quot;)) {
+      requestOpen(trigger, true);
+    }
+  };
+  const handleKeyDown = (event) =&gt; {
+    if (event.key === &quot;Escape&quot;) {
+      closeTooltip();
+    }
+  };
+  const handleContextMenu = (event) =&gt; {
+    const trigger = getTrigger(event.target);
+    if (activeTrigger === trigger || pendingTrigger === trigger) {
+      closeTooltip();
+    }
+  };
+  const destroy = () =&gt; {
+    closeTooltip(false);
+    document.removeEventListener(&quot;pointerover&quot;, handlePointerOpen);
+    document.removeEventListener(&quot;pointerout&quot;, handleLeave);
+    document.removeEventListener(&quot;focusin&quot;, handleFocusIn);
+    document.removeEventListener(&quot;focusout&quot;, handleLeave);
+    document.removeEventListener(&quot;keydown&quot;, handleKeyDown);
+    document.removeEventListener(&quot;contextmenu&quot;, handleContextMenu);
+    tooltip = null;
+  };
+
+  document.addEventListener(&quot;pointerover&quot;, handlePointerOpen);
+  document.addEventListener(&quot;pointerout&quot;, handleLeave);
+  document.addEventListener(&quot;focusin&quot;, handleFocusIn);
+  document.addEventListener(&quot;focusout&quot;, handleLeave);
+  document.addEventListener(&quot;keydown&quot;, handleKeyDown);
+  document.addEventListener(&quot;contextmenu&quot;, handleContextMenu);
+  window.addEventListener(&quot;pagehide&quot;, destroy, { once: true });
+})();
+&lt;/script&gt;
+&lt;script id=&quot;codex-visualization-lucide&quot; async src=&quot;https://unpkg.com/lucide@1.17.0/dist/umd/lucide.js&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+(() =&gt; {
+  const initialize = () =&gt; {
+    globalThis.lucide?.createIcons({ attrs: { width: 16, height: 16 } });
+  };
+  if (globalThis.lucide != null) {
+    initialize();
+    return;
+  }
+  document
+    .getElementById(&quot;codex-visualization-lucide&quot;)
+    ?.addEventListener(&quot;load&quot;, initialize, { once: true });
+})();
+&lt;/script&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;
+"></iframe>
+</body>
+</html>

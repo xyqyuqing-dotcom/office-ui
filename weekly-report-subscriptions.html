@@ -1,0 +1,1186 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval' blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; style-src 'unsafe-inline' blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; img-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; font-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; media-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; worker-src blob:; connect-src blob: data:; frame-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<title>Weekly Report Subscriptions</title>
+<style>:root{color-scheme:light dark;background:light-dark(rgb(255 255 255), rgb(24 24 24))}html,body{margin:0;width:100%;height:100%}body{box-sizing:border-box;background:inherit}iframe{display:block;width:100%;height:100vh;margin:0;border:0}</style>
+</head>
+<body>
+<iframe referrerpolicy="no-referrer" title="Weekly Report Subscriptions" srcdoc="&lt;!doctype html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+&lt;meta name=&quot;referrer&quot; content=&quot;no-referrer&quot;&gt;
+&lt;meta http-equiv=&quot;Content-Security-Policy&quot; content=&quot;default-src &#x27;none&#x27;; script-src &#x27;unsafe-inline&#x27; &#x27;unsafe-eval&#x27; &#x27;wasm-unsafe-eval&#x27; blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; style-src &#x27;unsafe-inline&#x27; blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; img-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; font-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; media-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; worker-src blob:; connect-src blob: data:; frame-src &#x27;none&#x27;; object-src &#x27;none&#x27;; base-uri &#x27;none&#x27;; form-action &#x27;none&#x27;&quot;&gt;
+&lt;title&gt;Weekly Report Subscriptions&lt;/title&gt;
+&lt;style&gt;:root {
+  color-scheme: light dark;
+  background-color: var(--background) !important;
+
+  /* Agent-facing contract; keep in sync with SKILL.md. */
+  --background: light-dark(rgb(255 255 255), rgb(24 24 24));
+  --foreground: light-dark(rgb(26 28 31), rgb(255 255 255));
+  --card: color-mix(in oklab, var(--foreground) 5%, transparent);
+  --card-foreground: var(--foreground);
+  --popover: light-dark(rgb(255 255 255), rgb(45 45 45));
+  --popover-foreground: var(--foreground);
+  --primary: light-dark(rgb(51 156 255), rgb(131 195 255));
+  --primary-foreground: light-dark(rgb(255 255 255), rgb(13 13 13));
+  --secondary: light-dark(rgb(255 255 255 / 96%), rgb(54 54 54 / 96%));
+  --secondary-foreground: var(--foreground);
+  --muted: color-mix(in srgb, var(--foreground) 10%, transparent);
+  --muted-foreground: light-dark(
+    rgb(26 28 31 / 49.4%),
+    rgb(255 255 255 / 49.8%)
+  );
+  --accent: light-dark(rgb(229 242 255), rgb(13 39 63));
+  --accent-foreground: var(--primary);
+  --destructive: light-dark(rgb(226 85 7), rgb(255 133 73));
+  --border: light-dark(rgb(26 28 31 / 8%), rgb(255 255 255 / 8.2%));
+  --input: light-dark(
+    rgb(26 28 31 / 11.8%),
+    color-mix(in oklab, rgb(0 0 0) 10%, transparent)
+  );
+  --ring: light-dark(rgb(51 156 255), rgb(131 195 255 / 76%));
+  --font-size-base: 14px;
+  --viz-series-1: var(--primary);
+  --viz-series-2: light-dark(rgb(243 136 59), rgb(245 154 86));
+  --viz-series-3: light-dark(rgb(93 201 119), rgb(116 213 139));
+  --viz-series-4: light-dark(rgb(235 119 177), rgb(240 143 192));
+  --viz-series-5: light-dark(rgb(155 121 236), rgb(170 145 239));
+  --viz-series-6: light-dark(rgb(58 185 177), rgb(90 203 194));
+
+  /* Internal implementation variables; not part of the agent contract. */
+  --font-sans: -apple-system, system-ui, &quot;Segoe UI&quot;, sans-serif;
+  --font-mono:
+    ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, &quot;Liberation Mono&quot;,
+    monospace;
+  --font-size-normal: max(11px, var(--font-size-base));
+  --font-size-tooltip: calc(var(--font-size-base) - 1px);
+  --font-size-small: max(11px, calc(var(--font-size-base) - 2px));
+  --font-size-h1: calc(var(--font-size-normal) * 1.7142857143);
+  --font-size-h2: calc(var(--font-size-normal) * 1.4285714286);
+  --font-size-h3: calc(var(--font-size-normal) * 1.2857142857);
+  --font-weight-normal: 430;
+  --font-weight-medium: 500;
+  --line-height-normal: calc(var(--font-size-normal) * 1.5);
+  --line-height-tooltip: calc(var(--font-size-tooltip) * 1.4285714286);
+  --line-height-small: calc(var(--font-size-small) + 4px);
+  --radius: 12.5px;
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-2xl: calc(var(--radius) * 1.6);
+  --radius-full: 9999px;
+  --shadow-sm: 0 1px 2px -1px rgb(0 0 0 / 8%);
+  --checkmark-image: url(&quot;data:image/svg+xml,%3Csvg xmlns=&#x27;http://www.w3.org/2000/svg&#x27; viewBox=&#x27;0 0 17 17&#x27;%3E%3Cpath d=&#x27;M12.8961 3.64101C13.1297 3.41418 13.4984 3.37523 13.7779 3.56581C14.0571 3.75635 14.1554 4.11331 14.0299 4.41347L13.9615 4.53847L7.71151 13.7045C7.59411 13.8767 7.4063 13.9877 7.19881 14.0072C6.99136 14.0267 6.78564 13.9533 6.63826 13.806L2.88826 10.056L2.79842 9.9457C2.6192 9.67407 2.64927 9.30496 2.88826 9.06581C3.12738 8.82669 3.49647 8.79676 3.76815 8.97597L3.8785 9.06581L7.03084 12.2182L12.8053 3.74941L12.8961 3.64101Z&#x27;/%3E%3C/svg%3E&quot;);
+
+  /* Legacy aliases; not part of the current agent contract. */
+  --viz-bg: transparent;
+  --viz-panel: var(--card);
+  --viz-border: var(--border);
+  --viz-text: var(--foreground);
+  --viz-muted: var(--muted-foreground);
+  --viz-accent: var(--primary);
+  --viz-accent-text: var(--primary-foreground);
+  --viz-accent-bg: var(--accent);
+  --viz-font-size: var(--font-size-base);
+  --viz-warning: var(--destructive);
+  --color-background-primary: var(--background);
+  --color-text-primary: var(--foreground);
+  --color-border-secondary: var(--border);
+}
+
+:root[data-theme=&quot;light&quot;] {
+  color-scheme: light;
+}
+
+:root[data-theme=&quot;dark&quot;] {
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html &gt; body {
+  margin: 0;
+  padding: 5px;
+  color: var(--foreground);
+  background: transparent !important;
+  font-family: var(--font-sans);
+  font-size: var(--font-size-normal);
+  font-weight: var(--font-weight-normal);
+  line-height: var(--line-height-normal);
+}
+
+a {
+  color: color-mix(in srgb, var(--viz-accent) 80%, var(--viz-text) 20%);
+  cursor: pointer;
+  font-weight: var(--viz-font-weight-medium);
+  text-decoration: none;
+  text-underline-offset: 2px;
+}
+
+a:is(:hover, :focus-visible) {
+  text-decoration-line: underline;
+  text-decoration-style: dashed;
+  text-decoration-thickness: 0.5px;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  margin-block: 0;
+}
+
+h1 {
+  font-size: var(--font-size-h1);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.25;
+}
+
+h2 {
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.25;
+}
+
+h3,
+h4,
+h5,
+h6 {
+  font-size: var(--font-size-h3);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.3;
+}
+
+b,
+strong,
+th {
+  font-weight: var(--font-weight-medium);
+}
+
+code:not(pre code) {
+  display: inline;
+  padding: 1px 6px;
+  border-radius: var(--radius-sm);
+  corner-shape: superellipse(1.5);
+  background: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.92em;
+  overflow-wrap: anywhere;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  word-break: break-word;
+}
+
+#widget {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  padding: 0;
+  background: transparent !important;
+}
+
+.card {
+  min-width: 0;
+  padding: 12px;
+  overflow: hidden;
+  overflow-wrap: break-word;
+  border-radius: var(--radius-2xl);
+  corner-shape: superellipse(1.5);
+  color: var(--card-foreground);
+  background: var(--card);
+}
+
+#widget &gt; :not(.card) {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.tooltip {
+  position: fixed;
+  z-index: 50;
+  top: 0;
+  left: 0;
+  width: max-content;
+  max-width: min(
+    20rem,
+    var(--tooltip-available-width, calc(100vw - 10px)),
+    calc(100vw - 10px)
+  );
+  max-height: min(
+    var(--tooltip-available-height, calc(100vh - 10px)),
+    calc(100vh - 10px)
+  );
+  padding: 4px 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  corner-shape: superellipse(1.5);
+  color: var(--popover-foreground);
+  background: var(--popover);
+  box-shadow: none;
+  font-size: var(--font-size-tooltip);
+  line-height: var(--line-height-tooltip);
+  overflow-wrap: break-word;
+  white-space: normal;
+  pointer-events: none;
+  user-select: none;
+}
+
+.viz-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(max(180px, 24%), 1fr));
+  gap: 10px;
+}
+
+.viz-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.viz-stat-value {
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.25;
+}
+
+.viz-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.viz-badge {
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+  color: var(--accent-foreground);
+  background: var(--accent);
+  font-weight: var(--font-weight-medium);
+}
+
+small,
+.text-small,
+.viz-badge {
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+}
+
+.text-muted {
+  color: var(--muted-foreground);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.viz-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.viz-controls &gt; .form-label {
+  display: grid;
+  min-width: min(100%, 260px);
+  flex: 1 1 280px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: 2px 12px;
+  margin-bottom: 0;
+}
+
+.viz-controls &gt; .form-label &gt; :is(.form-control, .form-range, .form-select) {
+  grid-column: 1 / -1;
+}
+
+.btn,
+.form-check-input,
+.form-control,
+.form-range,
+.form-select {
+  font: inherit;
+}
+
+.btn {
+  appearance: button;
+  display: inline-flex;
+  inline-size: fit-content;
+  max-inline-size: 100%;
+  min-height: 28px;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  margin: 0;
+  padding: 0 8px;
+  -webkit-app-region: no-drag;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-lg);
+  corner-shape: superellipse(1.5);
+  color: var(--secondary-foreground);
+  background: var(--secondary);
+  cursor: var(--cursor-interaction, pointer);
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  user-select: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+.btn:is(.btn-block, .viz-tile) {
+  inline-size: 100%;
+}
+
+.btn.viz-tile {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+a.btn {
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.btn:not(:disabled):hover {
+  background: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.btn-primary {
+  border-color: transparent;
+  color: var(--primary-foreground);
+  background: var(--foreground);
+  background-clip: padding-box;
+}
+
+.btn-primary .text-muted {
+  color: color-mix(in srgb, var(--primary-foreground) 50%, transparent);
+}
+
+.btn-primary:not(:disabled):hover {
+  background: color-mix(in srgb, var(--foreground) 80%, transparent);
+  background-clip: padding-box;
+}
+
+.btn-ghost {
+  border-color: transparent;
+  color: var(--muted-foreground);
+  background: transparent;
+}
+
+.btn-ghost:not(:disabled):hover {
+  color: var(--foreground);
+  background: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+[data-lucide] {
+  stroke-width: 1.6;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--foreground);
+}
+
+.form-control {
+  display: block;
+  width: 100%;
+  min-height: 28px;
+  padding: 0 8px;
+  outline: none;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-lg);
+  corner-shape: superellipse(1.5);
+  color: var(--foreground);
+  background: var(--secondary);
+}
+
+.form-control::placeholder {
+  color: var(--muted-foreground);
+}
+
+.form-control[type=&quot;file&quot;] {
+  padding: 0;
+  overflow: hidden;
+  cursor: var(--cursor-interaction, pointer);
+}
+
+.form-control[type=&quot;file&quot;]::file-selector-button {
+  min-height: 26px;
+  margin-right: 8px;
+  padding: 0 8px;
+  border: 0;
+  border-right: 1px solid var(--input);
+  color: var(--secondary-foreground);
+  background: var(--secondary);
+  cursor: inherit;
+  font: inherit;
+}
+
+.form-control[type=&quot;file&quot;]:not(:disabled):hover::file-selector-button {
+  background: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.form-control-color[type=&quot;color&quot;] {
+  width: 40px;
+  height: 28px;
+  padding: 3px;
+  cursor: var(--cursor-interaction, pointer);
+}
+
+.form-control-color[type=&quot;color&quot;]::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+.form-control-color[type=&quot;color&quot;]::-webkit-color-swatch {
+  border: 0;
+  border-radius: calc(var(--radius-lg) - 4px);
+  corner-shape: superellipse(1.5);
+}
+
+textarea.form-control {
+  height: auto;
+  min-height: 72px;
+  padding: 8px 10px;
+  resize: vertical;
+}
+
+.form-control:focus-visible {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-control:disabled,
+.form-select:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.form-select {
+  appearance: none;
+  display: block;
+  width: 100%;
+  min-height: 28px;
+  margin: 0;
+  padding: 0 32px 0 8px;
+  outline: none;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-lg);
+  corner-shape: superellipse(1.5);
+  color: var(--foreground);
+  background-color: var(--secondary);
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--muted-foreground) 50%),
+    linear-gradient(135deg, var(--muted-foreground) 50%, transparent 50%);
+  background-position:
+    calc(100% - 14px) 50%,
+    calc(100% - 10px) 50%;
+  background-repeat: no-repeat;
+  background-size: 4px 4px;
+  cursor: var(--cursor-interaction, default);
+}
+
+.form-select:not(:disabled):hover {
+  background-color: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.form-select:focus-visible {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-check {
+  display: flex;
+  min-height: 20px;
+  align-items: center;
+  gap: 6px;
+}
+
+.form-check-input {
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  flex: 0 0 auto;
+  margin: 0;
+  border: 1px solid var(--input);
+  color: var(--primary-foreground);
+  background-color: transparent;
+  cursor: var(--cursor-interaction, default);
+  transition:
+    background-color 150ms,
+    border-color 150ms,
+    box-shadow 150ms;
+}
+
+.form-check:not(.form-switch) .form-check-input[type=&quot;checkbox&quot;] {
+  border-color: var(--input);
+  border-radius: var(--radius-sm);
+  corner-shape: superellipse(1.5);
+  background-color: var(--secondary);
+  box-shadow: var(--shadow-sm);
+}
+
+.form-check:not(.form-switch)
+  .form-check-input:not(:disabled):not(:checked):hover {
+  background-color: var(--card);
+}
+
+.form-check:not(.form-switch) .form-check-input[type=&quot;checkbox&quot;]:checked {
+  border-color: var(--primary);
+  background-color: var(--primary);
+}
+
+.form-check:not(.form-switch)
+  .form-check-input[type=&quot;checkbox&quot;]:checked::before {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--primary-foreground);
+  content: &quot;&quot;;
+  mask: var(--checkmark-image) center / 12px 12px no-repeat;
+}
+
+.form-check-input[type=&quot;radio&quot;] {
+  width: 14px;
+  height: 14px;
+  border-radius: var(--radius-full);
+}
+
+.form-check-input[type=&quot;radio&quot;]:checked {
+  border: 2px solid var(--primary);
+  background:
+    radial-gradient(circle, var(--primary-foreground) 0 2.5px, transparent 3px),
+    var(--primary);
+}
+
+.form-check:not(.form-switch) .form-check-input:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.form-check:not(.form-switch) .form-check-input:disabled {
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.form-check:not(.form-switch) .form-check-input:disabled + .form-check-label {
+  cursor: not-allowed;
+}
+
+.form-switch .form-check-input:disabled,
+.form-switch .form-check-input:disabled + .form-check-label {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.form-check-label {
+  color: var(--foreground);
+  cursor: var(--cursor-interaction, default);
+}
+
+.form-switch .form-check-input {
+  position: relative;
+  width: 32px;
+  height: 20px;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: var(--muted);
+  box-shadow: none;
+  transition: background-color 200ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.form-switch .form-check-input::before {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 16px;
+  height: 16px;
+  box-sizing: border-box;
+  border: 1px solid light-dark(var(--primary-foreground), var(--foreground));
+  border-radius: var(--radius-full);
+  background: light-dark(var(--primary-foreground), var(--foreground));
+  box-shadow: var(--shadow-sm);
+  content: &quot;&quot;;
+  transform: translate(2px, -50%);
+  transition: transform 200ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.form-switch .form-check-input:checked {
+  background: var(--primary);
+}
+
+.form-switch .form-check-input:checked::before {
+  transform: translate(14px, -50%);
+}
+
+.form-switch .form-check-input:focus-visible {
+  box-shadow: 0 0 0 2px var(--ring);
+}
+
+.form-range {
+  appearance: none;
+  display: block;
+  width: 100%;
+  height: 28px;
+  flex: 1;
+  margin: 0;
+  padding: 0;
+  outline: none;
+  border: 0;
+  accent-color: var(--primary);
+  background: linear-gradient(
+      color-mix(in srgb, var(--foreground) 7%, transparent),
+      color-mix(in srgb, var(--foreground) 7%, transparent)
+    )
+    center / 100% 2px no-repeat;
+}
+
+.form-range::-webkit-slider-runnable-track {
+  height: 28px;
+  background: transparent;
+}
+
+.form-range::-webkit-slider-thumb {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  margin-top: 4px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  background: light-dark(var(--primary-foreground), var(--foreground));
+}
+
+.form-range:focus-visible::-webkit-slider-thumb {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-range::-moz-range-track {
+  height: 28px;
+  background: transparent;
+}
+
+.form-range::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  background: light-dark(var(--primary-foreground), var(--foreground));
+}
+
+.form-range:focus-visible::-moz-range-thumb {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-range:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.btn:not(.btn-primary, .viz-tile):is(
+    [aria-pressed=&quot;true&quot;],
+    [aria-selected=&quot;true&quot;],
+    .is-selected
+  ) {
+  border-color: var(--primary);
+  color: var(--primary-foreground);
+  background: var(--primary);
+}
+
+.btn.viz-tile:is([aria-pressed=&quot;true&quot;], [aria-selected=&quot;true&quot;], .is-selected) {
+  border-color: var(--primary);
+  box-shadow: inset 0 0 0 1px var(--primary);
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+#widget &gt; svg {
+  width: 100%;
+}
+
+.text-warning,
+.text-destructive {
+  color: var(--destructive);
+}
+
+html&gt;body{padding:0}&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div id=&quot;weekly-report-subscriptions&quot;&gt;
+  &lt;style&gt;
+    #weekly-report-subscriptions{--blue:#1689f8;--blue-dark:#0873da;--page:#f2f5f8;--panel:#fff;--border:#e1e6eb;--text:#20242a;--sub:#68717c;--soft:#f7f9fb;--success:#20a66a;min-height:100vh;background:var(--page);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,&quot;Segoe UI&quot;,&quot;Microsoft YaHei&quot;,sans-serif}
+    #weekly-report-subscriptions *{box-sizing:border-box}
+    #weekly-report-subscriptions button,#weekly-report-subscriptions select,#weekly-report-subscriptions input{font:inherit}
+    #weekly-report-subscriptions .ws-top{height:64px;background:linear-gradient(110deg,var(--blue),var(--blue-dark));color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 32px;box-shadow:0 4px 14px rgba(22,137,248,.24)}
+    #weekly-report-subscriptions .ws-brand,#weekly-report-subscriptions .ws-user,#weekly-report-subscriptions .ws-title,#weekly-report-subscriptions .ws-actions{display:flex;align-items:center;gap:10px}
+    #weekly-report-subscriptions .ws-brand-mark{width:34px;height:34px;display:grid;place-items:center;border:1px solid rgba(255,255,255,.55);border-radius:8px}
+    #weekly-report-subscriptions .ws-app{display:grid;grid-template-columns:220px minmax(0,1fr);min-height:calc(100vh - 64px)}
+    #weekly-report-subscriptions .ws-sidebar{background:var(--panel);border-right:1px solid var(--border);padding:22px 14px}
+    #weekly-report-subscriptions .ws-menu-root{display:flex;align-items:center;gap:9px;padding:10px 12px;font-weight:500}
+    #weekly-report-subscriptions .ws-menu-list{display:grid;gap:5px;margin-top:6px}
+    #weekly-report-subscriptions .ws-menu-item{display:flex;align-items:center;gap:9px;padding:11px 14px 11px 36px;border-radius:7px;color:var(--sub);text-decoration:none}
+    #weekly-report-subscriptions .ws-menu-item:hover,#weekly-report-subscriptions .ws-menu-item.is-active{background:#eaf4ff;color:var(--blue)}
+    #weekly-report-subscriptions .ws-content{padding:28px 32px;min-width:0}
+    #weekly-report-subscriptions .ws-main{max-width:1700px;margin:0 auto}
+    #weekly-report-subscriptions .ws-titlebar{display:flex;justify-content:space-between;align-items:center;gap:20px;margin-bottom:20px}
+    #weekly-report-subscriptions .ws-title-icon{width:40px;height:40px;display:grid;place-items:center;background:#eaf4ff;color:var(--blue);border-radius:9px}
+    #weekly-report-subscriptions h2{margin:0 0 5px;font-size:22px;font-weight:500}
+    #weekly-report-subscriptions .ws-sub{color:var(--sub);font-size:14px}
+    #weekly-report-subscriptions .ws-btn{border:1px solid var(--border);background:#fff;color:var(--text);border-radius:6px;padding:9px 16px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:7px;white-space:nowrap}
+    #weekly-report-subscriptions .ws-btn:hover{border-color:var(--blue);color:var(--blue)}
+    #weekly-report-subscriptions .ws-btn-primary{background:var(--blue);border-color:var(--blue);color:#fff}
+    #weekly-report-subscriptions .ws-btn-primary:hover{background:var(--blue-dark);border-color:var(--blue-dark);color:#fff}
+    #weekly-report-subscriptions .ws-panel{background:var(--panel);border:1px solid var(--border);border-radius:10px;box-shadow:0 4px 16px rgba(31,35,41,.06);overflow:hidden}
+    #weekly-report-subscriptions .ws-panel-head{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:17px 20px;border-bottom:1px solid var(--border)}
+    #weekly-report-subscriptions .ws-panel-title{font-weight:500}
+    #weekly-report-subscriptions .ws-count{color:var(--sub);font-size:14px}
+    #weekly-report-subscriptions .ws-table-wrap{overflow-x:auto}
+    #weekly-report-subscriptions table{width:100%;border-collapse:collapse;min-width:1080px}
+    #weekly-report-subscriptions th{background:var(--soft);font-weight:500;text-align:left;color:#454b54;padding:13px 16px;border-bottom:1px solid var(--border);white-space:nowrap}
+    #weekly-report-subscriptions td{padding:15px 16px;border-bottom:1px solid var(--border);vertical-align:middle}
+    #weekly-report-subscriptions tbody tr:hover{background:#fbfdff}
+    #weekly-report-subscriptions tbody tr:last-child td{border-bottom:0}
+    #weekly-report-subscriptions .ws-person{display:flex;align-items:center;gap:10px;white-space:nowrap}
+    #weekly-report-subscriptions .ws-avatar{width:34px;height:34px;display:grid;place-items:center;border-radius:50%;background:#eaf4ff;color:var(--blue);font-weight:500}
+    #weekly-report-subscriptions .ws-role{display:inline-block;padding:3px 9px;border-radius:4px;background:#f0f5ff;color:#3c6fc8;font-size:13px;white-space:nowrap}
+    #weekly-report-subscriptions .ws-role.admin{background:#fff3e8;color:#d46b08}
+    #weekly-report-subscriptions .ws-tags{display:flex;align-items:center;flex-wrap:wrap;gap:6px;max-width:440px}
+    #weekly-report-subscriptions .ws-tag{display:inline-block;padding:3px 8px;border:1px solid #b7d9ff;border-radius:4px;background:#f1f8ff;color:#1677d2;font-size:13px;white-space:nowrap}
+    #weekly-report-subscriptions .ws-tag.all{border-color:#a9e1c6;background:#effaf4;color:#16865a}
+    #weekly-report-subscriptions .ws-link{border:0;background:transparent;color:var(--blue);padding:3px 0;cursor:pointer;white-space:nowrap}
+    #weekly-report-subscriptions .ws-link:hover{text-decoration:underline}
+    #weekly-report-subscriptions dialog{width:min(520px,calc(100vw - 28px));height:100vh;max-height:none;margin:0 0 0 auto;border:0;padding:0;color:var(--text);background:#fff;box-shadow:-10px 0 30px rgba(31,35,41,.18)}
+    #weekly-report-subscriptions dialog::backdrop{background:rgba(25,35,45,.38)}
+    #weekly-report-subscriptions .ws-drawer{height:100%;display:flex;flex-direction:column}
+    #weekly-report-subscriptions .ws-drawer-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding:22px 24px;border-bottom:1px solid var(--border)}
+    #weekly-report-subscriptions .ws-drawer-title{font-size:19px;font-weight:500;margin-bottom:5px}
+    #weekly-report-subscriptions .ws-close{border:0;background:transparent;color:var(--sub);width:32px;height:32px;display:grid;place-items:center;border-radius:5px;cursor:pointer}
+    #weekly-report-subscriptions .ws-close:hover{background:var(--soft);color:var(--text)}
+    #weekly-report-subscriptions .ws-drawer-body{flex:1;overflow-y:auto;padding:22px 24px}
+    #weekly-report-subscriptions .ws-field{display:grid;gap:8px;margin-bottom:20px}
+    #weekly-report-subscriptions .ws-label{font-weight:500}
+    #weekly-report-subscriptions .ws-select{width:100%;padding:9px 11px;border:1px solid #d7dce2;border-radius:6px;background:#fff;color:var(--text)}
+    #weekly-report-subscriptions .ws-scope-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:4px 0 12px}
+    #weekly-report-subscriptions .ws-selected-count{color:var(--blue);font-size:14px}
+    #weekly-report-subscriptions .ws-all-check{display:flex;align-items:center;gap:9px;padding:12px 13px;background:#f1f8ff;border:1px solid #c9e3ff;border-radius:7px;margin-bottom:15px;font-weight:500}
+    #weekly-report-subscriptions .ws-search{position:relative;margin:0 0 12px}
+    #weekly-report-subscriptions .ws-search i{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--sub)}
+    #weekly-report-subscriptions .ws-search input{width:100%;padding:9px 11px 9px 34px;border:1px solid #d7dce2;border-radius:6px;color:var(--text);background:#fff}
+    #weekly-report-subscriptions .ws-search input:focus{outline:0;border-color:var(--blue);box-shadow:0 0 0 2px rgba(22,137,248,.12)}
+    #weekly-report-subscriptions input[type=&quot;checkbox&quot;]{width:16px;height:16px;accent-color:var(--blue)}
+    #weekly-report-subscriptions .ws-group{padding:15px 0;border-bottom:1px solid var(--border)}
+    #weekly-report-subscriptions .ws-group:last-child{border-bottom:0}
+    #weekly-report-subscriptions .ws-group-title{font-weight:500;margin-bottom:11px}
+    #weekly-report-subscriptions .ws-check-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px 16px}
+    #weekly-report-subscriptions .ws-check{display:flex;align-items:center;gap:8px;color:#3f4650}
+    #weekly-report-subscriptions .ws-drawer-foot{display:flex;justify-content:flex-end;gap:10px;padding:16px 24px;border-top:1px solid var(--border);background:#fff}
+    #weekly-report-subscriptions .ws-toast{position:fixed;left:50%;bottom:32px;transform:translateX(-50%) translateY(16px);padding:10px 18px;border-radius:6px;background:#24313f;color:#fff;box-shadow:0 7px 22px rgba(0,0,0,.18);opacity:0;pointer-events:none;transition:.2s;z-index:20}
+    #weekly-report-subscriptions .ws-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+    #weekly-report-subscriptions .ws-guide{width:min(820px,calc(100vw - 28px));height:auto;max-height:calc(100vh - 48px);margin:auto;border:0;border-radius:12px;padding:0;color:var(--text);background:#fff;box-shadow:0 16px 45px rgba(31,35,41,.2)}
+    #weekly-report-subscriptions .ws-guide::backdrop{background:rgba(25,35,45,.38)}
+    #weekly-report-subscriptions .ws-guide-body{padding:24px;display:grid;grid-template-columns:minmax(0,1fr) 260px;gap:28px;align-items:center}
+    #weekly-report-subscriptions .ws-guide-steps{display:grid;gap:16px;margin-top:18px}
+    #weekly-report-subscriptions .ws-guide-step{display:flex;gap:11px;align-items:flex-start}
+    #weekly-report-subscriptions .ws-step-no{width:24px;height:24px;flex:0 0 auto;display:grid;place-items:center;border-radius:50%;background:#eaf4ff;color:var(--blue);font-size:13px;font-weight:500}
+    #weekly-report-subscriptions .ws-phone{background:#2f3540;border:7px solid #2f3540;border-radius:28px;padding:8px;height:430px;color:#20242a;box-shadow:0 10px 24px rgba(31,35,41,.15)}
+    #weekly-report-subscriptions .ws-phone-screen{height:100%;background:#f3f6fa;border-radius:17px;overflow:hidden}
+    #weekly-report-subscriptions .ws-phone-head{padding:18px 14px 12px;background:#fff;text-align:center;font-weight:500;border-bottom:1px solid #e1e6eb}
+    #weekly-report-subscriptions .ws-phone-body{padding:13px}
+    #weekly-report-subscriptions .ws-phone-item{display:flex;align-items:center;justify-content:space-between;padding:12px 10px;margin-bottom:8px;border-radius:7px;background:#fff;font-size:13px}
+    #weekly-report-subscriptions .ws-phone-item.active{background:#eaf4ff;color:#1677d2}
+    #weekly-report-subscriptions .ws-phone-save{display:block;width:100%;padding:10px;border:0;border-radius:6px;background:#1689f8;color:#fff;margin-top:16px}
+    @media(max-width:900px){#weekly-report-subscriptions .ws-app{grid-template-columns:1fr}#weekly-report-subscriptions .ws-sidebar{display:none}#weekly-report-subscriptions .ws-content{padding:20px 16px}#weekly-report-subscriptions .ws-titlebar{align-items:flex-start;flex-direction:column}#weekly-report-subscriptions .ws-top{padding:0 18px}}
+    @media(max-width:620px){#weekly-report-subscriptions .ws-guide-body{grid-template-columns:1fr}#weekly-report-subscriptions .ws-phone{display:none}}
+    @media(max-width:520px){#weekly-report-subscriptions .ws-check-grid{grid-template-columns:1fr}#weekly-report-subscriptions .ws-user span{display:none}}
+  &lt;/style&gt;
+
+  &lt;header class=&quot;ws-top&quot;&gt;
+    &lt;div class=&quot;ws-brand&quot;&gt;&lt;span class=&quot;ws-brand-mark&quot;&gt;&lt;i data-lucide=&quot;building-2&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;&lt;/span&gt;&lt;strong&gt;某某某某期货&lt;/strong&gt;&lt;/div&gt;
+    &lt;div class=&quot;ws-user&quot;&gt;&lt;i data-lucide=&quot;circle-user-round&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;&lt;span&gt;系统管理员&lt;/span&gt;&lt;/div&gt;
+  &lt;/header&gt;
+  &lt;div class=&quot;ws-app&quot;&gt;
+    &lt;aside class=&quot;ws-sidebar&quot;&gt;
+      &lt;div class=&quot;ws-menu-root&quot;&gt;&lt;i data-lucide=&quot;folder-kanban&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;周报&lt;/div&gt;
+      &lt;nav class=&quot;ws-menu-list&quot;&gt;
+        &lt;a class=&quot;ws-menu-item&quot; href=&quot;weekly-report-management.html&quot; target=&quot;_top&quot;&gt;&lt;i data-lucide=&quot;square-pen&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;周报填写与管理&lt;/a&gt;
+        &lt;a class=&quot;ws-menu-item&quot; href=&quot;weekly-report-viewer.html&quot; target=&quot;_top&quot;&gt;&lt;i data-lucide=&quot;book-open&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;周报阅览&lt;/a&gt;
+        &lt;a class=&quot;ws-menu-item is-active&quot; href=&quot;weekly-report-subscriptions.html&quot; target=&quot;_top&quot;&gt;&lt;i data-lucide=&quot;bell-ring&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;周报订阅&lt;/a&gt;
+        &lt;a class=&quot;ws-menu-item&quot; href=&quot;weekly-report-branches.html&quot; target=&quot;_top&quot;&gt;&lt;i data-lucide=&quot;network&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;分支机构管理&lt;/a&gt;
+        &lt;a class=&quot;ws-menu-item&quot; href=&quot;weekly-report-periods.html&quot; target=&quot;_top&quot;&gt;&lt;i data-lucide=&quot;calendar-cog&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;报告周期设置&lt;/a&gt;
+      &lt;/nav&gt;
+    &lt;/aside&gt;
+    &lt;main class=&quot;ws-content&quot;&gt;
+      &lt;div class=&quot;ws-main&quot;&gt;
+        &lt;div class=&quot;ws-titlebar&quot;&gt;
+          &lt;div class=&quot;ws-title&quot;&gt;&lt;span class=&quot;ws-title-icon&quot;&gt;&lt;i data-lucide=&quot;bell-ring&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;&lt;/span&gt;&lt;div&gt;&lt;h2&gt;周报订阅&lt;/h2&gt;&lt;div class=&quot;ws-sub&quot;&gt;查看用户订阅范围，并配置企微侧边栏中关注的部门周报&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+          &lt;button class=&quot;ws-btn ws-btn-primary&quot; id=&quot;ws-wecom&quot; type=&quot;button&quot;&gt;&lt;i data-lucide=&quot;smartphone&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;企微侧边栏指引&lt;/button&gt;
+        &lt;/div&gt;
+
+        &lt;section class=&quot;ws-panel&quot; aria-label=&quot;用户周报订阅明细&quot;&gt;
+          &lt;div class=&quot;ws-panel-head&quot;&gt;&lt;div class=&quot;ws-panel-title&quot;&gt;用户订阅明细&lt;/div&gt;&lt;div class=&quot;ws-count&quot;&gt;共 7 位用户&lt;/div&gt;&lt;/div&gt;
+          &lt;div class=&quot;ws-table-wrap&quot;&gt;
+            &lt;table&gt;
+              &lt;thead&gt;&lt;tr&gt;&lt;th&gt;用户&lt;/th&gt;&lt;th&gt;所属机构&lt;/th&gt;&lt;th&gt;角色&lt;/th&gt;&lt;th&gt;已订阅周报&lt;/th&gt;&lt;th&gt;最近更新&lt;/th&gt;&lt;th&gt;操作&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
+              &lt;tbody id=&quot;ws-table-body&quot;&gt;
+                &lt;tr data-user=&quot;张晨&quot;&gt;&lt;td&gt;&lt;div class=&quot;ws-person&quot;&gt;&lt;span class=&quot;ws-avatar&quot;&gt;张&lt;/span&gt;&lt;span&gt;张晨&lt;/span&gt;&lt;/div&gt;&lt;/td&gt;&lt;td&gt;信息技术部&lt;/td&gt;&lt;td&gt;&lt;span class=&quot;ws-role admin&quot;&gt;管理员&lt;/span&gt;&lt;/td&gt;&lt;td class=&quot;ws-subscriptions&quot;&gt;&lt;div class=&quot;ws-tags&quot;&gt;&lt;span class=&quot;ws-tag all&quot;&gt;全公司&lt;/span&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class=&quot;ws-updated&quot;&gt;2026-07-17 16:32&lt;/td&gt;&lt;td&gt;&lt;button class=&quot;ws-link ws-config&quot; type=&quot;button&quot;&gt;配置订阅&lt;/button&gt;&lt;/td&gt;&lt;/tr&gt;
+                &lt;tr data-user=&quot;李妍&quot;&gt;&lt;td&gt;&lt;div class=&quot;ws-person&quot;&gt;&lt;span class=&quot;ws-avatar&quot;&gt;李&lt;/span&gt;&lt;span&gt;李妍&lt;/span&gt;&lt;/div&gt;&lt;/td&gt;&lt;td&gt;综合管理部&lt;/td&gt;&lt;td&gt;&lt;span class=&quot;ws-role&quot;&gt;周报报告人&lt;/span&gt;&lt;/td&gt;&lt;td class=&quot;ws-subscriptions&quot;&gt;&lt;div class=&quot;ws-tags&quot;&gt;&lt;span class=&quot;ws-tag&quot;&gt;综合管理部&lt;/span&gt;&lt;span class=&quot;ws-tag&quot;&gt;信息技术部&lt;/span&gt;&lt;span class=&quot;ws-tag&quot;&gt;研究所&lt;/span&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class=&quot;ws-updated&quot;&gt;2026-07-16 10:08&lt;/td&gt;&lt;td&gt;&lt;button class=&quot;ws-link ws-config&quot; type=&quot;button&quot;&gt;配置订阅&lt;/button&gt;&lt;/td&gt;&lt;/tr&gt;
+                &lt;tr data-user=&quot;王哲&quot;&gt;&lt;td&gt;&lt;div class=&quot;ws-person&quot;&gt;&lt;span class=&quot;ws-avatar&quot;&gt;王&lt;/span&gt;&lt;span&gt;王哲&lt;/span&gt;&lt;/div&gt;&lt;/td&gt;&lt;td&gt;资产管理部&lt;/td&gt;&lt;td&gt;&lt;span class=&quot;ws-role&quot;&gt;普通用户&lt;/span&gt;&lt;/td&gt;&lt;td class=&quot;ws-subscriptions&quot;&gt;&lt;div class=&quot;ws-tags&quot;&gt;&lt;span class=&quot;ws-tag&quot;&gt;资产管理部&lt;/span&gt;&lt;span class=&quot;ws-tag&quot;&gt;投资部&lt;/span&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class=&quot;ws-updated&quot;&gt;2026-07-15 14:25&lt;/td&gt;&lt;td&gt;&lt;button class=&quot;ws-link ws-config&quot; type=&quot;button&quot;&gt;配置订阅&lt;/button&gt;&lt;/td&gt;&lt;/tr&gt;
+                &lt;tr data-user=&quot;陈曦&quot;&gt;&lt;td&gt;&lt;div class=&quot;ws-person&quot;&gt;&lt;span class=&quot;ws-avatar&quot;&gt;陈&lt;/span&gt;&lt;span&gt;陈曦&lt;/span&gt;&lt;/div&gt;&lt;/td&gt;&lt;td&gt;研究所&lt;/td&gt;&lt;td&gt;&lt;span class=&quot;ws-role&quot;&gt;普通用户&lt;/span&gt;&lt;/td&gt;&lt;td class=&quot;ws-subscriptions&quot;&gt;&lt;div class=&quot;ws-tags&quot;&gt;&lt;span class=&quot;ws-tag&quot;&gt;研究所&lt;/span&gt;&lt;span class=&quot;ws-tag&quot;&gt;营销管理服务部&lt;/span&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class=&quot;ws-updated&quot;&gt;2026-07-14 09:41&lt;/td&gt;&lt;td&gt;&lt;button class=&quot;ws-link ws-config&quot; type=&quot;button&quot;&gt;配置订阅&lt;/button&gt;&lt;/td&gt;&lt;/tr&gt;
+                &lt;tr data-user=&quot;赵颖&quot;&gt;&lt;td&gt;&lt;div class=&quot;ws-person&quot;&gt;&lt;span class=&quot;ws-avatar&quot;&gt;赵&lt;/span&gt;&lt;span&gt;赵颖&lt;/span&gt;&lt;/div&gt;&lt;/td&gt;&lt;td&gt;上海分公司&lt;/td&gt;&lt;td&gt;&lt;span class=&quot;ws-role&quot;&gt;周报报告人&lt;/span&gt;&lt;/td&gt;&lt;td class=&quot;ws-subscriptions&quot;&gt;&lt;div class=&quot;ws-tags&quot;&gt;&lt;span class=&quot;ws-tag&quot;&gt;上海分公司&lt;/span&gt;&lt;span class=&quot;ws-tag&quot;&gt;上海陆家嘴营业部&lt;/span&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class=&quot;ws-updated&quot;&gt;2026-07-12 17:05&lt;/td&gt;&lt;td&gt;&lt;button class=&quot;ws-link ws-config&quot; type=&quot;button&quot;&gt;配置订阅&lt;/button&gt;&lt;/td&gt;&lt;/tr&gt;
+                &lt;tr data-user=&quot;周珂&quot;&gt;&lt;td&gt;&lt;div class=&quot;ws-person&quot;&gt;&lt;span class=&quot;ws-avatar&quot;&gt;周&lt;/span&gt;&lt;span&gt;周珂&lt;/span&gt;&lt;/div&gt;&lt;/td&gt;&lt;td&gt;北京金融大街营业部&lt;/td&gt;&lt;td&gt;&lt;span class=&quot;ws-role&quot;&gt;普通用户&lt;/span&gt;&lt;/td&gt;&lt;td class=&quot;ws-subscriptions&quot;&gt;&lt;div class=&quot;ws-tags&quot;&gt;&lt;span class=&quot;ws-tag&quot;&gt;北京金融大街营业部&lt;/span&gt;&lt;span class=&quot;ws-tag&quot;&gt;投资部&lt;/span&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class=&quot;ws-updated&quot;&gt;2026-07-11 11:18&lt;/td&gt;&lt;td&gt;&lt;button class=&quot;ws-link ws-config&quot; type=&quot;button&quot;&gt;配置订阅&lt;/button&gt;&lt;/td&gt;&lt;/tr&gt;
+                &lt;tr data-user=&quot;孙悦&quot;&gt;&lt;td&gt;&lt;div class=&quot;ws-person&quot;&gt;&lt;span class=&quot;ws-avatar&quot;&gt;孙&lt;/span&gt;&lt;span&gt;孙悦&lt;/span&gt;&lt;/div&gt;&lt;/td&gt;&lt;td&gt;营销管理服务部&lt;/td&gt;&lt;td&gt;&lt;span class=&quot;ws-role&quot;&gt;普通用户&lt;/span&gt;&lt;/td&gt;&lt;td class=&quot;ws-subscriptions&quot;&gt;&lt;div class=&quot;ws-tags&quot;&gt;&lt;span class=&quot;ws-tag&quot;&gt;营销管理服务部&lt;/span&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class=&quot;ws-updated&quot;&gt;2026-07-09 15:50&lt;/td&gt;&lt;td&gt;&lt;button class=&quot;ws-link ws-config&quot; type=&quot;button&quot;&gt;配置订阅&lt;/button&gt;&lt;/td&gt;&lt;/tr&gt;
+              &lt;/tbody&gt;
+            &lt;/table&gt;
+          &lt;/div&gt;
+        &lt;/section&gt;
+      &lt;/div&gt;
+    &lt;/main&gt;
+  &lt;/div&gt;
+
+  &lt;dialog id=&quot;ws-drawer&quot;&gt;
+    &lt;div class=&quot;ws-drawer&quot;&gt;
+      &lt;div class=&quot;ws-drawer-head&quot;&gt;&lt;div&gt;&lt;div class=&quot;ws-drawer-title&quot;&gt;企微侧边栏订阅配置&lt;/div&gt;&lt;div class=&quot;ws-sub&quot;&gt;为用户设置需要关注的部门周报&lt;/div&gt;&lt;/div&gt;&lt;button class=&quot;ws-close&quot; id=&quot;ws-close&quot; type=&quot;button&quot; aria-label=&quot;关闭&quot;&gt;&lt;i data-lucide=&quot;x&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;&lt;/button&gt;&lt;/div&gt;
+      &lt;div class=&quot;ws-drawer-body&quot;&gt;
+        &lt;label class=&quot;ws-field&quot;&gt;&lt;span class=&quot;ws-label&quot;&gt;配置用户&lt;/span&gt;&lt;select class=&quot;ws-select&quot; id=&quot;ws-user-select&quot;&gt;&lt;option&gt;张晨&lt;/option&gt;&lt;option&gt;李妍&lt;/option&gt;&lt;option&gt;王哲&lt;/option&gt;&lt;option&gt;陈曦&lt;/option&gt;&lt;option&gt;赵颖&lt;/option&gt;&lt;option&gt;周珂&lt;/option&gt;&lt;option&gt;孙悦&lt;/option&gt;&lt;/select&gt;&lt;/label&gt;
+        &lt;div class=&quot;ws-scope-head&quot;&gt;&lt;span class=&quot;ws-label&quot;&gt;订阅范围&lt;/span&gt;&lt;span class=&quot;ws-selected-count&quot; id=&quot;ws-selected-count&quot;&gt;已选择全部部门&lt;/span&gt;&lt;/div&gt;
+        &lt;label class=&quot;ws-all-check&quot;&gt;&lt;input id=&quot;ws-all&quot; type=&quot;checkbox&quot;&gt;订阅全公司周报&lt;/label&gt;
+        &lt;div class=&quot;ws-search&quot;&gt;&lt;i data-lucide=&quot;search&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;&lt;input id=&quot;ws-dept-search&quot; type=&quot;search&quot; placeholder=&quot;搜索部门或分支机构&quot;&gt;&lt;/div&gt;
+        &lt;div id=&quot;ws-department-list&quot;&gt;
+          &lt;section class=&quot;ws-group&quot;&gt;&lt;div class=&quot;ws-group-title&quot;&gt;总部业务部门&lt;/div&gt;&lt;div class=&quot;ws-check-grid&quot;&gt;&lt;label class=&quot;ws-check&quot;&gt;&lt;input type=&quot;checkbox&quot; value=&quot;资产管理部&quot;&gt;资产管理部&lt;/label&gt;&lt;label class=&quot;ws-check&quot;&gt;&lt;input type=&quot;checkbox&quot; value=&quot;投资部&quot;&gt;投资部&lt;/label&gt;&lt;label class=&quot;ws-check&quot;&gt;&lt;input type=&quot;checkbox&quot; value=&quot;营销管理服务部&quot;&gt;营销管理服务部&lt;/label&gt;&lt;label class=&quot;ws-check&quot;&gt;&lt;input type=&quot;checkbox&quot; value=&quot;研究所&quot;&gt;研究所&lt;/label&gt;&lt;/div&gt;&lt;/section&gt;
+          &lt;section class=&quot;ws-group&quot;&gt;&lt;div class=&quot;ws-group-title&quot;&gt;总部支持服务部门&lt;/div&gt;&lt;div class=&quot;ws-check-grid&quot;&gt;&lt;label class=&quot;ws-check&quot;&gt;&lt;input type=&quot;checkbox&quot; value=&quot;信息技术部&quot;&gt;信息技术部&lt;/label&gt;&lt;label class=&quot;ws-check&quot;&gt;&lt;input type=&quot;checkbox&quot; value=&quot;综合管理部&quot;&gt;综合管理部&lt;/label&gt;&lt;/div&gt;&lt;/section&gt;
+          &lt;section class=&quot;ws-group&quot;&gt;&lt;div class=&quot;ws-group-title&quot;&gt;直属分支机构&lt;/div&gt;&lt;div class=&quot;ws-check-grid&quot;&gt;&lt;label class=&quot;ws-check&quot;&gt;&lt;input type=&quot;checkbox&quot; value=&quot;上海分公司&quot;&gt;上海分公司&lt;/label&gt;&lt;label class=&quot;ws-check&quot;&gt;&lt;input type=&quot;checkbox&quot; value=&quot;深圳分公司&quot;&gt;深圳分公司&lt;/label&gt;&lt;/div&gt;&lt;/section&gt;
+          &lt;section class=&quot;ws-group&quot;&gt;&lt;div class=&quot;ws-group-title&quot;&gt;IB分支机构&lt;/div&gt;&lt;div class=&quot;ws-check-grid&quot;&gt;&lt;label class=&quot;ws-check&quot;&gt;&lt;input type=&quot;checkbox&quot; value=&quot;上海陆家嘴营业部&quot;&gt;上海陆家嘴营业部&lt;/label&gt;&lt;label class=&quot;ws-check&quot;&gt;&lt;input type=&quot;checkbox&quot; value=&quot;北京金融大街营业部&quot;&gt;北京金融大街营业部&lt;/label&gt;&lt;label class=&quot;ws-check&quot;&gt;&lt;input type=&quot;checkbox&quot; value=&quot;广州珠江新城营业部&quot;&gt;广州珠江新城营业部&lt;/label&gt;&lt;/div&gt;&lt;/section&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;ws-drawer-foot&quot;&gt;&lt;button class=&quot;ws-btn&quot; id=&quot;ws-cancel&quot; type=&quot;button&quot;&gt;取消&lt;/button&gt;&lt;button class=&quot;ws-btn ws-btn-primary&quot; id=&quot;ws-save&quot; type=&quot;button&quot;&gt;保存配置&lt;/button&gt;&lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/dialog&gt;
+  &lt;dialog class=&quot;ws-guide&quot; id=&quot;ws-guide&quot;&gt;
+    &lt;div class=&quot;ws-drawer-head&quot;&gt;&lt;div&gt;&lt;div class=&quot;ws-drawer-title&quot;&gt;企微侧边栏指引&lt;/div&gt;&lt;div class=&quot;ws-sub&quot;&gt;用户可在企业微信移动端进入周报订阅，设置个人关注范围&lt;/div&gt;&lt;/div&gt;&lt;button class=&quot;ws-close&quot; id=&quot;ws-guide-close&quot; type=&quot;button&quot; aria-label=&quot;关闭&quot;&gt;&lt;i data-lucide=&quot;x&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;&lt;/button&gt;&lt;/div&gt;
+    &lt;div class=&quot;ws-guide-body&quot;&gt;&lt;div&gt;&lt;div class=&quot;ws-label&quot;&gt;移动端配置入口&lt;/div&gt;&lt;div class=&quot;ws-guide-steps&quot;&gt;&lt;div class=&quot;ws-guide-step&quot;&gt;&lt;span class=&quot;ws-step-no&quot;&gt;1&lt;/span&gt;&lt;div&gt;&lt;strong&gt;进入企业微信&lt;/strong&gt;&lt;div class=&quot;ws-sub&quot;&gt;在工作台或会话侧边栏打开「周报」应用。&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;ws-guide-step&quot;&gt;&lt;span class=&quot;ws-step-no&quot;&gt;2&lt;/span&gt;&lt;div&gt;&lt;strong&gt;点击「订阅设置」&lt;/strong&gt;&lt;div class=&quot;ws-sub&quot;&gt;可查看全部部门周报，并按需勾选关注部门。&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;ws-guide-step&quot;&gt;&lt;span class=&quot;ws-step-no&quot;&gt;3&lt;/span&gt;&lt;div&gt;&lt;strong&gt;保存订阅&lt;/strong&gt;&lt;div class=&quot;ws-sub&quot;&gt;系统将在部门确认或公司级周报发布后推送消息。&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;ws-phone&quot; aria-label=&quot;企业微信移动端订阅配置示意&quot;&gt;&lt;div class=&quot;ws-phone-screen&quot;&gt;&lt;div class=&quot;ws-phone-head&quot;&gt;周报 · 订阅设置&lt;/div&gt;&lt;div class=&quot;ws-phone-body&quot;&gt;&lt;div class=&quot;ws-phone-item active&quot;&gt;&lt;span&gt;资产管理部&lt;/span&gt;&lt;i data-lucide=&quot;check&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;&lt;/div&gt;&lt;div class=&quot;ws-phone-item active&quot;&gt;&lt;span&gt;投资部&lt;/span&gt;&lt;i data-lucide=&quot;check&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;&lt;/div&gt;&lt;div class=&quot;ws-phone-item&quot;&gt;&lt;span&gt;信息技术部&lt;/span&gt;&lt;i data-lucide=&quot;plus&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;&lt;/div&gt;&lt;div class=&quot;ws-phone-item&quot;&gt;&lt;span&gt;上海分公司&lt;/span&gt;&lt;i data-lucide=&quot;plus&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt;&lt;/div&gt;&lt;button class=&quot;ws-phone-save&quot; type=&quot;button&quot;&gt;保存订阅&lt;/button&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+  &lt;/dialog&gt;
+  &lt;div class=&quot;ws-toast&quot; id=&quot;ws-toast&quot; role=&quot;status&quot;&gt;订阅配置已保存&lt;/div&gt;
+
+  &lt;script&gt;
+    (()=&gt;{
+      const root=document.getElementById(&#x27;weekly-report-subscriptions&#x27;);
+      const drawer=root.querySelector(&#x27;#ws-drawer&#x27;);
+      const userSelect=root.querySelector(&#x27;#ws-user-select&#x27;);
+      const allCheck=root.querySelector(&#x27;#ws-all&#x27;);
+      const search=root.querySelector(&#x27;#ws-dept-search&#x27;);
+      const departmentChecks=[...root.querySelectorAll(&#x27;#ws-department-list input[type=&quot;checkbox&quot;]&#x27;)];
+      const count=root.querySelector(&#x27;#ws-selected-count&#x27;);
+      const subscriptions={
+        &#x27;张晨&#x27;:&#x27;all&#x27;,&#x27;李妍&#x27;:[&#x27;综合管理部&#x27;,&#x27;信息技术部&#x27;,&#x27;研究所&#x27;],&#x27;王哲&#x27;:[&#x27;资产管理部&#x27;,&#x27;投资部&#x27;],&#x27;陈曦&#x27;:[&#x27;研究所&#x27;,&#x27;营销管理服务部&#x27;],&#x27;赵颖&#x27;:[&#x27;上海分公司&#x27;,&#x27;上海陆家嘴营业部&#x27;],&#x27;周珂&#x27;:[&#x27;北京金融大街营业部&#x27;,&#x27;投资部&#x27;],&#x27;孙悦&#x27;:[&#x27;营销管理服务部&#x27;]
+      };
+      const updateCount=()=&gt;{const n=departmentChecks.filter(item=&gt;item.checked).length;count.textContent=allCheck.checked?&#x27;已选择全部部门&#x27;:&#x27;已选择 &#x27;+n+&#x27; 个部门&#x27;;departmentChecks.forEach(item=&gt;item.disabled=allCheck.checked);};
+      const loadUser=user=&gt;{const value=subscriptions[user]||[];allCheck.checked=value===&#x27;all&#x27;;departmentChecks.forEach(item=&gt;item.checked=value!==&#x27;all&#x27;&amp;&amp;value.includes(item.value));updateCount();};
+      const openDrawer=user=&gt;{userSelect.value=user||&#x27;张晨&#x27;;loadUser(userSelect.value);drawer.showModal();};
+      root.querySelector(&#x27;#ws-wecom&#x27;).addEventListener(&#x27;click&#x27;,()=&gt;root.querySelector(&#x27;#ws-guide&#x27;).showModal());
+      root.querySelector(&#x27;#ws-guide-close&#x27;).addEventListener(&#x27;click&#x27;,()=&gt;root.querySelector(&#x27;#ws-guide&#x27;).close());
+      root.querySelectorAll(&#x27;.ws-config&#x27;).forEach(btn=&gt;btn.addEventListener(&#x27;click&#x27;,()=&gt;openDrawer(btn.closest(&#x27;tr&#x27;).dataset.user)));
+      root.querySelector(&#x27;#ws-close&#x27;).addEventListener(&#x27;click&#x27;,()=&gt;drawer.close());
+      root.querySelector(&#x27;#ws-cancel&#x27;).addEventListener(&#x27;click&#x27;,()=&gt;drawer.close());
+      userSelect.addEventListener(&#x27;change&#x27;,()=&gt;loadUser(userSelect.value));
+      allCheck.addEventListener(&#x27;change&#x27;,updateCount);
+      departmentChecks.forEach(item=&gt;item.addEventListener(&#x27;change&#x27;,updateCount));
+      search.addEventListener(&#x27;input&#x27;,()=&gt;{const key=search.value.trim();root.querySelectorAll(&#x27;.ws-group&#x27;).forEach(group=&gt;{let visible=0;group.querySelectorAll(&#x27;.ws-check&#x27;).forEach(label=&gt;{const show=!key||label.textContent.includes(key);label.style.display=show?&#x27;flex&#x27;:&#x27;none&#x27;;if(show)visible++;});group.style.display=visible?&#x27;block&#x27;:&#x27;none&#x27;;});});
+      root.querySelector(&#x27;#ws-save&#x27;).addEventListener(&#x27;click&#x27;,()=&gt;{
+        const value=allCheck.checked?&#x27;all&#x27;:departmentChecks.filter(item=&gt;item.checked).map(item=&gt;item.value);
+        subscriptions[userSelect.value]=value;
+        const row=root.querySelector(&#x27;tr[data-user=&quot;&#x27;+userSelect.value+&#x27;&quot;]&#x27;);
+        if(row){const tags=value===&#x27;all&#x27;?&#x27;&lt;span class=&quot;ws-tag all&quot;&gt;全公司&lt;/span&gt;&#x27;:value.map(item=&gt;&#x27;&lt;span class=&quot;ws-tag&quot;&gt;&#x27;+item+&#x27;&lt;/span&gt;&#x27;).join(&#x27;&#x27;);row.querySelector(&#x27;.ws-subscriptions&#x27;).innerHTML=&#x27;&lt;div class=&quot;ws-tags&quot;&gt;&#x27;+(tags||&#x27;&lt;span class=&quot;ws-sub&quot;&gt;暂未订阅&lt;/span&gt;&#x27;)+&#x27;&lt;/div&gt;&#x27;;row.querySelector(&#x27;.ws-updated&#x27;).textContent=&#x27;刚刚更新&#x27;;}
+        drawer.close();
+        const toast=root.querySelector(&#x27;#ws-toast&#x27;);toast.classList.add(&#x27;show&#x27;);setTimeout(()=&gt;toast.classList.remove(&#x27;show&#x27;),1800);
+      });
+      loadUser(&#x27;张晨&#x27;);
+    })();
+  &lt;/script&gt;
+&lt;/div&gt;
+
+&lt;script src=&quot;https://unpkg.com/@floating-ui/core@1.7.3/dist/floating-ui.core.umd.min.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;https://unpkg.com/@floating-ui/dom@1.7.4/dist/floating-ui.dom.umd.min.js&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+(() =&gt; {
+  if (window.FloatingUIDOM == null) {
+    return;
+  }
+  const { autoUpdate, computePosition, flip, offset, shift, size } =
+    window.FloatingUIDOM;
+  const tooltipPlacements = new Set([&quot;top&quot;, &quot;right&quot;, &quot;bottom&quot;, &quot;left&quot;]);
+  const tooltipId = `codex-visualization-tooltip-${
+    window.crypto?.randomUUID?.() ?? Date.now().toString(36)
+  }`;
+  const tooltipGap = 5;
+  const hoverDelay = 700;
+  const skipDelay = 300;
+  let activeTrigger = null;
+  let pendingTrigger = null;
+  let tooltip = null;
+  let openTimeout = null;
+  let autoUpdateCleanup = null;
+  let positionRequest = 0;
+  let skipDelayUntil = 0;
+
+  const getTrigger = (target) =&gt;
+    target?.nodeType === Node.ELEMENT_NODE
+      ? target.closest(&quot;[data-tooltip]&quot;)
+      : null;
+  const containsTarget = (trigger, target) =&gt;
+    target?.nodeType != null &amp;&amp; trigger.contains(target);
+  const getContent = (trigger) =&gt;
+    trigger.getAttribute(&quot;data-tooltip&quot;)?.trim() ?? &quot;&quot;;
+  const getPlacement = (trigger) =&gt; {
+    const placement = trigger.getAttribute(&quot;data-tooltip-placement&quot;);
+    return tooltipPlacements.has(placement) ? placement : &quot;top&quot;;
+  };
+  const getTooltip = () =&gt; {
+    if (tooltip == null) {
+      tooltip = document.createElement(&quot;div&quot;);
+      tooltip.id = tooltipId;
+      tooltip.className = &quot;tooltip&quot;;
+      tooltip.setAttribute(&quot;role&quot;, &quot;tooltip&quot;);
+    }
+    return tooltip;
+  };
+  const setDescribedBy = (trigger, described) =&gt; {
+    const ids = new Set(
+      (trigger.getAttribute(&quot;aria-describedby&quot;) ?? &quot;&quot;)
+        .split(/\s+/)
+        .filter(Boolean),
+    );
+    if (described) {
+      ids.add(tooltipId);
+    } else {
+      ids.delete(tooltipId);
+    }
+    if (ids.size === 0) {
+      trigger.removeAttribute(&quot;aria-describedby&quot;);
+    } else {
+      trigger.setAttribute(&quot;aria-describedby&quot;, [...ids].join(&quot; &quot;));
+    }
+  };
+  const clearOpenTimeout = () =&gt; {
+    if (openTimeout != null) {
+      window.clearTimeout(openTimeout);
+      openTimeout = null;
+    }
+    pendingTrigger = null;
+  };
+  const closeTooltip = (activateSkipDelay = true) =&gt; {
+    clearOpenTimeout();
+    positionRequest += 1;
+    autoUpdateCleanup?.();
+    autoUpdateCleanup = null;
+    if (activeTrigger == null) {
+      return;
+    }
+    setDescribedBy(activeTrigger, false);
+    activeTrigger = null;
+    tooltip?.remove();
+    if (activateSkipDelay) {
+      skipDelayUntil = Date.now() + skipDelay;
+    }
+  };
+  const updatePosition = (trigger, floating) =&gt; {
+    const request = ++positionRequest;
+    void computePosition(trigger, floating, {
+      middleware: [
+        offset(tooltipGap),
+        flip({ padding: tooltipGap }),
+        shift({ padding: tooltipGap }),
+        size({
+          padding: tooltipGap,
+          apply({ availableHeight, availableWidth, elements }) {
+            elements.floating.style.setProperty(
+              &quot;--tooltip-available-width&quot;,
+              `${Math.max(0, availableWidth)}px`,
+            );
+            elements.floating.style.setProperty(
+              &quot;--tooltip-available-height&quot;,
+              `${Math.max(0, availableHeight)}px`,
+            );
+          },
+        }),
+      ],
+      placement: getPlacement(trigger),
+      strategy: &quot;fixed&quot;,
+    })
+      .then(({ x, y }) =&gt; {
+        if (activeTrigger !== trigger || request !== positionRequest) {
+          return;
+        }
+        const scale = window.devicePixelRatio || 1;
+        floating.style.transform = `translate(${Math.round(x * scale) / scale}px, ${Math.round(y * scale) / scale}px)`;
+        floating.style.visibility = &quot;visible&quot;;
+      })
+      .catch(() =&gt; {
+        if (activeTrigger === trigger &amp;&amp; request === positionRequest) {
+          closeTooltip(false);
+        }
+      });
+  };
+  const openTooltip = (trigger) =&gt; {
+    const content = getContent(trigger);
+    if (!trigger.isConnected || content.length === 0) {
+      return;
+    }
+    clearOpenTimeout();
+    if (activeTrigger === trigger) {
+      return;
+    }
+    closeTooltip();
+    const floating = getTooltip();
+    floating.textContent = content;
+    floating.style.visibility = &quot;hidden&quot;;
+    floating.style.transform = &quot;translate(0, 0)&quot;;
+    document.body.appendChild(floating);
+    activeTrigger = trigger;
+    setDescribedBy(trigger, true);
+    autoUpdateCleanup = autoUpdate(trigger, floating, () =&gt; {
+      updatePosition(trigger, floating);
+    });
+  };
+  const requestOpen = (trigger, immediate = false) =&gt; {
+    if (
+      getContent(trigger).length === 0 ||
+      activeTrigger === trigger ||
+      pendingTrigger === trigger
+    ) {
+      return;
+    }
+    clearOpenTimeout();
+    pendingTrigger = trigger;
+    const delay =
+      immediate || activeTrigger != null || Date.now() &lt; skipDelayUntil
+        ? 0
+        : hoverDelay;
+    if (delay === 0) {
+      openTooltip(trigger);
+      return;
+    }
+    openTimeout = window.setTimeout(() =&gt; {
+      openTimeout = null;
+      pendingTrigger = null;
+      openTooltip(trigger);
+    }, delay);
+  };
+  const handlePointerOpen = (event) =&gt; {
+    if (event.pointerType === &quot;touch&quot;) {
+      return;
+    }
+    const trigger = getTrigger(event.target);
+    if (trigger == null || containsTarget(trigger, event.relatedTarget)) {
+      return;
+    }
+    requestOpen(trigger);
+  };
+  const handleLeave = (event) =&gt; {
+    const trigger = getTrigger(event.target);
+    if (trigger == null || containsTarget(trigger, event.relatedTarget)) {
+      return;
+    }
+    if (activeTrigger === trigger || pendingTrigger === trigger) {
+      closeTooltip();
+    }
+  };
+  const handleFocusIn = (event) =&gt; {
+    const trigger = getTrigger(event.target);
+    if (trigger?.matches(&quot;:focus-visible&quot;)) {
+      requestOpen(trigger, true);
+    }
+  };
+  const handleKeyDown = (event) =&gt; {
+    if (event.key === &quot;Escape&quot;) {
+      closeTooltip();
+    }
+  };
+  const handleContextMenu = (event) =&gt; {
+    const trigger = getTrigger(event.target);
+    if (activeTrigger === trigger || pendingTrigger === trigger) {
+      closeTooltip();
+    }
+  };
+  const destroy = () =&gt; {
+    closeTooltip(false);
+    document.removeEventListener(&quot;pointerover&quot;, handlePointerOpen);
+    document.removeEventListener(&quot;pointerout&quot;, handleLeave);
+    document.removeEventListener(&quot;focusin&quot;, handleFocusIn);
+    document.removeEventListener(&quot;focusout&quot;, handleLeave);
+    document.removeEventListener(&quot;keydown&quot;, handleKeyDown);
+    document.removeEventListener(&quot;contextmenu&quot;, handleContextMenu);
+    tooltip = null;
+  };
+
+  document.addEventListener(&quot;pointerover&quot;, handlePointerOpen);
+  document.addEventListener(&quot;pointerout&quot;, handleLeave);
+  document.addEventListener(&quot;focusin&quot;, handleFocusIn);
+  document.addEventListener(&quot;focusout&quot;, handleLeave);
+  document.addEventListener(&quot;keydown&quot;, handleKeyDown);
+  document.addEventListener(&quot;contextmenu&quot;, handleContextMenu);
+  window.addEventListener(&quot;pagehide&quot;, destroy, { once: true });
+})();
+&lt;/script&gt;
+&lt;script id=&quot;codex-visualization-lucide&quot; async src=&quot;https://unpkg.com/lucide@1.17.0/dist/umd/lucide.js&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+(() =&gt; {
+  const initialize = () =&gt; {
+    globalThis.lucide?.createIcons({ attrs: { width: 16, height: 16 } });
+  };
+  if (globalThis.lucide != null) {
+    initialize();
+    return;
+  }
+  document
+    .getElementById(&quot;codex-visualization-lucide&quot;)
+    ?.addEventListener(&quot;load&quot;, initialize, { once: true });
+})();
+&lt;/script&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;
+"></iframe>
+</body>
+</html>
