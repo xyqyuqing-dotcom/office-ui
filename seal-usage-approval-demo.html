@@ -1,0 +1,1145 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>国泰君安期货有限公司印章使用审批</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "PingFang SC", "Microsoft YaHei", -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #f4f6fa;
+    color: #303540;
+    font-size: 13px;
+  }
+  .page {
+    max-width: 1280px;
+    margin: 0 auto;
+    background: #fff;
+    min-height: 100vh;
+    border-left: 1px solid #e6ebf2;
+    border-right: 1px solid #e6ebf2;
+    padding-bottom: 80px;
+  }
+  /* 节点切换器 */
+  .node-switch {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    padding: 10px 16px;
+    background: #eef4fb;
+    border-bottom: 1px solid #d6e3f2;
+    flex-wrap: wrap;
+  }
+  .node-switch .label {
+    color: #4b5566;
+    margin-right: 12px;
+    font-weight: 600;
+  }
+  .node-switch .seg {
+    display: inline-flex;
+    border: 1px solid #b7c9e0;
+    border-radius: 3px;
+    overflow: hidden;
+    background: #fff;
+  }
+  .node-switch .seg button {
+    border: none;
+    background: transparent;
+    padding: 6px 14px;
+    font-size: 12.5px;
+    color: #4b5566;
+    cursor: pointer;
+    border-right: 1px solid #d6dbe4;
+    font-family: inherit;
+  }
+  .node-switch .seg button:last-child { border-right: none; }
+  .node-switch .seg button.active {
+    background: #1a55a5;
+    color: #fff;
+  }
+  .node-switch .desc {
+    margin-left: 12px;
+    color: #6b7689;
+    font-size: 12px;
+  }
+
+  .page-header {
+    text-align: center;
+    padding: 16px 0 12px;
+    border-bottom: 1px solid #e6ebf2;
+    position: relative;
+  }
+  .page-header h1 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #1a55a5;
+    letter-spacing: 1px;
+  }
+  .node-tag {
+    position: absolute;
+    left: 16px;
+    top: 14px;
+    padding: 3px 10px;
+    background: #eef4fb;
+    color: #1a55a5;
+    font-size: 12px;
+    border-radius: 2px;
+    border: 1px solid #cfe0f2;
+  }
+  .node-tag .status { color: #1a8f5c; margin-left: 6px; }
+
+  .main-tabs {
+    display: flex;
+    border-bottom: 1px solid #e6ebf2;
+    background: #fbfcfe;
+    padding-left: 8px;
+  }
+  .main-tabs .tab {
+    padding: 12px 22px;
+    font-size: 14px;
+    color: #556174;
+    cursor: pointer;
+    position: relative;
+  }
+  .main-tabs .tab.active { color: #1a55a5; font-weight: 600; }
+  .main-tabs .tab.active::after {
+    content: "";
+    position: absolute;
+    left: 20%; right: 20%; bottom: -1px;
+    height: 2px; background: #1a55a5;
+  }
+  .badge {
+    display: inline-block;
+    min-width: 18px; height: 18px; line-height: 18px;
+    padding: 0 5px;
+    border-radius: 9px;
+    background: #e6f0fb;
+    color: #1a55a5;
+    font-size: 11px;
+    margin-left: 4px;
+    text-align: center;
+  }
+
+  /* 表单 */
+  .row-2 {
+    display: grid;
+    grid-template-columns: 160px 1fr 160px 1fr;
+    border-bottom: 1px solid #eef1f6;
+  }
+  .row-1 {
+    display: grid;
+    grid-template-columns: 160px 1fr;
+    border-bottom: 1px solid #eef1f6;
+  }
+  .row-2 > .label, .row-1 > .label {
+    background: #f7f9fc;
+    padding: 10px 12px;
+    text-align: right;
+    color: #4b5566;
+    border-right: 1px solid #eef1f6;
+    display: flex; align-items: center; justify-content: flex-end;
+    font-size: 13px; white-space: nowrap;
+  }
+  .row-2 > .value {
+    padding: 8px 14px;
+    display: flex; align-items: center;
+    border-right: 1px solid #eef1f6;
+    background: #fff;
+  }
+  .row-2 > .value:last-child { border-right: none; }
+  .row-1 > .value {
+    padding: 8px 14px;
+    background: #fff;
+  }
+  .req { color: #d64545; margin-right: 2px; }
+  .q-icon {
+    display: inline-block;
+    width: 13px; height: 13px; line-height: 13px;
+    text-align: center;
+    border-radius: 50%;
+    border: 1px solid #b7c2d3;
+    color: #b7c2d3;
+    font-size: 10px;
+    margin-right: 4px;
+    vertical-align: middle;
+  }
+
+  input[type="text"], select, textarea {
+    width: 100%;
+    height: 30px;
+    padding: 4px 8px;
+    border: 1px solid #d6dbe4;
+    background: #fff;
+    border-radius: 2px;
+    font-size: 13px;
+    color: #303540;
+    outline: none;
+    font-family: inherit;
+  }
+  input[type="text"]:focus, select:focus, textarea:focus { border-color: #1a55a5; }
+  input[readonly] { background: #f4f6fa; color: #6b7689; cursor: not-allowed; }
+  textarea { height: 60px; resize: vertical; }
+  select {
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6'><path d='M0 0l5 6 5-6z' fill='%23859ab5'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    padding-right: 24px;
+  }
+  .radio-group, .check-group {
+    display: inline-flex; align-items: center; gap: 20px; padding: 4px 0;
+    flex-wrap: wrap;
+  }
+  .radio-group label, .check-group label {
+    display: inline-flex; align-items: center; gap: 6px; cursor: pointer; color: #4b5566;
+  }
+  .radio-group input[type="radio"], .check-group input[type="checkbox"] { accent-color: #1a55a5; }
+
+  .auto-tag {
+    display: inline-block;
+    margin-left: 8px;
+    padding: 1px 6px;
+    background: #eef4fb;
+    color: #1a55a5;
+    font-size: 11px;
+    border-radius: 2px;
+  }
+
+  /* 印章名称：多选下拉 */
+  .seal-select {
+    width: 100%;
+    min-height: 30px;
+    border: 1px solid #d6dbe4;
+    padding: 3px 8px;
+    display: flex; align-items: center; flex-wrap: wrap;
+    gap: 4px;
+    background: #fff;
+    cursor: pointer;
+    position: relative;
+  }
+  .seal-select:hover { border-color: #1a55a5; }
+  .seal-tag {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 2px 6px 2px 8px;
+    background: #eef4fb;
+    color: #1a55a5;
+    border-radius: 2px;
+    font-size: 12px;
+  }
+  .seal-tag .x { cursor: pointer; color: #7b95b8; font-weight: bold; }
+  .seal-select .caret {
+    position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+    color: #859ab5;
+  }
+  .seal-panel {
+    display: none;
+    position: absolute;
+    top: 100%; left: 0;
+    z-index: 20;
+    background: #fff;
+    border: 1px solid #d6dbe4;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+    padding: 6px 0;
+    width: 240px;
+    max-height: 300px;
+    overflow-y: auto;
+    margin-top: 2px;
+  }
+  .seal-panel.show { display: block; }
+  .seal-item {
+    padding: 6px 12px;
+    display: flex; align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    color: #303540;
+  }
+  .seal-item:hover { background: #f4f8fd; }
+  .seal-item input[type="checkbox"] { accent-color: #1a55a5; }
+  .seal-item.highlight { background: #f0f7ff; color: #1a55a5; font-weight: 600; }
+
+  .footer-guide {
+    padding: 12px 14px;
+    border-top: 1px solid #eef1f6;
+    color: #6b7689;
+    background: #fbfcfe;
+  }
+  .footer-guide a { color: #1a55a5; text-decoration: none; }
+
+  /* 底部工具栏 */
+  .toolbar {
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 0;
+    max-width: 1280px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 16px;
+    background: #fff;
+    border-top: 1px solid #e6ebf2;
+    box-shadow: 0 -1px 4px rgba(0,0,0,0.04);
+  }
+  .tool-btn {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    padding: 4px 12px;
+    color: #1a55a5;
+    cursor: pointer;
+    font-size: 12px;
+    background: transparent;
+    border: none;
+    font-family: inherit;
+  }
+  .tool-btn:hover { color: #164a92; }
+  .tool-btn:disabled { color: #b7c2d3; cursor: not-allowed; }
+  .tool-btn .ic {
+    font-size: 18px; line-height: 1;
+  }
+
+  /* 弹窗 */
+  .modal-mask {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.35);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+  }
+  .modal-mask.show { display: flex; }
+  .modal {
+    background: #fff;
+    border-radius: 4px;
+    width: 480px;
+    max-width: 90%;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+  }
+  .modal .m-header {
+    padding: 12px 16px;
+    border-bottom: 1px solid #eef1f6;
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 14px; font-weight: 600; color: #303540;
+  }
+  .modal .m-close {
+    cursor: pointer;
+    color: #859ab5;
+    font-size: 16px;
+    background: none; border: none;
+  }
+  .modal .m-body {
+    padding: 20px;
+    min-height: 220px;
+  }
+  .modal .m-footer {
+    padding: 10px 16px;
+    border-top: 1px solid #eef1f6;
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+  }
+  .btn {
+    min-width: 68px;
+    height: 32px;
+    padding: 0 14px;
+    border-radius: 3px;
+    border: 1px solid #d6dbe4;
+    background: #fff;
+    color: #4b5566;
+    cursor: pointer;
+    font-size: 13px;
+    font-family: inherit;
+  }
+  .btn:hover { border-color: #1a55a5; color: #1a55a5; }
+  .btn.primary {
+    background: #1a55a5;
+    color: #fff;
+    border-color: #1a55a5;
+  }
+  .btn.primary:hover { background: #164a92; color: #fff; }
+  .btn.primary:disabled {
+    background: #b7c2d3;
+    border-color: #b7c2d3;
+    cursor: not-allowed;
+  }
+
+  /* 路径选择 */
+  .path-list .path-item {
+    display: flex; align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    border: 1px solid #eef1f6;
+    border-radius: 3px;
+    margin-bottom: 10px;
+    cursor: pointer;
+  }
+  .path-list .path-item:hover { border-color: #1a55a5; background: #f7fbff; }
+  .path-list .path-item.selected {
+    border-color: #1a55a5;
+    background: #eef4fb;
+  }
+  .path-list .path-item .k {
+    width: 14px; height: 14px;
+    border: 1px solid #b7c2d3;
+    border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .path-list .path-item.selected .k {
+    border-color: #1a55a5;
+  }
+  .path-list .path-item.selected .k::after {
+    content: "";
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: #1a55a5;
+  }
+  .path-list .path-item .txt { color: #303540; }
+  .path-list .path-item .badge-new {
+    margin-left: auto;
+    padding: 1px 6px;
+    background: #fff3e0;
+    color: #d97706;
+    font-size: 11px;
+    border-radius: 2px;
+  }
+
+  /* 意见弹窗 */
+  .opinion-row {
+    display: grid;
+    grid-template-columns: 90px 1fr;
+    gap: 10px;
+    margin-bottom: 14px;
+    align-items: start;
+  }
+  .opinion-row .lb {
+    text-align: right;
+    padding-top: 6px;
+    color: #4b5566;
+  }
+  .opinion-row .lb .req { color: #d64545; }
+  .op-select-wrap {
+    display: flex; gap: 6px; align-items: center;
+  }
+  .op-select-wrap select { flex: 1; }
+  .icon-btn {
+    width: 26px; height: 30px;
+    border: 1px solid #d6dbe4;
+    background: #fff;
+    cursor: pointer;
+    color: #6b7689;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .icon-btn:hover { color: #1a55a5; border-color: #1a55a5; }
+
+  /* toast */
+  .toast {
+    position: fixed;
+    top: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #303540;
+    color: #fff;
+    padding: 10px 18px;
+    border-radius: 3px;
+    font-size: 13px;
+    z-index: 999;
+    opacity: 0;
+    transition: opacity .2s;
+    pointer-events: none;
+  }
+  .toast.show { opacity: 0.94; }
+  .toast.err { background: #d64545; }
+  .toast.ok { background: #1a55a5; }
+
+  .readonly-view input, .readonly-view select, .readonly-view textarea,
+  .readonly-view .seal-select {
+    background: #f4f6fa;
+    color: #6b7689;
+    pointer-events: none;
+  }
+  .readonly-view .radio-group, .readonly-view .check-group {
+    pointer-events: none;
+    opacity: 0.85;
+  }
+
+  /* ===== OA approval visual system ===== */
+  :root {
+    --oa-blue: #0868c9;
+    --oa-blue-dark: #0755a8;
+    --oa-blue-soft: #edf5ff;
+    --oa-line: #dfe5ec;
+    --oa-label: #f5f7f9;
+    --oa-ink: #202b3c;
+    --oa-muted: #7a8799;
+  }
+  html { background: #eef2f5; }
+  body {
+    background: linear-gradient(180deg, #f0f3f6 0%, #eaf0f5 100%);
+    color: var(--oa-ink);
+    font-size: 14px;
+  }
+  .page {
+    max-width: 1920px;
+    border: 0;
+    box-shadow: 0 0 0 1px rgba(215, 222, 231, .7), 0 14px 34px rgba(34, 57, 88, .08);
+    padding-bottom: 112px;
+  }
+  .node-switch {
+    min-height: 48px;
+    padding: 8px 24px;
+    background: #f2f7fd;
+    border-bottom-color: #d7e4f2;
+  }
+  .node-switch .label { color: #536277; font-size: 13px; }
+  .node-switch .seg { border-color: #b8cde6; border-radius: 6px; }
+  .node-switch .seg button { padding: 7px 15px; font-size: 13px; }
+  .node-switch .seg button.active { background: var(--oa-blue); }
+  .node-switch .desc { color: #748197; font-size: 12px; }
+  .page-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 26px 24px 20px;
+    min-height: 112px;
+    background: #fff;
+  }
+  .page-header h1 {
+    order: 1;
+    font-size: 29px;
+    font-weight: 700;
+    letter-spacing: 0;
+    color: var(--oa-blue);
+  }
+  .node-tag {
+    order: 2;
+    position: static;
+    margin: 12px auto 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: #27364b;
+    font-size: 14px;
+  }
+  .node-tag .status { color: var(--oa-blue); font-weight: 600; }
+  .main-tabs {
+    min-height: 62px;
+    padding-left: 16px;
+    background: #fff;
+    border-bottom-color: var(--oa-line);
+  }
+  .main-tabs .tab {
+    min-width: 92px;
+    padding: 20px 24px 18px;
+    font-size: 16px;
+    color: #29384c;
+  }
+  .main-tabs .tab.active { color: var(--oa-blue); }
+  .main-tabs .tab.active::after { left: 8px; right: 8px; height: 3px; background: var(--oa-blue); }
+  .badge { background: var(--oa-blue); color: #fff; font-size: 12px; }
+  .row-2 { grid-template-columns: 214px minmax(0, 1fr) 214px minmax(0, 1fr); border-bottom-color: var(--oa-line); }
+  .row-1 { grid-template-columns: 214px minmax(0, 1fr); border-bottom-color: var(--oa-line); }
+  .row-2 > .label, .row-1 > .label {
+    min-height: 62px;
+    padding: 13px 18px;
+    background: var(--oa-label);
+    border-right-color: var(--oa-line);
+    color: #27364b;
+    font-size: 15px;
+  }
+  .row-2 > .value, .row-1 > .value {
+    min-width: 0;
+    padding: 11px 16px;
+    border-right-color: var(--oa-line);
+  }
+  input[type="text"], select, textarea {
+    height: 40px;
+    padding: 6px 12px;
+    border-color: #d4dce6;
+    border-radius: 6px;
+    font-size: 15px;
+    color: var(--oa-ink);
+  }
+  input[type="text"]:focus, select:focus, textarea:focus { border-color: var(--oa-blue); box-shadow: 0 0 0 3px rgba(8, 104, 201, .10); }
+  input[readonly] { background: #f4f6f8; color: #617089; }
+  textarea { height: 88px; padding-top: 10px; }
+  .radio-group, .check-group { gap: 24px; font-size: 15px; }
+  .radio-group label, .check-group label { color: #29384c; }
+  .radio-group input[type="radio"], .check-group input[type="checkbox"] { width: 17px; height: 17px; accent-color: var(--oa-blue); }
+  .auto-tag { padding: 3px 8px; border-radius: 999px; background: var(--oa-blue-soft); color: var(--oa-blue); }
+  .seal-select { min-height: 40px; padding: 5px 34px 5px 10px; border-color: #d4dce6; border-radius: 6px; }
+  .seal-select:hover { border-color: var(--oa-blue); }
+  .seal-tag { padding: 5px 8px 5px 10px; border-radius: 5px; background: var(--oa-blue-soft); color: var(--oa-blue); font-size: 13px; }
+  .seal-tag .x { color: #7191b9; padding-left: 4px; }
+  .seal-panel { width: min(360px, calc(100vw - 40px)); border-color: #d4dce6; border-radius: 8px; box-shadow: 0 12px 26px rgba(26, 58, 99, .16); padding: 8px 0; }
+  .seal-item { padding: 9px 14px; font-size: 14px; }
+  .seal-item.highlight { background: #f0f7ff; }
+  .footer-guide { padding: 16px 24px; background: #fbfcfe; color: var(--oa-muted); }
+  .footer-guide a { color: var(--oa-blue); }
+  .toolbar {
+    max-width: 1920px;
+    min-height: 92px;
+    gap: 4px;
+    padding: 9px 14px 8px;
+    background: rgba(255, 255, 255, .98);
+    border-top-color: #d8e1eb;
+    box-shadow: 0 -8px 20px rgba(35, 59, 92, .08);
+    overflow-x: auto;
+  }
+  .tool-btn {
+    min-width: 78px;
+    padding: 5px 10px 4px;
+    gap: 6px;
+    color: var(--oa-blue);
+    font-size: 13px;
+    white-space: nowrap;
+    border-radius: 7px;
+  }
+  .tool-btn:hover { background: var(--oa-blue-soft); color: var(--oa-blue-dark); }
+  .tool-btn .ic { display: grid; place-items: center; width: 32px; height: 32px; font-size: 27px; line-height: 1; }
+  .tool-btn .ic svg { width: 29px; height: 29px; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.8; }
+  .modal-mask { background: rgba(19, 36, 58, .38); backdrop-filter: blur(2px); }
+  .modal { width: 520px; max-width: calc(100vw - 32px); border-radius: 12px; box-shadow: 0 20px 55px rgba(21, 48, 83, .22); overflow: hidden; }
+  .modal .m-header { padding: 17px 20px; font-size: 16px; color: var(--oa-ink); }
+  .modal .m-body { padding: 22px; }
+  .modal .m-footer { padding: 14px 20px; background: #fbfcfe; }
+  .btn { height: 38px; border-radius: 6px; font-size: 14px; }
+  .btn.primary { background: var(--oa-blue); border-color: var(--oa-blue); }
+  .path-list .path-item { padding: 14px 16px; border-radius: 8px; }
+  .path-list .path-item.selected { background: var(--oa-blue-soft); border-color: var(--oa-blue); }
+  .toast { top: 28px; border-radius: 8px; box-shadow: 0 8px 24px rgba(23, 44, 73, .18); }
+  .readonly-view .seal-panel { display: none !important; }
+  @media (max-width: 900px) {
+    .page-header h1 { font-size: 23px; }
+    .row-2 { grid-template-columns: 150px minmax(0, 1fr) 150px minmax(0, 1fr); }
+    .row-1 { grid-template-columns: 150px minmax(0, 1fr); }
+    .row-2 > .label, .row-1 > .label { font-size: 13px; padding-left: 10px; padding-right: 10px; }
+    .row-2 > .value, .row-1 > .value { padding-left: 10px; padding-right: 10px; }
+  }
+  @media (max-width: 640px) {
+    .toolbar { justify-content: flex-start; }
+    .node-switch .seg { width: 100%; overflow-x: auto; }
+    .node-switch .desc { width: 100%; margin: 8px 0 0; }
+    .row-2, .row-1 { grid-template-columns: 112px minmax(0, 1fr); }
+    .row-2 > .label:nth-child(3), .row-2 > .value:nth-child(4) { grid-column: 1 / -1; }
+    .row-2 > .label:nth-child(3) { border-top: 1px solid var(--oa-line); }
+    .row-2 > .value:nth-child(4) { border-top: 1px solid var(--oa-line); }
+    .row-2 > .label, .row-1 > .label { min-height: 54px; font-size: 12px; }
+    .main-tabs { padding-left: 0; }
+    .main-tabs .tab { min-width: auto; padding-left: 16px; padding-right: 16px; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- 节点切换器（Demo 控制） -->
+  <div class="node-switch">
+    <span class="label">Demo 节点视角：</span>
+    <div class="seg" id="nodeSeg">
+      <button data-node="draft" class="active">① 用印申请人（拟稿）</button>
+      <button data-node="review">② 印章管理岗审核</button>
+      <button data-node="confirm">③ 用印申请人（回执确认）</button>
+    </div>
+    <span class="desc" id="nodeDesc">拟稿状态：填写表单后点提交，直接提交（路径弹窗已隐藏）</span>
+  </div>
+
+  <div class="page-header">
+    <div class="node-tag" id="nodeTag">当前节点：用印申请人（拟稿）</div>
+    <h1>国泰君安期货有限公司印章使用审批</h1>
+  </div>
+
+  <!-- 主 tab -->
+  <div class="main-tabs">
+    <div class="tab active">审批单</div>
+    <div class="tab">正文</div>
+    <div class="tab">附件<span class="badge">0</span></div>
+  </div>
+
+  <form id="mainForm" autocomplete="off">
+    <!-- 文件编号 / 申请日期 -->
+    <div class="row-2">
+      <div class="label">文件编号：</div>
+      <div class="value"><input type="text" id="fileNo" readonly></div>
+      <div class="label">申请日期：</div>
+      <div class="value"><input type="text" id="applyDate" readonly value="2026-08-05"></div>
+    </div>
+
+    <!-- 缓急 / 用印人 -->
+    <div class="row-2">
+      <div class="label"><span class="q-icon">?</span><span class="req">*</span>缓急：</div>
+      <div class="value">
+        <select id="urgency">
+          <option>一般</option><option>紧急</option><option>特急</option>
+        </select>
+      </div>
+      <div class="label">用印人：</div>
+      <div class="value"><input type="text" readonly value="谢雨晴(xieyuqing)"></div>
+    </div>
+
+    <!-- 用印单位 / 联系电话 -->
+    <div class="row-2">
+      <div class="label"><span class="req">*</span>用印单位：</div>
+      <div class="value">
+        <select id="dept">
+          <option>信息技术部</option><option>综合管理部</option><option>财务部</option>
+        </select>
+      </div>
+      <div class="label"><span class="req">*</span>联系电话：</div>
+      <div class="value"><input type="text" id="phone"></div>
+    </div>
+
+    <!-- 印章名称 / 申请用印类型 -->
+    <div class="row-2">
+      <div class="label"><span class="q-icon">?</span><span class="req">*</span>印章名称：</div>
+      <div class="value" style="position:relative;">
+        <div class="seal-select" id="sealSelect">
+          <span class="placeholder" id="sealPlaceholder" style="color:#a4adbd;">请选择印章名称</span>
+          <span class="caret">▾</span>
+        </div>
+        <div class="seal-panel" id="sealPanel"></div>
+      </div>
+      <div class="label"><span class="req">*</span>申请用印类型：</div>
+      <div class="value">
+        <div class="radio-group">
+          <label><input type="radio" name="sealType" value="物理印章" checked>物理印章</label>
+          <label><input type="radio" name="sealType" value="电子印章">电子印章</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- 用印材料（放在下面） -->
+    <div class="row-1">
+      <div class="label"><span class="req">*</span>用印材料：</div>
+      <div class="value">
+        <div class="radio-group" id="materialGroup">
+          <label><input type="radio" name="material" value="原件送印">原件送印</label>
+          <label><input type="radio" name="material" value="打印用印">打印用印（限50页以内材料）</label>
+          <label id="eMaterialLabel" style="display:none;">
+            <input type="radio" name="material" value="电子版用印">电子版用印
+            <span class="auto-tag">电子印章自动勾选</span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- 印章份数 -->
+    <div class="row-1">
+      <div class="label"><span class="req">*</span>印章份数：</div>
+      <div class="value" style="max-width:400px;"><input type="text" id="copies"></div>
+    </div>
+
+    <!-- 是否豁免审批 -->
+    <div class="row-1">
+      <div class="label"><span class="req">*</span>是否豁免审批：</div>
+      <div class="value">
+        <div class="radio-group">
+          <label><input type="radio" name="waive" value="是">是</label>
+          <label><input type="radio" name="waive" value="否" checked>否</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- 会签分类 -->
+    <div class="row-1">
+      <div class="label"><span class="q-icon">?</span><span class="req">*</span>会签分类：</div>
+      <div class="value"><select id="signType"><option value=""></option><option>人工流转</option><option>系统流转</option></select></div>
+    </div>
+
+    <!-- 文件名称 -->
+    <div class="row-1">
+      <div class="label"><span class="req">*</span><strong>文件名称：</strong></div>
+      <div class="value"><input type="text" id="fileName"></div>
+    </div>
+
+    <!-- 对方单位 -->
+    <div class="row-1">
+      <div class="label"><span class="req">*</span>对方单位：</div>
+      <div class="value"><input type="text" id="counterparty"></div>
+    </div>
+
+    <!-- 事由 -->
+    <div class="row-1">
+      <div class="label"><span class="req">*</span>事由：</div>
+      <div class="value"><textarea id="reason" maxlength="2000"></textarea></div>
+    </div>
+
+    <!-- 是否需要邮寄 -->
+    <div class="row-1">
+      <div class="label"><span class="q-icon">?</span><span class="req">*</span>是否需要邮寄：</div>
+      <div class="value">
+        <select id="mail">
+          <option value=""></option>
+          <option>协助邮寄（原则上非博华利园职场可选）</option>
+          <option>自取（请完成用印后2个工作日内至综合部取回）</option>
+          <option value="e-self">自行下载（电子印章）</option>
+        </select>
+        <span class="auto-tag" id="mailAutoTag" style="display:none;margin-left:8px;">电子印章自动带出</span>
+      </div>
+    </div>
+
+    <!-- 备注 -->
+    <div class="row-1">
+      <div class="label">备注：</div>
+      <div class="value"><textarea id="remark" maxlength="200"></textarea></div>
+    </div>
+
+    <!-- 拟稿人承诺 -->
+    <div class="row-1">
+      <div class="label"><span class="req">*</span>拟稿人承诺：</div>
+      <div class="value">
+        <label style="display:inline-flex;align-items:center;gap:6px;">
+          <input type="checkbox" id="promise"> 流程审批完成后，送盖章的文件与审批最终稿保持一致。
+        </label>
+      </div>
+    </div>
+  </form>
+
+  <div class="footer-guide">指引及模板：<a href="javascript:;">查看</a></div>
+</div>
+
+<!-- 底部工具栏 -->
+<div class="toolbar" aria-label="流程工具栏">
+  <button type="button" class="tool-btn" data-action="close" title="关闭"><span class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.8"></circle><path d="M12 6v6l3.5 2"></path></svg></span><span>关闭</span></button>
+  <button type="button" class="tool-btn" data-action="save" title="保存"><span class="ic"><svg viewBox="0 0 24 24"><path d="M5 4h11l3 3v13H5z"></path><path d="M8 4v6h8V4M8 20v-6h8v6"></path></svg></span><span>保存</span></button>
+  <button type="button" class="tool-btn" id="fillOpinion" data-action="opinion" title="填写意见"><span class="ic"><svg viewBox="0 0 24 24"><path d="m5 19 1.3-4.2L16.8 4.3a2 2 0 0 1 2.9 2.9L9.2 17.7z"></path><path d="M14.8 6.3 17.7 9.2M5 19l4.2-1.3"></path></svg></span><span>填写意见</span></button>
+  <button type="button" class="tool-btn" id="submitBtn" data-action="submit" title="提交"><span class="ic"><svg viewBox="0 0 24 24"><path d="M12 18V5"></path><path d="m7 10 5-5 5 5"></path><path d="M5 19h14"></path></svg></span><span>提交</span></button>
+  <button type="button" class="tool-btn" data-action="upload" title="上传附件"><span class="ic"><svg viewBox="0 0 24 24"><path d="m8 12 5.7-5.7a3 3 0 0 1 4.2 4.2l-7.3 7.3a4.2 4.2 0 0 1-5.9-5.9l7.1-7.1"></path></svg></span><span>上传附件</span></button>
+  <button type="button" class="tool-btn" data-action="track" title="流程跟踪"><span class="ic"><svg viewBox="0 0 24 24"><path d="M6 4h12v4H6zM6 16h12v4H6zM12 8v8M9 12h6"></path></svg></span><span>流程跟踪</span></button>
+  <button type="button" class="tool-btn" data-action="flow" title="流程图"><span class="ic"><svg viewBox="0 0 24 24"><rect x="8" y="3" width="8" height="5" rx="1"></rect><rect x="3" y="16" width="6" height="5" rx="1"></rect><rect x="15" y="16" width="6" height="5" rx="1"></rect><path d="M12 8v4M6 16v-2h12v2"></path></svg></span><span>流程图</span></button>
+  <button type="button" class="tool-btn" data-action="print" title="OA打印"><span class="ic"><svg viewBox="0 0 24 24"><path d="M7 9V4h10v5M6 18H4V10h16v8h-2"></path><path d="M7 14h10v6H7zM17 12h.01"></path></svg></span><span>OA打印</span></button>
+  <button type="button" class="tool-btn" data-action="history" title="正文历史"><span class="ic"><svg viewBox="0 0 24 24"><path d="M4 12a8 8 0 1 0 2.3-5.7L4 8.6"></path><path d="M4 4v4.6h4.6M12 7v5l3 2"></path></svg></span><span>正文历史</span></button>
+  <button type="button" class="tool-btn" data-action="remind" title="提醒"><span class="ic"><svg viewBox="0 0 24 24"><path d="M6 17h12l-1.5-2v-4a4.5 4.5 0 0 0-9 0v4zM10 20h4"></path><path d="M12 4V3"></path></svg></span><span>提醒</span></button>
+  <button type="button" class="tool-btn" data-action="error" title="错误报告"><span class="ic"><svg viewBox="0 0 24 24"><path d="m12 4 9 16H3z"></path><path d="M12 9v5M12 17h.01"></path></svg></span><span>错误报告</span></button>
+  <button type="button" class="tool-btn" data-action="circulate" title="传阅"><span class="ic"><svg viewBox="0 0 24 24"><circle cx="6" cy="12" r="2"></circle><circle cx="18" cy="6" r="2"></circle><circle cx="18" cy="18" r="2"></circle><path d="m8 11 8-4M8 13l8 4"></path></svg></span><span>传阅</span></button>
+  <button type="button" class="tool-btn" data-action="guide" title="流程介绍"><span class="ic"><svg viewBox="0 0 24 24"><path d="M5 5h14M5 12h14M5 19h14"></path><circle cx="3" cy="5" r=".8" fill="currentColor"></circle><circle cx="3" cy="12" r=".8" fill="currentColor"></circle><circle cx="3" cy="19" r=".8" fill="currentColor"></circle></svg></span><span>流程介绍</span></button>
+</div>
+
+<!-- 弹窗：选择路径 -->
+<div class="modal-mask" id="pathModal">
+  <div class="modal">
+    <div class="m-header">
+      <span>选择路径</span>
+       <button type="button" class="m-close" data-close="pathModal">×</button>
+    </div>
+    <div class="m-body">
+      <div class="path-list" id="pathList"></div>
+    </div>
+    <div class="m-footer">
+       <button type="button" class="btn" data-close="pathModal">取消</button>
+       <button type="button" class="btn primary" id="pathNext">下一步</button>
+    </div>
+  </div>
+</div>
+
+<!-- 弹窗：填写意见（印章管理岗节点） -->
+<div class="modal-mask" id="opinionModal">
+  <div class="modal">
+    <div class="m-header">
+      <span>填写意见</span>
+       <button type="button" class="m-close" data-close="opinionModal">×</button>
+    </div>
+    <div class="m-body">
+      <div class="opinion-row">
+        <div class="lb">结论性意见</div>
+        <div>
+          <div class="op-select-wrap">
+            <select id="opSelect">
+              <option value="">请选择结论性意见</option>
+              <option>已用印</option>
+              <option>无需用印</option>
+              <option>其他</option>
+            </select>
+             <button class="icon-btn" type="button" title="新增">+</button>
+            <button class="icon-btn" type="button" title="删除">🗑</button>
+            <button class="icon-btn" type="button" title="排序">↕</button>
+          </div>
+        </div>
+      </div>
+      <div class="opinion-row">
+        <div class="lb"><span class="req">*</span>意见详情</div>
+        <div><textarea id="opDetail" style="min-height:90px;"></textarea></div>
+      </div>
+    </div>
+    <div class="m-footer">
+       <button type="button" class="btn" data-close="opinionModal">取消</button>
+       <button type="button" class="btn primary" id="opConfirm">确认</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+  /* ============ 数据 ============ */
+  // 印章名称——按需求 1：财务负责人名章 放在 高管签名(章) 下面
+  const SEAL_LIST = [
+    { id: "s1", name: "公司公章" },
+    { id: "s2", name: "分支机构公章" },
+    { id: "s3", name: "法定代表人名章" },
+    { id: "s4", name: "高管签名(章)" },
+    { id: "s5", name: "财务负责人名章", isNew: true },   // ★ 新增
+    { id: "s6", name: "分支机构负责人名章" },
+    { id: "s7", name: "公司合同专用章" },
+    { id: "s8", name: "公司业务专用章" },
+    { id: "s9", name: "子公司印章" },
+    { id: "s10", name: "其他" }
+  ];
+
+  // 节点 → 允许的路径
+  const NODE_PATHS = {
+    draft: [
+      { key: "toSeal",   text: "送印章管理岗审核" },
+      { key: "toSec",    text: "送综合管理部秘书" }
+    ],
+    review: [ /* 印章管理岗提交走意见弹窗，不走路径弹窗 */ ],
+    confirm: [
+      { key: "closed",   text: "已查收，结束流程", isNew: true },   // ★ 新增，排第一
+      { key: "backSeal", text: "退回印章管理岗" },
+      { key: "toSec",    text: "转送综合管理部秘书" }
+    ]
+  };
+
+  const NODE_INFO = {
+    draft:   { title: "用印申请人（拟稿）", desc: "拟稿状态：填写表单后点提交，直接提交（路径弹窗已隐藏）", status: "拟稿" },
+    review:  { title: "印章管理岗审核", desc: "审核状态：点提交弹出「填写意见」（结论性意见：已用印/无需用印/其他）", status: "审核中" },
+    confirm: { title: "用印申请人（回执确认）", desc: "印章管理岗回退后：提交时「选择路径」新增排首位「已查收，结束流程」", status: "待确认" }
+  };
+
+  /* ============ 状态 ============ */
+  let currentNode = "draft";
+  let selectedSeals = [];   // 已选印章 id
+  let selectedPath = null;  // 当前路径弹窗选中项 key
+
+  /* ============ DOM ============ */
+  const $sealSelect      = document.getElementById("sealSelect");
+  const $sealPanel       = document.getElementById("sealPanel");
+  const $sealPlaceholder = document.getElementById("sealPlaceholder");
+  const $materialGroup   = document.getElementById("materialGroup");
+  const $eMaterialLabel  = document.getElementById("eMaterialLabel");
+  const $mail            = document.getElementById("mail");
+  const $mailAutoTag     = document.getElementById("mailAutoTag");
+  const $nodeSeg         = document.getElementById("nodeSeg");
+  const $nodeTag         = document.getElementById("nodeTag");
+  const $nodeDesc        = document.getElementById("nodeDesc");
+  const $submitBtn       = document.getElementById("submitBtn");
+  const $pathModal       = document.getElementById("pathModal");
+  const $pathList        = document.getElementById("pathList");
+  const $opinionModal    = document.getElementById("opinionModal");
+  const $toast           = document.getElementById("toast");
+  const $mainForm        = document.getElementById("mainForm");
+
+  /* ============ Utils ============ */
+  function toast(msg, type) {
+    $toast.textContent = msg;
+    $toast.className = "toast show " + (type || "ok");
+    clearTimeout(toast._t);
+    toast._t = setTimeout(() => { $toast.className = "toast"; }, 2400);
+  }
+  function openModal(id) { document.getElementById(id).classList.add("show"); }
+  function closeModal(id) { document.getElementById(id).classList.remove("show"); }
+  document.querySelectorAll("[data-close]").forEach(btn => {
+    btn.addEventListener("click", () => closeModal(btn.dataset.close));
+  });
+
+  /* ============ 印章名称：多选下拉 ============ */
+  function renderSealPanel() {
+    $sealPanel.innerHTML = SEAL_LIST.map(s => `
+      <label class="seal-item ${s.isNew ? "highlight" : ""}" data-id="${s.id}">
+        <input type="checkbox" aria-label="${s.name}" ${selectedSeals.includes(s.id) ? "checked" : ""}>
+        <span>${s.name}${s.isNew ? " <span class='auto-tag'>新增</span>" : ""}</span>
+      </label>
+    `).join("");
+    $sealPanel.querySelectorAll(".seal-item").forEach(item => {
+      item.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const id = item.dataset.id;
+        const cb = item.querySelector("input");
+        const nextChecked = !selectedSeals.includes(id);
+        cb.checked = nextChecked;
+        if (nextChecked) selectedSeals.push(id);
+        if (!nextChecked) selectedSeals = selectedSeals.filter(x => x !== id);
+        renderSealTags();
+        renderSealPanel();
+        $sealPanel.classList.add("show");
+      });
+    });
+  }
+  function renderSealTags() {
+    $sealSelect.querySelectorAll(".seal-tag").forEach(t => t.remove());
+    $sealPlaceholder.style.display = selectedSeals.length ? "none" : "inline";
+    const caret = $sealSelect.querySelector(".caret");
+    selectedSeals.forEach(id => {
+      const seal = SEAL_LIST.find(s => s.id === id);
+      const tag = document.createElement("span");
+      tag.className = "seal-tag";
+      tag.append(document.createTextNode(seal.name));
+      const remove = document.createElement("span");
+      remove.className = "x";
+      remove.dataset.id = id;
+      remove.setAttribute("role", "button");
+      remove.setAttribute("aria-label", `移除${seal.name}`);
+      remove.textContent = "×";
+      tag.append(" ", remove);
+      $sealSelect.insertBefore(tag, caret);
+    });
+    $sealSelect.querySelectorAll(".seal-tag .x").forEach(x => {
+      x.addEventListener("click", (e) => {
+        e.stopPropagation();
+        selectedSeals = selectedSeals.filter(id => id !== x.dataset.id);
+        renderSealTags();
+        renderSealPanel();
+      });
+    });
+  }
+  $sealSelect.addEventListener("click", () => {
+    $sealPanel.classList.toggle("show");
+  });
+  document.addEventListener("click", (e) => {
+    if (!$sealSelect.contains(e.target) && !$sealPanel.contains(e.target)) {
+      $sealPanel.classList.remove("show");
+    }
+  });
+
+  /* ============ 用印类型联动 ============ */
+  function onSealTypeChange() {
+    const checked = document.querySelector('input[name="sealType"]:checked');
+    if (!checked) return;
+    const val = checked.value;
+    if (val === "电子印章") {
+      // 显示"电子版用印"并勾选
+      $eMaterialLabel.style.display = "inline-flex";
+      const eRadio = $eMaterialLabel.querySelector("input");
+      eRadio.checked = true;
+      // 自动带出"自取（电子印章）"
+      $mail.value = "e-self";
+      $mailAutoTag.style.display = "inline-block";
+      toast("电子印章：用印材料自动置为「电子版用印」，邮寄方式自动置为「自取（电子印章）」", "ok");
+    } else {
+      $eMaterialLabel.style.display = "none";
+      const eRadio = $eMaterialLabel.querySelector("input");
+      if (eRadio.checked) eRadio.checked = false;
+      if ($mail.value === "e-self") $mail.value = "";
+      $mailAutoTag.style.display = "none";
+    }
+  }
+  document.querySelectorAll('input[name="sealType"]').forEach(r => {
+    r.addEventListener("change", onSealTypeChange);
+  });
+
+  /* ============ 节点切换 ============ */
+  function switchNode(node) {
+    currentNode = node;
+    $nodeSeg.querySelectorAll("button").forEach(b => {
+      b.classList.toggle("active", b.dataset.node === node);
+    });
+    const info = NODE_INFO[node];
+    $nodeTag.innerHTML = `当前节点：${info.title}<span class="status">· ${info.status}</span>`;
+    $nodeDesc.textContent = info.desc;
+    // 只读控制：review 节点视角下表单只读（申请人已经提交）
+    $mainForm.classList.toggle("readonly-view", node === "review");
+  }
+  $nodeSeg.addEventListener("click", (e) => {
+    if (e.target.tagName === "BUTTON") switchNode(e.target.dataset.node);
+  });
+
+  /* ============ 工具栏 ============ */
+  document.querySelectorAll(".tool-btn[data-action]").forEach(btn => {
+    if (btn.id === "submitBtn") return;
+    btn.addEventListener("click", () => {
+      const action = btn.dataset.action;
+      if (action === "opinion") {
+        if (currentNode === "review") openOpinionModal();
+        else toast("填写意见仅在印章管理岗审核节点可用", "err");
+        return;
+      }
+      const messages = {
+        close: "关闭操作已触发（demo）",
+        save: "草稿已保存（demo）",
+        upload: "上传附件面板已触发（demo）",
+        track: "流程跟踪已触发（demo）",
+        flow: "流程图已触发（demo）",
+        print: "OA打印已触发（demo）",
+        history: "正文历史已触发（demo）",
+        remind: "提醒已触发（demo）",
+        error: "错误报告已触发（demo）",
+        circulate: "传阅已触发（demo）",
+        guide: "流程介绍已触发（demo）"
+      };
+      toast(messages[action] || "操作已触发（demo）", "ok");
+    });
+  });
+
+  /* ============ 提交流程 ============ */
+  $submitBtn.addEventListener("click", () => {
+    // 简单校验示例
+    if (currentNode === "draft") {
+      if (!selectedSeals.length) return toast("请选择印章名称", "err");
+      if (!document.getElementById("promise").checked) return toast("请勾选拟稿人承诺", "err");
+      toast("已提交（用印申请人拟稿节点）", "ok");
+    } else if (currentNode === "review") {
+      openOpinionModal();
+    } else if (currentNode === "confirm") {
+      openPathModal("confirm");
+    }
+  });
+
+  function openPathModal(nodeKey) {
+    const paths = NODE_PATHS[nodeKey];
+    selectedPath = null;
+    $pathList.innerHTML = paths.map(p => `
+      <div class="path-item" data-key="${p.key}">
+        <span class="k"></span>
+        <span class="txt">${p.text}</span>
+        ${p.isNew ? '<span class="badge-new">新增·首位</span>' : ''}
+      </div>
+    `).join("");
+    $pathList.querySelectorAll(".path-item").forEach(el => {
+      el.addEventListener("click", () => {
+        $pathList.querySelectorAll(".path-item").forEach(x => x.classList.remove("selected"));
+        el.classList.add("selected");
+        selectedPath = el.dataset.key;
+      });
+    });
+    openModal("pathModal");
+  }
+
+  document.getElementById("pathNext").addEventListener("click", () => {
+    if (!selectedPath) return toast("请选择流转路径", "err");
+    const label = $pathList.querySelector(".path-item.selected .txt").textContent;
+    closeModal("pathModal");
+    if (selectedPath === "closed") {
+      toast("流程已结束（用印申请人回执确认）", "ok");
+    } else {
+      toast(`已提交：${label}`, "ok");
+    }
+  });
+
+  function openOpinionModal() {
+    document.getElementById("opSelect").value = "";
+    document.getElementById("opDetail").value = "";
+    openModal("opinionModal");
+  }
+  document.getElementById("opConfirm").addEventListener("click", () => {
+    const op = document.getElementById("opSelect").value;
+    const detail = document.getElementById("opDetail").value.trim();
+    if (!detail) return toast("请填写意见详情", "err");
+    closeModal("opinionModal");
+    toast(`已提交意见：${op || "（未选择）"} · ${detail.slice(0, 20)}${detail.length > 20 ? "…" : ""}`, "ok");
+  });
+
+  /* ============ 初始化 ============ */
+  renderSealPanel();
+  renderSealTags();
+  onSealTypeChange();
+  switchNode("draft");
+</script>
+</body>
+</html>
