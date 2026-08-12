@@ -458,6 +458,167 @@
   .toast.err { background: #d64545; }
   .toast.ok { background: #1a55a5; }
 
+  /* 印章管理岗意见弹窗 */
+  .opinion-modal {
+    width: 760px;
+    max-width: calc(100vw - 32px);
+  }
+  .opinion-modal .m-header {
+    min-height: 68px;
+    padding: 15px 28px;
+    background: #f6f6f6;
+    border-bottom: 0;
+    font-size: 29px;
+    font-weight: 400;
+    color: #202020;
+  }
+  .opinion-modal .m-close {
+    font-size: 36px;
+    line-height: 1;
+    font-weight: 200;
+    color: #858585;
+  }
+  .opinion-modal .m-body {
+    padding: 54px 44px 68px;
+  }
+  .opinion-modal .m-footer {
+    min-height: 82px;
+    padding: 16px 44px;
+    border-top: 1px solid #e2e2e2;
+    background: #fff;
+  }
+  .opinion-modal .m-footer .btn {
+    min-width: 126px;
+    height: 52px;
+    border-radius: 8px;
+    font-size: 24px;
+  }
+  .opinion-modal .m-footer .btn.primary {
+    min-width: 128px;
+    background: #0868c9;
+    border-color: #0868c9;
+  }
+  .opinion-form {
+    display: grid;
+    gap: 10px;
+  }
+  .opinion-conclusion {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+    min-height: 42px;
+    margin-bottom: 49px;
+    white-space: nowrap;
+  }
+  .opinion-conclusion .required-label {
+    color: #242424;
+    font-size: 24px;
+  }
+  .opinion-conclusion .required-label .req {
+    margin-right: 5px;
+    font-size: 26px;
+  }
+  .opinion-radio-group {
+    display: flex;
+    align-items: center;
+    gap: 34px;
+  }
+  .opinion-radio {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    color: #2c2c2c;
+    font-size: 24px;
+    cursor: pointer;
+  }
+  .opinion-radio input {
+    appearance: none;
+    width: 31px;
+    height: 31px;
+    margin: 0;
+    border: 2px solid #d4d4d4;
+    border-radius: 50%;
+    background: #fff;
+    cursor: pointer;
+  }
+  .opinion-radio input:checked {
+    border-color: #0868c9;
+    box-shadow: inset 0 0 0 7px #fff;
+    background: #0868c9;
+  }
+  .opinion-detail-row {
+    display: grid;
+    grid-template-columns: 166px minmax(0, 1fr);
+    gap: 12px;
+    align-items: start;
+  }
+  .opinion-detail-label {
+    padding-top: 25px;
+    text-align: right;
+    color: #2b2b2b;
+    font-size: 24px;
+  }
+  .opinion-detail-content { min-width: 0; }
+  .op-select-wrap {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 10px;
+  }
+  .op-select-wrap select {
+    flex: 1;
+    height: 64px;
+    padding: 8px 18px;
+    color: #bdbdbd;
+    border: 2px solid #d8d8d8;
+    border-radius: 9px;
+    font-size: 23px;
+  }
+  .op-select-wrap select:focus { color: #202b3c; }
+  .opinion-modal .icon-btn {
+    width: 34px;
+    height: 42px;
+    padding: 0;
+    border: 0;
+    color: #292929;
+    font-size: 34px;
+    line-height: 1;
+  }
+  .opinion-modal .icon-btn:hover {
+    color: #0868c9;
+    border: 0;
+    background: transparent;
+  }
+  .opinion-modal .icon-btn[title="删除"] { font-size: 27px; }
+  .opinion-modal .icon-btn[title="排序"] { font-size: 33px; }
+  .opinion-modal #opDetail {
+    width: 100%;
+    min-height: 188px;
+    height: 188px;
+    padding: 14px 18px;
+    border: 2px solid #d8d8d8;
+    border-radius: 9px;
+    font-size: 22px;
+    line-height: 1.5;
+  }
+  .opinion-modal #opDetail::placeholder { color: #bdbdbd; }
+  @media (max-width: 760px) {
+    .opinion-modal .m-header { min-height: 58px; padding: 13px 18px; font-size: 25px; }
+    .opinion-modal .m-body { padding: 30px 20px 38px; }
+    .opinion-conclusion { align-items: flex-start; flex-direction: column; gap: 14px; margin-bottom: 28px; white-space: normal; }
+    .opinion-conclusion .required-label { font-size: 20px; }
+    .opinion-radio-group { gap: 16px; flex-wrap: wrap; }
+    .opinion-radio { font-size: 20px; }
+    .opinion-radio input { width: 25px; height: 25px; }
+    .opinion-detail-row { grid-template-columns: 1fr; gap: 8px; }
+    .opinion-detail-label { padding-top: 0; text-align: left; font-size: 20px; }
+    .op-select-wrap { gap: 5px; }
+    .op-select-wrap select { height: 50px; padding: 5px 10px; font-size: 17px; }
+    .opinion-modal #opDetail { min-height: 150px; height: 150px; font-size: 18px; }
+    .opinion-modal .m-footer { padding: 12px 20px; }
+    .opinion-modal .m-footer .btn { min-width: 96px; height: 44px; font-size: 19px; }
+  }
+
   .readonly-view input, .readonly-view select, .readonly-view textarea,
   .readonly-view .seal-select {
     background: #f4f6fa;
@@ -633,6 +794,128 @@
     .row-2 > .label, .row-1 > .label { min-height: 54px; font-size: 12px; }
     .main-tabs { padding-left: 0; }
     .main-tabs .tab { min-width: auto; padding-left: 16px; padding-right: 16px; }
+  }
+
+  /* 意见弹窗最终覆盖：与普通提交弹窗保持一致的尺寸与字号 */
+  .modal-mask .opinion-modal {
+    width: 520px;
+    max-width: calc(100vw - 32px);
+    max-height: none;
+    border-radius: 12px;
+  }
+  .modal-mask .opinion-modal .m-header {
+    min-height: 0;
+    padding: 17px 20px;
+    background: #fff;
+    border-bottom: 1px solid #eef1f6;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--oa-ink);
+  }
+  .modal-mask .opinion-modal .m-close { font-size: 16px; color: #859ab5; }
+  .modal-mask .opinion-modal .m-body {
+    padding: 22px;
+    min-height: 220px;
+    overflow: visible;
+  }
+  .modal-mask .opinion-modal .m-footer {
+    min-height: 0;
+    padding: 14px 20px;
+    border-top: 1px solid #eef1f6;
+    background: #fbfcfe;
+  }
+  .modal-mask .opinion-modal .m-footer .btn {
+    min-width: 68px;
+    height: 38px;
+    border-radius: 6px;
+    font-size: 14px;
+  }
+  .modal-mask .opinion-modal .m-footer .btn.primary {
+    min-width: 68px;
+    background: var(--oa-blue);
+    border-color: var(--oa-blue);
+  }
+  .modal-mask .opinion-modal .opinion-conclusion {
+    gap: 20px;
+    min-height: 30px;
+    margin-bottom: 18px;
+  }
+  .modal-mask .opinion-modal .opinion-conclusion .required-label {
+    font-size: 15px;
+  }
+  .modal-mask .opinion-modal .opinion-conclusion .required-label .req {
+    margin-right: 2px;
+    font-size: 15px;
+  }
+  .modal-mask .opinion-modal .opinion-radio-group { gap: 20px; }
+  .modal-mask .opinion-modal .opinion-radio {
+    gap: 6px;
+    font-size: 15px;
+  }
+  .modal-mask .opinion-modal .opinion-radio input {
+    width: 17px;
+    height: 17px;
+    border-width: 1px;
+  }
+  .modal-mask .opinion-modal .opinion-radio input:checked {
+    box-shadow: inset 0 0 0 4px #fff;
+  }
+  .modal-mask .opinion-modal .opinion-detail-row {
+    grid-template-columns: 90px minmax(0, 1fr);
+    gap: 10px;
+  }
+  .modal-mask .opinion-modal .opinion-detail-label {
+    padding-top: 6px;
+    font-size: 15px;
+  }
+  .modal-mask .opinion-modal .op-select-wrap {
+    gap: 6px;
+    margin-bottom: 10px;
+  }
+  .modal-mask .opinion-modal .op-select-wrap select {
+    flex: 1;
+    width: auto;
+    max-width: none;
+    height: 40px;
+    padding: 6px 12px;
+    border-width: 1px;
+    border-radius: 6px;
+    font-size: 15px;
+  }
+  .modal-mask .opinion-modal .icon-btn {
+    width: 26px;
+    height: 30px;
+    border: 1px solid #d6dbe4;
+    color: #6b7689;
+  }
+  .modal-mask .opinion-modal .icon-btn svg {
+    width: 18px;
+    height: 18px;
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 1.8;
+  }
+  .modal-mask .opinion-modal .icon-btn:hover { border-color: var(--oa-blue); color: var(--oa-blue); background: #fff; }
+  .modal-mask .opinion-modal #opDetail {
+    min-height: 88px;
+    height: 88px;
+    padding: 8px 12px;
+    border-width: 1px;
+    border-radius: 6px;
+    font-size: 15px;
+    line-height: 1.5;
+  }
+  @media (max-width: 760px) {
+    .modal-mask .opinion-modal { width: calc(100vw - 32px); max-height: calc(100vh - 32px); }
+    .modal-mask .opinion-modal .m-header { padding: 14px 16px; font-size: 15px; }
+    .modal-mask .opinion-modal .m-body { padding: 18px; }
+    .modal-mask .opinion-modal .m-footer { padding: 10px 16px; }
+    .modal-mask .opinion-modal .opinion-conclusion { gap: 12px; margin-bottom: 14px; }
+    .modal-mask .opinion-modal .opinion-radio-group { gap: 14px; flex-wrap: wrap; }
+    .modal-mask .opinion-modal .opinion-detail-row { grid-template-columns: 1fr; gap: 6px; }
+    .modal-mask .opinion-modal .opinion-detail-label { padding-top: 0; text-align: left; }
   }
 </style>
 </head>
@@ -840,31 +1123,38 @@
 
 <!-- 弹窗：填写意见（印章管理岗节点） -->
 <div class="modal-mask" id="opinionModal">
-  <div class="modal">
+  <div class="modal opinion-modal" role="dialog" aria-modal="true" aria-labelledby="opinionModalTitle">
     <div class="m-header">
-      <span>填写意见</span>
+      <span id="opinionModalTitle">填写意见</span>
        <button type="button" class="m-close" data-close="opinionModal">×</button>
     </div>
     <div class="m-body">
-      <div class="opinion-row">
-        <div class="lb">结论性意见</div>
-        <div>
-          <div class="op-select-wrap">
-            <select id="opSelect">
-              <option value="">请选择结论性意见</option>
-              <option>已用印</option>
-              <option>无需用印</option>
-              <option>其他</option>
-            </select>
-             <button class="icon-btn" type="button" title="新增">+</button>
-            <button class="icon-btn" type="button" title="删除">🗑</button>
-            <button class="icon-btn" type="button" title="排序">↕</button>
+      <div class="opinion-form">
+        <div class="opinion-conclusion">
+          <span class="required-label"><span class="req">*</span>结论性意见：</span>
+          <div class="opinion-radio-group" role="radiogroup" aria-label="结论性意见">
+            <label class="opinion-radio"><input type="radio" name="opinionConclusion" value="已用印"><span>已用印</span></label>
+            <label class="opinion-radio"><input type="radio" name="opinionConclusion" value="无需用印"><span>无需用印</span></label>
+            <label class="opinion-radio"><input type="radio" name="opinionConclusion" value="其他"><span>其他</span></label>
           </div>
         </div>
-      </div>
-      <div class="opinion-row">
-        <div class="lb"><span class="req">*</span>意见详情</div>
-        <div><textarea id="opDetail" style="min-height:90px;"></textarea></div>
+        <div class="opinion-detail-row">
+          <div class="opinion-detail-label">意见详情：</div>
+          <div class="opinion-detail-content">
+            <div class="op-select-wrap">
+              <select id="opSelect" aria-label="可选常用意见">
+                <option value="">可选常用意见</option>
+                <option value="已用印">已用印</option>
+                <option value="无需用印">无需用印</option>
+                <option value="其他">其他</option>
+              </select>
+              <button class="icon-btn" type="button" title="新增" aria-label="新增常用意见"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></button>
+              <button class="icon-btn" type="button" title="删除" aria-label="删除常用意见"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14M9 7V4h6v3M8 10v7M12 10v7M16 10v7M7 7l1 13h8l1-13"></path></svg></button>
+              <button class="icon-btn" type="button" title="排序" aria-label="排序常用意见"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14M5 8l3-3 3 3M16 19V5M13 16l3 3 3-3"></path></svg></button>
+            </div>
+            <textarea id="opDetail" placeholder="请输入意见详情……" maxlength="2000"></textarea>
+          </div>
+        </div>
       </div>
     </div>
     <div class="m-footer">
@@ -1124,12 +1414,22 @@
 
   function openOpinionModal() {
     document.getElementById("opSelect").value = "";
+    document.querySelectorAll('input[name="opinionConclusion"]').forEach(radio => { radio.checked = false; });
     document.getElementById("opDetail").value = "";
     openModal("opinionModal");
   }
+  document.getElementById("opSelect").addEventListener("change", (e) => {
+    const detail = document.getElementById("opDetail");
+    if (!detail.value.trim() && e.target.value) detail.value = e.target.value;
+    if (e.target.value) {
+      const conclusion = document.querySelector(`input[name="opinionConclusion"][value="${e.target.value}"]`);
+      if (conclusion) conclusion.checked = true;
+    }
+  });
   document.getElementById("opConfirm").addEventListener("click", () => {
-    const op = document.getElementById("opSelect").value;
+    const op = document.querySelector('input[name="opinionConclusion"]:checked')?.value || "";
     const detail = document.getElementById("opDetail").value.trim();
+    if (!op) return toast("请选择结论性意见", "err");
     if (!detail) return toast("请填写意见详情", "err");
     closeModal("opinionModal");
     toast(`已提交意见：${op || "（未选择）"} · ${detail.slice(0, 20)}${detail.length > 20 ? "…" : ""}`, "ok");
