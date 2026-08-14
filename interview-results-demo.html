@@ -1,12 +1,9 @@
-Exit code: 0
-Wall time: 2.3 seconds
-Output:
 <!doctype html>
 <html lang="zh-CN">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>闈㈣瘯缁撴灉鏌ヨ锝滀汉鍔涜祫婧愮鐞?/title>
+  <title>面试结果查询｜人力资源管理</title>
   <style>
     :root {
       --blue: #338cf4;
@@ -112,7 +109,7 @@ Output:
     body.menu-collapsed .topbar { margin-left: 56px; }
     body.menu-collapsed .page { margin-left: 56px; }
     body.menu-collapsed .drawer-title { padding: 0; justify-content: center; font-size: 0; }
-    body.menu-collapsed .drawer-title::before { content: "浜?; font-size: 19px; color: #5799f4; }
+    body.menu-collapsed .drawer-title::before { content: "人"; font-size: 19px; color: #5799f4; }
     body.menu-collapsed .drawer-item { gap: 0; padding: 0; justify-content: center; }
     body.menu-collapsed .drawer-item span { display: none; }
     body.menu-collapsed .drawer-collapse svg { transform: rotate(180deg); }
@@ -137,50 +134,50 @@ Output:
 </head>
 <body>
   <header class="topbar">
-    <nav class="topnav" aria-label="椤堕儴瀵艰埅">
-      <button type="button">浜哄姏璧勬簮绠＄悊</button>
-      <button type="button" class="active">闈㈣瘯缁撴灉鏌ヨ</button>
-      <button type="button">闈㈣瘯瀹樿瘎鍒?/button>
+    <nav class="topnav" aria-label="顶部导航">
+      <button type="button">人力资源管理</button>
+      <button type="button" class="active">面试结果查询</button>
+      <button type="button">面试官评分</button>
     </nav>
     <div class="user-actions">
       <svg class="home-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="m3 11 9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1v-9Z"/></svg>
       <svg class="chat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M20 12a7 7 0 0 1-7 7H8l-4 3v-5a7 7 0 1 1 16-5Z"/><path d="M8 12h.01M12 12h.01M16 12h.01"/></svg>
       <span class="avatar" aria-hidden="true"></span>
-      <span class="user-name">璋㈤洦鏅?/span>
-      <span>鈱?/span>
+      <span class="user-name">谢雨晴</span>
+      <span>⌄</span>
     </div>
   </header>
 
   <main class="page">
-    <section class="filters" aria-label="鏌ヨ鏉′欢">
-      <div class="field"><label for="startDate">闈㈣瘯鏃ユ湡</label><div class="control date-control"><input id="startDate" type="date" aria-label="寮€濮嬫椂闂?><span>鈫?/span><input id="endDate" type="date" aria-label="缁撴潫鏃堕棿"></div></div>
-      <div class="field"><label for="name">濮撳悕</label><input class="control" id="name" placeholder="璇疯緭鍏?></div>
-      <div class="field"><label for="department">搴旇仒閮ㄩ棬</label><input class="control" id="department" placeholder="璇疯緭鍏?></div>
-      <div class="field"><label for="position">搴旇仒宀椾綅</label><input class="control" id="position" placeholder="璇疯緭鍏?></div>
-      <div class="field filter-result"><label for="result">闈㈣瘯缁撴灉</label><select class="control" id="result"><option value="">璇烽€夋嫨</option><option>閫氳繃</option><option>鏈夋潯浠跺綍鐢?/option><option>娣樻卑</option></select></div>
-      <div class="filter-actions"><button class="btn primary" id="searchBtn">鏌ヨ</button><button class="btn" id="resetBtn">閲嶇疆</button></div>
+    <section class="filters" aria-label="查询条件">
+      <div class="field"><label for="startDate">面试日期</label><div class="control date-control"><input id="startDate" type="date" aria-label="开始时间"><span>→</span><input id="endDate" type="date" aria-label="结束时间"></div></div>
+      <div class="field"><label for="name">姓名</label><input class="control" id="name" placeholder="请输入"></div>
+      <div class="field"><label for="department">应聘部门</label><input class="control" id="department" placeholder="请输入"></div>
+      <div class="field"><label for="position">应聘岗位</label><input class="control" id="position" placeholder="请输入"></div>
+      <div class="field filter-result"><label for="result">面试结果</label><select class="control" id="result"><option value="">请选择</option><option>通过</option><option>有条件录用</option><option>淘汰</option></select></div>
+      <div class="filter-actions"><button class="btn primary" id="searchBtn">查询</button><button class="btn" id="resetBtn">重置</button></div>
     </section>
 
-    <section class="table-shell" aria-label="闈㈣瘯缁撴灉鍒楄〃">
+    <section class="table-shell" aria-label="面试结果列表">
       <div class="table-wrap">
         <table id="resultsTable">
           <colgroup id="tableCols"></colgroup>
           <thead><tr id="tableHead"></tr></thead>
           <tbody id="tableBody"></tbody>
         </table>
-        <div class="empty" id="empty">鏆傛棤绗﹀悎鏉′欢鐨勮褰?/div>
+        <div class="empty" id="empty">暂无符合条件的记录</div>
       </div>
     </section>
   </main>
 
   <div class="drawer-backdrop" id="drawerBackdrop">
-    <aside class="drawer" aria-label="浜哄姏璧勬簮绠＄悊鑿滃崟">
-      <div class="drawer-title">浜哄姏璧勬簮绠＄悊</div>
-      <button class="drawer-collapse" id="toggleMenu" aria-label="鏀惰捣鑿滃崟" title="鏀惰捣鑿滃崟"><svg viewBox="0 0 24 24"><path d="m14 5-7 7 7 7"/></svg></button>
+    <aside class="drawer" aria-label="人力资源管理菜单">
+      <div class="drawer-title">人力资源管理</div>
+      <button class="drawer-collapse" id="toggleMenu" aria-label="收起菜单" title="收起菜单"><svg viewBox="0 0 24 24"><path d="m14 5-7 7 7 7"/></svg></button>
       <div class="drawer-list">
         <ul class="drawer-group">
-          <li><button class="drawer-item active" data-view="recruit"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 5V3h8v2M8 10h8M8 14h5M8 17h3"/></svg><span>鎷涜仒/杞矖闈㈣瘯缁撴灉</span></button></li>
-          <li><button class="drawer-item" data-view="regular"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3"/><path d="M5 20c.7-3.3 3-5 7-5s6.3 1.7 7 5M16 17l2 2 3-4"/></svg><span>杞闈㈣瘯缁撴灉</span></button></li>
+          <li><button class="drawer-item active" data-view="recruit"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 5V3h8v2M8 10h8M8 14h5M8 17h3"/></svg><span>招聘/转岗面试结果</span></button></li>
+          <li><button class="drawer-item" data-view="regular"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3"/><path d="M5 20c.7-3.3 3-5 7-5s6.3 1.7 7 5M16 17l2 2 3-4"/></svg><span>转正面试结果</span></button></li>
         </ul>
       </div>
     </aside>
@@ -188,7 +185,7 @@ Output:
 
   <div class="modal-backdrop" id="modalBackdrop">
     <section class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-      <div class="modal-head"><span id="modalTitle">淇℃伅鏌ョ湅</span><button class="modal-close" id="closeModal" aria-label="鍏抽棴">脳</button></div>
+      <div class="modal-head"><span id="modalTitle">信息查看</span><button class="modal-close" id="closeModal" aria-label="关闭">×</button></div>
       <div class="modal-body" id="modalBody"></div>
     </section>
   </div>
@@ -196,27 +193,27 @@ Output:
   <script>
     const data = {
       recruit: [
-        {date:'2026-08-11', scene:'鎷涜仒', name:'璋㈠皬闆?, sex:'鐢?32', dept:'淇℃伅鎶€鏈儴', position:'鍓嶇寮€鍙戝伐绋嬪笀', grade:'鏈瘎鍒?, result:'閫氳繃', entry:'鏈叆鑱?, note:'--'},
-        {date:'2026-08-07', scene:'杞矖', name:'鏉ㄦ杞?, sex:'鐢?31', dept:'淇℃伅鎶€鏈儴', position:'寮€鍙戝矖', grade:'鏈瘎鍒?, result:'閫氳繃', entry:'宸插叆鑱?, entryDate:'2026.8.10', note:'--'},
-        {date:'2026-07-31', scene:'鎷涜仒', name:'搴旀枃鍗?, sex:'濂?34', dept:'淇℃伅鎶€鏈儴', position:'绯荤粺寮€鍙戝矖', grade:'1A+', result:'閫氳繃', entry:'宸插叆鑱?, entryDate:'2026.8.13', note:'--'},
-        {date:'2026-07-06', scene:'杞矖', name:'鑳℃€濊繙', sex:'濂?34', dept:'淇℃伅鎶€鏈儴', position:'绯荤粺寮€鍙戝矖1', grade:'1A+', result:'閫氳繃', entry:'宸插叆鑱?, entryDate:'2026.8.8', note:'--'},
-        {date:'2026-06-30', scene:'鎷涜仒', name:'浜庢檽瀹?, sex:'濂?27', dept:'淇℃伅鎶€鏈儴', position:'娴嬭瘯', grade:'鏈瘎鍒?, result:'閫氳繃', entry:'鏈叆鑱?, note:'--'},
-        {date:'2026-06-08', scene:'杞矖', name:'浜庢捣娑?, sex:'鐢?28', dept:'淇℃伅鎶€鏈儴', position:'1', grade:'鏈瘎鍒?, result:'鏈夋潯浠跺綍鐢?, entry:'宸插叆鑱?, entryDate:'2026.8.5', note:'--'},
-        {date:'2026-06-08', scene:'鎷涜仒', name:'搴斿槈鎬?, sex:'濂?34', dept:'淇℃伅鎶€鏈儴', position:'绯荤粺寮€鍙戝矖', grade:'鏈瘎鍒?, result:'娣樻卑', entry:'宸插叆鑱?, entryDate:'2026.8.13', note:'--'}
+        {date:'2026-08-11', scene:'招聘', name:'谢小雨', sex:'男/32', dept:'信息技术部', position:'前端开发工程师', grade:'未评分', result:'通过', entry:'未入职', note:'--'},
+        {date:'2026-08-07', scene:'转岗', name:'杨梓轩', sex:'男/31', dept:'信息技术部', position:'开发岗', grade:'未评分', result:'通过', entry:'已入职', entryDate:'2026.8.10', note:'--'},
+        {date:'2026-07-31', scene:'招聘', name:'应文博', sex:'女/34', dept:'信息技术部', position:'系统开发岗', grade:'1A+', result:'通过', entry:'已入职', entryDate:'2026.8.13', note:'--'},
+        {date:'2026-07-06', scene:'转岗', name:'胡思远', sex:'女/34', dept:'信息技术部', position:'系统开发岗1', grade:'1A+', result:'通过', entry:'已入职', entryDate:'2026.8.8', note:'--'},
+        {date:'2026-06-30', scene:'招聘', name:'于晓宁', sex:'女/27', dept:'信息技术部', position:'测试', grade:'未评分', result:'通过', entry:'未入职', note:'--'},
+        {date:'2026-06-08', scene:'转岗', name:'于海涛', sex:'男/28', dept:'信息技术部', position:'1', grade:'未评分', result:'有条件录用', entry:'已入职', entryDate:'2026.8.5', note:'--'},
+        {date:'2026-06-08', scene:'招聘', name:'应嘉怡', sex:'女/34', dept:'信息技术部', position:'系统开发岗', grade:'未评分', result:'淘汰', entry:'已入职', entryDate:'2026.8.13', note:'--'}
       ],
       regular: [
-        {date:'2026-08-12', name:'鏋楀娓?, sex:'濂?29', dept:'杩愯惀绠＄悊閮?, position:'杩愯惀缁忕悊', grade:'1A+', result:'閫氳繃', entry:'宸插叆鑱?, entryDate:'2026.8.13', note:'璇曠敤鏈熻〃鐜拌壇濂?},
-        {date:'2026-08-04', name:'鍛ㄦ槑杩?, sex:'鐢?30', dept:'淇℃伅鎶€鏈儴', position:'寮€鍙戝矖', grade:'A', result:'閫氳繃', entry:'宸插叆鑱?, entryDate:'2026.8.11', note:'--'},
-        {date:'2026-07-25', name:'闄堟偊瀹?, sex:'濂?28', dept:'璐㈠姟绠＄悊閮?, position:'鏍哥畻宀?, grade:'B+', result:'鏈夋潯浠跺綍鐢?, entry:'宸插叆鑱?, entryDate:'2026.8.9', note:'寤鸿鎸佺画鍏虫敞'},
-        {date:'2026-07-15', name:'鐜嬫旦鐒?, sex:'鐢?33', dept:'椋庢帶鍚堣閮?, position:'椋庨櫓绠＄悊宀?, grade:'A', result:'閫氳繃', entry:'宸插叆鑱?, entryDate:'2026.8.5', note:'--'},
-        {date:'2026-07-02', name:'璧靛畨鐞?, sex:'濂?27', dept:'浜哄姏璧勬簮閮?, position:'鎷涜仒涓撳憳', grade:'B', result:'娣樻卑', entry:'宸插叆鑱?, entryDate:'2026.8.2', note:'--'}
+        {date:'2026-08-12', name:'林婉清', sex:'女/29', dept:'运营管理部', position:'运营经理', grade:'1A+', result:'通过', entry:'已入职', entryDate:'2026.8.13', note:'试用期表现良好'},
+        {date:'2026-08-04', name:'周明远', sex:'男/30', dept:'信息技术部', position:'开发岗', grade:'A', result:'通过', entry:'已入职', entryDate:'2026.8.11', note:'--'},
+        {date:'2026-07-25', name:'陈悦宁', sex:'女/28', dept:'财务管理部', position:'核算岗', grade:'B+', result:'有条件录用', entry:'已入职', entryDate:'2026.8.9', note:'建议持续关注'},
+        {date:'2026-07-15', name:'王浩然', sex:'男/33', dept:'风控合规部', position:'风险管理岗', grade:'A', result:'通过', entry:'已入职', entryDate:'2026.8.5', note:'--'},
+        {date:'2026-07-02', name:'赵安琪', sex:'女/27', dept:'人力资源部', position:'招聘专员', grade:'B', result:'淘汰', entry:'已入职', entryDate:'2026.8.2', note:'--'}
       ]
     };
     let currentView = 'recruit';
     const $ = id => document.getElementById(id);
     const headerFor = view => view === 'regular'
-      ? ['闈㈣瘯鏃ユ湡','濮撳悕','鎬у埆/骞撮緞','閮ㄩ棬','宀椾綅','璇勫垎绛夌骇','闈㈣瘯缁撴灉','鍏ヨ亴鎯呭喌','澶囨敞','鎿嶄綔']
-      : ['闈㈣瘯鏃ユ湡','闈㈣瘯鍦烘櫙','濮撳悕','鎬у埆/骞撮緞','搴旇仒閮ㄩ棬','搴旇仒宀椾綅','璇勫垎绛夌骇','闈㈣瘯缁撴灉','鍏ヨ亴鎯呭喌','澶囨敞','鎿嶄綔'];
+      ? ['面试日期','姓名','性别/年龄','部门','岗位','评分等级','面试结果','入职情况','备注','操作']
+      : ['面试日期','面试场景','姓名','性别/年龄','应聘部门','应聘岗位','评分等级','面试结果','入职情况','备注','操作'];
     const columnWidths = {
       recruit: [125, 88, 88, 100, 145, 175, 100, 98, 98, 120, 280],
       regular: [125, 88, 100, 145, 175, 100, 98, 98, 120, 280]
@@ -229,8 +226,8 @@ Output:
       $('tableHead').innerHTML = headerFor(currentView).map(h => `<th>${h}</th>`).join('');
       const rows = filteredRows();
       $('tableBody').innerHTML = rows.map((row, index) => `<tr>
-        <td>${row.date}</td>${currentView === 'recruit' ? `<td>${row.scene}</td>` : ''}<td>${row.name}</td><td>${row.sex}</td><td>${row.dept}</td><td>${row.position}</td><td>${row.grade}</td><td>${row.result}</td><td class="entry-cell"><div>${row.entry}</div>${row.entry === '宸插叆鑱? ? `<div class="entry-date">${row.entryDate || '2026.8.13'}鍏ヨ亴</div>` : ''}</td><td>${row.note}</td>
-        <td><div class="action-links"><button class="link" data-action="register" data-index="${index}">搴旇仒鐧昏琛?/button>${currentView === 'regular' ? `<button class="link" data-action="observe" data-index="${index}">鎸佺画鑰冨療淇℃伅琛?/button>` : ''}</div></td>
+        <td>${row.date}</td>${currentView === 'recruit' ? `<td>${row.scene}</td>` : ''}<td>${row.name}</td><td>${row.sex}</td><td>${row.dept}</td><td>${row.position}</td><td>${row.grade}</td><td>${row.result}</td><td class="entry-cell"><div>${row.entry}</div>${row.entry === '已入职' ? `<div class="entry-date">${row.entryDate || '2026.8.13'}入职</div>` : ''}</td><td>${row.note}</td>
+        <td><div class="action-links"><button class="link" data-action="register" data-index="${index}">应聘登记表</button>${currentView === 'regular' ? `<button class="link" data-action="observe" data-index="${index}">持续考察信息表</button>` : ''}</div></td>
       </tr>`).join('');
       $('empty').style.display = rows.length ? 'none' : 'block';
     }
@@ -244,24 +241,24 @@ Output:
       if (!data[view]) return;
       currentView = view;
       document.querySelectorAll('.drawer-item[data-view]').forEach(item => item.classList.toggle('active', item.dataset.view === view));
-      $('department').previousElementSibling.textContent = view === 'regular' ? '閮ㄩ棬' : '搴旇仒閮ㄩ棬';
-      $('position').previousElementSibling.textContent = view === 'regular' ? '宀椾綅' : '搴旇仒宀椾綅';
+      $('department').previousElementSibling.textContent = view === 'regular' ? '部门' : '应聘部门';
+      $('position').previousElementSibling.textContent = view === 'regular' ? '岗位' : '应聘岗位';
       render();
     }
     $('searchBtn').addEventListener('click', render);
     $('resetBtn').addEventListener('click', () => { ['startDate','endDate','name','department','position','result'].forEach(id => $(id).value = ''); render(); });
     $('toggleMenu').addEventListener('click', () => {
       const collapsed = document.body.classList.toggle('menu-collapsed');
-      $('toggleMenu').setAttribute('aria-label', collapsed ? '灞曞紑鑿滃崟' : '鏀惰捣鑿滃崟');
-      $('toggleMenu').setAttribute('title', collapsed ? '灞曞紑鑿滃崟' : '鏀惰捣鑿滃崟');
+      $('toggleMenu').setAttribute('aria-label', collapsed ? '展开菜单' : '收起菜单');
+      $('toggleMenu').setAttribute('title', collapsed ? '展开菜单' : '收起菜单');
     });
     document.querySelectorAll('.drawer-item[data-view]').forEach(item => item.addEventListener('click', () => switchView(item.dataset.view)));
     document.addEventListener('click', event => {
       const action = event.target.closest('[data-action]');
       if (!action) return;
       const row = filteredRows()[Number(action.dataset.index)];
-      $('modalTitle').textContent = action.dataset.action === 'observe' ? '鎸佺画鑰冨療淇℃伅琛? : '搴旇仒鐧昏琛?;
-      $('modalBody').innerHTML = `<div class="detail-grid"><div class="detail-item"><span>濮撳悕</span>${row.name}</div><div class="detail-item"><span>闈㈣瘯鏃ユ湡</span>${row.date}</div><div class="detail-item"><span>閮ㄩ棬</span>${row.dept}</div><div class="detail-item"><span>宀椾綅</span>${row.position}</div><div class="detail-item"><span>闈㈣瘯缁撴灉</span>${row.result}</div><div class="detail-item"><span>澶囨敞</span>${row.note}</div></div><p style="margin:18px 0 0;color:#9aa5b1">姝ゅ涓哄師鍨嬮瑙堬紝瀹為檯鍐呭鐢变笟鍔＄郴缁熸暟鎹～鍏呫€?/p>`;
+      $('modalTitle').textContent = action.dataset.action === 'observe' ? '持续考察信息表' : '应聘登记表';
+      $('modalBody').innerHTML = `<div class="detail-grid"><div class="detail-item"><span>姓名</span>${row.name}</div><div class="detail-item"><span>面试日期</span>${row.date}</div><div class="detail-item"><span>部门</span>${row.dept}</div><div class="detail-item"><span>岗位</span>${row.position}</div><div class="detail-item"><span>面试结果</span>${row.result}</div><div class="detail-item"><span>备注</span>${row.note}</div></div><p style="margin:18px 0 0;color:#9aa5b1">此处为原型预览，实际内容由业务系统数据填充。</p>`;
       $('modalBackdrop').classList.add('open');
     });
     $('closeModal').addEventListener('click', () => $('modalBackdrop').classList.remove('open'));
