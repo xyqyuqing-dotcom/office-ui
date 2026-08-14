@@ -1,0 +1,272 @@
+Exit code: 0
+Wall time: 2.3 seconds
+Output:
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>闈㈣瘯缁撴灉鏌ヨ锝滀汉鍔涜祫婧愮鐞?/title>
+  <style>
+    :root {
+      --blue: #338cf4;
+      --blue-dark: #1f78e8;
+      --ink: #25374b;
+      --muted: #8c98a6;
+      --line: #edf0f4;
+      --panel: #fff;
+      --bg: #f7f9fc;
+      --shadow: 0 12px 34px rgba(40, 70, 110, .15);
+      font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans SC", Arial, sans-serif;
+      color: var(--ink);
+      background: var(--bg);
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-width: 1120px; min-height: 100%; }
+    body { background: #fff; overflow-x: hidden; }
+    button, input, select { font: inherit; }
+    button { cursor: pointer; }
+
+    .topbar {
+      position: relative;
+      height: 44px;
+      margin-left: 248px;
+      display: flex;
+      align-items: center;
+      padding: 0 17px 0 7px;
+      border-bottom: 1px solid #e7ebf0;
+      overflow: hidden;
+      background: linear-gradient(109deg, #fff 0%, #f8fbff 56%, #edf5fe 100%);
+    }
+    .topbar::after {
+      content: "";
+      position: absolute;
+      inset: 0 0 0 auto;
+      width: 42%;
+      opacity: .36;
+      pointer-events: none;
+      background: repeating-linear-gradient(138deg, transparent 0 13px, rgba(100, 151, 213, .16) 14px 15px);
+      mask-image: linear-gradient(90deg, transparent, #000 30%);
+    }
+    .brand { color: #5799f4; font-size: 18px; letter-spacing: .2px; white-space: nowrap; }
+    .topnav { position: absolute; z-index: 1; left: 50%; transform: translateX(-50%); height: 100%; display: flex; align-items: stretch; gap: 26px; }
+    .topnav button { position: relative; border: 0; background: transparent; color: #788493; padding: 0 10px; font-size: 14px; white-space: nowrap; }
+    .topnav button.active { color: var(--blue); font-weight: 600; }
+    .topnav button.active::after { content: ""; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 22px; height: 4px; border-radius: 4px 4px 0 0; background: var(--blue); }
+    .user-actions { z-index: 1; margin-left: auto; display: flex; align-items: center; gap: 16px; color: #8491a0; font-size: 13px; }
+    .home-icon, .chat-icon { width: 18px; height: 18px; opacity: .78; }
+    .avatar { width: 30px; height: 30px; border-radius: 50%; object-fit: cover; background: radial-gradient(circle at 50% 30%, #f4c9a8 0 23%, transparent 24%), linear-gradient(145deg, #273343 0 45%, #a77758 46% 57%, #303947 58%); }
+    .user-name { max-width: 54px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; color: #637181; }
+    .menu-trigger { display: none; }
+
+    .page { min-height: calc(100vh - 44px); margin-left: 248px; background: #fff; }
+    .filters { display: grid; grid-template-columns: 1.18fr 1.18fr 1.18fr 1.18fr; column-gap: 32px; row-gap: 26px; padding: 17px 30px 27px 21px; background: #fff; }
+    .field { display: flex; align-items: center; min-width: 0; gap: 14px; }
+    .field label { flex: 0 0 auto; font-size: 14px; color: #182333; font-weight: 600; white-space: nowrap; }
+    .control { height: 36px; width: 100%; min-width: 0; padding: 0 13px; border: 1px solid #dce1e7; border-radius: 6px; outline: none; color: #536172; background: #fff; font-size: 13px; transition: border-color .18s, box-shadow .18s; }
+    .control::placeholder { color: #b7bec7; }
+    .control:focus { border-color: #86b8fa; box-shadow: 0 0 0 3px rgba(51, 140, 244, .1); }
+    select.control { appearance: none; padding-right: 30px; background: linear-gradient(45deg, transparent 50%, #b7c0ca 50%) calc(100% - 15px) 15px / 7px 7px no-repeat, linear-gradient(135deg, #b7c0ca 50%, transparent 50%) calc(100% - 10px) 15px / 7px 7px no-repeat, #fff; }
+    .date-control { display: flex; align-items: center; gap: 8px; padding: 0 10px; }
+    .date-control input { width: 100%; height: 30px; min-width: 0; border: 0; outline: 0; color: #536172; font-size: 13px; }
+    .date-control input::-webkit-calendar-picker-indicator { opacity: .42; }
+    .date-control span { color: #b4bdc7; }
+    .filter-result { grid-column: 1 / span 1; }
+    .filter-actions { grid-column: 4; display: flex; justify-content: flex-end; align-items: end; gap: 9px; }
+    .btn { height: 36px; padding: 0 17px; border-radius: 7px; border: 1px solid #d9dee5; color: #344252; background: #fff; font-size: 14px; }
+    .btn.primary { border-color: var(--blue); color: #fff; background: var(--blue); box-shadow: 0 3px 8px rgba(51, 140, 244, .2); }
+    .btn:hover { filter: brightness(.98); }
+
+    .table-shell { position: relative; margin: 0 5px 0 5px; border-radius: 10px 10px 0 0; overflow: hidden; background: #fff; box-shadow: 0 -2px 12px rgba(45, 64, 88, .035); }
+    .table-wrap { overflow-x: auto; overflow-y: auto; max-height: calc(100vh - 224px); min-height: 425px; }
+    table { border-collapse: collapse; table-layout: fixed; font-size: 14px; }
+    th { height: 59px; padding: 0 17px; text-align: left; color: #162537; background: #fafafa; font-weight: 600; border-bottom: 1px solid #f0f2f5; white-space: nowrap; }
+    td { height: 61px; padding: 0 17px; border-bottom: 1px solid #f0f1f3; color: #304156; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    tbody tr:hover td { background: #f8fbff; }
+    .link { display: inline-flex; align-items: center; justify-content: center; min-width: 108px; height: 32px; padding: 0 10px; border: 1px solid #cfe1fb; border-radius: 6px; color: #2c83ed; background: #f4f9ff; font-size: 13px; white-space: nowrap; }
+    .link[data-action="observe"] { min-width: 130px; color: #4e6fc1; border-color: #d7e0f3; background: #f5f7fd; }
+    .link:hover { border-color: #82b8f5; color: #176fd5; background: #eaf4ff; }
+    .action-links { display: flex; gap: 8px; align-items: center; flex-wrap: nowrap; }
+    .entry-cell { white-space: normal; line-height: 1.25; }
+    .entry-date { margin-top: 3px; color: #a4adb8; font-size: 12px; white-space: nowrap; }
+    .empty { display: none; padding: 60px 0; color: #9da8b5; text-align: center; }
+    .table-wrap::-webkit-scrollbar { width: 13px; height: 11px; }
+    .table-wrap::-webkit-scrollbar-track { background: #f1f2f3; }
+    .table-wrap::-webkit-scrollbar-thumb { border-radius: 9px; background: #bfc4ca; border: 3px solid #f1f2f3; }
+
+    .drawer-backdrop { position: fixed; z-index: 10; inset: 0 auto 0 0; display: block; width: 248px; pointer-events: none; background: #fff; box-shadow: 1px 0 10px rgba(40, 70, 110, .06); transition: width .22s ease; }
+    .drawer { position: absolute; inset: 0; width: 248px; padding-top: 0; background: #fff; pointer-events: auto; transition: width .22s ease; }
+    .drawer-title { height: 65px; display: flex; align-items: center; padding: 0 19px; color: #5799f4; font-size: 19px; border-bottom: 1px solid #edf0f3; white-space: nowrap; overflow: hidden; transition: padding .22s ease, font-size .22s ease; }
+    .drawer-close { display: none; }
+    .drawer-list { padding: 7px 5px; }
+    .drawer-group { margin: 0; padding: 0; list-style: none; }
+    .drawer-item { width: 100%; height: 50px; display: flex; align-items: center; gap: 13px; padding: 0 20px; border: 0; border-radius: 9px; color: #16202e; background: transparent; text-align: left; font-size: 15px; white-space: nowrap; overflow: hidden; transition: padding .22s ease, gap .22s ease; }
+    .drawer-item:hover, .drawer-item.active { background: #f7f7f8; }
+    .drawer-item.active { color: #1f78e8; }
+    .drawer-item svg { flex: 0 0 20px; width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 1.7; }
+    .drawer-collapse { position: absolute; z-index: 2; top: 50%; right: -16px; width: 16px; height: 62px; display: grid; place-items: center; padding: 0; border: 0; border-radius: 0 7px 7px 0; color: #fff; background: #338cf4; box-shadow: 2px 2px 7px rgba(51, 140, 244, .24); transform: translateY(-50%); }
+    .drawer-collapse:hover { background: #1f78e8; }
+    .drawer-collapse svg { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 2.2; transition: transform .22s ease; }
+    body.menu-collapsed .drawer-backdrop { width: 56px; }
+    body.menu-collapsed .drawer { width: 56px; }
+    body.menu-collapsed .topbar { margin-left: 56px; }
+    body.menu-collapsed .page { margin-left: 56px; }
+    body.menu-collapsed .drawer-title { padding: 0; justify-content: center; font-size: 0; }
+    body.menu-collapsed .drawer-title::before { content: "浜?; font-size: 19px; color: #5799f4; }
+    body.menu-collapsed .drawer-item { gap: 0; padding: 0; justify-content: center; }
+    body.menu-collapsed .drawer-item span { display: none; }
+    body.menu-collapsed .drawer-collapse svg { transform: rotate(180deg); }
+    .drawer-section { display: none; }
+
+    .modal-backdrop { position: fixed; z-index: 20; inset: 0; display: none; align-items: center; justify-content: center; background: rgba(22, 37, 56, .32); }
+    .modal-backdrop.open { display: flex; }
+    .modal { width: min(740px, calc(100vw - 50px)); border-radius: 10px; overflow: hidden; background: #fff; box-shadow: 0 20px 60px rgba(15, 32, 54, .25); }
+    .modal-head { display: flex; justify-content: space-between; align-items: center; padding: 18px 22px; border-bottom: 1px solid var(--line); color: #1f3145; font-size: 17px; font-weight: 600; }
+    .modal-close { border: 0; background: transparent; color: #84909e; font-size: 24px; }
+    .modal-body { padding: 20px 22px 25px; color: #596777; line-height: 1.9; }
+    .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 28px; }
+    .detail-item { padding: 10px 12px; border-radius: 6px; background: #f7f9fc; }
+    .detail-item span { color: #9ba6b2; margin-right: 12px; }
+    @media (max-width: 1280px) {
+      .filters { column-gap: 16px; }
+      .field { gap: 8px; }
+      .field label { font-size: 13px; }
+      .topnav { gap: 8px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <nav class="topnav" aria-label="椤堕儴瀵艰埅">
+      <button type="button">浜哄姏璧勬簮绠＄悊</button>
+      <button type="button" class="active">闈㈣瘯缁撴灉鏌ヨ</button>
+      <button type="button">闈㈣瘯瀹樿瘎鍒?/button>
+    </nav>
+    <div class="user-actions">
+      <svg class="home-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="m3 11 9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1v-9Z"/></svg>
+      <svg class="chat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M20 12a7 7 0 0 1-7 7H8l-4 3v-5a7 7 0 1 1 16-5Z"/><path d="M8 12h.01M12 12h.01M16 12h.01"/></svg>
+      <span class="avatar" aria-hidden="true"></span>
+      <span class="user-name">璋㈤洦鏅?/span>
+      <span>鈱?/span>
+    </div>
+  </header>
+
+  <main class="page">
+    <section class="filters" aria-label="鏌ヨ鏉′欢">
+      <div class="field"><label for="startDate">闈㈣瘯鏃ユ湡</label><div class="control date-control"><input id="startDate" type="date" aria-label="寮€濮嬫椂闂?><span>鈫?/span><input id="endDate" type="date" aria-label="缁撴潫鏃堕棿"></div></div>
+      <div class="field"><label for="name">濮撳悕</label><input class="control" id="name" placeholder="璇疯緭鍏?></div>
+      <div class="field"><label for="department">搴旇仒閮ㄩ棬</label><input class="control" id="department" placeholder="璇疯緭鍏?></div>
+      <div class="field"><label for="position">搴旇仒宀椾綅</label><input class="control" id="position" placeholder="璇疯緭鍏?></div>
+      <div class="field filter-result"><label for="result">闈㈣瘯缁撴灉</label><select class="control" id="result"><option value="">璇烽€夋嫨</option><option>閫氳繃</option><option>鏈夋潯浠跺綍鐢?/option><option>娣樻卑</option></select></div>
+      <div class="filter-actions"><button class="btn primary" id="searchBtn">鏌ヨ</button><button class="btn" id="resetBtn">閲嶇疆</button></div>
+    </section>
+
+    <section class="table-shell" aria-label="闈㈣瘯缁撴灉鍒楄〃">
+      <div class="table-wrap">
+        <table id="resultsTable">
+          <colgroup id="tableCols"></colgroup>
+          <thead><tr id="tableHead"></tr></thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+        <div class="empty" id="empty">鏆傛棤绗﹀悎鏉′欢鐨勮褰?/div>
+      </div>
+    </section>
+  </main>
+
+  <div class="drawer-backdrop" id="drawerBackdrop">
+    <aside class="drawer" aria-label="浜哄姏璧勬簮绠＄悊鑿滃崟">
+      <div class="drawer-title">浜哄姏璧勬簮绠＄悊</div>
+      <button class="drawer-collapse" id="toggleMenu" aria-label="鏀惰捣鑿滃崟" title="鏀惰捣鑿滃崟"><svg viewBox="0 0 24 24"><path d="m14 5-7 7 7 7"/></svg></button>
+      <div class="drawer-list">
+        <ul class="drawer-group">
+          <li><button class="drawer-item active" data-view="recruit"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 5V3h8v2M8 10h8M8 14h5M8 17h3"/></svg><span>鎷涜仒/杞矖闈㈣瘯缁撴灉</span></button></li>
+          <li><button class="drawer-item" data-view="regular"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3"/><path d="M5 20c.7-3.3 3-5 7-5s6.3 1.7 7 5M16 17l2 2 3-4"/></svg><span>杞闈㈣瘯缁撴灉</span></button></li>
+        </ul>
+      </div>
+    </aside>
+  </div>
+
+  <div class="modal-backdrop" id="modalBackdrop">
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal-head"><span id="modalTitle">淇℃伅鏌ョ湅</span><button class="modal-close" id="closeModal" aria-label="鍏抽棴">脳</button></div>
+      <div class="modal-body" id="modalBody"></div>
+    </section>
+  </div>
+
+  <script>
+    const data = {
+      recruit: [
+        {date:'2026-08-11', scene:'鎷涜仒', name:'璋㈠皬闆?, sex:'鐢?32', dept:'淇℃伅鎶€鏈儴', position:'鍓嶇寮€鍙戝伐绋嬪笀', grade:'鏈瘎鍒?, result:'閫氳繃', entry:'鏈叆鑱?, note:'--'},
+        {date:'2026-08-07', scene:'杞矖', name:'鏉ㄦ杞?, sex:'鐢?31', dept:'淇℃伅鎶€鏈儴', position:'寮€鍙戝矖', grade:'鏈瘎鍒?, result:'閫氳繃', entry:'宸插叆鑱?, entryDate:'2026.8.10', note:'--'},
+        {date:'2026-07-31', scene:'鎷涜仒', name:'搴旀枃鍗?, sex:'濂?34', dept:'淇℃伅鎶€鏈儴', position:'绯荤粺寮€鍙戝矖', grade:'1A+', result:'閫氳繃', entry:'宸插叆鑱?, entryDate:'2026.8.13', note:'--'},
+        {date:'2026-07-06', scene:'杞矖', name:'鑳℃€濊繙', sex:'濂?34', dept:'淇℃伅鎶€鏈儴', position:'绯荤粺寮€鍙戝矖1', grade:'1A+', result:'閫氳繃', entry:'宸插叆鑱?, entryDate:'2026.8.8', note:'--'},
+        {date:'2026-06-30', scene:'鎷涜仒', name:'浜庢檽瀹?, sex:'濂?27', dept:'淇℃伅鎶€鏈儴', position:'娴嬭瘯', grade:'鏈瘎鍒?, result:'閫氳繃', entry:'鏈叆鑱?, note:'--'},
+        {date:'2026-06-08', scene:'杞矖', name:'浜庢捣娑?, sex:'鐢?28', dept:'淇℃伅鎶€鏈儴', position:'1', grade:'鏈瘎鍒?, result:'鏈夋潯浠跺綍鐢?, entry:'宸插叆鑱?, entryDate:'2026.8.5', note:'--'},
+        {date:'2026-06-08', scene:'鎷涜仒', name:'搴斿槈鎬?, sex:'濂?34', dept:'淇℃伅鎶€鏈儴', position:'绯荤粺寮€鍙戝矖', grade:'鏈瘎鍒?, result:'娣樻卑', entry:'宸插叆鑱?, entryDate:'2026.8.13', note:'--'}
+      ],
+      regular: [
+        {date:'2026-08-12', name:'鏋楀娓?, sex:'濂?29', dept:'杩愯惀绠＄悊閮?, position:'杩愯惀缁忕悊', grade:'1A+', result:'閫氳繃', entry:'宸插叆鑱?, entryDate:'2026.8.13', note:'璇曠敤鏈熻〃鐜拌壇濂?},
+        {date:'2026-08-04', name:'鍛ㄦ槑杩?, sex:'鐢?30', dept:'淇℃伅鎶€鏈儴', position:'寮€鍙戝矖', grade:'A', result:'閫氳繃', entry:'宸插叆鑱?, entryDate:'2026.8.11', note:'--'},
+        {date:'2026-07-25', name:'闄堟偊瀹?, sex:'濂?28', dept:'璐㈠姟绠＄悊閮?, position:'鏍哥畻宀?, grade:'B+', result:'鏈夋潯浠跺綍鐢?, entry:'宸插叆鑱?, entryDate:'2026.8.9', note:'寤鸿鎸佺画鍏虫敞'},
+        {date:'2026-07-15', name:'鐜嬫旦鐒?, sex:'鐢?33', dept:'椋庢帶鍚堣閮?, position:'椋庨櫓绠＄悊宀?, grade:'A', result:'閫氳繃', entry:'宸插叆鑱?, entryDate:'2026.8.5', note:'--'},
+        {date:'2026-07-02', name:'璧靛畨鐞?, sex:'濂?27', dept:'浜哄姏璧勬簮閮?, position:'鎷涜仒涓撳憳', grade:'B', result:'娣樻卑', entry:'宸插叆鑱?, entryDate:'2026.8.2', note:'--'}
+      ]
+    };
+    let currentView = 'recruit';
+    const $ = id => document.getElementById(id);
+    const headerFor = view => view === 'regular'
+      ? ['闈㈣瘯鏃ユ湡','濮撳悕','鎬у埆/骞撮緞','閮ㄩ棬','宀椾綅','璇勫垎绛夌骇','闈㈣瘯缁撴灉','鍏ヨ亴鎯呭喌','澶囨敞','鎿嶄綔']
+      : ['闈㈣瘯鏃ユ湡','闈㈣瘯鍦烘櫙','濮撳悕','鎬у埆/骞撮緞','搴旇仒閮ㄩ棬','搴旇仒宀椾綅','璇勫垎绛夌骇','闈㈣瘯缁撴灉','鍏ヨ亴鎯呭喌','澶囨敞','鎿嶄綔'];
+    const columnWidths = {
+      recruit: [125, 88, 88, 100, 145, 175, 100, 98, 98, 120, 280],
+      regular: [125, 88, 100, 145, 175, 100, 98, 98, 120, 280]
+    };
+    function render() {
+      const widths = columnWidths[currentView];
+      $('tableCols').innerHTML = widths.map(width => `<col style="width:${width}px">`).join('');
+      $('resultsTable').style.width = `${widths.reduce((sum, width) => sum + width, 0)}px`;
+      $('resultsTable').style.minWidth = `${widths.reduce((sum, width) => sum + width, 0)}px`;
+      $('tableHead').innerHTML = headerFor(currentView).map(h => `<th>${h}</th>`).join('');
+      const rows = filteredRows();
+      $('tableBody').innerHTML = rows.map((row, index) => `<tr>
+        <td>${row.date}</td>${currentView === 'recruit' ? `<td>${row.scene}</td>` : ''}<td>${row.name}</td><td>${row.sex}</td><td>${row.dept}</td><td>${row.position}</td><td>${row.grade}</td><td>${row.result}</td><td class="entry-cell"><div>${row.entry}</div>${row.entry === '宸插叆鑱? ? `<div class="entry-date">${row.entryDate || '2026.8.13'}鍏ヨ亴</div>` : ''}</td><td>${row.note}</td>
+        <td><div class="action-links"><button class="link" data-action="register" data-index="${index}">搴旇仒鐧昏琛?/button>${currentView === 'regular' ? `<button class="link" data-action="observe" data-index="${index}">鎸佺画鑰冨療淇℃伅琛?/button>` : ''}</div></td>
+      </tr>`).join('');
+      $('empty').style.display = rows.length ? 'none' : 'block';
+    }
+    function filteredRows() {
+      const rows = data[currentView];
+      const start = $('startDate').value, end = $('endDate').value;
+      const fields = {name: $('name').value.trim(), department: $('department').value.trim(), position: $('position').value.trim(), result: $('result').value};
+      return rows.filter(row => (!start || row.date >= start) && (!end || row.date <= end) && (!fields.name || row.name.includes(fields.name)) && (!fields.department || row.dept.includes(fields.department)) && (!fields.position || row.position.includes(fields.position)) && (!fields.result || row.result === fields.result));
+    }
+    function switchView(view) {
+      if (!data[view]) return;
+      currentView = view;
+      document.querySelectorAll('.drawer-item[data-view]').forEach(item => item.classList.toggle('active', item.dataset.view === view));
+      $('department').previousElementSibling.textContent = view === 'regular' ? '閮ㄩ棬' : '搴旇仒閮ㄩ棬';
+      $('position').previousElementSibling.textContent = view === 'regular' ? '宀椾綅' : '搴旇仒宀椾綅';
+      render();
+    }
+    $('searchBtn').addEventListener('click', render);
+    $('resetBtn').addEventListener('click', () => { ['startDate','endDate','name','department','position','result'].forEach(id => $(id).value = ''); render(); });
+    $('toggleMenu').addEventListener('click', () => {
+      const collapsed = document.body.classList.toggle('menu-collapsed');
+      $('toggleMenu').setAttribute('aria-label', collapsed ? '灞曞紑鑿滃崟' : '鏀惰捣鑿滃崟');
+      $('toggleMenu').setAttribute('title', collapsed ? '灞曞紑鑿滃崟' : '鏀惰捣鑿滃崟');
+    });
+    document.querySelectorAll('.drawer-item[data-view]').forEach(item => item.addEventListener('click', () => switchView(item.dataset.view)));
+    document.addEventListener('click', event => {
+      const action = event.target.closest('[data-action]');
+      if (!action) return;
+      const row = filteredRows()[Number(action.dataset.index)];
+      $('modalTitle').textContent = action.dataset.action === 'observe' ? '鎸佺画鑰冨療淇℃伅琛? : '搴旇仒鐧昏琛?;
+      $('modalBody').innerHTML = `<div class="detail-grid"><div class="detail-item"><span>濮撳悕</span>${row.name}</div><div class="detail-item"><span>闈㈣瘯鏃ユ湡</span>${row.date}</div><div class="detail-item"><span>閮ㄩ棬</span>${row.dept}</div><div class="detail-item"><span>宀椾綅</span>${row.position}</div><div class="detail-item"><span>闈㈣瘯缁撴灉</span>${row.result}</div><div class="detail-item"><span>澶囨敞</span>${row.note}</div></div><p style="margin:18px 0 0;color:#9aa5b1">姝ゅ涓哄師鍨嬮瑙堬紝瀹為檯鍐呭鐢变笟鍔＄郴缁熸暟鎹～鍏呫€?/p>`;
+      $('modalBackdrop').classList.add('open');
+    });
+    $('closeModal').addEventListener('click', () => $('modalBackdrop').classList.remove('open'));
+    $('modalBackdrop').addEventListener('click', event => { if (event.target === $('modalBackdrop')) $('modalBackdrop').classList.remove('open'); });
+    render();
+  </script>
+</body>
+</html>
