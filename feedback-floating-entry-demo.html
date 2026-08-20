@@ -1,0 +1,884 @@
+<!doctype html>
+<!-- Front-end implementation notes: feedback-floating-entry-development-notes.md -->
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>人力资源｜意见反馈悬浮入口原型</title>
+  <style>
+    :root {
+      --brand: #0879c9;
+      --brand-dark: #075f9f;
+      --brand-deep: #064f89;
+      --blue: #1677ff;
+      --cyan: #27b4d7;
+      --ink: #17283c;
+      --muted: #6f7c8b;
+      --line: #dfe5eb;
+      --soft-line: #edf1f5;
+      --panel: #fff;
+      --bg: #f4f6f8;
+      --success: #12a06a;
+      --danger: #f1464d;
+      font-family: "Microsoft YaHei", "PingFang SC", "Noto Sans SC", Arial, sans-serif;
+      color: var(--ink);
+      background: var(--bg);
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-width: 1100px; min-height: 100%; }
+    body { overflow-x: hidden; background: #f5f6f8; }
+    button, input, select, textarea { font: inherit; }
+    button, a { -webkit-tap-highlight-color: transparent; }
+    button { cursor: pointer; }
+    .hidden { display: none !important; }
+
+    /* 与业务页面一致的顶部框架 */
+    .hr-header {
+      position: fixed;
+      z-index: 30;
+      inset: 0 0 auto 0;
+      height: 70px;
+      display: grid;
+      grid-template-columns: 330px 1fr 520px;
+      align-items: center;
+      color: #fff;
+      background: linear-gradient(100deg, #0987d6 0%, #0877c4 54%, #075b99 100%);
+      box-shadow: 0 1px 0 rgba(0,0,0,.06);
+    }
+    .hr-brand { height: 100%; display: flex; align-items: center; gap: 14px; padding-left: 31px; font-size: 25px; font-weight: 700; letter-spacing: .5px; }
+    .brand-mark {
+      width: 54px;
+      height: 54px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      color: #eed9a6;
+      background: radial-gradient(circle at 35% 28%, #55b5ed, #076ba9 72%);
+      box-shadow: 0 3px 8px rgba(0, 41, 79, .34), inset 0 0 0 2px rgba(255,255,255,.14);
+      font: 800 17px/1 Arial, sans-serif;
+    }
+    .hr-nav { align-self: stretch; display: flex; justify-content: center; gap: 45px; }
+    .hr-nav a { position: relative; display: flex; align-items: center; padding: 0 2px; color: rgba(255,255,255,.63); text-decoration: none; font-size: 20px; font-weight: 700; }
+    .hr-nav a.active { color: #fff; }
+    .hr-nav a.active::after { content: ""; position: absolute; bottom: 0; left: 50%; width: 30px; height: 5px; border-radius: 5px 5px 0 0; background: #9bd4ff; transform: translateX(-50%); }
+    .hr-actions { height: 100%; display: flex; align-items: center; justify-content: flex-end; gap: 22px; padding-right: 20px; }
+    .app-center { font-size: 17px; font-weight: 700; white-space: nowrap; }
+    .header-separator { width: 1px; height: 28px; background: rgba(255,255,255,.72); }
+    .simple-icon { width: 25px; height: 25px; display: grid; place-items: center; color: #fff; font-size: 24px; line-height: 1; }
+    .avatar { width: 42px; height: 42px; display: grid; place-items: center; border-radius: 50%; color: #fff; background: linear-gradient(145deg, #293645, #727e8b); font-size: 14px; box-shadow: inset 0 0 0 2px rgba(255,255,255,.3); }
+
+    /* 顶栏与悬浮球共用的反馈图形（CSS 绘制） */
+    .feedback-glyph { position: relative; display: inline-block; width: 28px; height: 23px; color: currentColor; border: 2px solid currentColor; border-radius: 8px; }
+    .feedback-glyph::before { content: ""; position: absolute; left: 4px; bottom: -5px; width: 8px; height: 8px; border-left: 2px solid currentColor; border-bottom: 2px solid currentColor; background: inherit; transform: skewY(-38deg); }
+    .feedback-glyph::after { content: "!"; position: absolute; inset: -1px 0 0; display: grid; place-items: center; font: 800 16px/1 Arial, sans-serif; }
+    .feedback-entry {
+      position: relative;
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      padding: 0;
+      border: 0;
+      border-radius: 8px;
+      color: #fff;
+      background: transparent;
+      transition: background .18s ease, transform .18s ease;
+    }
+    .feedback-entry:hover, .feedback-entry:focus-visible { outline: 0; background: rgba(255,255,255,.14); }
+    .feedback-entry:active { transform: scale(.95); }
+    .feedback-entry .feedback-glyph { width: 24px; height: 20px; border-radius: 6px; }
+    .feedback-entry .feedback-glyph::after { font-size: 14px; }
+    .feedback-entry .feedback-glyph::before { left: 3px; bottom: -4px; width: 7px; height: 7px; }
+    .feedback-entry .state-dot { position: absolute; top: 4px; right: 3px; width: 7px; height: 7px; display: none; border: 2px solid #0870bb; border-radius: 50%; background: #bfe9ff; box-sizing: content-box; }
+    body.orb-is-hidden .feedback-entry .state-dot { display: block; }
+    .feedback-entry.pulse { animation: headerPulse .54s ease-in-out 2; }
+    .feedback-entry.pulse::after { content: ""; position: absolute; inset: 2px; border: 2px solid rgba(167,226,255,.92); border-radius: 11px; animation: pulseRing .54s ease-out 2; }
+    @keyframes headerPulse { 50% { background: rgba(255,255,255,.24); transform: scale(1.08); } }
+    @keyframes pulseRing { from { opacity: .9; transform: scale(.72); } to { opacity: 0; transform: scale(1.45); } }
+
+    .side-nav {
+      position: fixed;
+      z-index: 10;
+      top: 70px;
+      bottom: 0;
+      left: 0;
+      width: 252px;
+      border-right: 1px solid #cfd5db;
+      background: #fff;
+      transition: width .26s cubic-bezier(.2,.8,.2,1);
+    }
+    .side-search { height: 85px; display: flex; align-items: center; gap: 10px; margin: 0 20px; border-bottom: 2px solid #8e9296; font-size: 17px; }
+    .side-search span:last-child { margin-left: auto; font-size: 26px; transform: rotate(-18deg); }
+    .side-list { margin: 22px 0 0; padding: 0; list-style: none; }
+    .side-list li { height: 62px; display: flex; align-items: center; padding: 0 22px; overflow: hidden; font-size: 18px; color: #131f2d; white-space: nowrap; transition: padding .26s ease, font-size .18s ease; }
+    .side-list li::before { content: ""; }
+    .side-list li.active { color: #006fbb; background: #e1e3e5; }
+    .side-collapse { position: absolute; top: 51%; right: -19px; width: 19px; height: 70px; border: 0; border-radius: 0 7px 7px 0; color: #fff; background: #0879c9; font-size: 27px; transition: background .18s ease; }
+    .side-collapse:hover { background: #0667ad; }
+
+    .talent-page { min-height: 100vh; padding: 70px 0 0 252px; background: #fbfbfc; transition: padding-left .26s cubic-bezier(.2,.8,.2,1); }
+    body.menu-collapsed .side-nav { width: 68px; }
+    body.menu-collapsed .side-search { justify-content: center; margin: 0 12px; }
+    body.menu-collapsed .side-search span:first-child { display: none; }
+    body.menu-collapsed .side-search span:last-child { margin-left: 0; }
+    body.menu-collapsed .side-list li { justify-content: center; padding: 0; font-size: 0; }
+    body.menu-collapsed .side-list li::before { content: attr(data-short); width: 34px; height: 34px; display: grid; place-items: center; border-radius: 8px; font-size: 14px; font-weight: 700; }
+    body.menu-collapsed .side-list li.active::before { color: #0874c4; background: #d9ebf9; }
+    body.menu-collapsed .side-collapse { font-size: 0; }
+    body.menu-collapsed .side-collapse::before { content: "›"; font-size: 27px; }
+    body.menu-collapsed .talent-page { padding-left: 68px; }
+    .page-head { height: 64px; display: flex; align-items: center; justify-content: space-between; padding: 0 26px; background: #fff; }
+    .breadcrumb { color: #7d8389; font-size: 17px; }
+    .breadcrumb b { color: #137dda; font-weight: 400; }
+    .fullscreen { color: #182434; font-size: 15px; }
+    .content-pad { padding: 0 24px 0 26px; }
+    .filter-panel {
+      position: relative;
+      min-height: 265px;
+      padding: 73px 20px 43px;
+      border-radius: 7px;
+      background:
+        linear-gradient(138deg, rgba(226,229,232,.63), rgba(255,255,255,.55) 48%, rgba(224,227,230,.5)),
+        repeating-linear-gradient(35deg, rgba(226,229,232,.27) 0 86px, transparent 87px 170px);
+      box-shadow: 0 2px 5px rgba(31,43,57,.22);
+    }
+    .panel-chevron { position: absolute; top: 17px; left: 22px; color: #07182a; font-size: 24px; }
+    .filter-grid { display: grid; grid-template-columns: 1.7fr 1fr 1fr 1fr 1fr 1fr; gap: 44px 30px; align-items: end; }
+    .under-field { min-width: 0; }
+    .under-field label { display: flex; align-items: center; justify-content: space-between; height: 31px; overflow: hidden; color: #131c27; font-size: 17px; white-space: nowrap; }
+    .under-field .line { height: 2px; background: #8d8f91; }
+    .caret { display: inline-block; margin-left: auto; width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 7px solid #74787c; }
+    .reset-btn { width: 78px; height: 52px; border: 0; border-radius: 5px; color: #fff; background: #075e9c; font-size: 17px; }
+    .filter-grid .time { grid-column: 1; width: 66%; }
+    .filter-grid .industry { grid-column: 2; }
+    .filter-grid .source { grid-column: 3; }
+    .filter-grid .school { grid-column: 4; }
+    .filter-grid .oversea { grid-column: 5; }
+
+    .batch-row { height: 78px; display: flex; align-items: center; justify-content: space-between; padding: 0 22px; border-radius: 7px 7px 0 0; background: #fff; box-shadow: 0 -1px 6px rgba(30,44,61,.08); margin-top: 22px; }
+    .batch-icons { display: flex; gap: 16px; }
+    .batch-circle { width: 64px; height: 64px; display: grid; place-items: center; border: 0; border-radius: 50%; color: #97999b; background: rgba(210,210,210,.72); font-size: 27px; }
+    .batch-circle.primary { color: #fff; background: #06629f; box-shadow: 0 4px 10px rgba(0,58,103,.28); }
+    .export-group { display: flex; gap: 22px; align-items: center; }
+    .export-btn { height: 47px; padding: 0 22px; border: 0; border-radius: 5px; color: #fff; background: #075f9e; font-size: 17px; box-shadow: 0 3px 7px rgba(0,60,105,.2); }
+
+    .table-card { height: calc(100vh - 555px); min-height: 360px; overflow: auto; border: 1px solid #e3e6e9; background: #fff; }
+    .talent-table { width: 100%; min-width: 1420px; border-collapse: collapse; table-layout: fixed; }
+    .talent-table th { height: 61px; padding: 0 14px; color: #5d6269; background: #fafafa; border-right: 1px solid #e1e4e7; border-bottom: 1px solid #9a9da0; font-size: 16px; text-align: left; white-space: nowrap; }
+    .talent-table td { height: 55px; padding: 0 14px; border-right: 1px solid #e2e5e8; border-bottom: 1px solid #e2e5e8; overflow: hidden; color: #111b27; font-size: 15px; text-overflow: ellipsis; white-space: nowrap; }
+    .talent-table tr:hover td { background: #f5f9fd; }
+    .check { width: 20px; height: 20px; border: 2px solid #858585; border-radius: 3px; }
+    .photo { width: 41px; height: 41px; display: grid; place-items: center; border-radius: 2px; color: #fff; background: linear-gradient(145deg, #7fb4ed, #465c7c); font-size: 12px; }
+    .name-link { color: #176fe0; }
+    .status { color: #f4313e; }
+    .lock { color: #2b6ff3; font-size: 19px; }
+    .score { text-align: center; }
+    .pager { height: 64px; display: flex; align-items: center; justify-content: space-between; padding: 0 24px; border: 1px solid #d6dadd; border-top: 0; border-radius: 0 0 7px 7px; background: #fff; }
+    .pager-right { display: flex; align-items: center; gap: 24px; color: #656d76; }
+
+    /* 白底品牌悬浮入口 */
+    .orb-shell {
+      position: fixed;
+      z-index: 80;
+      width: 58px;
+      height: 58px;
+      left: 20px;
+      top: calc(100vh - 190px);
+      touch-action: none;
+      user-select: none;
+      transition: left .2s cubic-bezier(.2,.8,.2,1), top .2s cubic-bezier(.2,.8,.2,1), opacity .2s ease, transform .2s ease;
+    }
+    .orb-shell.dragging { transition: none; cursor: grabbing; }
+    .orb-shell.is-hidden { display: none; }
+    .orb-main {
+      position: absolute;
+      inset: 0 auto auto 0;
+      width: 58px;
+      height: 58px;
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      padding: 0 15px;
+      overflow: hidden;
+      border: 2px solid transparent;
+      border-radius: 31px;
+      color: #075f9f;
+      background: linear-gradient(#fff,#fff) padding-box, linear-gradient(145deg,#1c77e9,#36bed5) border-box;
+      box-shadow: 0 7px 22px rgba(25,76,121,.2), 0 0 0 5px rgba(50,168,215,.09);
+      cursor: grab;
+      transition: width .2s cubic-bezier(.2,.8,.2,1), box-shadow .2s ease;
+    }
+    .orb-main::after { content: ""; position: absolute; inset: 4px; border: 1px solid rgba(44,161,212,.12); border-radius: 27px; pointer-events: none; }
+    .orb-main:hover, .orb-shell:focus-within .orb-main, .orb-shell.intro .orb-main { width: 142px; box-shadow: 0 9px 28px rgba(25,76,121,.24), 0 0 0 6px rgba(50,168,215,.1); }
+    .orb-main:focus-visible { outline: 3px solid rgba(22,119,255,.25); outline-offset: 3px; }
+    .orb-main:active { cursor: grabbing; }
+    .orb-shell.dock-right .orb-main { inset: 0 0 auto auto; flex-direction: row-reverse; }
+    .orb-shell .feedback-glyph { flex: 0 0 28px; background: #fff; }
+    .orb-label { opacity: 0; flex: 0 0 auto; color: #075f9f; font-size: 15px; font-weight: 700; white-space: nowrap; transform: translateX(-5px); transition: opacity .13s ease .04s, transform .18s ease; }
+    .orb-main:hover .orb-label, .orb-shell:focus-within .orb-label, .orb-shell.intro .orb-label { opacity: 1; transform: translateX(0); }
+    .orb-hide {
+      position: absolute;
+      top: -14px;
+      right: -13px;
+      width: 27px;
+      height: 27px;
+      display: grid;
+      place-items: center;
+      padding: 0;
+      border: 1px solid #dbe5ee;
+      border-radius: 50%;
+      color: #607387;
+      background: #fff;
+      box-shadow: 0 4px 12px rgba(29,56,84,.17);
+      opacity: 0;
+      transform: scale(.72);
+      pointer-events: none;
+      transition: opacity .15s ease, transform .15s ease;
+    }
+    .orb-hide::before { content: "–"; font-size: 22px; line-height: 1; transform: translateY(-2px); }
+    .orb-shell:hover .orb-hide, .orb-shell:focus-within .orb-hide { opacity: 1; transform: scale(1); pointer-events: auto; }
+    .orb-shell.dock-right .orb-hide { right: auto; left: -13px; }
+    .orb-hide:hover { color: #075f9f; background: #eef8ff; }
+    .orb-hide:focus-visible { opacity: 1; outline: 3px solid rgba(22,119,255,.22); transform: scale(1); pointer-events: auto; }
+    .flight-orb { position: fixed; z-index: 120; width: 58px; height: 58px; display: grid; place-items: center; border: 2px solid transparent; border-radius: 50%; color: #075f9f; background: linear-gradient(#fff,#fff) padding-box, linear-gradient(145deg,#1c77e9,#36bed5) border-box; box-shadow: 0 7px 22px rgba(25,76,121,.2); pointer-events: none; }
+    .flight-orb .feedback-glyph { background: #fff; }
+
+    .feedback-toast {
+      position: fixed;
+      z-index: 110;
+      top: 78px;
+      right: 20px;
+      width: 356px;
+      padding: 16px 40px 15px 17px;
+      border: 1px solid #dbe8f3;
+      border-radius: 8px;
+      background: #fff;
+      box-shadow: 0 12px 34px rgba(24,53,83,.18);
+      opacity: 0;
+      transform: translateY(-10px);
+      pointer-events: none;
+      transition: opacity .2s ease, transform .2s ease;
+    }
+    .feedback-toast.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
+    .toast-title { margin-bottom: 7px; color: #203247; font-size: 15px; font-weight: 700; }
+    .toast-copy { color: #6f7d8d; font-size: 13px; line-height: 1.75; }
+    .toast-copy button { padding: 0; border: 0; color: #0b72cb; background: transparent; font-weight: 600; }
+    .toast-close { position: absolute; top: 9px; right: 11px; border: 0; color: #8794a1; background: transparent; font-size: 21px; }
+
+    .header-feedback-menu {
+      position: fixed;
+      z-index: 125;
+      width: 224px;
+      padding: 7px;
+      border: 1px solid #dbe4ec;
+      border-radius: 9px;
+      background: #fff;
+      box-shadow: 0 14px 36px rgba(18,45,72,.2);
+      opacity: 0;
+      transform: translateY(-7px);
+      pointer-events: none;
+      transition: opacity .16s ease, transform .16s ease;
+    }
+    .header-feedback-menu.open { opacity: 1; transform: translateY(0); pointer-events: auto; }
+    .header-feedback-menu::before { content: ""; position: absolute; top: -6px; right: 25px; width: 10px; height: 10px; border-left: 1px solid #dbe4ec; border-top: 1px solid #dbe4ec; background: #fff; transform: rotate(45deg); }
+    .header-menu-state { padding: 9px 11px 8px; color: #84909d; font-size: 12px; }
+    .header-menu-action { width: 100%; height: 42px; display: flex; align-items: center; gap: 10px; padding: 0 11px; border: 0; border-radius: 6px; color: #26394e; background: transparent; text-align: left; }
+    .header-menu-action:hover { color: #086cb5; background: #eef7ff; }
+    .header-menu-action + .header-menu-action { border-top: 1px solid #eef1f4; }
+    .menu-action-icon { width: 24px; color: #0873c2; font-size: 18px; text-align: center; }
+
+    /* 国小君首页配置模拟 */
+    .config-mask { position: fixed; z-index: 140; inset: 0; display: none; align-items: center; justify-content: center; background: rgba(17,36,56,.38); }
+    .config-mask.open { display: flex; }
+    .config-dialog { width: 540px; overflow: hidden; border-radius: 12px; background: #fff; box-shadow: 0 24px 70px rgba(13,35,58,.3); }
+    .config-head { height: 64px; display: flex; align-items: center; justify-content: space-between; padding: 0 24px; border-bottom: 1px solid #edf0f3; font-size: 18px; font-weight: 700; }
+    .config-head button { border: 0; color: #82909d; background: transparent; font-size: 24px; }
+    .config-body { padding: 24px; }
+    .config-path { margin-bottom: 20px; color: #84909d; font-size: 13px; }
+    .setting-card { display: flex; align-items: center; justify-content: space-between; padding: 20px; border: 1px solid #e2e8ee; border-radius: 9px; background: #fafcfe; }
+    .setting-title { margin-bottom: 7px; font-size: 16px; font-weight: 700; }
+    .setting-help { color: #778595; font-size: 13px; line-height: 1.6; }
+    .switch { position: relative; width: 48px; height: 26px; flex: 0 0 auto; padding: 0; border: 0; border-radius: 16px; background: #bdc6cf; transition: background .2s; }
+    .switch::after { content: ""; position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; border-radius: 50%; background: #fff; box-shadow: 0 2px 5px rgba(20,40,60,.22); transition: left .2s; }
+    .switch.on { background: #1677ff; }
+    .switch.on::after { left: 25px; }
+    .config-note { margin: 17px 2px 0; color: #8a96a3; font-size: 13px; }
+
+    /* 意见反馈独立流程页 */
+    .feedback-page { min-height: 100vh; color: #17283c; background: #f5f6f7; }
+    .feedback-header { height: 60px; display: flex; align-items: center; padding: 0 20px; border-bottom: 1px solid #d8dde2; background: #fff; }
+    .feedback-title { font-size: 20px; font-weight: 700; }
+    .feedback-nav { margin-left: auto; display: flex; align-items: center; gap: 28px; color: #425064; font-size: 16px; }
+    .feedback-nav .feedback-entry { color: #405064; }
+    .feedback-nav .header-separator { height: 25px; background: #ccd2d8; }
+    .feedback-layout { min-height: calc(100vh - 60px); display: grid; grid-template-columns: minmax(680px, 1fr) 350px; gap: 18px; padding: 24px 18px; }
+    .form-area { min-width: 0; }
+    .initiator-card { min-height: 210px; padding: 36px 38px; border-radius: 10px; background: #fff; }
+    .initiator-line { display: flex; align-items: center; gap: 15px; margin-bottom: 30px; color: #798797; }
+    .initiator-line .avatar { width: 50px; height: 50px; }
+    .initiator-line strong { color: #26394e; font-size: 17px; font-weight: 500; }
+    .start-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; align-items: center; }
+    .form-row { display: flex; align-items: center; gap: 14px; }
+    .form-row label { width: 55px; flex: 0 0 auto; color: #17283c; font-size: 15px; }
+    .form-row input, .form-row select { width: 100%; height: 48px; padding: 0 14px; border: 1px solid #d4dae0; border-radius: 4px; outline: none; background: #fff; }
+    .form-row input:focus, .form-row select:focus, .feedback-textarea:focus { border-color: #6baaff; box-shadow: 0 0 0 3px rgba(22,119,255,.08); }
+    .priority { display: flex; }
+    .priority button { height: 48px; min-width: 76px; border: 1px solid #d4dae0; border-right: 0; color: #233447; background: #fff; }
+    .priority button:first-child { border-radius: 4px 0 0 4px; }
+    .priority button:last-child { border-right: 1px solid #d4dae0; border-radius: 0 4px 4px 0; }
+    .priority button.active { border-color: #1677ff; color: #1677ff; background: #f3f8ff; }
+    .form-section { margin-top: 24px; background: #fff; }
+    .section-title { height: 57px; display: flex; align-items: center; padding: 0 32px; background: #f0f0f0; color: #122134; font-size: 16px; }
+    .section-body { padding: 8px 32px 28px; }
+    .wide-field { margin: 0 0 22px; }
+    .wide-field label { display: block; margin-bottom: 10px; font-size: 15px; }
+    .required::before { content: "*"; margin-right: 5px; color: #f13b43; }
+    .wide-field select { width: 100%; height: 48px; padding: 0 14px; border: 1px solid #d4dae0; border-radius: 5px; color: #a0a8b1; background: #fff; }
+    .textarea-wrap { position: relative; }
+    .feedback-textarea { width: 100%; height: 108px; resize: vertical; padding: 15px; border: 1px solid #d4dae0; border-radius: 5px; outline: 0; }
+    .char-count { position: absolute; right: 12px; bottom: 10px; color: #8d98a4; font-size: 13px; }
+    .upload-head { display: flex; align-items: center; justify-content: space-between; margin-top: 28px; }
+    .upload-btn, .submit-btn { height: 44px; padding: 0 24px; border: 0; border-radius: 7px; color: #fff; background: #2684f5; font-size: 15px; }
+    .upload-box { height: 120px; margin-top: 10px; display: grid; place-items: center; border: 1px solid #e1e5e9; color: #8a96a3; background: #fcfcfd; }
+    .upload-empty { text-align: center; line-height: 1.7; }
+    .upload-empty b { display: block; color: #6f9bcf; font-size: 28px; }
+    .submit-row { display: flex; justify-content: center; padding: 25px; }
+    .submit-btn { min-width: 118px; }
+    .process-card { min-height: 690px; padding: 38px 34px; border-radius: 10px; background: #fff; }
+    .process-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 38px; font-size: 19px; font-weight: 700; }
+    .process-head span:last-child { font-size: 15px; font-weight: 400; }
+    .timeline { position: relative; padding-left: 31px; }
+    .timeline::before { content: ""; position: absolute; left: 7px; top: 13px; bottom: 35px; width: 2px; background: #e9edf1; }
+    .timeline-item { position: relative; min-height: 110px; font-size: 16px; }
+    .timeline-item::before { content: ""; position: absolute; left: -29px; top: 4px; width: 10px; height: 10px; border-radius: 50%; background: #999; }
+    .timeline-item strong { margin-right: 9px; }
+    .feedback-success { position: fixed; z-index: 60; left: 50%; top: 80px; padding: 13px 20px; border-radius: 7px; color: #fff; background: rgba(18,160,106,.94); opacity: 0; transform: translate(-50%,-10px); pointer-events: none; transition: .2s; }
+    .feedback-success.show { opacity: 1; transform: translate(-50%,0); }
+
+    /* 原型评审辅助层：以下样式与内容均不属于生产 UI */
+    .dev-notes-toggle {
+      position: fixed;
+      z-index: 205;
+      right: 0;
+      top: 58%;
+      width: 40px;
+      min-height: 154px;
+      padding: 12px 8px;
+      border: 2px dashed #d9ceff;
+      border-right: 0;
+      border-radius: 10px 0 0 10px;
+      color: #fff;
+      background: #6347c7;
+      box-shadow: 0 10px 28px rgba(66,43,151,.27);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      line-height: 1.5;
+      writing-mode: vertical-rl;
+    }
+    .dev-notes-toggle:hover, .dev-notes-toggle:focus-visible { outline: 0; background: #5238b2; }
+    .dev-notes-toggle::before { content: "DEV"; margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,.4); writing-mode: horizontal-tb; letter-spacing: 0; }
+    .dev-notes-panel {
+      position: fixed;
+      z-index: 210;
+      top: 84px;
+      right: 52px;
+      bottom: 24px;
+      width: 390px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      border: 2px dashed #8d76de;
+      border-radius: 12px;
+      background: #fff;
+      box-shadow: 0 24px 65px rgba(43,31,91,.28);
+      opacity: 0;
+      transform: translateX(calc(100% + 90px));
+      pointer-events: none;
+      transition: opacity .2s ease, transform .24s cubic-bezier(.2,.8,.2,1);
+    }
+    .dev-notes-panel.open { opacity: 1; transform: translateX(0); pointer-events: auto; }
+    .dev-notes-head { position: relative; padding: 20px 48px 18px 20px; color: #fff; background: linear-gradient(115deg,#6347c7,#8066d9); }
+    .dev-only-badge { display: inline-flex; margin-bottom: 9px; padding: 4px 8px; border: 1px solid rgba(255,255,255,.58); border-radius: 4px; font-size: 11px; font-weight: 700; letter-spacing: .7px; }
+    .dev-notes-head h2 { margin: 0 0 7px; font-size: 19px; }
+    .dev-notes-head p { margin: 0; color: rgba(255,255,255,.82); font-size: 12px; line-height: 1.65; }
+    .dev-notes-close { position: absolute; top: 15px; right: 15px; width: 30px; height: 30px; border: 1px solid rgba(255,255,255,.38); border-radius: 7px; color: #fff; background: rgba(255,255,255,.08); font-size: 21px; }
+    .dev-notes-body { flex: 1; overflow: auto; padding: 16px 18px 20px; background: #faf9ff; }
+    .dev-note-card { display: grid; grid-template-columns: 30px 1fr; gap: 10px; padding: 13px 12px; border: 1px solid #e6e0fb; border-radius: 9px; background: #fff; }
+    .dev-note-card + .dev-note-card { margin-top: 10px; }
+    .dev-note-num { width: 26px; height: 26px; display: grid; place-items: center; border-radius: 50%; color: #fff; background: #6b50cc; font: 700 12px/1 Arial,sans-serif; }
+    .dev-note-title { margin: 2px 0 5px; color: #2d2547; font-size: 14px; font-weight: 700; }
+    .dev-note-copy { color: #6f6882; font-size: 12px; line-height: 1.7; }
+    .dev-flow { margin-top: 14px; padding: 13px; border: 1px dashed #b5a7e7; border-radius: 9px; color: #5e5575; background: #f4f1ff; font-size: 12px; line-height: 1.9; }
+    .dev-flow strong { color: #493a7a; }
+    .dev-doc-link { display: flex; align-items: center; justify-content: center; height: 42px; margin-top: 14px; border: 1px solid #7860d2; border-radius: 7px; color: #5b43b7; background: #fff; text-decoration: none; font-size: 13px; font-weight: 700; }
+    .dev-doc-link:hover { background: #f0ecff; }
+    .dev-disclaimer { padding: 12px 18px; border-top: 1px solid #e5e0f4; color: #817993; background: #fff; font-size: 11px; line-height: 1.55; text-align: center; }
+    .dev-marker { position: absolute; z-index: 220; display: none; width: 23px; height: 23px; place-items: center; border: 2px solid #fff; border-radius: 50%; color: #fff; background: #6b50cc; box-shadow: 0 3px 9px rgba(54,37,117,.32); font: 700 11px/1 Arial,sans-serif; pointer-events: none; }
+    body.dev-notes-open .dev-marker { display: grid; }
+    .feedback-entry .dev-marker { top: -7px; left: -7px; }
+    .side-collapse .dev-marker { top: -10px; right: -10px; }
+    .orb-shell > .dev-marker { top: -13px; left: -13px; }
+
+    @media (max-width: 1380px) {
+      .hr-header { grid-template-columns: 280px 1fr 440px; }
+      .hr-nav { gap: 24px; }
+      .filter-grid { gap: 38px 18px; }
+      .feedback-layout { grid-template-columns: minmax(650px, 1fr) 310px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <div id="talentView">
+    <header class="hr-header">
+      <div class="hr-brand"><span class="brand-mark">HR</span><span>人力资源</span></div>
+      <nav class="hr-nav" aria-label="主导航">
+        <a class="active" href="#">人才管理</a><a href="#">人员考察</a><a href="#">持续考察</a>
+      </nav>
+      <div class="hr-actions">
+        <span class="app-center">应用中心</span>
+        <span class="simple-icon" aria-hidden="true">⌂</span>
+        <span class="header-separator"></span>
+        <span class="simple-icon" aria-hidden="true">▣</span>
+        <button class="feedback-entry" id="topFeedbackEntry" type="button" aria-label="进入意见反馈" title="意见反馈">
+          <span class="feedback-glyph" aria-hidden="true"></span><span class="state-dot" aria-hidden="true"></span><span class="dev-marker" aria-hidden="true">2</span>
+        </button>
+        <span class="avatar" aria-label="用户头像">用户</span>
+      </div>
+    </header>
+
+    <aside class="side-nav" aria-label="人才库导航">
+      <div class="side-search"><span>搜索</span><span aria-hidden="true">⌕</span></div>
+      <ul class="side-list">
+        <li class="active" data-short="人才">人才库</li><li data-short="待入">待入职人才库</li><li data-short="在职">已入职人才库</li><li data-short="归档">已归档人才库</li><li data-short="标签">标签库</li>
+      </ul>
+      <button class="side-collapse" id="toggleSide" type="button" aria-label="收起侧边栏">‹<span class="dev-marker" aria-hidden="true">3</span></button>
+    </aside>
+
+    <main class="talent-page">
+      <div class="page-head">
+        <div class="breadcrumb"><b>人力资源首页</b>　›　人才库</div>
+        <div class="fullscreen">⌗ 全屏显示</div>
+      </div>
+      <div class="content-pad">
+        <section class="filter-panel" aria-label="人才筛选">
+          <span class="panel-chevron">⌃</span>
+          <div class="filter-grid">
+            <div class="under-field"><label>全局模糊搜索</label><div class="line"></div></div>
+            <div class="under-field"><label>姓名</label><div class="line"></div></div>
+            <div class="under-field"><label>性别 <span class="caret"></span></label><div class="line"></div></div>
+            <div class="under-field"><label>意向部门 <span class="caret"></span></label><div class="line"></div></div>
+            <div class="under-field"><label>意向岗位 <span class="caret"></span></label><div class="line"></div></div>
+            <div class="under-field"><label>招聘状态 <span class="caret"></span></label><div class="line"></div></div>
+            <div class="under-field time"><label>投递时间</label><div class="line"></div></div>
+            <div class="under-field industry"><label>【最新】行业/经历 <span class="caret"></span></label><div class="line"></div></div>
+            <div class="under-field source"><label>应届生类型 <span class="caret"></span></label><div class="line"></div></div>
+            <div class="under-field school"><label>院校级别 <span class="caret"></span></label><div class="line"></div></div>
+            <div class="under-field oversea"><label>海外工作经历 <span class="caret"></span></label><div class="line"></div></div>
+            <button class="reset-btn" type="button" id="resetFilters">重置</button>
+          </div>
+        </section>
+
+        <div class="batch-row">
+          <div class="batch-icons">
+            <button class="batch-circle" type="button" title="收藏">▮</button>
+            <button class="batch-circle primary" type="button" title="上传">↥</button>
+            <button class="batch-circle" type="button" title="删除">▰</button>
+            <button class="batch-circle" type="button" title="归档">▤</button>
+          </div>
+          <div class="export-group"><button class="export-btn" type="button">导出明细</button><button class="batch-circle primary" type="button" title="下载">↓</button><button class="batch-circle primary" type="button" title="搜索">⌕</button></div>
+        </div>
+
+        <section class="table-card" aria-label="人才数据表">
+          <table class="talent-table">
+            <colgroup><col style="width:50px"><col style="width:62px"><col style="width:90px"><col style="width:105px"><col style="width:100px"><col style="width:100px"><col style="width:210px"><col style="width:365px"><col style="width:270px"><col style="width:135px"></colgroup>
+            <thead><tr><th><div class="check"></div></th><th>照片</th><th>姓名</th><th>招聘状态</th><th>简历状态</th><th>投递时间</th><th>意向部门/岗位</th><th>教育背景</th><th>原工作经历</th><th>笔试/AI面试成绩</th></tr></thead>
+            <tbody id="talentRows"></tbody>
+          </table>
+        </section>
+        <div class="pager"><span>记录数: 11</span><div class="pager-right"><span>每页　40　⌄</span><span>1 / 1</span><span>‹　›</span></div></div>
+      </div>
+    </main>
+  </div>
+
+  <div id="feedbackView" class="feedback-page hidden">
+    <header class="feedback-header">
+      <div class="feedback-title">意见反馈</div>
+      <div class="feedback-nav">
+        <span>▦ 事务中心</span><span>⚙ 设置</span><span class="header-separator"></span><a href="#" title="返回人才库" style="color:inherit;text-decoration:none">⌂</a>
+        <button class="feedback-entry" type="button" aria-label="当前为意见反馈页面" title="意见反馈">
+          <span class="feedback-glyph" aria-hidden="true"></span>
+        </button>
+      </div>
+    </header>
+    <main class="feedback-layout">
+      <div class="form-area">
+        <section class="initiator-card">
+          <div class="initiator-line"><span class="avatar">用户</span><strong>当前用户（信息技术部）</strong><span>发起流程</span></div>
+          <div class="start-grid">
+            <div class="form-row"><label>标题：</label><input placeholder="发起后自动生成" disabled></div>
+            <div class="form-row"><label>优先级：</label><div class="priority"><button class="active" type="button">一般</button><button type="button">加急</button><button type="button">特急</button></div></div>
+          </div>
+        </section>
+        <section class="form-section">
+          <div class="section-title">基本信息</div>
+          <div class="section-body">
+            <div class="wide-field"><label class="required">终端</label><select><option>网页端</option><option>移动端</option></select></div>
+            <div class="wide-field"><label class="required">应用模块</label><select><option>人力资源－人才库</option><option>人力资源－人员考察</option><option>其他应用</option></select></div>
+          </div>
+          <div class="section-title">反馈说明</div>
+          <div class="section-body">
+            <div class="wide-field"><label class="required">问题或意见</label><div class="textarea-wrap"><textarea id="feedbackText" class="feedback-textarea" maxlength="300" placeholder="请描述您遇到的问题或建议。提交后，国小君团队会收到待办提醒。"></textarea><span class="char-count"><span id="charCount">0</span> / 300</span></div></div>
+            <div class="upload-head"><span>上传问题截图更快解决：</span><button class="upload-btn" type="button" id="uploadDemo">上传</button></div>
+            <div class="upload-box" id="uploadBox"><div class="upload-empty"><b>⬆</b>支持上传问题截图</div></div>
+          </div>
+          <div class="submit-row"><button class="submit-btn" id="submitFeedback" type="button">提交反馈</button></div>
+        </section>
+      </div>
+      <aside class="process-card">
+        <div class="process-head"><span>流程记录</span><span>▦ 流程图</span></div>
+        <div class="timeline"><div class="timeline-item"><strong>【发起人】</strong>起草</div><div class="timeline-item"><strong>【意见反馈处理人】</strong>处理</div></div>
+      </aside>
+    </main>
+    <div class="feedback-success" id="feedbackSuccess">反馈已提交，感谢您的建议</div>
+  </div>
+
+  <div class="orb-shell" id="feedbackOrb" aria-label="可拖拽的意见反馈入口">
+    <button class="orb-main" id="orbMain" type="button" aria-label="打开意见反馈；按住可拖拽">
+      <span class="feedback-glyph" aria-hidden="true"></span><span class="orb-label">意见反馈</span>
+    </button>
+    <button class="orb-hide" id="orbHide" type="button" aria-label="收起悬浮入口" title="收起悬浮入口"></button>
+    <span class="dev-marker" aria-hidden="true">1</span>
+  </div>
+
+  <aside class="feedback-toast" id="feedbackToast" role="status" aria-live="polite">
+    <button class="toast-close" id="toastClose" type="button" aria-label="关闭提示">×</button>
+    <div class="toast-title">悬浮入口已收起，可从这里进入</div>
+    <div class="toast-copy">如需重新显示，可在「国小君首页」进行配置。<button id="openConfig" type="button">前往配置</button></div>
+  </aside>
+
+  <div class="header-feedback-menu" id="headerFeedbackMenu" role="menu" aria-label="意见反馈入口菜单">
+    <div class="header-menu-state">悬浮入口当前已收起</div>
+    <button class="header-menu-action" id="menuOpenFeedback" type="button" role="menuitem"><span class="menu-action-icon">!</span><span>进入意见反馈</span></button>
+    <button class="header-menu-action" id="menuRestoreOrb" type="button" role="menuitem"><span class="menu-action-icon">◉</span><span>显示悬浮入口</span></button>
+  </div>
+
+  <div class="config-mask" id="configMask" role="dialog" aria-modal="true" aria-labelledby="configTitle">
+    <section class="config-dialog">
+      <div class="config-head"><span id="configTitle">国小君首页 · 个性化设置</span><button id="closeConfig" type="button" aria-label="关闭">×</button></div>
+      <div class="config-body">
+        <div class="config-path">国小君首页　/　设置　/　全局入口</div>
+        <div class="setting-card">
+          <div><div class="setting-title">意见反馈悬浮入口</div><div class="setting-help">在各应用页面显示可拖拽的意见反馈入口。<br>关闭后仍可通过应用右上角图标进入。</div></div>
+          <button class="switch" id="orbSwitch" type="button" role="switch" aria-checked="false" aria-label="显示意见反馈悬浮入口"></button>
+        </div>
+        <div class="config-note">设置保存在当前浏览器中，原型刷新后仍会保留。</div>
+      </div>
+    </section>
+  </div>
+
+  <button class="dev-notes-toggle" id="devNotesToggle" type="button" aria-expanded="false" aria-controls="devNotesPanel">仅原型｜开发标注</button>
+  <aside class="dev-notes-panel" id="devNotesPanel" aria-label="原型开发逻辑说明" aria-hidden="true">
+    <div class="dev-notes-head">
+      <span class="dev-only-badge">PROTOTYPE ONLY · 非生产界面</span>
+      <h2>悬浮入口开发逻辑</h2>
+      <p>本辅助层只用于产品评审和前端交接，紫色按钮、编号及说明面板均不进入生产版本。</p>
+      <button class="dev-notes-close" id="devNotesClose" type="button" aria-label="关闭开发标注">×</button>
+    </div>
+    <div class="dev-notes-body">
+      <section class="dev-note-card"><span class="dev-note-num">1</span><div><div class="dev-note-title">全局悬浮入口</div><div class="dev-note-copy">挂载在应用壳层。移动超过 6px 判定为拖拽，松手吸附最近边缘；未拖拽时点击新开意见反馈页。</div></div></section>
+      <section class="dev-note-card"><span class="dev-note-num">2</span><div><div class="dev-note-title">顶栏固定兜底</div><div class="dev-note-copy">始终显示。悬浮球可见时直接进入反馈；隐藏时先展开“进入反馈 / 显示悬浮入口”菜单。</div></div></section>
+      <section class="dev-note-card"><span class="dev-note-num">3</span><div><div class="dev-note-title">菜单位置联动</div><div class="dev-note-copy">默认位置随左侧菜单移动；用户拖拽过后改为自定义位置，菜单展开或收起不再重置，只做越界修正。</div></div></section>
+      <section class="dev-note-card"><span class="dev-note-num">4</span><div><div class="dev-note-title">隐藏与恢复</div><div class="dev-note-copy">收起动画结束后再保存隐藏状态。提示消失后仍可通过右上角入口恢复，避免悬浮球“放不回来”。</div></div></section>
+      <section class="dev-note-card"><span class="dev-note-num">5</span><div><div class="dev-note-title">配置与反馈来源</div><div class="dev-note-copy">生产环境由国小君用户配置服务保存显示开关；反馈页只接收应用、模块、页面地址等来源标识，不自动携带业务敏感数据。</div></div></section>
+      <div class="dev-flow"><strong>核心状态流：</strong><br>加载用户配置 → 显示或隐藏悬浮球<br>拖拽完成 → 保存吸附边与纵向比例<br>点击收起 → 飞向顶栏 → 保存隐藏状态<br>右上角恢复 → 更新配置 → 恢复上次位置</div>
+      <a class="dev-doc-link" href="feedback-floating-entry-development-notes.md" target="_blank">查看完整前端开发说明</a>
+    </div>
+    <div class="dev-disclaimer">紫色虚线体系 = 原型评审辅助内容；蓝色体系 = 业务界面。生产构建时请整体移除本辅助层。</div>
+  </aside>
+
+  <script>
+    (() => {
+      const STORAGE_HIDDEN = 'prototype.feedbackOrb.hidden.v2';
+      const STORAGE_POSITION = 'prototype.feedbackOrb.position.v2';
+      const STORAGE_SEEN = 'prototype.feedbackOrb.seen';
+      const STORAGE_MENU = 'prototype.sideMenu.collapsed';
+      const $ = id => document.getElementById(id);
+      const orb = $('feedbackOrb');
+      const orbMain = $('orbMain');
+      const orbHide = $('orbHide');
+      const toast = $('feedbackToast');
+      const configMask = $('configMask');
+      const headerMenu = $('headerFeedbackMenu');
+      const devNotesPanel = $('devNotesPanel');
+      let toastTimer;
+      let dragging = null;
+
+      function setDevNotesOpen(open) {
+        document.body.classList.toggle('dev-notes-open', open);
+        devNotesPanel.classList.toggle('open', open);
+        devNotesPanel.setAttribute('aria-hidden', String(!open));
+        $('devNotesToggle').setAttribute('aria-expanded', String(open));
+      }
+      $('devNotesToggle').addEventListener('click', () => setDevNotesOpen(!devNotesPanel.classList.contains('open')));
+      $('devNotesClose').addEventListener('click', () => setDevNotesOpen(false));
+
+      const people = [
+        ['候选人A','待安排','纪检检查室/党务专员','中国人民大学/国际关系与法律/本科','保密程度有…','—'],
+        ['候选人B','已安排','机构金融部/系统开发岗','哈佛大学/数学与应用数学/硕士','互联网/系统研发','—'],
+        ['候选人C','已安排','研究所/后勤管理岗','北京大学/公共管理/本科','新闻与咨询服务','—'],
+        ['候选人D','已安排','信息技术部/系统开发岗','复旦大学/计算机科学/本科','其他金融机构','95'],
+        ['候选人E','已安排','期货公司/国泰君安风控岗','温哥华大学/金融学/博士','实习/部门项目','—'],
+        ['候选人F','已安排','战略客户部/党务专员','巴黎第一大学/国际关系/硕士','国防部新闻中心','89'],
+        ['候选人G','待安排','信息技术部/开发岗','清华大学/计算机/本科','上海/开发','92'],
+        ['候选人H','已安排','信息技术部/系统开发岗位','北京大学/软件工程/本科','互联网企业','—'],
+        ['候选人I','已安排','机构金融部/党务专员','北京航空航天大学/航空专业','测试/测试','—'],
+        ['候选人J','已安排','国泰君安期货/运营岗','北京大学/经济学/本科','实习/部门','98'],
+        ['候选人K','已入职','研究所/党务专员','厦门大学/新闻学/硕士','媒体/编辑','99']
+      ];
+      $('talentRows').innerHTML = people.map((p, i) => `<tr>
+        <td><div class="check"></div></td><td><div class="photo">${String(i + 1).padStart(2,'0')}</div></td>
+        <td><span class="name-link">${p[0]}</span></td><td><span class="status">${p[1]}</span></td><td><span class="lock">▣</span></td>
+        <td>${i < 6 ? '2026-08' : '2026-07'}</td><td>${p[2]}</td><td title="${p[3]}">${p[3]}</td><td>${p[4]}</td><td class="score">${p[5]}</td>
+      </tr>`).join('');
+
+      function isFeedbackPage() { return location.hash === '#feedback'; }
+
+      function renderRoute() {
+        const feedback = isFeedbackPage();
+        $('talentView').classList.toggle('hidden', feedback);
+        $('feedbackView').classList.toggle('hidden', !feedback);
+        orb.classList.toggle('hidden', feedback);
+        toast.classList.remove('show');
+        if (!feedback) applyOrbState(false);
+        document.title = feedback ? '意见反馈｜流程发起' : '人力资源｜意见反馈悬浮入口原型';
+      }
+
+      function openFeedback() {
+        const url = location.href.split('#')[0] + '#feedback';
+        const opened = window.open(url, '_blank');
+        if (opened) opened.opener = null;
+        else location.hash = 'feedback';
+      }
+
+      function positionHeaderMenu() {
+        const rect = $('topFeedbackEntry').getBoundingClientRect();
+        headerMenu.style.top = `${rect.bottom + 9}px`;
+        headerMenu.style.left = `${Math.max(12, rect.right - 199)}px`;
+      }
+
+      function closeHeaderMenu() { headerMenu.classList.remove('open'); }
+
+      $('topFeedbackEntry').addEventListener('click', event => {
+        event.stopPropagation();
+        const hidden = localStorage.getItem(STORAGE_HIDDEN) === '1';
+        if (!hidden) { openFeedback(); return; }
+        positionHeaderMenu();
+        headerMenu.classList.toggle('open');
+      });
+      $('menuOpenFeedback').addEventListener('click', () => { closeHeaderMenu(); openFeedback(); });
+
+      function readPosition() {
+        try { return JSON.parse(localStorage.getItem(STORAGE_POSITION) || 'null'); } catch { return null; }
+      }
+
+      function clampPosition(left, top) {
+        const margin = 18;
+        const headerBottom = 88;
+        const maxLeft = Math.max(margin, innerWidth - 58 - margin);
+        const maxTop = Math.max(headerBottom, innerHeight - 58 - 24);
+        return { left: Math.min(Math.max(left, margin), maxLeft), top: Math.min(Math.max(top, headerBottom), maxTop) };
+      }
+
+      function positionOrb(animate = true) {
+        const saved = readPosition();
+        const defaultLeft = document.body.classList.contains('menu-collapsed') ? 86 : 20;
+        const proposed = saved ? { left: saved.side === 'right' ? innerWidth - 76 : 20, top: saved.top } : { left: defaultLeft, top: innerHeight - 190 };
+        const pos = clampPosition(proposed.left, proposed.top);
+        if (!animate) orb.style.transition = 'none';
+        orb.style.left = `${pos.left}px`;
+        orb.style.top = `${pos.top}px`;
+        orb.classList.toggle('dock-right', pos.left > innerWidth / 2);
+        if (!animate) requestAnimationFrame(() => { orb.style.transition = ''; });
+      }
+
+      function setHidden(hidden) {
+        localStorage.setItem(STORAGE_HIDDEN, hidden ? '1' : '0');
+        document.body.classList.toggle('orb-is-hidden', hidden);
+        orb.classList.toggle('is-hidden', hidden);
+        $('orbSwitch').classList.toggle('on', !hidden);
+        $('orbSwitch').setAttribute('aria-checked', String(!hidden));
+        $('topFeedbackEntry').title = hidden ? '意见反馈与悬浮入口设置' : '意见反馈';
+        $('topFeedbackEntry').setAttribute('aria-label', hidden ? '打开意见反馈与悬浮入口设置' : '进入意见反馈');
+      }
+
+      function applyOrbState(playIntro) {
+        const hidden = localStorage.getItem(STORAGE_HIDDEN) === '1';
+        setHidden(hidden);
+        positionOrb(false);
+        if (playIntro && !hidden && localStorage.getItem(STORAGE_SEEN) !== '1') {
+          orb.classList.add('intro');
+          localStorage.setItem(STORAGE_SEEN, '1');
+          setTimeout(() => orb.classList.remove('intro'), 2200);
+        }
+      }
+
+      function findHeaderTarget() {
+        return document.querySelector('#talentView:not(.hidden) .feedback-entry') || document.querySelector('.feedback-entry');
+      }
+
+      function animateHide() {
+        const start = orb.getBoundingClientRect();
+        const targetButton = findHeaderTarget();
+        const target = targetButton.getBoundingClientRect();
+        const clone = document.createElement('div');
+        clone.className = 'flight-orb';
+        clone.innerHTML = '<span class="feedback-glyph" aria-hidden="true"></span>';
+        clone.style.left = `${start.left}px`;
+        clone.style.top = `${start.top}px`;
+        document.body.appendChild(clone);
+        orb.style.opacity = '0';
+
+        const dx = target.left + target.width / 2 - (start.left + start.width / 2);
+        const dy = target.top + target.height / 2 - (start.top + start.height / 2);
+        const arc = Math.max(-150, Math.min(150, -Math.abs(dx) * .1));
+        const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const animation = clone.animate([
+          { transform: 'translate(0,0) scale(1)', opacity: 1 },
+          { transform: `translate(${dx * .48}px, ${dy * .42 + arc}px) scale(.72)`, opacity: .92, offset: .52 },
+          { transform: `translate(${dx}px, ${dy}px) scale(.35)`, opacity: .18 }
+        ], { duration: reduce ? 10 : 820, easing: 'cubic-bezier(.35,.02,.2,1)', fill: 'forwards' });
+        animation.onfinish = () => {
+          clone.remove();
+          orb.style.opacity = '';
+          setHidden(true);
+          targetButton.classList.add('pulse');
+          setTimeout(() => targetButton.classList.remove('pulse'), 1200);
+          showToast();
+        };
+      }
+
+      function showToast() {
+        clearTimeout(toastTimer);
+        toast.classList.add('show');
+        toastTimer = setTimeout(() => toast.classList.remove('show'), 8000);
+      }
+
+      function animateRestore() {
+        closeHeaderMenu();
+        setHidden(false);
+        positionOrb(false);
+        const end = orb.getBoundingClientRect();
+        const startButton = findHeaderTarget();
+        const start = startButton.getBoundingClientRect();
+        const clone = document.createElement('div');
+        clone.className = 'flight-orb';
+        clone.innerHTML = '<span class="feedback-glyph" aria-hidden="true"></span>';
+        clone.style.left = `${start.left + start.width / 2 - 29}px`;
+        clone.style.top = `${start.top + start.height / 2 - 29}px`;
+        document.body.appendChild(clone);
+        orb.style.visibility = 'hidden';
+        const dx = end.left + end.width / 2 - (start.left + start.width / 2);
+        const dy = end.top + end.height / 2 - (start.top + start.height / 2);
+        const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const animation = clone.animate([
+          { transform: 'translate(0,0) scale(.35)', opacity: .2 },
+          { transform: `translate(${dx * .52}px, ${dy * .42 - 80}px) scale(.7)`, opacity: .9, offset: .5 },
+          { transform: `translate(${dx}px, ${dy}px) scale(1)`, opacity: 1 }
+        ], { duration: reduce ? 10 : 720, easing: 'cubic-bezier(.22,.72,.2,1)', fill: 'forwards' });
+        animation.onfinish = () => { clone.remove(); orb.style.visibility = ''; orb.classList.add('intro'); setTimeout(() => orb.classList.remove('intro'), 1500); };
+      }
+
+      orbHide.addEventListener('click', event => { event.stopPropagation(); animateHide(); });
+      orbMain.addEventListener('click', () => { if (!dragging || !dragging.moved) openFeedback(); });
+
+      orbMain.addEventListener('pointerdown', event => {
+        if (event.button !== 0) return;
+        const rect = orb.getBoundingClientRect();
+        dragging = { pointerId: event.pointerId, startX: event.clientX, startY: event.clientY, left: rect.left, top: rect.top, moved: false };
+        orbMain.setPointerCapture(event.pointerId);
+      });
+      orbMain.addEventListener('pointermove', event => {
+        if (!dragging || dragging.pointerId !== event.pointerId) return;
+        const dx = event.clientX - dragging.startX;
+        const dy = event.clientY - dragging.startY;
+        if (!dragging.moved && Math.hypot(dx, dy) < 6) return;
+        dragging.moved = true;
+        orb.classList.remove('intro');
+        orb.classList.add('dragging');
+        const pos = clampPosition(dragging.left + dx, dragging.top + dy);
+        orb.style.left = `${pos.left}px`;
+        orb.style.top = `${pos.top}px`;
+        orb.classList.toggle('dock-right', pos.left > innerWidth / 2);
+      });
+
+      function endDrag(event) {
+        if (!dragging || dragging.pointerId !== event.pointerId) return;
+        if (dragging.moved) {
+          const rect = orb.getBoundingClientRect();
+          const side = rect.left + rect.width / 2 < innerWidth / 2 ? 'left' : 'right';
+          const pos = clampPosition(side === 'left' ? 20 : innerWidth - 78, rect.top);
+          orb.classList.remove('dragging');
+          orb.style.left = `${pos.left}px`;
+          orb.style.top = `${pos.top}px`;
+          orb.classList.toggle('dock-right', side === 'right');
+          localStorage.setItem(STORAGE_POSITION, JSON.stringify({ side, top: pos.top }));
+        }
+        setTimeout(() => { dragging = null; }, 0);
+      }
+      orbMain.addEventListener('pointerup', endDrag);
+      orbMain.addEventListener('pointercancel', endDrag);
+
+      $('toastClose').addEventListener('click', () => toast.classList.remove('show'));
+      $('openConfig').addEventListener('click', () => { toast.classList.remove('show'); configMask.classList.add('open'); });
+      $('closeConfig').addEventListener('click', () => configMask.classList.remove('open'));
+      configMask.addEventListener('click', event => { if (event.target === configMask) configMask.classList.remove('open'); });
+      $('orbSwitch').addEventListener('click', () => {
+        const wasHidden = localStorage.getItem(STORAGE_HIDDEN) === '1';
+        if (wasHidden) { animateRestore(); configMask.classList.remove('open'); }
+        else setHidden(true);
+      });
+      $('menuRestoreOrb').addEventListener('click', animateRestore);
+
+      function setMenuCollapsed(collapsed, persist = true) {
+        document.body.classList.toggle('menu-collapsed', collapsed);
+        const button = $('toggleSide');
+        button.setAttribute('aria-label', collapsed ? '展开侧边栏' : '收起侧边栏');
+        button.title = collapsed ? '展开菜单' : '收起菜单';
+        if (persist) localStorage.setItem(STORAGE_MENU, collapsed ? '1' : '0');
+        if (!readPosition()) positionOrb(true);
+      }
+      $('toggleSide').addEventListener('click', () => setMenuCollapsed(!document.body.classList.contains('menu-collapsed')));
+
+      document.querySelectorAll('.priority button').forEach(button => button.addEventListener('click', () => {
+        document.querySelectorAll('.priority button').forEach(item => item.classList.remove('active'));
+        button.classList.add('active');
+      }));
+      $('feedbackText').addEventListener('input', event => { $('charCount').textContent = event.target.value.length; });
+      $('uploadDemo').addEventListener('click', () => { $('uploadBox').innerHTML = '<div class="upload-empty"><b>✓</b>示例截图.png　上传成功</div>'; });
+      $('submitFeedback').addEventListener('click', () => {
+        const tip = $('feedbackSuccess');
+        tip.textContent = $('feedbackText').value.trim() ? '反馈已提交，感谢您的建议' : '请先填写问题或意见';
+        tip.style.background = $('feedbackText').value.trim() ? 'rgba(18,160,106,.94)' : 'rgba(241,70,77,.94)';
+        tip.classList.add('show'); setTimeout(() => tip.classList.remove('show'), 2200);
+      });
+      $('resetFilters').addEventListener('click', event => { event.currentTarget.textContent = '已重置'; setTimeout(() => { event.currentTarget.textContent = '重置'; }, 900); });
+
+      document.addEventListener('click', event => {
+        if (!headerMenu.contains(event.target) && event.target !== $('topFeedbackEntry')) closeHeaderMenu();
+      });
+      addEventListener('resize', () => { if (!isFeedbackPage()) { positionOrb(false); closeHeaderMenu(); } });
+      addEventListener('hashchange', renderRoute);
+      addEventListener('keydown', event => { if (event.key === 'Escape') { configMask.classList.remove('open'); toast.classList.remove('show'); setDevNotesOpen(false); } });
+
+      setMenuCollapsed(localStorage.getItem(STORAGE_MENU) === '1', false);
+      renderRoute();
+      if (!isFeedbackPage()) applyOrbState(true);
+    })();
+  </script>
+</body>
+</html>
