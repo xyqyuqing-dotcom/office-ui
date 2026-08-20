@@ -1,0 +1,2196 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval' blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; style-src 'unsafe-inline' blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; img-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; font-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; media-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; worker-src blob:; connect-src blob: data:; frame-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<title>流程运营驾驶舱</title>
+<style>:root{color-scheme:light dark;background:light-dark(rgb(255 255 255), rgb(24 24 24))}html,body{margin:0}body{box-sizing:border-box;padding:1rem;background:inherit}iframe{display:block;width:100%;height:calc(100vh - 2rem);margin:0 auto;border:0}</style>
+</head>
+<body>
+<iframe sandbox="allow-scripts allow-downloads" referrerpolicy="no-referrer" title="流程运营驾驶舱" srcdoc="&lt;!doctype html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+&lt;meta name=&quot;referrer&quot; content=&quot;no-referrer&quot;&gt;
+&lt;meta http-equiv=&quot;Content-Security-Policy&quot; content=&quot;default-src &#x27;none&#x27;; script-src &#x27;unsafe-inline&#x27; &#x27;unsafe-eval&#x27; &#x27;wasm-unsafe-eval&#x27; blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; style-src &#x27;unsafe-inline&#x27; blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; img-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; font-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; media-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; worker-src blob:; connect-src blob: data:; frame-src &#x27;none&#x27;; object-src &#x27;none&#x27;; base-uri &#x27;none&#x27;; form-action &#x27;none&#x27;&quot;&gt;
+&lt;title&gt;Flow Operations Cockpit Source&lt;/title&gt;
+&lt;style&gt;:root {
+  color-scheme: light dark;
+  background-color: var(
+    --background,
+    var(--color-background-primary, light-dark(rgb(255 255 255), rgb(24 24 24)))
+  ) !important;
+
+  /* Agent-facing contract; keep in sync with SKILL.md. */
+  --background: var(
+    --color-background-primary,
+    light-dark(rgb(255 255 255), rgb(24 24 24))
+  );
+  --foreground: var(
+    --color-text-primary,
+    light-dark(rgb(26 28 31), rgb(255 255 255))
+  );
+  --card: color-mix(in oklab, var(--foreground) 5%, var(--background));
+  --card-foreground: var(
+    --color-text-primary,
+    light-dark(rgb(26 28 31), rgb(255 255 255))
+  );
+  --popover: var(
+    --color-background-secondary,
+    light-dark(rgb(255 255 255), rgb(45 45 45))
+  );
+  --popover-foreground: var(
+    --color-text-primary,
+    light-dark(rgb(26 28 31), rgb(255 255 255))
+  );
+  --primary: var(
+    --color-text-info,
+    light-dark(rgb(51 156 255), rgb(131 195 255))
+  );
+  --primary-foreground: var(
+    --color-text-inverse,
+    light-dark(rgb(255 255 255), rgb(13 13 13))
+  );
+  --secondary: var(
+    --color-background-secondary,
+    light-dark(rgb(255 255 255 / 96%), rgb(54 54 54 / 96%))
+  );
+  --secondary-foreground: var(
+    --color-text-primary,
+    light-dark(rgb(26 28 31), rgb(255 255 255))
+  );
+  --muted: color-mix(in srgb, var(--foreground) 10%, transparent);
+  --muted-foreground: var(
+    --color-text-secondary,
+    light-dark(rgb(26 28 31 / 49.4%), rgb(255 255 255 / 49.8%))
+  );
+  --accent: var(
+    --color-background-info,
+    light-dark(rgb(229 242 255), rgb(13 39 63))
+  );
+  --accent-foreground: var(
+    --color-text-info,
+    light-dark(rgb(51 156 255), rgb(131 195 255))
+  );
+  --destructive: var(
+    --color-text-warning,
+    light-dark(rgb(226 85 7), rgb(255 133 73))
+  );
+  --border: var(
+    --color-border-secondary,
+    light-dark(rgb(26 28 31 / 8%), rgb(255 255 255 / 8.2%))
+  );
+  --input: var(
+    --color-border-primary,
+    light-dark(
+      rgb(26 28 31 / 11.8%),
+      color-mix(in oklab, rgb(0 0 0) 10%, transparent)
+    )
+  );
+  --ring: var(
+    --color-ring-primary,
+    light-dark(rgb(51 156 255), rgb(131 195 255 / 76%))
+  );
+  --font-size-base: var(--font-text-md-size, 14px);
+  --blue: light-dark(rgb(51 156 255), rgb(51 156 255));
+  --orange: light-dark(rgb(226 85 7), rgb(251 106 34));
+  --green: light-dark(rgb(0 162 64), rgb(64 201 119));
+  --red: light-dark(rgb(224 46 42), rgb(255 103 100));
+  --purple: light-dark(rgb(146 79 247), rgb(173 123 249));
+  --yellow: light-dark(rgb(255 195 0), rgb(255 210 64));
+  --viz-series-1: var(--primary);
+  --viz-series-2: light-dark(rgb(243 136 59), rgb(245 154 86));
+  --viz-series-3: light-dark(rgb(93 201 119), rgb(116 213 139));
+  --viz-series-4: light-dark(rgb(235 119 177), rgb(240 143 192));
+  --viz-series-5: light-dark(rgb(155 121 236), rgb(170 145 239));
+  --viz-series-6: light-dark(rgb(58 185 177), rgb(90 203 194));
+
+  /* Internal implementation variables; not part of the agent contract. */
+  --font-sans: -apple-system, system-ui, &quot;Segoe UI&quot;, sans-serif;
+  --font-mono:
+    ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, &quot;Liberation Mono&quot;,
+    monospace;
+  --font-size-normal: max(11px, var(--font-size-base));
+  --font-size-tooltip: calc(var(--font-size-base) - 1px);
+  --font-size-small: max(11px, calc(var(--font-size-base) - 2px));
+  --font-size-h1: calc(var(--font-size-normal) * 1.7142857143);
+  --font-size-h2: calc(var(--font-size-normal) * 1.4285714286);
+  --font-size-h3: calc(var(--font-size-normal) * 1.2857142857);
+  --font-weight-normal: 430;
+  --font-weight-medium: 500;
+  --line-height-normal: calc(var(--font-size-normal) * 1.5);
+  --line-height-tooltip: calc(var(--font-size-tooltip) * 1.4285714286);
+  --line-height-small: calc(var(--font-size-small) + 4px);
+  --radius: var(--border-radius-lg, 12.5px);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-2xl: calc(var(--radius) * 1.6);
+  --radius-full: 9999px;
+  --shadow-sm: 0 1px 2px -1px rgb(0 0 0 / 8%);
+  --checkmark-image: url(&quot;data:image/svg+xml,%3Csvg xmlns=&#x27;http://www.w3.org/2000/svg&#x27; viewBox=&#x27;0 0 17 17&#x27;%3E%3Cpath d=&#x27;M12.8961 3.64101C13.1297 3.41418 13.4984 3.37523 13.7779 3.56581C14.0571 3.75635 14.1554 4.11331 14.0299 4.41347L13.9615 4.53847L7.71151 13.7045C7.59411 13.8767 7.4063 13.9877 7.19881 14.0072C6.99136 14.0267 6.78564 13.9533 6.63826 13.806L2.88826 10.056L2.79842 9.9457C2.6192 9.67407 2.64927 9.30496 2.88826 9.06581C3.12738 8.82669 3.49647 8.79676 3.76815 8.97597L3.8785 9.06581L7.03084 12.2182L12.8053 3.74941L12.8961 3.64101Z&#x27;/%3E%3C/svg%3E&quot;);
+
+  /* Legacy aliases; not part of the current agent contract. */
+  --viz-bg: transparent;
+  --viz-panel: var(--card);
+  --viz-border: var(--border);
+  --viz-text: var(--foreground);
+  --viz-muted: var(--muted-foreground);
+  --viz-accent: var(--primary);
+  --viz-accent-text: var(--primary-foreground);
+  --viz-accent-bg: var(--accent);
+  --viz-font-size: var(--font-size-base);
+  --viz-warning: var(--destructive);
+}
+
+:root[data-theme=&quot;light&quot;] {
+  color-scheme: light;
+}
+
+:root[data-theme=&quot;dark&quot;] {
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html &gt; body {
+  /* Preserve MCP aliases for older inline renderers without creating :root cycles. */
+  --color-background-primary: var(
+    --background,
+    light-dark(rgb(255 255 255), rgb(24 24 24))
+  );
+  --color-text-primary: var(
+    --foreground,
+    light-dark(rgb(26 28 31), rgb(255 255 255))
+  );
+  --color-border-secondary: var(
+    --border,
+    light-dark(rgb(26 28 31 / 8%), rgb(255 255 255 / 8.2%))
+  );
+
+  margin: 0;
+  padding: 5px;
+  color: var(--foreground);
+  background: transparent !important;
+  font-family: var(--font-sans);
+  font-size: var(--font-size-normal);
+  font-weight: var(--font-weight-normal);
+  line-height: var(--line-height-normal);
+}
+
+a {
+  color: color-mix(in srgb, var(--viz-accent) 80%, var(--viz-text) 20%);
+  cursor: pointer;
+  font-weight: var(--font-weight-medium, 500);
+  text-decoration: none;
+  text-underline-offset: 2px;
+}
+
+a:is(:hover, :focus-visible) {
+  text-decoration-line: underline;
+  text-decoration-style: dashed;
+  text-decoration-thickness: 0.5px;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  margin-block: 0;
+}
+
+h1 {
+  font-size: var(--font-size-h1);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.25;
+}
+
+h2 {
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.25;
+}
+
+h3,
+h4,
+h5,
+h6 {
+  font-size: var(--font-size-h3);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.3;
+}
+
+b,
+strong,
+th {
+  font-weight: var(--font-weight-medium);
+}
+
+code:not(pre code) {
+  display: inline;
+  padding: 1px 6px;
+  border-radius: var(--radius-sm);
+  corner-shape: superellipse(1.5);
+  background: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.92em;
+  overflow-wrap: anywhere;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  word-break: break-word;
+}
+
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  color: var(--foreground);
+  font: inherit;
+  text-align: start;
+}
+
+.table :is(th, td) {
+  padding-block: 10px;
+  padding-inline: 0 24px;
+  overflow-wrap: anywhere;
+  border-bottom: 1px solid var(--border);
+  text-align: start;
+  vertical-align: top;
+}
+
+.table-responsive &gt; .table :is(th, td) {
+  overflow-wrap: break-word;
+}
+
+.table :is(th, td):last-child {
+  padding-inline-end: 0;
+}
+
+.table :is(caption, thead th) {
+  font-weight: 600;
+}
+
+.table thead th {
+  padding-block: 8px;
+  border-bottom-color: color-mix(in srgb, var(--foreground) 16%, transparent);
+}
+
+.table tbody tr:last-child :is(th, td) {
+  border-bottom: 0;
+}
+
+.table.table-sm :is(th, td) {
+  padding-block: 6px;
+}
+
+.table.table-sm :is(th, td):not(:last-child) {
+  padding-inline-end: 16px;
+}
+
+.table :is(.text-end, [align=&quot;right&quot;]) {
+  text-align: end;
+  font-variant-numeric: tabular-nums;
+}
+
+.table :is(.text-center, [align=&quot;center&quot;]) {
+  text-align: center;
+}
+
+.table .text-nowrap {
+  white-space: nowrap;
+}
+
+#widget {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  padding: 0;
+  background: transparent !important;
+}
+
+.card {
+  min-width: 0;
+  padding: 12px;
+  overflow: hidden;
+  overflow-wrap: break-word;
+  border-radius: var(--radius-2xl);
+  corner-shape: superellipse(1.5);
+  color: var(--card-foreground);
+  background: var(--card);
+}
+
+#widget &gt; :not(.card, .progress) {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.tooltip {
+  position: fixed;
+  z-index: 50;
+  top: 0;
+  left: 0;
+  width: max-content;
+  max-width: min(
+    20rem,
+    var(--tooltip-available-width, calc(100vw - 10px)),
+    calc(100vw - 10px)
+  );
+  max-height: min(
+    var(--tooltip-available-height, calc(100vh - 10px)),
+    calc(100vh - 10px)
+  );
+  padding: 4px 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  corner-shape: superellipse(1.5);
+  color: var(--popover-foreground);
+  background: var(--popover);
+  box-shadow: none;
+  font-size: var(--font-size-tooltip);
+  line-height: var(--line-height-tooltip);
+  overflow-wrap: break-word;
+  white-space: normal;
+  pointer-events: none;
+  user-select: none;
+}
+
+.viz-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(max(180px, 24%), 1fr));
+  gap: 10px;
+}
+
+.viz-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.viz-stat-value {
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.25;
+}
+
+.viz-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.progress {
+  display: flex;
+  height: 6px;
+  overflow: hidden;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: var(--muted);
+}
+
+.progress-bar {
+  height: 100%;
+  flex-shrink: 0;
+  border: 0;
+  background: var(--viz-series-1);
+}
+
+.viz-badge {
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+  color: var(--accent-foreground);
+  background: var(--accent);
+  font-weight: var(--font-weight-medium);
+}
+
+small,
+.text-small,
+.viz-badge {
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+}
+
+.text-muted {
+  color: var(--muted-foreground);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.viz-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.viz-controls &gt; .form-label {
+  display: grid;
+  min-width: min(100%, 260px);
+  flex: 1 1 280px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: 2px 12px;
+  margin-bottom: 0;
+}
+
+.viz-controls &gt; .form-label &gt; :is(.form-control, .form-range, .form-select) {
+  grid-column: 1 / -1;
+}
+
+.btn,
+.form-check-input,
+.form-control,
+.form-range,
+.form-select {
+  font: inherit;
+}
+
+.btn {
+  appearance: button;
+  display: inline-flex;
+  inline-size: fit-content;
+  max-inline-size: 100%;
+  min-height: 28px;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  margin: 0;
+  padding: 0 8px;
+  -webkit-app-region: no-drag;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-lg);
+  corner-shape: superellipse(1.5);
+  color: var(--secondary-foreground);
+  background: var(--secondary);
+  cursor: var(--cursor-interaction, pointer);
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  user-select: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+.btn:is(.btn-block, .viz-tile) {
+  inline-size: 100%;
+}
+
+.btn.viz-tile {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+a.btn {
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.btn:not(:disabled):hover {
+  background: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.btn-primary {
+  border-color: transparent;
+  color: var(--primary-foreground);
+  background: var(--foreground);
+  background-clip: padding-box;
+}
+
+.btn-primary .text-muted {
+  color: color-mix(in srgb, var(--primary-foreground) 50%, transparent);
+}
+
+.btn-primary:not(:disabled):hover {
+  background: color-mix(in srgb, var(--foreground) 80%, transparent);
+  background-clip: padding-box;
+}
+
+.btn-ghost {
+  border-color: transparent;
+  color: var(--muted-foreground);
+  background: transparent;
+}
+
+.btn-ghost:not(:disabled):hover {
+  color: var(--foreground);
+  background: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+[data-lucide] {
+  stroke-width: 1.6;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--foreground);
+}
+
+.form-control {
+  display: block;
+  width: 100%;
+  min-height: 28px;
+  padding: 0 8px;
+  outline: none;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-lg);
+  corner-shape: superellipse(1.5);
+  color: var(--foreground);
+  background: var(--secondary);
+}
+
+.form-control::placeholder {
+  color: var(--muted-foreground);
+}
+
+.form-control[type=&quot;file&quot;] {
+  padding: 0;
+  overflow: hidden;
+  cursor: var(--cursor-interaction, pointer);
+}
+
+.form-control[type=&quot;file&quot;]::file-selector-button {
+  min-height: 26px;
+  margin-right: 8px;
+  padding: 0 8px;
+  border: 0;
+  border-right: 1px solid var(--input);
+  color: var(--secondary-foreground);
+  background: var(--secondary);
+  cursor: inherit;
+  font: inherit;
+}
+
+.form-control[type=&quot;file&quot;]:not(:disabled):hover::file-selector-button {
+  background: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.form-control-color[type=&quot;color&quot;] {
+  width: 40px;
+  height: 28px;
+  padding: 3px;
+  cursor: var(--cursor-interaction, pointer);
+}
+
+.form-control-color[type=&quot;color&quot;]::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+.form-control-color[type=&quot;color&quot;]::-webkit-color-swatch {
+  border: 0;
+  border-radius: calc(var(--radius-lg) - 4px);
+  corner-shape: superellipse(1.5);
+}
+
+textarea.form-control {
+  height: auto;
+  min-height: 72px;
+  padding: 8px 10px;
+  resize: vertical;
+}
+
+.form-control:focus-visible {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-control:disabled,
+.form-select:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.form-select {
+  appearance: none;
+  display: block;
+  width: 100%;
+  min-height: 28px;
+  margin: 0;
+  padding: 0 32px 0 8px;
+  outline: none;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-lg);
+  corner-shape: superellipse(1.5);
+  color: var(--foreground);
+  background-color: var(--secondary);
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--muted-foreground) 50%),
+    linear-gradient(135deg, var(--muted-foreground) 50%, transparent 50%);
+  background-position:
+    calc(100% - 14px) 50%,
+    calc(100% - 10px) 50%;
+  background-repeat: no-repeat;
+  background-size: 4px 4px;
+  cursor: var(--cursor-interaction, default);
+}
+
+.form-select:not(:disabled):hover {
+  background-color: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.form-select:focus-visible {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-check {
+  display: flex;
+  min-height: 20px;
+  align-items: center;
+  gap: 6px;
+}
+
+.form-check-input {
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  flex: 0 0 auto;
+  margin: 0;
+  border: 1px solid var(--input);
+  color: var(--primary-foreground);
+  background-color: transparent;
+  cursor: var(--cursor-interaction, default);
+  transition:
+    background-color 150ms,
+    border-color 150ms,
+    box-shadow 150ms;
+}
+
+.form-check:not(.form-switch) .form-check-input[type=&quot;checkbox&quot;] {
+  border-color: var(--input);
+  border-radius: var(--radius-sm);
+  corner-shape: superellipse(1.5);
+  background-color: var(--secondary);
+  box-shadow: var(--shadow-sm);
+}
+
+.form-check:not(.form-switch)
+  .form-check-input:not(:disabled):not(:checked):hover {
+  background-color: var(--card);
+}
+
+.form-check:not(.form-switch) .form-check-input[type=&quot;checkbox&quot;]:checked {
+  border-color: var(--primary);
+  background-color: var(--primary);
+}
+
+.form-check:not(.form-switch)
+  .form-check-input[type=&quot;checkbox&quot;]:checked::before {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--primary-foreground);
+  content: &quot;&quot;;
+  mask: var(--checkmark-image) center / 12px 12px no-repeat;
+}
+
+.form-check-input[type=&quot;radio&quot;] {
+  width: 14px;
+  height: 14px;
+  border-radius: var(--radius-full);
+}
+
+.form-check-input[type=&quot;radio&quot;]:checked {
+  border: 2px solid var(--primary);
+  background:
+    radial-gradient(circle, var(--primary-foreground) 0 2.5px, transparent 3px),
+    var(--primary);
+}
+
+.form-check:not(.form-switch) .form-check-input:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.form-check:not(.form-switch) .form-check-input:disabled {
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.form-check:not(.form-switch) .form-check-input:disabled + .form-check-label {
+  cursor: not-allowed;
+}
+
+.form-switch .form-check-input:disabled,
+.form-switch .form-check-input:disabled + .form-check-label {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.form-check-label {
+  color: var(--foreground);
+  cursor: var(--cursor-interaction, default);
+}
+
+.form-switch .form-check-input {
+  position: relative;
+  width: 32px;
+  height: 20px;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: var(--muted);
+  box-shadow: none;
+  transition: background-color 200ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.form-switch .form-check-input::before {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 16px;
+  height: 16px;
+  box-sizing: border-box;
+  border: 1px solid light-dark(var(--primary-foreground), var(--foreground));
+  border-radius: var(--radius-full);
+  background: light-dark(var(--primary-foreground), var(--foreground));
+  box-shadow: var(--shadow-sm);
+  content: &quot;&quot;;
+  transform: translate(2px, -50%);
+  transition: transform 200ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.form-switch .form-check-input:checked {
+  background: var(--primary);
+}
+
+.form-switch .form-check-input:checked::before {
+  transform: translate(14px, -50%);
+}
+
+.form-switch .form-check-input:focus-visible {
+  box-shadow: 0 0 0 2px var(--ring);
+}
+
+.form-range {
+  appearance: none;
+  display: block;
+  width: 100%;
+  height: 28px;
+  flex: 1;
+  margin: 0;
+  padding: 0;
+  outline: none;
+  border: 0;
+  accent-color: var(--primary);
+  background: linear-gradient(
+      color-mix(in srgb, var(--foreground) 7%, transparent),
+      color-mix(in srgb, var(--foreground) 7%, transparent)
+    )
+    center / 100% 2px no-repeat;
+}
+
+.form-range::-webkit-slider-runnable-track {
+  height: 28px;
+  background: transparent;
+}
+
+.form-range::-webkit-slider-thumb {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  margin-top: 4px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  background: light-dark(var(--primary-foreground), var(--foreground));
+}
+
+.form-range:focus-visible::-webkit-slider-thumb {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-range::-moz-range-track {
+  height: 28px;
+  background: transparent;
+}
+
+.form-range::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  background: light-dark(var(--primary-foreground), var(--foreground));
+}
+
+.form-range:focus-visible::-moz-range-thumb {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-range:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.btn:not(.btn-primary, .viz-tile):is(
+  [aria-pressed=&quot;true&quot;],
+  [aria-selected=&quot;true&quot;],
+  .is-selected
+) {
+  border-color: var(--primary);
+  color: var(--primary-foreground);
+  background: var(--primary);
+}
+
+.btn.viz-tile:is([aria-pressed=&quot;true&quot;], [aria-selected=&quot;true&quot;], .is-selected) {
+  border-color: var(--primary);
+  box-shadow: inset 0 0 0 1px var(--primary);
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+#widget &gt; svg {
+  width: 100%;
+}
+
+/* Model-authored chart rules can otherwise stretch icons after these styles load. */
+svg.lucide {
+  display: block;
+  width: 16px !important;
+  height: 16px !important;
+  flex: none;
+  margin: 0 !important;
+  stroke-width: 1.6;
+}
+
+.text-warning,
+.text-destructive {
+  color: var(--destructive);
+}
+
+html&gt;body{padding:0}&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div id=&quot;flow-cockpit-prototype&quot;&gt;
+  &lt;style&gt;
+    #flow-cockpit-prototype {
+      --fin-blue-950: #172b4d;
+      --fin-blue-900: #0754c9;
+      --fin-blue-800: #075fe5;
+      --fin-blue-700: #0b63f6;
+      --fin-blue-600: #2d7fff;
+      --fin-blue-100: #eaf3ff;
+      --fin-blue-050: #f4f8ff;
+      --fin-gold-600: #a87823;
+      --fin-gold-500: #cf9f43;
+      --fin-gold-100: #fff6e2;
+      --fin-ink: #17243a;
+      --fin-sub: #69778e;
+      --fin-line: #e3e9f2;
+      --fin-bg: #f4f7fb;
+      --fin-white: #ffffff;
+      --fin-cyan: #30a7c7;
+      --fin-orange: #e4943a;
+      --fin-green: #268a6c;
+      color: var(--fin-ink);
+      font-family: &quot;Segoe UI&quot;, &quot;PingFang SC&quot;, &quot;Microsoft YaHei UI&quot;, &quot;Microsoft YaHei&quot;, Arial, sans-serif;
+      font-size: 14px;
+      line-height: 1.55;
+      width: 100%;
+      background: transparent;
+    }
+    #flow-cockpit-prototype * { box-sizing: border-box; }
+    #flow-cockpit-prototype button,
+    #flow-cockpit-prototype select,
+    #flow-cockpit-prototype input { font: inherit; }
+    #flow-cockpit-prototype button { cursor: pointer; }
+    #flow-cockpit-prototype .fcp-shell {
+      overflow: hidden;
+      background: var(--fin-bg);
+      border: 1px solid #e0e7f0;
+      border-radius: 14px;
+      box-shadow: 0 18px 54px rgba(30, 78, 145, 0.11);
+    }
+    #flow-cockpit-prototype .fcp-topbar {
+      min-height: 58px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 0 20px;
+      position: relative;
+      isolation: isolate;
+      overflow: hidden;
+      color: var(--fin-white);
+      background: linear-gradient(108deg, #0657df 0%, #0b63f6 58%, #2b82ff 100%);
+      border-bottom: 2px solid var(--fin-gold-500);
+    }
+    #flow-cockpit-prototype .fcp-topbar::before {
+      content: &quot;&quot;;
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      opacity: .17;
+      background-image:
+        linear-gradient(rgba(255,255,255,.42) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.42) 1px, transparent 1px),
+        linear-gradient(90deg, transparent 8%, rgba(255,255,255,.35) 8% 13%, transparent 13% 30%, rgba(255,255,255,.22) 30% 38%, transparent 38% 61%, rgba(255,255,255,.30) 61% 65%, transparent 65%);
+      background-size: 26px 26px, 26px 26px, 210px 100%;
+    }
+    #flow-cockpit-prototype .fcp-brand { display: flex; align-items: center; gap: 11px; min-width: 0; }
+    #flow-cockpit-prototype .fcp-brand-mark {
+      width: 31px;
+      height: 31px;
+      display: grid;
+      place-items: center;
+      border-radius: 7px;
+      color: var(--fin-blue-700);
+      background: rgba(255,255,255,.96);
+      box-shadow: 0 5px 18px rgba(0,54,147,.18);
+      font-weight: 500;
+    }
+    #flow-cockpit-prototype .fcp-brand-title { font-size: 17px; font-weight: 500; white-space: nowrap; }
+    #flow-cockpit-prototype .fcp-topmeta { display: flex; align-items: center; gap: 12px; color: rgba(255,255,255,.92); font-size: 12px; }
+    #flow-cockpit-prototype .fcp-avatar {
+      width: 30px;
+      height: 30px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      color: #8a631d;
+      background: var(--fin-gold-100);
+      font-weight: 500;
+    }
+    #flow-cockpit-prototype .fcp-layout { display: grid; grid-template-columns: 184px minmax(0, 1fr); }
+    #flow-cockpit-prototype .fcp-sidebar {
+      padding: 16px 11px;
+      background: var(--fin-white);
+      border-right: 1px solid var(--fin-line);
+    }
+    #flow-cockpit-prototype .fcp-nav-label {
+      padding: 4px 10px 8px;
+      color: #8a97aa;
+      font-size: 11px;
+      letter-spacing: .08em;
+    }
+    #flow-cockpit-prototype .fcp-nav-btn {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      margin-bottom: 5px;
+      padding: 10px 11px;
+      border: 0;
+      border-radius: 7px;
+      color: #536279;
+      background: transparent;
+      text-align: left;
+    }
+    #flow-cockpit-prototype .fcp-nav-btn[aria-selected=&quot;true&quot;] {
+      color: var(--fin-blue-800);
+      background: var(--fin-blue-100);
+      box-shadow: inset 3px 0 0 var(--fin-blue-700);
+      font-weight: 500;
+    }
+    #flow-cockpit-prototype .fcp-nav-icon {
+      width: 25px;
+      height: 25px;
+      display: grid;
+      place-items: center;
+      border-radius: 6px;
+      color: currentColor;
+      background: rgba(13, 85, 181, .08);
+      font-size: 12px;
+    }
+    #flow-cockpit-prototype .fcp-side-foot {
+      margin-top: 22px;
+      padding: 13px 10px;
+      border-top: 1px solid var(--fin-line);
+      color: var(--fin-sub);
+      font-size: 12px;
+    }
+    #flow-cockpit-prototype .fcp-main { min-width: 0; padding: 20px; }
+    #flow-cockpit-prototype .fcp-page[hidden] { display: none; }
+    #flow-cockpit-prototype .fcp-page-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    #flow-cockpit-prototype .fcp-page-head h1 { margin: 0; font-size: 22px; font-weight: 500; color: var(--fin-blue-950); letter-spacing: -.01em; }
+    #flow-cockpit-prototype .fcp-page-head p { margin: 4px 0 0; color: var(--fin-sub); font-size: 13px; }
+    #flow-cockpit-prototype .fcp-asof { color: var(--fin-sub); font-size: 12px; text-align: right; white-space: nowrap; }
+    #flow-cockpit-prototype .fcp-coverage { margin-top: 4px; color: #50627a; cursor: help; }
+    #flow-cockpit-prototype .fcp-filterbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: end;
+      padding: 14px;
+      margin-bottom: 16px;
+      background: var(--fin-white);
+      border: 1px solid var(--fin-line);
+      border-radius: 11px;
+      box-shadow: 0 4px 16px rgba(36, 78, 132, .035);
+    }
+    #flow-cockpit-prototype .fcp-field { display: grid; gap: 6px; min-width: 118px; }
+    #flow-cockpit-prototype .fcp-field-wide { min-width: 185px; flex: 1 1 185px; }
+    #flow-cockpit-prototype .fcp-field label { color: var(--fin-sub); font-size: 12px; }
+    #flow-cockpit-prototype .fcp-select {
+      height: 36px;
+      padding: 0 30px 0 10px;
+      border: 1px solid #cad5e4;
+      border-radius: 6px;
+      color: var(--fin-ink);
+      background: var(--fin-white);
+    }
+    #flow-cockpit-prototype .fcp-segment { display: flex; flex-wrap: wrap; gap: 4px; }
+    #flow-cockpit-prototype .fcp-segment button,
+    #flow-cockpit-prototype .fcp-tab,
+    #flow-cockpit-prototype .fcp-mini-tab {
+      border: 1px solid #cad5e4;
+      border-radius: 6px;
+      color: #536279;
+      background: var(--fin-white);
+    }
+    #flow-cockpit-prototype .fcp-segment button { min-height: 36px; padding: 7px 11px; }
+    #flow-cockpit-prototype .fcp-segment button[aria-pressed=&quot;true&quot;],
+    #flow-cockpit-prototype .fcp-mini-tab[aria-selected=&quot;true&quot;] {
+      color: var(--fin-white);
+      background: linear-gradient(110deg, var(--fin-blue-800), var(--fin-blue-600));
+      border-color: var(--fin-blue-700);
+    }
+    #flow-cockpit-prototype .fcp-kpis {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    #flow-cockpit-prototype .fcp-kpi {
+      min-width: 0;
+      min-height: 112px;
+      padding: 14px;
+      background: var(--fin-white);
+      border: 1px solid var(--fin-line);
+      border-radius: 11px;
+      box-shadow: 0 5px 18px rgba(36, 78, 132, .05);
+    }
+    #flow-cockpit-prototype .fcp-kpi-emphasis { border-top: 2px solid var(--fin-gold-500); }
+    #flow-cockpit-prototype .fcp-kpi-label { min-height: 36px; display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; color: var(--fin-sub); font-size: 12px; line-height: 1.4; }
+    #flow-cockpit-prototype .fcp-info {
+      width: 17px;
+      height: 17px;
+      display: grid;
+      place-items: center;
+      border: 1px solid #cbd5e3;
+      border-radius: 50%;
+      color: #718099;
+      background: transparent;
+      flex: 0 0 17px;
+      font-size: 10px;
+    }
+    #flow-cockpit-prototype .fcp-kpi-value { margin-top: 5px; color: var(--fin-blue-950); font-size: 23px; font-weight: 500; line-height: 1.25; white-space: nowrap; font-variant-numeric: tabular-nums; }
+    #flow-cockpit-prototype .fcp-kpi-delta { margin-top: 6px; color: var(--fin-sub); font-size: 12px; line-height: 1.4; }
+    #flow-cockpit-prototype .fcp-up { color: var(--fin-orange); }
+    #flow-cockpit-prototype .fcp-down { color: var(--fin-green); }
+    #flow-cockpit-prototype .fcp-grid-2 { display: grid; grid-template-columns: minmax(0, 1.65fr) minmax(280px, .85fr); gap: 16px; margin-bottom: 16px; }
+    #flow-cockpit-prototype .fcp-grid-equal { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    #flow-cockpit-prototype .fcp-panel {
+      min-width: 0;
+      padding: 16px;
+      background: var(--fin-white);
+      border: 1px solid var(--fin-line);
+      border-radius: 11px;
+      box-shadow: 0 5px 18px rgba(36, 78, 132, .05);
+    }
+    #flow-cockpit-prototype .fcp-panel-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; margin-bottom: 12px; }
+    #flow-cockpit-prototype .fcp-panel-title { color: var(--fin-blue-950); font-size: 15px; font-weight: 500; line-height: 1.4; }
+    #flow-cockpit-prototype .fcp-panel-sub { color: var(--fin-sub); font-size: 12px; line-height: 1.45; }
+    #flow-cockpit-prototype .fcp-legend { display: flex; flex-wrap: wrap; gap: 12px; color: var(--fin-sub); font-size: 12px; }
+    #flow-cockpit-prototype .fcp-dot { width: 8px; height: 8px; display: inline-block; border-radius: 50%; margin-right: 4px; }
+    #flow-cockpit-prototype .fcp-chart { width: 100%; height: auto; display: block; }
+    #flow-cockpit-prototype .fcp-chart text { font-family: inherit; }
+    #flow-cockpit-prototype .fcp-donut-wrap { display: grid; grid-template-columns: 120px 1fr; align-items: center; gap: 14px; min-height: 170px; }
+    #flow-cockpit-prototype .fcp-donut {
+      width: 112px;
+      height: 112px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: conic-gradient(var(--fin-blue-700) 0 35%, #a8c4e8 35% 68%, var(--fin-gold-500) 68% 88%, #d9dee6 88% 100%);
+    }
+    #flow-cockpit-prototype .fcp-donut::before { content: &quot;84&quot;; width: 70px; height: 70px; display: grid; place-items: center; border-radius: 50%; color: var(--fin-blue-950); background: var(--fin-white); font-size: 22px; font-weight: 500; }
+    #flow-cockpit-prototype .fcp-status-list { display: grid; gap: 9px; }
+    #flow-cockpit-prototype .fcp-status-row { display: grid; grid-template-columns: 10px minmax(110px, 1fr) auto; gap: 9px; align-items: center; font-size: 12px; white-space: nowrap; }
+    #flow-cockpit-prototype .fcp-status-row[data-tooltip] { cursor: help; }
+    #flow-cockpit-prototype .fcp-status-swatch { width: 8px; height: 8px; border-radius: 2px; }
+    #flow-cockpit-prototype .fcp-heat-wrap,
+    #flow-cockpit-prototype .fcp-table-wrap { width: 100%; overflow-x: auto; }
+    #flow-cockpit-prototype .fcp-table { width: 100%; border-collapse: collapse; min-width: 610px; }
+    #flow-cockpit-prototype .fcp-table[aria-label=&quot;本周节点级改进机会&quot;] { min-width: 1180px; }
+    #flow-cockpit-prototype .fcp-table[aria-label=&quot;本周节点级改进机会&quot;] th:first-child,
+    #flow-cockpit-prototype .fcp-table[aria-label=&quot;本周节点级改进机会&quot;] td:first-child { min-width: 220px; }
+    #flow-cockpit-prototype .fcp-table[aria-label=&quot;节点诊断明细&quot;] { min-width: 1080px; }
+    #flow-cockpit-prototype .fcp-table[aria-label=&quot;当前在途流程实例&quot;] { min-width: 1080px; }
+    #flow-cockpit-prototype .fcp-table[aria-label=&quot;当前在途流程实例&quot;] th:first-child,
+    #flow-cockpit-prototype .fcp-table[aria-label=&quot;当前在途流程实例&quot;] td:first-child { min-width: 290px; }
+    #flow-cockpit-prototype .fcp-table th,
+    #flow-cockpit-prototype .fcp-table td { padding: 10px 9px; border-bottom: 1px solid #e8edf4; text-align: left; font-size: 12px; line-height: 1.45; }
+    #flow-cockpit-prototype .fcp-table th { color: #56667d; background: #f7f9fc; font-weight: 500; white-space: nowrap; }
+    #flow-cockpit-prototype .fcp-table td:not(:first-child),
+    #flow-cockpit-prototype .fcp-table th:not(:first-child) { text-align: right; }
+    #flow-cockpit-prototype .fcp-table tbody tr { transition: background .16s ease; }
+    #flow-cockpit-prototype .fcp-table tbody tr:hover,
+    #flow-cockpit-prototype .fcp-table tbody tr.is-selected { background: var(--fin-blue-050); }
+    #flow-cockpit-prototype .fcp-table-sort { display: inline-flex; align-items: center; gap: 4px; padding: 0; border: 0; color: inherit; background: transparent; font: inherit; cursor: pointer; }
+    #flow-cockpit-prototype .fcp-table-sort::after { content: &quot;↕&quot;; color: #9aa8ba; font-size: 11px; }
+    #flow-cockpit-prototype .fcp-table-sort.is-active { color: var(--fin-blue-800); }
+    #flow-cockpit-prototype .fcp-table-sort.is-active::after { content: attr(data-direction-mark); color: var(--fin-blue-700); }
+    #flow-cockpit-prototype .fcp-heat { border-radius: 4px; font-weight: 500; }
+    #flow-cockpit-prototype .fcp-heat-1 { background: #eff5fd; color: #496481; }
+    #flow-cockpit-prototype .fcp-heat-2 { background: #dceafe; color: #245181; }
+    #flow-cockpit-prototype .fcp-heat-3 { background: #bcd6fa; color: #133f75; }
+    #flow-cockpit-prototype .fcp-heat-4 { background: #7eafea; color: #082f63; }
+    #flow-cockpit-prototype .fcp-heat-5 { background: #286cc3; color: var(--fin-white); }
+    #flow-cockpit-prototype .fcp-mini-tabs { display: flex; flex-wrap: wrap; gap: 5px; }
+    #flow-cockpit-prototype .fcp-mini-tab { padding: 6px 10px; font-size: 12px; }
+    #flow-cockpit-prototype .fcp-rank-list { display: grid; gap: 4px; }
+    #flow-cockpit-prototype .fcp-rank-item { display: grid; grid-template-columns: 24px minmax(0, 1fr) auto; gap: 9px; align-items: center; padding: 10px 0; border-bottom: 1px solid #edf1f6; }
+    #flow-cockpit-prototype .fcp-rank-num { width: 20px; height: 20px; display: grid; place-items: center; border-radius: 4px; color: var(--fin-blue-800); background: var(--fin-blue-100); font-size: 11px; }
+    #flow-cockpit-prototype .fcp-rank-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13px; }
+    #flow-cockpit-prototype .fcp-rank-val { color: var(--fin-blue-950); font-weight: 500; white-space: nowrap; font-size: 12px; }
+    #flow-cockpit-prototype .fcp-tabs { display: flex; gap: 28px; margin-bottom: 16px; border-bottom: 1px solid var(--fin-line); }
+    #flow-cockpit-prototype .fcp-tab { padding: 10px 1px; border: 0; border-bottom: 2px solid transparent; border-radius: 0; background: transparent; font-size: 13px; }
+    #flow-cockpit-prototype .fcp-tab[aria-selected=&quot;true&quot;] { color: var(--fin-blue-700); border-bottom-color: var(--fin-blue-700); font-weight: 500; }
+    #flow-cockpit-prototype .fcp-tabpanel[hidden] { display: none; }
+    #flow-cockpit-prototype .fcp-kpis-4 { grid-template-columns: repeat(7, minmax(0, 1fr)); }
+    #flow-cockpit-prototype .fcp-result-strip { display: flex; flex-wrap: wrap; gap: 8px; margin: -2px 0 14px; }
+    #flow-cockpit-prototype .fcp-result-item { padding: 7px 10px; border-radius: 6px; color: #46566e; background: #edf2f8; font-size: 12px; }
+    #flow-cockpit-prototype .fcp-result-item strong { color: var(--fin-blue-900); font-weight: 500; }
+    #flow-cockpit-prototype .fcp-flow-lane { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: stretch; gap: 12px; padding: 14px 0 4px; }
+    #flow-cockpit-prototype .fcp-node { position: relative; min-height: 98px; padding: 12px 10px; border: 1px solid #bdd0ea; border-radius: 7px; background: #f7faff; }
+    #flow-cockpit-prototype .fcp-node::after { display: none; }
+    #flow-cockpit-prototype .fcp-node-hot { background: #fff7e9; border-color: #e0be79; }
+    #flow-cockpit-prototype .fcp-node-muted { background: #f2f3f5; border-style: dashed; border-color: #c7ccd3; }
+    #flow-cockpit-prototype .fcp-node-title { font-size: 13px; font-weight: 500; color: var(--fin-blue-950); }
+    #flow-cockpit-prototype .fcp-node-meta { margin-top: 8px; color: var(--fin-sub); font-size: 11px; }
+    #flow-cockpit-prototype .fcp-node-time { margin-top: 5px; color: var(--fin-blue-800); font-size: 13px; font-weight: 500; }
+    #flow-cockpit-prototype .fcp-business-grid { display: grid; grid-template-columns: minmax(190px, .72fr) minmax(0, 1.6fr); gap: 14px; }
+    #flow-cockpit-prototype .fcp-business-controls { display: grid; gap: 12px; align-content: start; }
+    #flow-cockpit-prototype .fcp-metric-row { display: flex; flex-wrap: wrap; gap: 6px; }
+    #flow-cockpit-prototype .fcp-metric-btn { padding: 6px 9px; border: 1px solid #cbd6e5; border-radius: 6px; color: #58677e; background: var(--fin-white); }
+    #flow-cockpit-prototype .fcp-metric-btn[aria-pressed=&quot;true&quot;] { color: var(--fin-blue-800); background: var(--fin-blue-100); border-color: #8db2df; }
+    #flow-cockpit-prototype .fcp-bars { display: grid; gap: 13px; padding: 12px 0 3px; }
+    #flow-cockpit-prototype .fcp-bar-row { display: grid; grid-template-columns: 118px minmax(0, 1fr) 50px; align-items: center; gap: 8px; font-size: 11px; }
+    #flow-cockpit-prototype .fcp-bar-track { height: 16px; overflow: hidden; border-radius: 3px; background: #edf2f8; }
+    #flow-cockpit-prototype .fcp-bar-fill { height: 100%; background: linear-gradient(90deg, var(--fin-blue-800), var(--fin-blue-600)); transition: width .25s ease; }
+    #flow-cockpit-prototype .fcp-save { padding: 8px 11px; border: 1px solid var(--fin-gold-500); border-radius: 6px; color: #6b4f19; background: var(--fin-gold-100); }
+    #flow-cockpit-prototype .fcp-export { padding: 8px 12px; border: 1px solid var(--fin-blue-700); border-radius: 6px; color: var(--fin-white); background: linear-gradient(110deg, var(--fin-blue-800), var(--fin-blue-600)); }
+    #flow-cockpit-prototype .fcp-flow-filter-row { display: flex; flex: 1 1 820px; align-items: end; gap: 12px; min-width: 0; }
+    #flow-cockpit-prototype .fcp-flow-select-field { flex: 0 1 320px; min-width: 260px; }
+    #flow-cockpit-prototype .fcp-quickbar { display: flex; flex: 1 1 650px; flex-wrap: wrap; align-items: center; gap: 7px; min-width: 0; padding-bottom: 1px; }
+    #flow-cockpit-prototype .fcp-period-field { flex: 0 0 auto; }
+    #flow-cockpit-prototype .fcp-org-field { flex: 0 0 175px; min-width: 160px; }
+    #flow-cockpit-prototype .fcp-custom-range { flex: 1 1 100%; display: flex; flex-wrap: wrap; align-items: end; gap: 10px; padding-top: 2px; }
+    #flow-cockpit-prototype .fcp-custom-range[hidden] { display: none; }
+    #flow-cockpit-prototype .fcp-date-field { flex: 0 1 180px; }
+    #flow-cockpit-prototype .fcp-quick-label { color: var(--fin-sub); font-size: 12px; margin-right: 2px; }
+    #flow-cockpit-prototype .fcp-quick-btn { padding: 7px 10px; border: 1px solid #cbd6e5; border-radius: 999px; color: #54657d; background: var(--fin-white); font-size: 12px; }
+    #flow-cockpit-prototype .fcp-quick-btn[aria-pressed=&quot;true&quot;] { color: var(--fin-blue-800); background: var(--fin-blue-100); border-color: #8eb7eb; box-shadow: inset 0 0 0 1px rgba(11,99,246,.08); }
+    #flow-cockpit-prototype .fcp-quick-summary { margin-left: auto; color: var(--fin-sub); font-size: 12px; }
+    #flow-cockpit-prototype .fcp-reason { display: inline-block; padding: 3px 7px; border-radius: 999px; color: #6c5223; background: var(--fin-gold-100); white-space: nowrap; }
+    #flow-cockpit-prototype .fcp-setting-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+    #flow-cockpit-prototype .fcp-setting-item { padding: 12px; border: 1px solid var(--fin-line); border-radius: 9px; background: #fbfcfe; }
+    #flow-cockpit-prototype .fcp-setting-item label { display: block; margin-bottom: 8px; color: var(--fin-sub); font-size: 12px; }
+    #flow-cockpit-prototype .fcp-switch { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; }
+    #flow-cockpit-prototype .fcp-switch input { width: 34px; height: 18px; accent-color: var(--fin-blue-700); }
+    #flow-cockpit-prototype .fcp-setting-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 14px; }
+    #flow-cockpit-prototype .fcp-secondary-action { min-height: 36px; padding: 8px 12px; border: 1px solid #cbd6e5; border-radius: 6px; color: #526177; background: var(--fin-white); }
+    #flow-cockpit-prototype .fcp-add-flow { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; align-items: end; min-width: min(100%, 430px); }
+    #flow-cockpit-prototype .fcp-list-toolbar { display: flex; align-items: end; justify-content: space-between; gap: 12px; margin: 2px 0 10px; }
+    #flow-cockpit-prototype .fcp-search-field { display: grid; gap: 6px; width: min(100%, 360px); }
+    #flow-cockpit-prototype .fcp-search-field label { color: var(--fin-sub); font-size: 12px; }
+    #flow-cockpit-prototype .fcp-search-input { width: 100%; height: 36px; padding: 0 10px; border: 1px solid #cad5e4; border-radius: 6px; color: var(--fin-ink); background: var(--fin-white); }
+    #flow-cockpit-prototype .fcp-list-summary { color: var(--fin-sub); font-size: 12px; white-space: nowrap; }
+    #flow-cockpit-prototype .fcp-config-table-shell { max-height: 274px; overflow: auto; border-top: 1px solid var(--fin-line); border-bottom: 1px solid var(--fin-line); }
+    #flow-cockpit-prototype .fcp-config-table-shell .fcp-table { min-width: 760px; }
+    #flow-cockpit-prototype .fcp-config-table-shell thead th { position: sticky; top: 0; z-index: 1; }
+    #flow-cockpit-prototype .fcp-pager { display: flex; align-items: center; justify-content: flex-end; gap: 8px; margin-top: 10px; }
+    #flow-cockpit-prototype .fcp-pager button { min-width: 34px; height: 32px; padding: 0 9px; border: 1px solid #cbd6e5; border-radius: 6px; color: #526177; background: var(--fin-white); }
+    #flow-cockpit-prototype .fcp-pager button:disabled { color: #aab4c2; background: #f5f7fa; cursor: not-allowed; }
+    #flow-cockpit-prototype .fcp-pager-state { color: var(--fin-sub); font-size: 12px; min-width: 52px; text-align: center; }
+    #flow-cockpit-prototype .fcp-config-row { cursor: pointer; }
+    #flow-cockpit-prototype .fcp-config-row.is-active { background: var(--fin-blue-050); box-shadow: inset 3px 0 0 var(--fin-blue-700); }
+    #flow-cockpit-prototype .fcp-node-row.is-disabled { opacity: .48; }
+    #flow-cockpit-prototype .fcp-node-select { width: 16px; height: 16px; accent-color: var(--fin-blue-700); }
+    #flow-cockpit-prototype .fcp-instance-row { cursor: default; }
+    #flow-cockpit-prototype .fcp-timeline { margin-top: 14px; padding: 14px; background: #f8fbff; border: 1px solid #d8e5f5; border-radius: 8px; }
+    #flow-cockpit-prototype .fcp-timeline-title { margin-bottom: 12px; color: var(--fin-blue-950); font-weight: 500; }
+    #flow-cockpit-prototype .fcp-time-steps { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+    #flow-cockpit-prototype .fcp-time-step { position: relative; padding-left: 17px; color: var(--fin-sub); font-size: 10px; }
+    #flow-cockpit-prototype .fcp-time-step::before { content: &quot;&quot;; position: absolute; top: 3px; left: 0; width: 9px; height: 9px; border-radius: 50%; background: var(--fin-blue-700); box-shadow: 0 0 0 3px #dfeeff; }
+    #flow-cockpit-prototype .fcp-time-step::after { content: &quot;&quot;; position: absolute; top: 7px; left: 9px; right: -10px; border-top: 1px solid #acc1dd; }
+    #flow-cockpit-prototype .fcp-time-step:last-child::after { display: none; }
+    #flow-cockpit-prototype .fcp-time-step strong { display: block; margin-bottom: 3px; color: var(--fin-blue-950); font-size: 11px; font-weight: 500; }
+    #flow-cockpit-prototype .fcp-gold-note { color: #7a5a1c; }
+    @media (max-width: 1200px) {
+      #flow-cockpit-prototype .fcp-kpis,
+      #flow-cockpit-prototype .fcp-kpis-4 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      #flow-cockpit-prototype .fcp-grid-2 { grid-template-columns: 1fr; }
+      #flow-cockpit-prototype .fcp-grid-equal { grid-template-columns: 1fr; }
+      #flow-cockpit-prototype .fcp-asof { white-space: normal; }
+    }
+    @media (max-width: 900px) {
+      #flow-cockpit-prototype .fcp-business-grid { grid-template-columns: 1fr; }
+      #flow-cockpit-prototype .fcp-setting-grid { grid-template-columns: 1fr; }
+      #flow-cockpit-prototype .fcp-add-flow { grid-template-columns: 1fr; width: 100%; }
+      #flow-cockpit-prototype .fcp-list-toolbar { align-items: stretch; flex-direction: column; }
+      #flow-cockpit-prototype .fcp-search-field { width: 100%; }
+      #flow-cockpit-prototype .fcp-list-summary { white-space: normal; }
+      #flow-cockpit-prototype .fcp-flow-filter-row { align-items: stretch; flex-direction: column; }
+      #flow-cockpit-prototype .fcp-flow-select-field,
+      #flow-cockpit-prototype .fcp-quickbar { flex-basis: auto; width: 100%; }
+      #flow-cockpit-prototype .fcp-org-field { flex-basis: 175px; }
+    }
+    @media (max-width: 720px) {
+      #flow-cockpit-prototype .fcp-topbar { padding: 10px 14px; }
+      #flow-cockpit-prototype .fcp-topmeta span { display: none; }
+      #flow-cockpit-prototype .fcp-layout { grid-template-columns: 1fr; }
+      #flow-cockpit-prototype .fcp-sidebar { display: flex; gap: 6px; padding: 8px 12px; border-right: 0; border-bottom: 1px solid var(--fin-line); }
+      #flow-cockpit-prototype .fcp-nav-label,
+      #flow-cockpit-prototype .fcp-side-foot { display: none; }
+      #flow-cockpit-prototype .fcp-nav-btn { flex: 1 1 0; width: auto; margin: 0; padding: 8px 5px; justify-content: center; font-size: 12px; white-space: nowrap; }
+      #flow-cockpit-prototype .fcp-nav-icon { display: none; }
+      #flow-cockpit-prototype .fcp-main { padding: 12px; }
+      #flow-cockpit-prototype .fcp-flow-lane { grid-template-columns: 1fr; }
+      #flow-cockpit-prototype .fcp-quick-summary { width: 100%; margin-left: 0; }
+    }
+    @media (max-width: 480px) {
+      #flow-cockpit-prototype .fcp-kpis,
+      #flow-cockpit-prototype .fcp-kpis-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      #flow-cockpit-prototype .fcp-page-head { display: block; }
+      #flow-cockpit-prototype .fcp-asof { margin-top: 5px; }
+      #flow-cockpit-prototype .fcp-donut-wrap { grid-template-columns: 1fr; justify-items: center; }
+      #flow-cockpit-prototype .fcp-status-list { width: 100%; }
+      #flow-cockpit-prototype .fcp-time-steps { grid-template-columns: 1fr; }
+      #flow-cockpit-prototype .fcp-time-step::after { top: 11px; left: 4px; right: auto; bottom: -12px; width: 0; border-top: 0; border-left: 1px solid #acc1dd; }
+      #flow-cockpit-prototype .fcp-bar-row { grid-template-columns: 90px minmax(0, 1fr) 44px; }
+    }
+  &lt;/style&gt;
+
+  &lt;div class=&quot;fcp-shell&quot;&gt;
+    &lt;header class=&quot;fcp-topbar&quot;&gt;
+      &lt;div class=&quot;fcp-brand&quot;&gt;
+        &lt;div class=&quot;fcp-brand-mark&quot;&gt;融&lt;/div&gt;
+        &lt;div class=&quot;fcp-brand-title&quot;&gt;流程运营驾驶舱&lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;fcp-topmeta&quot;&gt;&lt;span&gt;数据更新：今日 08:30&lt;/span&gt;&lt;div class=&quot;fcp-avatar&quot;&gt;管&lt;/div&gt;&lt;/div&gt;
+    &lt;/header&gt;
+
+    &lt;div class=&quot;fcp-layout&quot;&gt;
+      &lt;aside class=&quot;fcp-sidebar&quot; aria-label=&quot;产品导航&quot;&gt;
+        &lt;div class=&quot;fcp-nav-label&quot;&gt;流程运营&lt;/div&gt;
+        &lt;button class=&quot;fcp-nav-btn&quot; type=&quot;button&quot; data-page=&quot;dashboard&quot; aria-selected=&quot;true&quot;&gt;&lt;span class=&quot;fcp-nav-icon&quot;&gt;览&lt;/span&gt;管理驾驶舱&lt;/button&gt;
+        &lt;button class=&quot;fcp-nav-btn&quot; type=&quot;button&quot; data-page=&quot;diagnosis&quot; aria-selected=&quot;false&quot;&gt;&lt;span class=&quot;fcp-nav-icon&quot;&gt;析&lt;/span&gt;流程分析诊断&lt;/button&gt;
+        &lt;button class=&quot;fcp-nav-btn&quot; type=&quot;button&quot; data-page=&quot;settings&quot; aria-selected=&quot;false&quot;&gt;&lt;span class=&quot;fcp-nav-icon&quot;&gt;配&lt;/span&gt;统计口径配置&lt;/button&gt;
+        &lt;div class=&quot;fcp-side-foot&quot;&gt;指标说明&lt;br&gt;数据质量与更新记录&lt;/div&gt;
+      &lt;/aside&gt;
+
+      &lt;main class=&quot;fcp-main&quot;&gt;
+        &lt;section class=&quot;fcp-page&quot; data-page-panel=&quot;dashboard&quot;&gt;
+          &lt;div class=&quot;fcp-page-head&quot;&gt;
+            &lt;div&gt;&lt;h1&gt;管理驾驶舱&lt;/h1&gt;&lt;p&gt;全公司流程规模、审批时长与在途情况&lt;/p&gt;&lt;/div&gt;
+            &lt;div class=&quot;fcp-asof&quot;&gt;&lt;div&gt;当前口径：自然时间&lt;/div&gt;&lt;div class=&quot;fcp-coverage&quot; data-tooltip=&quot;统计覆盖率＝已纳入的正式运行流程数÷平台正式运行流程总数&quot;&gt;平台总流程 168 · 已纳入 126 · 统计覆盖率 75.0%&lt;/div&gt;&lt;/div&gt;
+          &lt;/div&gt;
+
+          &lt;div class=&quot;fcp-filterbar&quot;&gt;
+            &lt;div class=&quot;fcp-field&quot;&gt;
+              &lt;label&gt;时间范围&lt;/label&gt;
+              &lt;div class=&quot;fcp-segment&quot; data-group=&quot;period&quot;&gt;
+                &lt;button type=&quot;button&quot; aria-pressed=&quot;false&quot;&gt;近30天&lt;/button&gt;
+                &lt;button type=&quot;button&quot; aria-pressed=&quot;true&quot;&gt;近90天&lt;/button&gt;
+                &lt;button type=&quot;button&quot; aria-pressed=&quot;false&quot;&gt;本年度&lt;/button&gt;
+              &lt;/div&gt;
+            &lt;/div&gt;
+            &lt;div class=&quot;fcp-field fcp-field-wide&quot;&gt;
+              &lt;label for=&quot;org-scope&quot;&gt;组织范围&lt;/label&gt;
+              &lt;select class=&quot;fcp-select&quot; id=&quot;org-scope&quot;&gt;
+                &lt;option&gt;全公司&lt;/option&gt;
+                &lt;option&gt;按流程归属部门&lt;/option&gt;
+                &lt;option&gt;按发起部门&lt;/option&gt;
+              &lt;/select&gt;
+            &lt;/div&gt;
+            &lt;div class=&quot;fcp-field fcp-field-wide&quot;&gt;
+              &lt;label for=&quot;domain-filter&quot;&gt;流程领域&lt;/label&gt;
+              &lt;select class=&quot;fcp-select&quot; id=&quot;domain-filter&quot;&gt;
+                &lt;option&gt;全部领域&lt;/option&gt;
+                &lt;option&gt;运营中台&lt;/option&gt;
+                &lt;option&gt;机构开户&lt;/option&gt;
+                &lt;option&gt;资管综合管理&lt;/option&gt;
+                &lt;option&gt;客户IT服务&lt;/option&gt;
+                &lt;option&gt;预算管理&lt;/option&gt;
+              &lt;/select&gt;
+            &lt;/div&gt;
+            &lt;div class=&quot;fcp-field fcp-field-wide&quot;&gt;
+              &lt;label for=&quot;flow-search&quot;&gt;流程名称&lt;/label&gt;
+              &lt;select class=&quot;fcp-select&quot; id=&quot;flow-search&quot;&gt;
+                &lt;option&gt;全部流程&lt;/option&gt;
+                &lt;option&gt;一般法人期货开户&lt;/option&gt;
+                &lt;option&gt;客户资金限制审批&lt;/option&gt;
+                &lt;option&gt;期货程序化报备与外部接入申请&lt;/option&gt;
+              &lt;/select&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;
+
+          &lt;div class=&quot;fcp-kpis&quot;&gt;
+            &lt;div class=&quot;fcp-kpi&quot;&gt;&lt;div class=&quot;fcp-kpi-label&quot;&gt;发起量 &lt;button class=&quot;fcp-info&quot; type=&quot;button&quot; data-tooltip=&quot;所选期间新提交的流程实例数&quot;&gt;i&lt;/button&gt;&lt;/div&gt;&lt;div class=&quot;fcp-kpi-value&quot;&gt;86,420&lt;/div&gt;&lt;div class=&quot;fcp-kpi-delta&quot;&gt;较上期 &lt;span class=&quot;fcp-up&quot;&gt;+8.6%&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;
+            &lt;div class=&quot;fcp-kpi&quot;&gt;&lt;div class=&quot;fcp-kpi-label&quot;&gt;正常完成量 &lt;button class=&quot;fcp-info&quot; type=&quot;button&quot; data-tooltip=&quot;所选期间正常完成审批的流程实例数；撤回、驳回、废弃和终止不计入&quot;&gt;i&lt;/button&gt;&lt;/div&gt;&lt;div class=&quot;fcp-kpi-value&quot;&gt;81,936&lt;/div&gt;&lt;div class=&quot;fcp-kpi-delta&quot;&gt;较上期 &lt;span class=&quot;fcp-up&quot;&gt;+7.9%&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;
+            &lt;div class=&quot;fcp-kpi&quot;&gt;&lt;div class=&quot;fcp-kpi-label&quot;&gt;参与用户数（去重） &lt;button class=&quot;fcp-info&quot; type=&quot;button&quot; data-tooltip=&quot;所选期间内，流程发起人和审批人合并后的去重用户数&quot;&gt;i&lt;/button&gt;&lt;/div&gt;&lt;div class=&quot;fcp-kpi-value&quot;&gt;12,680&lt;/div&gt;&lt;div class=&quot;fcp-kpi-delta&quot;&gt;覆盖 38 个部门&lt;/div&gt;&lt;/div&gt;
+            &lt;div class=&quot;fcp-kpi&quot;&gt;&lt;div class=&quot;fcp-kpi-label&quot;&gt;活跃流程数 &lt;button class=&quot;fcp-info&quot; type=&quot;button&quot; data-tooltip=&quot;所选期间至少有一条发起记录的流程数&quot;&gt;i&lt;/button&gt;&lt;/div&gt;&lt;div class=&quot;fcp-kpi-value&quot;&gt;126&lt;/div&gt;&lt;div class=&quot;fcp-kpi-delta&quot;&gt;11 个流程领域&lt;/div&gt;&lt;/div&gt;
+            &lt;div class=&quot;fcp-kpi fcp-kpi-emphasis&quot;&gt;&lt;div class=&quot;fcp-kpi-label&quot;&gt;审批时长缩短流程 &lt;button class=&quot;fcp-info&quot; type=&quot;button&quot; data-tooltip=&quot;P90指90%的已完成实例审批时长不超过该值；本卡统计P90较基准期缩短10%以上的流程数&quot;&gt;i&lt;/button&gt;&lt;/div&gt;&lt;div class=&quot;fcp-kpi-value&quot;&gt;29&lt;/div&gt;&lt;div class=&quot;fcp-kpi-delta fcp-down&quot;&gt;84个样本充足流程中占 34.5%&lt;/div&gt;&lt;/div&gt;
+            &lt;div class=&quot;fcp-kpi fcp-kpi-emphasis&quot;&gt;&lt;div class=&quot;fcp-kpi-label&quot;&gt;审批时长延长流程 &lt;button class=&quot;fcp-info&quot; type=&quot;button&quot; data-tooltip=&quot;P90指90%的已完成实例审批时长不超过该值；本卡统计P90较基准期延长10%以上的流程数&quot;&gt;i&lt;/button&gt;&lt;/div&gt;&lt;div class=&quot;fcp-kpi-value&quot;&gt;17&lt;/div&gt;&lt;div class=&quot;fcp-kpi-delta fcp-up&quot;&gt;84个样本充足流程中占 20.2%&lt;/div&gt;&lt;/div&gt;
+          &lt;/div&gt;
+
+          &lt;div class=&quot;fcp-grid-2&quot;&gt;
+            &lt;section class=&quot;fcp-panel&quot;&gt;
+              &lt;div class=&quot;fcp-panel-head&quot;&gt;&lt;div&gt;&lt;div class=&quot;fcp-panel-title&quot;&gt;流程量与参与用户趋势&lt;/div&gt;&lt;div class=&quot;fcp-panel-sub&quot;&gt;最近12周&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;fcp-legend&quot;&gt;&lt;span&gt;&lt;i class=&quot;fcp-dot&quot; style=&quot;background:#0b63f6&quot;&gt;&lt;/i&gt;正常完成量&lt;/span&gt;&lt;span&gt;&lt;i class=&quot;fcp-dot&quot; style=&quot;background:#cf9f43&quot;&gt;&lt;/i&gt;参与用户（去重）&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;
+              &lt;svg class=&quot;fcp-chart&quot; viewBox=&quot;0 0 660 210&quot; role=&quot;img&quot; aria-label=&quot;最近十二周完成量与参与用户趋势&quot;&gt;
+                &lt;title&gt;流程量与参与用户趋势&lt;/title&gt;&lt;desc&gt;完成量总体上升，参与用户保持稳定增长。&lt;/desc&gt;
+                &lt;g stroke=&quot;#e5ebf3&quot; stroke-width=&quot;1&quot;&gt;&lt;line x1=&quot;52&quot; y1=&quot;30&quot; x2=&quot;640&quot; y2=&quot;30&quot;/&gt;&lt;line x1=&quot;52&quot; y1=&quot;75&quot; x2=&quot;640&quot; y2=&quot;75&quot;/&gt;&lt;line x1=&quot;52&quot; y1=&quot;120&quot; x2=&quot;640&quot; y2=&quot;120&quot;/&gt;&lt;line x1=&quot;52&quot; y1=&quot;165&quot; x2=&quot;640&quot; y2=&quot;165&quot;/&gt;&lt;/g&gt;
+                &lt;g fill=&quot;#7a879a&quot; font-size=&quot;10&quot;&gt;&lt;text x=&quot;14&quot; y=&quot;34&quot;&gt;9,000&lt;/text&gt;&lt;text x=&quot;14&quot; y=&quot;79&quot;&gt;6,000&lt;/text&gt;&lt;text x=&quot;14&quot; y=&quot;124&quot;&gt;3,000&lt;/text&gt;&lt;text x=&quot;24&quot; y=&quot;169&quot;&gt;0&lt;/text&gt;&lt;text x=&quot;52&quot; y=&quot;194&quot;&gt;第1周&lt;/text&gt;&lt;text x=&quot;305&quot; y=&quot;194&quot;&gt;第6周&lt;/text&gt;&lt;text x=&quot;598&quot; y=&quot;194&quot;&gt;第12周&lt;/text&gt;&lt;/g&gt;
+                &lt;path d=&quot;M52 139 L105 130 L158 119 L211 123 L264 109 L317 103 L370 91 L423 97 L476 78 L529 70 L582 64 L635 51 L635 165 L52 165 Z&quot; fill=&quot;#edf5ff&quot;/&gt;
+                &lt;polyline points=&quot;52,139 105,130 158,119 211,123 264,109 317,103 370,91 423,97 476,78 529,70 582,64 635,51&quot; fill=&quot;none&quot; stroke=&quot;#0b63f6&quot; stroke-width=&quot;3&quot;/&gt;
+                &lt;polyline points=&quot;52,144 105,136 158,137 211,127 264,128 317,116 370,113 423,104 476,100 529,88 582,83 635,77&quot; fill=&quot;none&quot; stroke=&quot;#cf9f43&quot; stroke-width=&quot;2&quot;/&gt;
+                &lt;g fill=&quot;#0b63f6&quot;&gt;&lt;circle cx=&quot;635&quot; cy=&quot;51&quot; r=&quot;4&quot;/&gt;&lt;/g&gt;&lt;g fill=&quot;#cf9f43&quot;&gt;&lt;circle cx=&quot;635&quot; cy=&quot;77&quot; r=&quot;4&quot;/&gt;&lt;/g&gt;
+              &lt;/svg&gt;
+            &lt;/section&gt;
+
+            &lt;section class=&quot;fcp-panel&quot;&gt;
+              &lt;div class=&quot;fcp-panel-head&quot;&gt;&lt;div&gt;&lt;div class=&quot;fcp-panel-title&quot;&gt;审批时长变化 &lt;button class=&quot;fcp-info&quot; type=&quot;button&quot; data-tooltip=&quot;P90：将已完成实例按审批时长排序，90%的实例不超过该时长&quot;&gt;i&lt;/button&gt;&lt;/div&gt;&lt;div class=&quot;fcp-panel-sub&quot; data-tooltip=&quot;样本充足：本期和基准期完成实例均不少于30条&quot;&gt;与此前90天相比 · 84个流程样本充足&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+              &lt;div class=&quot;fcp-donut-wrap&quot;&gt;
+                &lt;div class=&quot;fcp-donut&quot; aria-label=&quot;84个流程具备审批时长对比条件&quot;&gt;&lt;/div&gt;
+                &lt;div class=&quot;fcp-status-list&quot;&gt;
+                  &lt;div class=&quot;fcp-status-row&quot; data-tooltip=&quot;例：客户资金限制审批&quot;&gt;&lt;span class=&quot;fcp-status-swatch&quot; style=&quot;background:#0b63f6&quot;&gt;&lt;/span&gt;&lt;span&gt;审批时长缩短&lt;/span&gt;&lt;strong&gt;29&lt;/strong&gt;&lt;/div&gt;
+                  &lt;div class=&quot;fcp-status-row&quot; data-tooltip=&quot;例：交易指令&quot;&gt;&lt;span class=&quot;fcp-status-swatch&quot; style=&quot;background:#a8c4e8&quot;&gt;&lt;/span&gt;&lt;span&gt;审批时长稳定&lt;/span&gt;&lt;strong&gt;28&lt;/strong&gt;&lt;/div&gt;
+                  &lt;div class=&quot;fcp-status-row&quot; data-tooltip=&quot;例：期货程序化报备与外部接入申请&quot;&gt;&lt;span class=&quot;fcp-status-swatch&quot; style=&quot;background:#cf9f43&quot;&gt;&lt;/span&gt;&lt;span&gt;审批时长延长&lt;/span&gt;&lt;strong&gt;17&lt;/strong&gt;&lt;/div&gt;
+                  &lt;div class=&quot;fcp-status-row&quot; data-tooltip=&quot;本期或基准期完成实例少于30条；例：产业发展部手续费审批&quot;&gt;&lt;span class=&quot;fcp-status-swatch&quot; style=&quot;background:#d9dee6&quot;&gt;&lt;/span&gt;&lt;span&gt;样本不足&lt;/span&gt;&lt;strong&gt;10&lt;/strong&gt;&lt;/div&gt;
+                &lt;/div&gt;
+              &lt;/div&gt;
+            &lt;/section&gt;
+          &lt;/div&gt;
+
+          &lt;div class=&quot;fcp-grid-2 fcp-grid-equal&quot;&gt;
+            &lt;section class=&quot;fcp-panel&quot;&gt;
+              &lt;div class=&quot;fcp-panel-head&quot;&gt;&lt;div&gt;&lt;div class=&quot;fcp-panel-title&quot;&gt;流程分析分布&lt;/div&gt;&lt;div class=&quot;fcp-panel-sub&quot;&gt;按正常完成量展示前20个流程，图中标注前6个；气泡大小代表参与用户数&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+              &lt;svg class=&quot;fcp-chart&quot; viewBox=&quot;0 0 520 270&quot; role=&quot;img&quot; aria-label=&quot;核心流程完成量与审批时长气泡图&quot;&gt;
+                &lt;title&gt;流程分析分布&lt;/title&gt;&lt;desc&gt;客户资金限制审批与一般法人期货开户处于高量且较长时长区域。&lt;/desc&gt;
+                &lt;g stroke=&quot;#e5ebf3&quot;&gt;&lt;line x1=&quot;58&quot; y1=&quot;25&quot; x2=&quot;58&quot; y2=&quot;222&quot;/&gt;&lt;line x1=&quot;58&quot; y1=&quot;222&quot; x2=&quot;500&quot; y2=&quot;222&quot;/&gt;&lt;line x1=&quot;58&quot; y1=&quot;72&quot; x2=&quot;500&quot; y2=&quot;72&quot; stroke-dasharray=&quot;3 4&quot;/&gt;&lt;line x1=&quot;58&quot; y1=&quot;145&quot; x2=&quot;500&quot; y2=&quot;145&quot; stroke-dasharray=&quot;3 4&quot;/&gt;&lt;/g&gt;
+                &lt;g fill=&quot;#7a879a&quot; font-size=&quot;10&quot;&gt;&lt;text x=&quot;17&quot; y=&quot;29&quot;&gt;8天&lt;/text&gt;&lt;text x=&quot;17&quot; y=&quot;76&quot;&gt;6天&lt;/text&gt;&lt;text x=&quot;17&quot; y=&quot;149&quot;&gt;3天&lt;/text&gt;&lt;text x=&quot;17&quot; y=&quot;226&quot;&gt;0天&lt;/text&gt;&lt;text x=&quot;58&quot; y=&quot;246&quot;&gt;低正常完成量&lt;/text&gt;&lt;text x=&quot;440&quot; y=&quot;246&quot;&gt;高正常完成量&lt;/text&gt;&lt;/g&gt;
+                &lt;g opacity=&quot;.92&quot;&gt;
+                  &lt;circle cx=&quot;405&quot; cy=&quot;74&quot; r=&quot;26&quot; fill=&quot;#cf9f43&quot;/&gt;&lt;circle cx=&quot;354&quot; cy=&quot;116&quot; r=&quot;22&quot; fill=&quot;#0b63f6&quot;/&gt;&lt;circle cx=&quot;280&quot; cy=&quot;58&quot; r=&quot;18&quot; fill=&quot;#cf9f43&quot;/&gt;&lt;circle cx=&quot;224&quot; cy=&quot;138&quot; r=&quot;16&quot; fill=&quot;#0b63f6&quot;/&gt;&lt;circle cx=&quot;168&quot; cy=&quot;173&quot; r=&quot;19&quot; fill=&quot;#a8c4e8&quot;/&gt;&lt;circle cx=&quot;105&quot; cy=&quot;91&quot; r=&quot;12&quot; fill=&quot;#cf9f43&quot;/&gt;
+                &lt;/g&gt;
+                &lt;g fill=&quot;#152238&quot; font-size=&quot;9&quot;&gt;&lt;text x=&quot;374&quot; y=&quot;42&quot;&gt;客户资金限制审批&lt;/text&gt;&lt;text x=&quot;327&quot; y=&quot;150&quot;&gt;一般法人期货开户&lt;/text&gt;&lt;text x=&quot;236&quot; y=&quot;30&quot;&gt;程序化报备与外部接入&lt;/text&gt;&lt;text x=&quot;191&quot; y=&quot;164&quot;&gt;特殊情况出金&lt;/text&gt;&lt;text x=&quot;135&quot; y=&quot;202&quot;&gt;预算立项&lt;/text&gt;&lt;text x=&quot;70&quot; y=&quot;70&quot;&gt;产品成立&lt;/text&gt;&lt;/g&gt;
+              &lt;/svg&gt;
+            &lt;/section&gt;
+
+            &lt;section class=&quot;fcp-panel&quot;&gt;
+              &lt;div class=&quot;fcp-panel-head&quot;&gt;&lt;div&gt;&lt;div class=&quot;fcp-panel-title&quot;&gt;重点流程&lt;/div&gt;&lt;div class=&quot;fcp-panel-sub&quot;&gt;当前展示前5名，点击标签切换排序口径&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;fcp-mini-tabs&quot; data-rank-tabs&gt;&lt;button class=&quot;fcp-mini-tab&quot; type=&quot;button&quot; data-rank=&quot;long&quot; aria-selected=&quot;true&quot;&gt;审批耗时较长&lt;/button&gt;&lt;button class=&quot;fcp-mini-tab&quot; type=&quot;button&quot; data-rank=&quot;rise&quot; aria-selected=&quot;false&quot;&gt;审批时长延长较多&lt;/button&gt;&lt;button class=&quot;fcp-mini-tab&quot; type=&quot;button&quot; data-rank=&quot;open&quot; aria-selected=&quot;false&quot;&gt;当前在途较多&lt;/button&gt;&lt;/div&gt;&lt;/div&gt;
+              &lt;div class=&quot;fcp-rank-list&quot; data-rank-list&gt;&lt;/div&gt;
+            &lt;/section&gt;
+          &lt;/div&gt;
+
+          &lt;section class=&quot;fcp-panel&quot; style=&quot;margin-bottom:14px&quot;&gt;
+            &lt;div class=&quot;fcp-panel-head&quot;&gt;&lt;div&gt;&lt;div class=&quot;fcp-panel-title&quot;&gt;改进机会 &lt;button class=&quot;fcp-info&quot; type=&quot;button&quot; data-tooltip=&quot;系统根据节点经过实例数、等待时长、退回率和时长变化识别候选机会，不代表最终流程结论&quot;&gt;i&lt;/button&gt;&lt;/div&gt;&lt;div class=&quot;fcp-panel-sub&quot;&gt;系统识别的节点级候选，当前展示前6项&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;fcp-panel-sub&quot;&gt;统计周期：近7天&lt;/div&gt;&lt;/div&gt;
+            &lt;div class=&quot;fcp-table-wrap&quot;&gt;
+              &lt;table class=&quot;fcp-table&quot; aria-label=&quot;本周节点级改进机会&quot;&gt;
+                &lt;thead&gt;&lt;tr&gt;&lt;th&gt;流程&lt;/th&gt;&lt;th&gt;节点&lt;/th&gt;&lt;th data-tooltip=&quot;显示当前节点实际可处理人员，人员可由岗位配置或代码逻辑计算&quot;&gt;当前处理人&lt;/th&gt;&lt;th data-tooltip=&quot;所选期间进入该节点的流程实例数，同一实例重复进入只计1个&quot;&gt;经过实例（去重）&lt;/th&gt;&lt;th data-tooltip=&quot;发生过节点退回的实例数 ÷ 经过该节点的去重实例数&quot;&gt;退回率&lt;/th&gt;&lt;th&gt;P90等待&lt;/th&gt;&lt;th&gt;最长等待&lt;/th&gt;&lt;th&gt;较上周&lt;/th&gt;&lt;th&gt;识别原因&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
+                &lt;tbody&gt;
+                  &lt;tr&gt;&lt;td&gt;客户资金限制审批&lt;/td&gt;&lt;td&gt;运营复核&lt;/td&gt;&lt;td&gt;王晨等3人&lt;/td&gt;&lt;td&gt;1,128&lt;/td&gt;&lt;td&gt;7.4%&lt;/td&gt;&lt;td&gt;2.3天&lt;/td&gt;&lt;td class=&quot;fcp-gold-note&quot;&gt;8天6小时&lt;/td&gt;&lt;td class=&quot;fcp-up&quot;&gt;延长18%&lt;/td&gt;&lt;td&gt;&lt;span class=&quot;fcp-reason&quot;&gt;量大且停留长&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;
+                  &lt;tr&gt;&lt;td&gt;一般法人期货开户&lt;/td&gt;&lt;td&gt;合规审核&lt;/td&gt;&lt;td&gt;李婷等2人&lt;/td&gt;&lt;td&gt;842&lt;/td&gt;&lt;td&gt;3.7%&lt;/td&gt;&lt;td&gt;3.1天&lt;/td&gt;&lt;td class=&quot;fcp-gold-note&quot;&gt;7天4小时&lt;/td&gt;&lt;td class=&quot;fcp-up&quot;&gt;延长22%&lt;/td&gt;&lt;td&gt;&lt;span class=&quot;fcp-reason&quot;&gt;审批时长延长&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;
+                  &lt;tr&gt;&lt;td&gt;期货程序化报备与外部接入&lt;/td&gt;&lt;td&gt;信息技术复核&lt;/td&gt;&lt;td&gt;周宇等4人&lt;/td&gt;&lt;td&gt;356&lt;/td&gt;&lt;td&gt;4.2%&lt;/td&gt;&lt;td&gt;2.8天&lt;/td&gt;&lt;td class=&quot;fcp-gold-note&quot;&gt;6天9小时&lt;/td&gt;&lt;td class=&quot;fcp-up&quot;&gt;延长31%&lt;/td&gt;&lt;td&gt;&lt;span class=&quot;fcp-reason&quot;&gt;长尾等待明显&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;
+                  &lt;tr&gt;&lt;td&gt;客户特殊情况出金申请&lt;/td&gt;&lt;td&gt;风险审批&lt;/td&gt;&lt;td&gt;陈颖等2人&lt;/td&gt;&lt;td&gt;691&lt;/td&gt;&lt;td&gt;11.6%&lt;/td&gt;&lt;td&gt;1.9天&lt;/td&gt;&lt;td class=&quot;fcp-gold-note&quot;&gt;5天7小时&lt;/td&gt;&lt;td class=&quot;fcp-up&quot;&gt;延长12%&lt;/td&gt;&lt;td&gt;&lt;span class=&quot;fcp-reason&quot;&gt;量大且停留长&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;
+                  &lt;tr&gt;&lt;td&gt;客户换汇申请&lt;/td&gt;&lt;td&gt;材料复核&lt;/td&gt;&lt;td&gt;吴倩等4人&lt;/td&gt;&lt;td&gt;508&lt;/td&gt;&lt;td class=&quot;fcp-up&quot;&gt;24.8%&lt;/td&gt;&lt;td&gt;7.6小时&lt;/td&gt;&lt;td&gt;3天2小时&lt;/td&gt;&lt;td class=&quot;fcp-up&quot;&gt;上升6.3个百分点&lt;/td&gt;&lt;td&gt;&lt;span class=&quot;fcp-reason&quot;&gt;退回率较高&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;
+                  &lt;tr&gt;&lt;td&gt;交易指令&lt;/td&gt;&lt;td&gt;部门负责人审批&lt;/td&gt;&lt;td&gt;赵磊等5人&lt;/td&gt;&lt;td&gt;2,416&lt;/td&gt;&lt;td&gt;2.3%&lt;/td&gt;&lt;td&gt;45秒&lt;/td&gt;&lt;td&gt;3分钟&lt;/td&gt;&lt;td&gt;稳定&lt;/td&gt;&lt;td&gt;&lt;span class=&quot;fcp-reason&quot;&gt;审批简化候选&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;
+                &lt;/tbody&gt;
+              &lt;/table&gt;
+            &lt;/div&gt;
+          &lt;/section&gt;
+
+          &lt;section class=&quot;fcp-panel&quot;&gt;
+            &lt;div class=&quot;fcp-panel-head&quot;&gt;&lt;div&gt;&lt;div class=&quot;fcp-panel-title&quot;&gt;流程领域运行概览&lt;/div&gt;&lt;div class=&quot;fcp-panel-sub&quot;&gt;默认按发起量从高到低排序；点击指标列可切换排序&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+            &lt;div class=&quot;fcp-heat-wrap&quot;&gt;
+              &lt;table class=&quot;fcp-table&quot; aria-label=&quot;流程领域运行概览&quot;&gt;
+                &lt;thead&gt;&lt;tr&gt;&lt;th&gt;流程领域&lt;/th&gt;&lt;th aria-sort=&quot;descending&quot;&gt;&lt;button class=&quot;fcp-table-sort is-active&quot; type=&quot;button&quot; data-domain-sort=&quot;started&quot; data-direction-mark=&quot;↓&quot;&gt;发起量&lt;/button&gt;&lt;/th&gt;&lt;th&gt;&lt;button class=&quot;fcp-table-sort&quot; type=&quot;button&quot; data-domain-sort=&quot;completed&quot; data-tooltip=&quot;所选期间正常完成的流程实例数，不含撤回、驳回、废弃和终止&quot;&gt;正常完成量&lt;/button&gt;&lt;/th&gt;&lt;th&gt;&lt;button class=&quot;fcp-table-sort&quot; type=&quot;button&quot; data-domain-sort=&quot;users&quot;&gt;参与用户（去重）&lt;/button&gt;&lt;/th&gt;&lt;th&gt;&lt;button class=&quot;fcp-table-sort&quot; type=&quot;button&quot; data-domain-sort=&quot;p90&quot;&gt;P90审批时长&lt;/button&gt;&lt;/th&gt;&lt;th&gt;&lt;button class=&quot;fcp-table-sort&quot; type=&quot;button&quot; data-domain-sort=&quot;open&quot; data-tooltip=&quot;截至当前仍未结束的流程实例数量&quot;&gt;当前在途实例数&lt;/button&gt;&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
+                &lt;tbody data-domain-body&gt;
+                  &lt;tr data-started=&quot;24680&quot; data-completed=&quot;23920&quot; data-users=&quot;3260&quot; data-p90=&quot;4.2&quot; data-open=&quot;760&quot;&gt;&lt;td&gt;运营中台&lt;/td&gt;&lt;td class=&quot;fcp-heat fcp-heat-5&quot;&gt;24,680&lt;/td&gt;&lt;td class=&quot;fcp-heat fcp-heat-5&quot;&gt;23,920&lt;/td&gt;&lt;td class=&quot;fcp-heat fcp-heat-5&quot;&gt;3,260&lt;/td&gt;&lt;td class=&quot;fcp-heat fcp-heat-4&quot;&gt;4.2天&lt;/td&gt;&lt;td class=&quot;fcp-heat fcp-heat-5&quot;&gt;760&lt;/td&gt;&lt;/tr&gt;
+                  &lt;tr data-started=&quot;18920&quot; data-completed=&quot;18610&quot; data-users=&quot;2460&quot; data-p90=&quot;2.9&quot; data-open=&quot;310&quot;&gt;&lt;td&gt;资管综合管理&lt;/td&gt;&lt;td class=&quot;fcp-heat fcp-heat-4&quot;&gt;18,920&lt;/td&gt;&lt;td class=&quot;fcp-heat fcp-heat-4&quot;&gt;18,610&lt;/td&gt;&lt;td class=&quot;fcp-heat fcp-heat-4&quot;&gt;2,460&lt;/td&gt;&lt;td class=&quot;fcp-heat fcp-heat-2&quot;&gt;2.9天&lt;/td&gt;&lt;td class=&quot;fcp-heat fcp-heat-4&quot;&gt;310&lt;/td&gt;&lt;/tr&gt;
+                  &lt;tr data-started=&quot;3960&quot; data-completed=&quot;3740&quot; data-users=&quot;760&quot; data-p90=&quot;4.7&quot; data-open=&quot;220&quot;&gt;&lt;td&gt;预算管理&lt;/td&gt;&lt;td class=&quot;fcp-heat fcp-heat-2&quot;&gt;3,960&lt;/td&gt;&lt;td class=&quot;fcp-heat fcp-heat-2&quot;&gt;3,740&lt;/td&gt;&lt;td class=&quot;fcp-heat fcp-heat-2&quot;&gt;760&lt;/td&gt;&lt;td class=&quot;fcp-heat fcp-heat-4&quot;&gt;4.7天&lt;/td&gt;&lt;td class=&quot;fcp-heat fcp-heat-3&quot;&gt;220&lt;/td&gt;&lt;/tr&gt;
+                  &lt;tr data-started=&quot;4280&quot; data-completed=&quot;4090&quot; data-users=&quot;980&quot; data-p90=&quot;3.5&quot; data-open=&quot;190&quot;&gt;&lt;td&gt;客户IT服务&lt;/td&gt;&lt;td class=&quot;fcp-heat fcp-heat-2&quot;&gt;4,280&lt;/td&gt;&lt;td class=&quot;fcp-heat fcp-heat-2&quot;&gt;4,090&lt;/td&gt;&lt;td class=&quot;fcp-heat fcp-heat-2&quot;&gt;980&lt;/td&gt;&lt;td class=&quot;fcp-heat fcp-heat-3&quot;&gt;3.5天&lt;/td&gt;&lt;td class=&quot;fcp-heat fcp-heat-3&quot;&gt;190&lt;/td&gt;&lt;/tr&gt;
+                  &lt;tr data-started=&quot;8360&quot; data-completed=&quot;8180&quot; data-users=&quot;1620&quot; data-p90=&quot;5.6&quot; data-open=&quot;180&quot;&gt;&lt;td&gt;机构开户&lt;/td&gt;&lt;td class=&quot;fcp-heat fcp-heat-3&quot;&gt;8,360&lt;/td&gt;&lt;td class=&quot;fcp-heat fcp-heat-3&quot;&gt;8,180&lt;/td&gt;&lt;td class=&quot;fcp-heat fcp-heat-3&quot;&gt;1,620&lt;/td&gt;&lt;td class=&quot;fcp-heat fcp-heat-5&quot;&gt;5.6天&lt;/td&gt;&lt;td class=&quot;fcp-heat fcp-heat-3&quot;&gt;180&lt;/td&gt;&lt;/tr&gt;
+                  &lt;tr data-started=&quot;2680&quot; data-completed=&quot;2510&quot; data-users=&quot;630&quot; data-p90=&quot;3.8&quot; data-open=&quot;170&quot;&gt;&lt;td&gt;信息技术事务&lt;/td&gt;&lt;td class=&quot;fcp-heat fcp-heat-1&quot;&gt;2,680&lt;/td&gt;&lt;td class=&quot;fcp-heat fcp-heat-1&quot;&gt;2,510&lt;/td&gt;&lt;td class=&quot;fcp-heat fcp-heat-1&quot;&gt;630&lt;/td&gt;&lt;td class=&quot;fcp-heat fcp-heat-3&quot;&gt;3.8天&lt;/td&gt;&lt;td class=&quot;fcp-heat fcp-heat-2&quot;&gt;170&lt;/td&gt;&lt;/tr&gt;
+                &lt;/tbody&gt;
+              &lt;/table&gt;
+            &lt;/div&gt;
+          &lt;/section&gt;
+        &lt;/section&gt;
+
+        &lt;section class=&quot;fcp-page&quot; data-page-panel=&quot;diagnosis&quot; hidden&gt;
+          &lt;div class=&quot;fcp-page-head&quot;&gt;
+            &lt;div&gt;&lt;h1&gt;流程分析诊断&lt;/h1&gt;&lt;p&gt;定位流程节点等待、业务分布和具体在途实例&lt;/p&gt;&lt;/div&gt;
+            &lt;div class=&quot;fcp-asof&quot;&gt;当前统计口径：自然时间 · 2个节点仅统计等待、不计入流程审批时长&lt;/div&gt;
+          &lt;/div&gt;
+
+          &lt;div class=&quot;fcp-filterbar&quot;&gt;
+            &lt;div class=&quot;fcp-flow-filter-row&quot;&gt;
+              &lt;div class=&quot;fcp-field fcp-flow-select-field&quot;&gt;&lt;label for=&quot;diag-flow&quot;&gt;流程&lt;/label&gt;&lt;select class=&quot;fcp-select&quot; id=&quot;diag-flow&quot;&gt;&lt;option&gt;客户资金限制审批&lt;/option&gt;&lt;option&gt;一般法人期货开户&lt;/option&gt;&lt;option&gt;期货程序化报备与外部接入申请&lt;/option&gt;&lt;option&gt;客户特殊情况出金申请&lt;/option&gt;&lt;option&gt;客户中金所套保套利额度申请&lt;/option&gt;&lt;option&gt;机构客户风险评估&lt;/option&gt;&lt;option&gt;客户开户异地协助申请&lt;/option&gt;&lt;option&gt;客户长期银期转账参数调整&lt;/option&gt;&lt;/select&gt;&lt;/div&gt;
+              &lt;div class=&quot;fcp-quickbar&quot; aria-label=&quot;流程快捷筛选&quot;&gt;
+                &lt;span class=&quot;fcp-quick-label&quot;&gt;快捷筛选 &lt;button class=&quot;fcp-info&quot; type=&quot;button&quot; data-tooltip=&quot;用于快速筛选流程下拉选项，不代表最终效率结论&quot;&gt;i&lt;/button&gt;&lt;/span&gt;
+                &lt;button class=&quot;fcp-quick-btn&quot; type=&quot;button&quot; data-quick-filter=&quot;all&quot; aria-pressed=&quot;true&quot;&gt;全部流程&lt;/button&gt;
+                &lt;button class=&quot;fcp-quick-btn&quot; type=&quot;button&quot; data-quick-filter=&quot;opportunity&quot; aria-pressed=&quot;false&quot;&gt;有优化空间 18&lt;/button&gt;
+                &lt;button class=&quot;fcp-quick-btn&quot; type=&quot;button&quot; data-quick-filter=&quot;volume&quot; aria-pressed=&quot;false&quot;&gt;数量较大 23&lt;/button&gt;
+                &lt;button class=&quot;fcp-quick-btn&quot; type=&quot;button&quot; data-quick-filter=&quot;waiting&quot; aria-pressed=&quot;false&quot;&gt;停留时间较长 16&lt;/button&gt;
+                &lt;button class=&quot;fcp-quick-btn&quot; type=&quot;button&quot; data-quick-filter=&quot;extended&quot; aria-pressed=&quot;false&quot;&gt;审批时长延长 12&lt;/button&gt;
+                &lt;span data-quick-summary hidden&gt;当前显示：全部流程&lt;/span&gt;
+              &lt;/div&gt;
+            &lt;/div&gt;
+            &lt;div class=&quot;fcp-field fcp-period-field&quot;&gt;&lt;label&gt;时间范围&lt;/label&gt;&lt;div class=&quot;fcp-segment&quot; data-group=&quot;diag-period&quot;&gt;&lt;button type=&quot;button&quot; aria-pressed=&quot;true&quot;&gt;近30天&lt;/button&gt;&lt;button type=&quot;button&quot; aria-pressed=&quot;false&quot;&gt;近90天&lt;/button&gt;&lt;button type=&quot;button&quot; data-diag-custom-period aria-pressed=&quot;false&quot;&gt;自定义&lt;/button&gt;&lt;/div&gt;&lt;/div&gt;
+            &lt;div class=&quot;fcp-field fcp-org-field&quot;&gt;&lt;label for=&quot;diag-org&quot;&gt;发起部门&lt;/label&gt;&lt;select class=&quot;fcp-select&quot; id=&quot;diag-org&quot;&gt;&lt;option&gt;全部部门&lt;/option&gt;&lt;option&gt;机构业务总部&lt;/option&gt;&lt;option&gt;运营管理部&lt;/option&gt;&lt;option&gt;上海分公司&lt;/option&gt;&lt;/select&gt;&lt;/div&gt;
+            &lt;div class=&quot;fcp-custom-range&quot; data-diag-custom-range hidden&gt;
+              &lt;div class=&quot;fcp-field fcp-date-field&quot;&gt;&lt;label for=&quot;diag-start-date&quot;&gt;开始日期&lt;/label&gt;&lt;input class=&quot;fcp-select&quot; id=&quot;diag-start-date&quot; type=&quot;date&quot; value=&quot;2026-07-01&quot;&gt;&lt;/div&gt;
+              &lt;div class=&quot;fcp-field fcp-date-field&quot;&gt;&lt;label for=&quot;diag-end-date&quot;&gt;结束日期&lt;/label&gt;&lt;input class=&quot;fcp-select&quot; id=&quot;diag-end-date&quot; type=&quot;date&quot; value=&quot;2026-07-30&quot;&gt;&lt;/div&gt;
+              &lt;button class=&quot;fcp-export&quot; type=&quot;button&quot; data-apply-diag-range&gt;应用&lt;/button&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;
+
+          &lt;div class=&quot;fcp-tabs&quot; role=&quot;tablist&quot; aria-label=&quot;流程诊断功能&quot;&gt;
+            &lt;button class=&quot;fcp-tab&quot; type=&quot;button&quot; role=&quot;tab&quot; data-diag-tab=&quot;efficiency&quot; aria-selected=&quot;true&quot;&gt;效率诊断&lt;/button&gt;
+            &lt;button class=&quot;fcp-tab&quot; type=&quot;button&quot; role=&quot;tab&quot; data-diag-tab=&quot;instances&quot; aria-selected=&quot;false&quot;&gt;实例明细&lt;/button&gt;
+            &lt;button class=&quot;fcp-tab&quot; type=&quot;button&quot; role=&quot;tab&quot; data-diag-tab=&quot;business&quot; aria-selected=&quot;false&quot;&gt;业务统计&lt;/button&gt;
+          &lt;/div&gt;
+
+          &lt;section class=&quot;fcp-tabpanel&quot; data-diag-panel=&quot;efficiency&quot;&gt;
+            &lt;div class=&quot;fcp-kpis fcp-kpis-4&quot;&gt;
+              &lt;div class=&quot;fcp-kpi&quot;&gt;&lt;div class=&quot;fcp-kpi-label&quot;&gt;发起量&lt;/div&gt;&lt;div class=&quot;fcp-kpi-value&quot;&gt;3,286&lt;/div&gt;&lt;div class=&quot;fcp-kpi-delta&quot;&gt;较上期 +6.2%&lt;/div&gt;&lt;/div&gt;
+              &lt;div class=&quot;fcp-kpi&quot;&gt;&lt;div class=&quot;fcp-kpi-label&quot;&gt;正常完成量&lt;/div&gt;&lt;div class=&quot;fcp-kpi-value&quot;&gt;3,102&lt;/div&gt;&lt;div class=&quot;fcp-kpi-delta&quot;&gt;正常完成日期落入所选期间&lt;/div&gt;&lt;/div&gt;
+              &lt;div class=&quot;fcp-kpi&quot;&gt;&lt;div class=&quot;fcp-kpi-label&quot;&gt;当前在途量&lt;/div&gt;&lt;div class=&quot;fcp-kpi-value&quot;&gt;184&lt;/div&gt;&lt;div class=&quot;fcp-kpi-delta&quot;&gt;其中7天以上 23&lt;/div&gt;&lt;/div&gt;
+              &lt;div class=&quot;fcp-kpi&quot;&gt;&lt;div class=&quot;fcp-kpi-label&quot;&gt;参与用户数（去重） &lt;button class=&quot;fcp-info&quot; type=&quot;button&quot; data-tooltip=&quot;所选期间内，该流程的发起人和审批人合并去重后的用户数&quot;&gt;i&lt;/button&gt;&lt;/div&gt;&lt;div class=&quot;fcp-kpi-value&quot;&gt;126&lt;/div&gt;&lt;div class=&quot;fcp-kpi-delta&quot;&gt;发起人＋审批人合并去重&lt;/div&gt;&lt;/div&gt;
+              &lt;div class=&quot;fcp-kpi fcp-kpi-emphasis&quot;&gt;&lt;div class=&quot;fcp-kpi-label&quot;&gt;典型审批时长（P50） &lt;button class=&quot;fcp-info&quot; type=&quot;button&quot; data-tooltip=&quot;P50指一半已完成实例不超过该时长，反映流程通常需要多久&quot;&gt;i&lt;/button&gt;&lt;/div&gt;&lt;div class=&quot;fcp-kpi-value&quot;&gt;1.8天&lt;/div&gt;&lt;div class=&quot;fcp-kpi-delta fcp-down&quot;&gt;较基准期缩短 12.4%&lt;/div&gt;&lt;/div&gt;
+              &lt;div class=&quot;fcp-kpi fcp-kpi-emphasis&quot;&gt;&lt;div class=&quot;fcp-kpi-label&quot;&gt;长尾审批时长（P90） &lt;button class=&quot;fcp-info&quot; type=&quot;button&quot; data-tooltip=&quot;P90指90%的已完成实例不超过该时长；最慢的10%形成长尾，用于发现少数耗时特别长的情况&quot;&gt;i&lt;/button&gt;&lt;/div&gt;&lt;div class=&quot;fcp-kpi-value&quot;&gt;4.9天&lt;/div&gt;&lt;div class=&quot;fcp-kpi-delta fcp-up&quot;&gt;较基准期延长 8.7%&lt;/div&gt;&lt;/div&gt;
+              &lt;div class=&quot;fcp-kpi&quot;&gt;&lt;div class=&quot;fcp-kpi-label&quot;&gt;无退回完成率 &lt;button class=&quot;fcp-info&quot; type=&quot;button&quot; data-tooltip=&quot;正常完成且全程未发生退回的实例数 ÷ 正常完成实例数；撤回、驳回、废弃、终止和在途实例均不进入分母&quot;&gt;i&lt;/button&gt;&lt;/div&gt;&lt;div class=&quot;fcp-kpi-value&quot;&gt;94.0%&lt;/div&gt;&lt;div class=&quot;fcp-kpi-delta&quot;&gt;2,916个无退回完成 ÷ 3,102个正常完成&lt;/div&gt;&lt;/div&gt;
+            &lt;/div&gt;
+            &lt;div class=&quot;fcp-result-strip&quot; aria-label=&quot;流程处理结果&quot;&gt;&lt;span class=&quot;fcp-result-item&quot; data-tooltip=&quot;正常完成实例中曾发生至少一次退回的实例数；同一实例无论退回几次只计1个&quot;&gt;曾退回实例 &lt;strong&gt;186（6.0%）&lt;/strong&gt;&lt;/span&gt;&lt;span class=&quot;fcp-result-item&quot;&gt;转交流程 &lt;strong&gt;92&lt;/strong&gt;&lt;/span&gt;&lt;span class=&quot;fcp-result-item&quot;&gt;废弃流程 &lt;strong&gt;37&lt;/strong&gt;&lt;/span&gt;&lt;span class=&quot;fcp-result-item&quot;&gt;撤回流程 &lt;strong&gt;54&lt;/strong&gt;&lt;/span&gt;&lt;span class=&quot;fcp-result-item&quot;&gt;驳回流程 &lt;strong&gt;26&lt;/strong&gt;&lt;/span&gt;&lt;/div&gt;
+
+            &lt;div class=&quot;fcp-grid-2&quot;&gt;
+              &lt;section class=&quot;fcp-panel&quot;&gt;
+                &lt;div class=&quot;fcp-panel-head&quot;&gt;&lt;div&gt;&lt;div class=&quot;fcp-panel-title&quot;&gt;审批时长趋势&lt;/div&gt;&lt;div class=&quot;fcp-panel-sub&quot;&gt;按完成日期统计&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;fcp-legend&quot;&gt;&lt;span&gt;&lt;i class=&quot;fcp-dot&quot; style=&quot;background:#0b63f6&quot;&gt;&lt;/i&gt;P50&lt;/span&gt;&lt;span&gt;&lt;i class=&quot;fcp-dot&quot; style=&quot;background:#cf9f43&quot;&gt;&lt;/i&gt;P90&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;
+                &lt;svg class=&quot;fcp-chart&quot; viewBox=&quot;0 0 650 215&quot; role=&quot;img&quot; aria-label=&quot;客户资金限制审批的P50和P90审批时长趋势&quot;&gt;
+                  &lt;title&gt;审批时长趋势&lt;/title&gt;&lt;desc&gt;P50略有下降，P90近两周有所上升。&lt;/desc&gt;
+                  &lt;g stroke=&quot;#e5ebf3&quot;&gt;&lt;line x1=&quot;52&quot; y1=&quot;32&quot; x2=&quot;628&quot; y2=&quot;32&quot;/&gt;&lt;line x1=&quot;52&quot; y1=&quot;80&quot; x2=&quot;628&quot; y2=&quot;80&quot;/&gt;&lt;line x1=&quot;52&quot; y1=&quot;128&quot; x2=&quot;628&quot; y2=&quot;128&quot;/&gt;&lt;line x1=&quot;52&quot; y1=&quot;176&quot; x2=&quot;628&quot; y2=&quot;176&quot;/&gt;&lt;/g&gt;
+                  &lt;g fill=&quot;#7a879a&quot; font-size=&quot;10&quot;&gt;&lt;text x=&quot;20&quot; y=&quot;36&quot;&gt;6天&lt;/text&gt;&lt;text x=&quot;20&quot; y=&quot;84&quot;&gt;4天&lt;/text&gt;&lt;text x=&quot;20&quot; y=&quot;132&quot;&gt;2天&lt;/text&gt;&lt;text x=&quot;20&quot; y=&quot;180&quot;&gt;0天&lt;/text&gt;&lt;text x=&quot;52&quot; y=&quot;202&quot;&gt;7/01&lt;/text&gt;&lt;text x=&quot;315&quot; y=&quot;202&quot;&gt;7/15&lt;/text&gt;&lt;text x=&quot;598&quot; y=&quot;202&quot;&gt;7/30&lt;/text&gt;&lt;/g&gt;
+                  &lt;polyline points=&quot;52,129 105,126 158,130 211,123 264,125 317,119 370,121 423,116 476,115 529,112 582,116 628,113&quot; fill=&quot;none&quot; stroke=&quot;#0b63f6&quot; stroke-width=&quot;3&quot;/&gt;
+                  &lt;polyline points=&quot;52,77 105,83 158,74 211,79 264,72 317,80 370,75 423,69 476,73 529,61 582,55 628,58&quot; fill=&quot;none&quot; stroke=&quot;#cf9f43&quot; stroke-width=&quot;2&quot;/&gt;
+                &lt;/svg&gt;
+              &lt;/section&gt;
+              &lt;section class=&quot;fcp-panel&quot;&gt;
+                &lt;div class=&quot;fcp-panel-head&quot;&gt;&lt;div&gt;&lt;div class=&quot;fcp-panel-title&quot;&gt;在途龄期&lt;/div&gt;&lt;div class=&quot;fcp-panel-sub&quot;&gt;当前184条在途实例&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+                &lt;div class=&quot;fcp-bars&quot;&gt;
+                  &lt;div class=&quot;fcp-bar-row&quot;&gt;&lt;span&gt;1天以内&lt;/span&gt;&lt;div class=&quot;fcp-bar-track&quot;&gt;&lt;div class=&quot;fcp-bar-fill&quot; style=&quot;width:82%&quot;&gt;&lt;/div&gt;&lt;/div&gt;&lt;strong&gt;84&lt;/strong&gt;&lt;/div&gt;
+                  &lt;div class=&quot;fcp-bar-row&quot;&gt;&lt;span&gt;1–3天&lt;/span&gt;&lt;div class=&quot;fcp-bar-track&quot;&gt;&lt;div class=&quot;fcp-bar-fill&quot; style=&quot;width:58%&quot;&gt;&lt;/div&gt;&lt;/div&gt;&lt;strong&gt;59&lt;/strong&gt;&lt;/div&gt;
+                  &lt;div class=&quot;fcp-bar-row&quot;&gt;&lt;span&gt;3–7天&lt;/span&gt;&lt;div class=&quot;fcp-bar-track&quot;&gt;&lt;div class=&quot;fcp-bar-fill&quot; style=&quot;width:21%&quot;&gt;&lt;/div&gt;&lt;/div&gt;&lt;strong&gt;18&lt;/strong&gt;&lt;/div&gt;
+                  &lt;div class=&quot;fcp-bar-row&quot;&gt;&lt;span&gt;7–15天&lt;/span&gt;&lt;div class=&quot;fcp-bar-track&quot;&gt;&lt;div class=&quot;fcp-bar-fill&quot; style=&quot;width:14%;background:#cf9f43&quot;&gt;&lt;/div&gt;&lt;/div&gt;&lt;strong&gt;14&lt;/strong&gt;&lt;/div&gt;
+                  &lt;div class=&quot;fcp-bar-row&quot;&gt;&lt;span&gt;15天以上&lt;/span&gt;&lt;div class=&quot;fcp-bar-track&quot;&gt;&lt;div class=&quot;fcp-bar-fill&quot; style=&quot;width:9%;background:#a87823&quot;&gt;&lt;/div&gt;&lt;/div&gt;&lt;strong&gt;9&lt;/strong&gt;&lt;/div&gt;
+                &lt;/div&gt;
+              &lt;/section&gt;
+            &lt;/div&gt;
+
+            &lt;section class=&quot;fcp-panel&quot; style=&quot;margin-bottom:14px&quot;&gt;
+              &lt;div class=&quot;fcp-panel-head&quot;&gt;&lt;div&gt;&lt;div class=&quot;fcp-panel-title&quot;&gt;节点等待概览&lt;/div&gt;&lt;div class=&quot;fcp-panel-sub&quot;&gt;不展示流程连线；节点颜色表示相对等待时长，灰色节点只统计自身等待、不计入流程审批时长&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+              &lt;div class=&quot;fcp-flow-lane&quot;&gt;
+                &lt;div class=&quot;fcp-node&quot;&gt;&lt;div class=&quot;fcp-node-title&quot;&gt;提交申请&lt;/div&gt;&lt;div class=&quot;fcp-node-meta&quot;&gt;经过实例 3,286 · 重复进入 0 · 在途 0&lt;/div&gt;&lt;div class=&quot;fcp-node-time&quot;&gt;P50 2分钟 · P90 8分钟&lt;/div&gt;&lt;/div&gt;
+                &lt;div class=&quot;fcp-node&quot;&gt;&lt;div class=&quot;fcp-node-title&quot;&gt;营业部初审&lt;/div&gt;&lt;div class=&quot;fcp-node-meta&quot;&gt;经过实例 3,254 · 重复进入 96 · 在途 42&lt;/div&gt;&lt;div class=&quot;fcp-node-time&quot;&gt;P50 1.8小时 · P90 6.2小时&lt;/div&gt;&lt;/div&gt;
+                &lt;div class=&quot;fcp-node fcp-node-hot&quot;&gt;&lt;div class=&quot;fcp-node-title&quot;&gt;运营复核&lt;/div&gt;&lt;div class=&quot;fcp-node-meta&quot;&gt;经过实例 3,196 · 重复进入 112 · 在途 71&lt;/div&gt;&lt;div class=&quot;fcp-node-time&quot;&gt;P50 9.6小时 · P90 2.3天&lt;/div&gt;&lt;/div&gt;
+                &lt;div class=&quot;fcp-node fcp-node-hot&quot;&gt;&lt;div class=&quot;fcp-node-title&quot;&gt;风险审批&lt;/div&gt;&lt;div class=&quot;fcp-node-meta&quot;&gt;经过实例 2,964 · 重复进入 37 · 在途 48&lt;/div&gt;&lt;div class=&quot;fcp-node-time&quot;&gt;P50 7.2小时 · P90 1.8天&lt;/div&gt;&lt;/div&gt;
+                &lt;div class=&quot;fcp-node fcp-node-muted&quot;&gt;&lt;div class=&quot;fcp-node-title&quot;&gt;系统处理&lt;/div&gt;&lt;div class=&quot;fcp-node-meta&quot;&gt;经过实例 3,102 · 重复进入 0 · 仅统计节点等待&lt;/div&gt;&lt;div class=&quot;fcp-node-time&quot;&gt;P50 3分钟 · P90 12分钟&lt;/div&gt;&lt;/div&gt;
+              &lt;/div&gt;
+            &lt;/section&gt;
+
+            &lt;section class=&quot;fcp-panel&quot;&gt;
+              &lt;div class=&quot;fcp-panel-head&quot;&gt;&lt;div&gt;&lt;div class=&quot;fcp-panel-title&quot;&gt;节点诊断明细&lt;/div&gt;&lt;div class=&quot;fcp-panel-sub&quot;&gt;默认按节点P90等待时间排序&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+              &lt;div class=&quot;fcp-table-wrap&quot;&gt;&lt;table class=&quot;fcp-table&quot; aria-label=&quot;节点诊断明细&quot;&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;节点&lt;/th&gt;&lt;th data-tooltip=&quot;计入流程审批时长：节点等待参与流程P50/P90和趋势计算；仅统计节点等待：只展示该节点自身数据&quot;&gt;时长统计口径&lt;/th&gt;&lt;th data-tooltip=&quot;进入该节点的流程实例数，同一实例重复进入只计1个&quot;&gt;经过实例（去重）&lt;/th&gt;&lt;th data-tooltip=&quot;节点进入总次数减去经过实例数；用于识别因退回等原因造成的反复流转&quot;&gt;重复进入次数&lt;/th&gt;&lt;th&gt;P50等待&lt;/th&gt;&lt;th&gt;P90等待&lt;/th&gt;&lt;th&gt;当前在途&lt;/th&gt;&lt;th data-tooltip=&quot;显示当前节点实际可处理人员，人员可由岗位配置或代码逻辑计算&quot;&gt;当前处理人&lt;/th&gt;&lt;th&gt;退回实例&lt;/th&gt;&lt;th&gt;较基准期&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;运营复核&lt;/td&gt;&lt;td&gt;计入流程审批时长&lt;/td&gt;&lt;td&gt;3,196&lt;/td&gt;&lt;td&gt;112&lt;/td&gt;&lt;td&gt;9.6小时&lt;/td&gt;&lt;td&gt;2.3天&lt;/td&gt;&lt;td&gt;71&lt;/td&gt;&lt;td&gt;王晨等3人&lt;/td&gt;&lt;td&gt;84&lt;/td&gt;&lt;td class=&quot;fcp-up&quot;&gt;延长 11.2%&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;风险审批&lt;/td&gt;&lt;td&gt;计入流程审批时长&lt;/td&gt;&lt;td&gt;2,964&lt;/td&gt;&lt;td&gt;37&lt;/td&gt;&lt;td&gt;7.2小时&lt;/td&gt;&lt;td&gt;1.8天&lt;/td&gt;&lt;td&gt;48&lt;/td&gt;&lt;td&gt;陈颖等2人&lt;/td&gt;&lt;td&gt;31&lt;/td&gt;&lt;td&gt;稳定&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;营业部初审&lt;/td&gt;&lt;td&gt;计入流程审批时长&lt;/td&gt;&lt;td&gt;3,254&lt;/td&gt;&lt;td&gt;96&lt;/td&gt;&lt;td&gt;1.8小时&lt;/td&gt;&lt;td&gt;6.2小时&lt;/td&gt;&lt;td&gt;42&lt;/td&gt;&lt;td&gt;张璐等6人&lt;/td&gt;&lt;td&gt;71&lt;/td&gt;&lt;td class=&quot;fcp-down&quot;&gt;缩短 8.4%&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;系统处理&lt;/td&gt;&lt;td&gt;仅统计节点等待&lt;/td&gt;&lt;td&gt;3,102&lt;/td&gt;&lt;td&gt;0&lt;/td&gt;&lt;td&gt;3分钟&lt;/td&gt;&lt;td&gt;12分钟&lt;/td&gt;&lt;td&gt;23&lt;/td&gt;&lt;td&gt;系统自动处理&lt;/td&gt;&lt;td&gt;0&lt;/td&gt;&lt;td&gt;—&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/div&gt;
+            &lt;/section&gt;
+          &lt;/section&gt;
+
+          &lt;section class=&quot;fcp-tabpanel&quot; data-diag-panel=&quot;instances&quot; hidden&gt;
+            &lt;section class=&quot;fcp-panel&quot;&gt;
+              &lt;div class=&quot;fcp-panel-head&quot;&gt;&lt;div&gt;&lt;div class=&quot;fcp-panel-title&quot;&gt;实例明细&lt;/div&gt;&lt;div class=&quot;fcp-panel-sub&quot;&gt;展示当前节点和等待情况，不展示节点时间轴&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;fcp-list-summary&quot; data-instance-summary&gt;184条当前在途 · 当前展示4条样例&lt;/div&gt;&lt;/div&gt;
+              &lt;div class=&quot;fcp-list-toolbar&quot;&gt;&lt;div class=&quot;fcp-search-field&quot;&gt;&lt;label for=&quot;instance-search&quot;&gt;搜索实例&lt;/label&gt;&lt;input class=&quot;fcp-search-input&quot; id=&quot;instance-search&quot; type=&quot;search&quot; placeholder=&quot;搜索流程名称、部门、节点或处理人&quot; data-instance-search&gt;&lt;/div&gt;&lt;/div&gt;
+              &lt;div class=&quot;fcp-table-wrap&quot;&gt;&lt;table class=&quot;fcp-table&quot; aria-label=&quot;当前在途流程实例&quot;&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;流程名称&lt;/th&gt;&lt;th&gt;发起部门&lt;/th&gt;&lt;th&gt;发起时间&lt;/th&gt;&lt;th&gt;当前节点&lt;/th&gt;&lt;th data-tooltip=&quot;显示该实例当前实际可处理人员&quot;&gt;当前处理人&lt;/th&gt;&lt;th&gt;节点已等待&lt;/th&gt;&lt;th&gt;流程累计时长&lt;/th&gt;&lt;th&gt;退回&lt;/th&gt;&lt;th&gt;转交&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody data-instance-body&gt;&lt;tr&gt;&lt;td&gt;客户资金限制审批—机构客户出金限制解除申请&lt;/td&gt;&lt;td&gt;上海分公司&lt;/td&gt;&lt;td&gt;08-11 09:20&lt;/td&gt;&lt;td&gt;运营复核&lt;/td&gt;&lt;td&gt;王晨、刘佳、孙维&lt;/td&gt;&lt;td class=&quot;fcp-gold-note&quot;&gt;8天6小时&lt;/td&gt;&lt;td&gt;9天2小时&lt;/td&gt;&lt;td&gt;1次&lt;/td&gt;&lt;td&gt;0次&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;客户资金限制审批—自然人客户交易限制调整申请&lt;/td&gt;&lt;td&gt;机构业务总部&lt;/td&gt;&lt;td&gt;08-15 11:06&lt;/td&gt;&lt;td&gt;风险审批&lt;/td&gt;&lt;td&gt;陈颖、何静&lt;/td&gt;&lt;td&gt;4天3小时&lt;/td&gt;&lt;td&gt;5天1小时&lt;/td&gt;&lt;td&gt;0次&lt;/td&gt;&lt;td&gt;1次&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;客户资金限制审批—银期转账限制解除申请&lt;/td&gt;&lt;td&gt;深圳分公司&lt;/td&gt;&lt;td&gt;08-18 08:42&lt;/td&gt;&lt;td&gt;营业部初审&lt;/td&gt;&lt;td&gt;张璐等6人&lt;/td&gt;&lt;td&gt;2天9小时&lt;/td&gt;&lt;td&gt;2天9小时&lt;/td&gt;&lt;td&gt;0次&lt;/td&gt;&lt;td&gt;0次&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;客户资金限制审批—特殊客户账户限制申请&lt;/td&gt;&lt;td&gt;北京分公司&lt;/td&gt;&lt;td&gt;08-17 10:25&lt;/td&gt;&lt;td&gt;运营复核&lt;/td&gt;&lt;td&gt;王晨、刘佳、孙维&lt;/td&gt;&lt;td&gt;1天8小时&lt;/td&gt;&lt;td&gt;3天6小时&lt;/td&gt;&lt;td&gt;2次&lt;/td&gt;&lt;td&gt;1次&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/div&gt;
+            &lt;/section&gt;
+          &lt;/section&gt;
+
+          &lt;section class=&quot;fcp-tabpanel&quot; data-diag-panel=&quot;business&quot; hidden&gt;
+            &lt;section class=&quot;fcp-panel&quot;&gt;
+              &lt;div class=&quot;fcp-panel-head&quot;&gt;&lt;div&gt;&lt;div class=&quot;fcp-panel-title&quot;&gt;自定义业务统计&lt;/div&gt;&lt;div class=&quot;fcp-panel-sub&quot;&gt;按授权业务字段统计数量与审批耗时，结果以表格展示&lt;/div&gt;&lt;/div&gt;&lt;button class=&quot;fcp-export&quot; type=&quot;button&quot; data-export-business&gt;导出统计表&lt;/button&gt;&lt;/div&gt;
+              &lt;div class=&quot;fcp-filterbar&quot; style=&quot;margin-bottom:12px&quot;&gt;
+                &lt;div class=&quot;fcp-field&quot;&gt;&lt;label&gt;统计周期&lt;/label&gt;&lt;div class=&quot;fcp-segment&quot; data-group=&quot;business-period&quot;&gt;&lt;button type=&quot;button&quot; aria-pressed=&quot;false&quot;&gt;近7天&lt;/button&gt;&lt;button type=&quot;button&quot; aria-pressed=&quot;true&quot;&gt;近30天&lt;/button&gt;&lt;button type=&quot;button&quot; aria-pressed=&quot;false&quot;&gt;近90天&lt;/button&gt;&lt;button type=&quot;button&quot; aria-pressed=&quot;false&quot;&gt;自定义&lt;/button&gt;&lt;/div&gt;&lt;/div&gt;
+                &lt;div class=&quot;fcp-field fcp-field-wide&quot;&gt;&lt;label for=&quot;biz-dim1&quot;&gt;按此字段汇总&lt;/label&gt;&lt;select class=&quot;fcp-select&quot; id=&quot;biz-dim1&quot;&gt;&lt;option&gt;限制类型&lt;/option&gt;&lt;option&gt;客户类型&lt;/option&gt;&lt;option&gt;所属营业部&lt;/option&gt;&lt;option&gt;资金账户类型&lt;/option&gt;&lt;/select&gt;&lt;/div&gt;
+                &lt;div class=&quot;fcp-field fcp-field-wide&quot;&gt;&lt;label for=&quot;biz-dim2&quot;&gt;再按此字段细分（可选）&lt;/label&gt;&lt;select class=&quot;fcp-select&quot; id=&quot;biz-dim2&quot;&gt;&lt;option&gt;不再细分&lt;/option&gt;&lt;option&gt;客户类型&lt;/option&gt;&lt;option&gt;所属营业部&lt;/option&gt;&lt;option&gt;资金账户类型&lt;/option&gt;&lt;/select&gt;&lt;/div&gt;
+              &lt;/div&gt;
+              &lt;div class=&quot;fcp-table-wrap&quot;&gt;
+                &lt;table class=&quot;fcp-table&quot; data-business-table aria-label=&quot;自定义业务统计结果&quot;&gt;
+                  &lt;thead data-business-head&gt;&lt;tr&gt;&lt;th&gt;限制类型&lt;/th&gt;&lt;th&gt;发起量&lt;/th&gt;&lt;th&gt;正常完成量&lt;/th&gt;&lt;th&gt;当前在途&lt;/th&gt;&lt;th&gt;P50审批时长&lt;/th&gt;&lt;th&gt;P90审批时长&lt;/th&gt;&lt;th&gt;退回流程&lt;/th&gt;&lt;th&gt;转交流程&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
+                  &lt;tbody data-business-body&gt;
+                    &lt;tr&gt;&lt;td&gt;出金限制&lt;/td&gt;&lt;td&gt;1,280&lt;/td&gt;&lt;td&gt;1,196&lt;/td&gt;&lt;td&gt;84&lt;/td&gt;&lt;td&gt;2.1天&lt;/td&gt;&lt;td&gt;5.8天&lt;/td&gt;&lt;td&gt;118&lt;/td&gt;&lt;td&gt;37&lt;/td&gt;&lt;/tr&gt;
+                    &lt;tr&gt;&lt;td&gt;交易限制&lt;/td&gt;&lt;td&gt;920&lt;/td&gt;&lt;td&gt;872&lt;/td&gt;&lt;td&gt;48&lt;/td&gt;&lt;td&gt;1.7天&lt;/td&gt;&lt;td&gt;4.6天&lt;/td&gt;&lt;td&gt;72&lt;/td&gt;&lt;td&gt;28&lt;/td&gt;&lt;/tr&gt;
+                    &lt;tr&gt;&lt;td&gt;银期限制&lt;/td&gt;&lt;td&gt;668&lt;/td&gt;&lt;td&gt;636&lt;/td&gt;&lt;td&gt;32&lt;/td&gt;&lt;td&gt;1.3天&lt;/td&gt;&lt;td&gt;3.9天&lt;/td&gt;&lt;td&gt;31&lt;/td&gt;&lt;td&gt;19&lt;/td&gt;&lt;/tr&gt;
+                    &lt;tr&gt;&lt;td&gt;账户限制&lt;/td&gt;&lt;td&gt;418&lt;/td&gt;&lt;td&gt;398&lt;/td&gt;&lt;td&gt;20&lt;/td&gt;&lt;td&gt;0.9天&lt;/td&gt;&lt;td&gt;2.7天&lt;/td&gt;&lt;td&gt;13&lt;/td&gt;&lt;td&gt;8&lt;/td&gt;&lt;/tr&gt;
+                  &lt;/tbody&gt;
+                &lt;/table&gt;
+              &lt;/div&gt;
+              &lt;div class=&quot;fcp-panel-sub&quot; style=&quot;margin-top:10px&quot;&gt;统计结果仅包含当前用户有权限查看的业务字段和流程数据。&lt;/div&gt;
+            &lt;/section&gt;
+          &lt;/section&gt;
+        &lt;/section&gt;
+
+        &lt;section class=&quot;fcp-page&quot; data-page-panel=&quot;settings&quot; hidden&gt;
+          &lt;div class=&quot;fcp-page-head&quot;&gt;
+            &lt;div&gt;&lt;h1&gt;统计口径配置&lt;/h1&gt;&lt;p&gt;统一平台指标、流程纳入范围和节点统计方式&lt;/p&gt;&lt;/div&gt;
+            &lt;div class=&quot;fcp-asof&quot;&gt;当前版本：V1.3 · 2026-08-01生效&lt;/div&gt;
+          &lt;/div&gt;
+
+          &lt;section class=&quot;fcp-panel&quot; style=&quot;margin-bottom:14px&quot;&gt;
+            &lt;div class=&quot;fcp-panel-head&quot;&gt;&lt;div&gt;&lt;div class=&quot;fcp-panel-title&quot;&gt;全局统计规则&lt;/div&gt;&lt;div class=&quot;fcp-panel-sub&quot;&gt;用于管理驾驶舱和流程分析诊断的默认口径&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;
+            &lt;div class=&quot;fcp-setting-grid&quot;&gt;
+              &lt;div class=&quot;fcp-setting-item&quot;&gt;&lt;label for=&quot;setting-calendar&quot;&gt;时长计算方式&lt;/label&gt;&lt;select class=&quot;fcp-select&quot; id=&quot;setting-calendar&quot;&gt;&lt;option&gt;自然时间&lt;/option&gt;&lt;option&gt;工作时间&lt;/option&gt;&lt;/select&gt;&lt;/div&gt;
+              &lt;div class=&quot;fcp-setting-item&quot;&gt;&lt;label for=&quot;setting-threshold&quot;&gt;审批时长稳定范围&lt;/label&gt;&lt;select class=&quot;fcp-select&quot; id=&quot;setting-threshold&quot;&gt;&lt;option&gt;±10%&lt;/option&gt;&lt;option&gt;±15%&lt;/option&gt;&lt;option&gt;±20%&lt;/option&gt;&lt;/select&gt;&lt;div class=&quot;fcp-panel-sub&quot; style=&quot;margin-top:6px&quot;&gt;范围内视为稳定，超出后标记为缩短或延长&lt;/div&gt;&lt;/div&gt;
+              &lt;div class=&quot;fcp-setting-item&quot;&gt;&lt;label for=&quot;setting-sample&quot;&gt;最小有效样本量&lt;/label&gt;&lt;select class=&quot;fcp-select&quot; id=&quot;setting-sample&quot;&gt;&lt;option&gt;30条&lt;/option&gt;&lt;option&gt;50条&lt;/option&gt;&lt;option&gt;100条&lt;/option&gt;&lt;/select&gt;&lt;/div&gt;
+              &lt;div class=&quot;fcp-setting-item&quot;&gt;&lt;label for=&quot;setting-period&quot;&gt;驾驶舱默认时间&lt;/label&gt;&lt;select class=&quot;fcp-select&quot; id=&quot;setting-period&quot;&gt;&lt;option&gt;近90天&lt;/option&gt;&lt;option&gt;近30天&lt;/option&gt;&lt;option&gt;本季度&lt;/option&gt;&lt;/select&gt;&lt;/div&gt;
+              &lt;div class=&quot;fcp-setting-item&quot;&gt;&lt;label&gt;在途龄期分组&lt;/label&gt;&lt;div class=&quot;fcp-panel-sub&quot;&gt;1天内、1–3天、3–7天、7–15天、15天以上&lt;/div&gt;&lt;/div&gt;
+              &lt;div class=&quot;fcp-setting-item&quot;&gt;&lt;label&gt;基准期规则&lt;/label&gt;&lt;div class=&quot;fcp-panel-sub&quot;&gt;自动选择此前相同长度周期&lt;/div&gt;&lt;/div&gt;
+            &lt;/div&gt;
+          &lt;/section&gt;
+
+          &lt;section class=&quot;fcp-panel&quot; style=&quot;margin-bottom:14px&quot;&gt;
+            &lt;div class=&quot;fcp-panel-head&quot;&gt;&lt;div&gt;&lt;div class=&quot;fcp-panel-title&quot;&gt;流程纳入范围&lt;/div&gt;&lt;div class=&quot;fcp-panel-sub&quot;&gt;选择流程加入驾驶舱；测试、历史版本和停用流程默认不显示&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;fcp-add-flow&quot;&gt;&lt;div class=&quot;fcp-field fcp-field-wide&quot;&gt;&lt;label for=&quot;setting-flow&quot;&gt;添加流程&lt;/label&gt;&lt;select class=&quot;fcp-select&quot; id=&quot;setting-flow&quot;&gt;&lt;option&gt;客户资金限制审批&lt;/option&gt;&lt;option&gt;一般法人期货开户&lt;/option&gt;&lt;option&gt;期货程序化报备与外部接入申请&lt;/option&gt;&lt;option&gt;客户特殊情况出金申请&lt;/option&gt;&lt;option&gt;客户中金所套保套利额度申请&lt;/option&gt;&lt;/select&gt;&lt;/div&gt;&lt;button class=&quot;fcp-export&quot; type=&quot;button&quot; data-add-flow&gt;加入驾驶舱&lt;/button&gt;&lt;/div&gt;&lt;/div&gt;
+            &lt;div class=&quot;fcp-list-toolbar&quot;&gt;&lt;div class=&quot;fcp-search-field&quot;&gt;&lt;label for=&quot;config-flow-search&quot;&gt;搜索已纳入流程&lt;/label&gt;&lt;input class=&quot;fcp-search-input&quot; id=&quot;config-flow-search&quot; type=&quot;search&quot; placeholder=&quot;输入流程名称或流程领域&quot; data-config-flow-search&gt;&lt;/div&gt;&lt;div class=&quot;fcp-list-summary&quot; data-config-list-summary&gt;显示1–4，共8个流程&lt;/div&gt;&lt;/div&gt;
+            &lt;div class=&quot;fcp-table-wrap fcp-config-table-shell&quot;&gt;
+              &lt;table class=&quot;fcp-table&quot; aria-label=&quot;流程纳入范围&quot;&gt;
+                &lt;thead&gt;&lt;tr&gt;&lt;th&gt;流程名称&lt;/th&gt;&lt;th&gt;流程领域&lt;/th&gt;&lt;th&gt;业务统计&lt;/th&gt;&lt;th&gt;状态&lt;/th&gt;&lt;th&gt;节点配置&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
+                &lt;tbody data-included-flows&gt;
+                  &lt;tr class=&quot;fcp-config-row is-active&quot; data-config-flow=&quot;客户资金限制审批&quot;&gt;&lt;td&gt;客户资金限制审批&lt;/td&gt;&lt;td&gt;运营中台&lt;/td&gt;&lt;td&gt;&lt;label class=&quot;fcp-switch&quot;&gt;&lt;input type=&quot;checkbox&quot; checked&gt;已启用&lt;/label&gt;&lt;/td&gt;&lt;td&gt;正式运行&lt;/td&gt;&lt;td&gt;&lt;button class=&quot;fcp-secondary-action&quot; type=&quot;button&quot;&gt;当前配置&lt;/button&gt;&lt;/td&gt;&lt;/tr&gt;
+                  &lt;tr class=&quot;fcp-config-row&quot; data-config-flow=&quot;一般法人期货开户&quot;&gt;&lt;td&gt;一般法人期货开户&lt;/td&gt;&lt;td&gt;机构开户&lt;/td&gt;&lt;td&gt;&lt;label class=&quot;fcp-switch&quot;&gt;&lt;input type=&quot;checkbox&quot; checked&gt;已启用&lt;/label&gt;&lt;/td&gt;&lt;td&gt;正式运行&lt;/td&gt;&lt;td&gt;&lt;button class=&quot;fcp-secondary-action&quot; type=&quot;button&quot;&gt;配置节点&lt;/button&gt;&lt;/td&gt;&lt;/tr&gt;
+                  &lt;tr class=&quot;fcp-config-row&quot; data-config-flow=&quot;交易指令&quot;&gt;&lt;td&gt;交易指令&lt;/td&gt;&lt;td&gt;资管综合管理&lt;/td&gt;&lt;td&gt;&lt;label class=&quot;fcp-switch&quot;&gt;&lt;input type=&quot;checkbox&quot; checked&gt;已启用&lt;/label&gt;&lt;/td&gt;&lt;td&gt;正式运行&lt;/td&gt;&lt;td&gt;&lt;button class=&quot;fcp-secondary-action&quot; type=&quot;button&quot;&gt;配置节点&lt;/button&gt;&lt;/td&gt;&lt;/tr&gt;
+                  &lt;tr class=&quot;fcp-config-row&quot; data-config-flow=&quot;产品成立流程&quot;&gt;&lt;td&gt;产品成立流程&lt;/td&gt;&lt;td&gt;资管综合管理&lt;/td&gt;&lt;td&gt;&lt;label class=&quot;fcp-switch&quot;&gt;&lt;input type=&quot;checkbox&quot; checked&gt;已启用&lt;/label&gt;&lt;/td&gt;&lt;td&gt;正式运行&lt;/td&gt;&lt;td&gt;&lt;button class=&quot;fcp-secondary-action&quot; type=&quot;button&quot;&gt;配置节点&lt;/button&gt;&lt;/td&gt;&lt;/tr&gt;
+                  &lt;tr class=&quot;fcp-config-row&quot; data-config-flow=&quot;预算立项申请&quot;&gt;&lt;td&gt;预算立项申请&lt;/td&gt;&lt;td&gt;预算管理&lt;/td&gt;&lt;td&gt;&lt;label class=&quot;fcp-switch&quot;&gt;&lt;input type=&quot;checkbox&quot; checked&gt;已启用&lt;/label&gt;&lt;/td&gt;&lt;td&gt;正式运行&lt;/td&gt;&lt;td&gt;&lt;button class=&quot;fcp-secondary-action&quot; type=&quot;button&quot;&gt;配置节点&lt;/button&gt;&lt;/td&gt;&lt;/tr&gt;
+                  &lt;tr class=&quot;fcp-config-row&quot; data-config-flow=&quot;客户机构信息修改&quot;&gt;&lt;td&gt;客户机构信息修改&lt;/td&gt;&lt;td&gt;运营中台&lt;/td&gt;&lt;td&gt;&lt;label class=&quot;fcp-switch&quot;&gt;&lt;input type=&quot;checkbox&quot; checked&gt;已启用&lt;/label&gt;&lt;/td&gt;&lt;td&gt;正式运行&lt;/td&gt;&lt;td&gt;&lt;button class=&quot;fcp-secondary-action&quot; type=&quot;button&quot;&gt;配置节点&lt;/button&gt;&lt;/td&gt;&lt;/tr&gt;
+                  &lt;tr class=&quot;fcp-config-row&quot; data-config-flow=&quot;手续费开票申请&quot;&gt;&lt;td&gt;手续费开票申请&lt;/td&gt;&lt;td&gt;财务流程&lt;/td&gt;&lt;td&gt;&lt;label class=&quot;fcp-switch&quot;&gt;&lt;input type=&quot;checkbox&quot; checked&gt;已启用&lt;/label&gt;&lt;/td&gt;&lt;td&gt;正式运行&lt;/td&gt;&lt;td&gt;&lt;button class=&quot;fcp-secondary-action&quot; type=&quot;button&quot;&gt;配置节点&lt;/button&gt;&lt;/td&gt;&lt;/tr&gt;
+                  &lt;tr class=&quot;fcp-config-row&quot; data-config-flow=&quot;网络及安全变更申请单&quot;&gt;&lt;td&gt;网络及安全变更申请单&lt;/td&gt;&lt;td&gt;信息技术事务&lt;/td&gt;&lt;td&gt;&lt;label class=&quot;fcp-switch&quot;&gt;&lt;input type=&quot;checkbox&quot; checked&gt;已启用&lt;/label&gt;&lt;/td&gt;&lt;td&gt;正式运行&lt;/td&gt;&lt;td&gt;&lt;button class=&quot;fcp-secondary-action&quot; type=&quot;button&quot;&gt;配置节点&lt;/button&gt;&lt;/td&gt;&lt;/tr&gt;
+                &lt;/tbody&gt;
+              &lt;/table&gt;
+            &lt;/div&gt;
+            &lt;div class=&quot;fcp-pager&quot; aria-label=&quot;流程列表分页&quot;&gt;&lt;button type=&quot;button&quot; data-config-prev disabled&gt;上一页&lt;/button&gt;&lt;span class=&quot;fcp-pager-state&quot; data-config-page-state&gt;1 / 2&lt;/span&gt;&lt;button type=&quot;button&quot; data-config-next&gt;下一页&lt;/button&gt;&lt;/div&gt;
+          &lt;/section&gt;
+
+          &lt;section class=&quot;fcp-panel&quot;&gt;
+            &lt;div class=&quot;fcp-panel-head&quot;&gt;&lt;div&gt;&lt;div class=&quot;fcp-panel-title&quot;&gt;节点统计配置&lt;/div&gt;&lt;div class=&quot;fcp-panel-sub&quot; data-node-config-title&gt;流程：客户资金限制审批 · 节点默认全部纳入统计&lt;/div&gt;&lt;div class=&quot;fcp-panel-sub&quot;&gt;“纳入节点统计”用于展示节点经过实例数、重复进入次数、在途量和等待时长；“计入流程审批时长”用于计算流程P50、P90和趋势。&lt;/div&gt;&lt;/div&gt;&lt;label class=&quot;fcp-switch&quot;&gt;&lt;input class=&quot;fcp-node-select&quot; type=&quot;checkbox&quot; data-select-all-nodes checked&gt;全选节点&lt;/label&gt;&lt;/div&gt;
+            &lt;div class=&quot;fcp-table-wrap&quot;&gt;
+              &lt;table class=&quot;fcp-table&quot; aria-label=&quot;节点统计配置&quot;&gt;
+                &lt;thead&gt;&lt;tr&gt;&lt;th data-tooltip=&quot;选中后展示该节点的经过实例数、重复进入次数、在途量和等待时长&quot;&gt;纳入节点统计&lt;/th&gt;&lt;th&gt;节点&lt;/th&gt;&lt;th&gt;节点类型&lt;/th&gt;&lt;th data-tooltip=&quot;选中后，该节点等待时间参与流程P50、P90和趋势计算&quot;&gt;计入流程审批时长&lt;/th&gt;&lt;th&gt;时间口径&lt;/th&gt;&lt;th&gt;配置说明&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
+                &lt;tbody data-node-config-body&gt;&lt;/tbody&gt;
+              &lt;/table&gt;
+            &lt;/div&gt;
+            &lt;div class=&quot;fcp-setting-actions&quot;&gt;&lt;button class=&quot;fcp-secondary-action&quot; type=&quot;button&quot;&gt;保存草稿&lt;/button&gt;&lt;button class=&quot;fcp-export&quot; type=&quot;button&quot;&gt;发布统计口径&lt;/button&gt;&lt;/div&gt;
+          &lt;/section&gt;
+        &lt;/section&gt;
+      &lt;/main&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;script&gt;
+    (() =&gt; {
+      const root = document.getElementById(&#x27;flow-cockpit-prototype&#x27;);
+      const pageButtons = root.querySelectorAll(&#x27;[data-page]&#x27;);
+      const pages = root.querySelectorAll(&#x27;[data-page-panel]&#x27;);
+      pageButtons.forEach(button =&gt; button.addEventListener(&#x27;click&#x27;, () =&gt; {
+        const target = button.dataset.page;
+        pageButtons.forEach(item =&gt; item.setAttribute(&#x27;aria-selected&#x27;, String(item === button)));
+        pages.forEach(page =&gt; page.hidden = page.dataset.pagePanel !== target);
+      }));
+
+      root.querySelectorAll(&#x27;.fcp-segment&#x27;).forEach(group =&gt; {
+        group.querySelectorAll(&#x27;button&#x27;).forEach(button =&gt; button.addEventListener(&#x27;click&#x27;, () =&gt; {
+          group.querySelectorAll(&#x27;button&#x27;).forEach(item =&gt; item.setAttribute(&#x27;aria-pressed&#x27;, String(item === button)));
+        }));
+      });
+
+      const diagnosisCustomRange = root.querySelector(&#x27;[data-diag-custom-range]&#x27;);
+      const diagnosisPeriodGroup = root.querySelector(&#x27;[data-group=&quot;diag-period&quot;]&#x27;);
+      diagnosisPeriodGroup.addEventListener(&#x27;click&#x27;, event =&gt; {
+        const button = event.target.closest(&#x27;button&#x27;);
+        if (!button) return;
+        diagnosisCustomRange.hidden = !button.hasAttribute(&#x27;data-diag-custom-period&#x27;);
+      });
+
+      const diagTabs = root.querySelectorAll(&#x27;[data-diag-tab]&#x27;);
+      const diagPanels = root.querySelectorAll(&#x27;[data-diag-panel]&#x27;);
+      diagTabs.forEach(tab =&gt; tab.addEventListener(&#x27;click&#x27;, () =&gt; {
+        const target = tab.dataset.diagTab;
+        diagTabs.forEach(item =&gt; item.setAttribute(&#x27;aria-selected&#x27;, String(item === tab)));
+        diagPanels.forEach(panel =&gt; panel.hidden = panel.dataset.diagPanel !== target);
+      }));
+
+      const domainBody = root.querySelector(&#x27;[data-domain-body]&#x27;);
+      let domainSort = { key: &#x27;started&#x27;, direction: &#x27;desc&#x27; };
+      const sortDomainRows = () =&gt; {
+        const multiplier = domainSort.direction === &#x27;desc&#x27; ? -1 : 1;
+        [...domainBody.rows]
+          .sort((a, b) =&gt; (Number(a.dataset[domainSort.key]) - Number(b.dataset[domainSort.key])) * multiplier)
+          .forEach(row =&gt; domainBody.appendChild(row));
+        root.querySelectorAll(&#x27;[data-domain-sort]&#x27;).forEach(button =&gt; {
+          const active = button.dataset.domainSort === domainSort.key;
+          button.classList.toggle(&#x27;is-active&#x27;, active);
+          button.dataset.directionMark = active ? (domainSort.direction === &#x27;desc&#x27; ? &#x27;↓&#x27; : &#x27;↑&#x27;) : &#x27;&#x27;;
+          const header = button.closest(&#x27;th&#x27;);
+          if (active) header.setAttribute(&#x27;aria-sort&#x27;, domainSort.direction === &#x27;desc&#x27; ? &#x27;descending&#x27; : &#x27;ascending&#x27;); else header.removeAttribute(&#x27;aria-sort&#x27;);
+        });
+      };
+      root.querySelectorAll(&#x27;[data-domain-sort]&#x27;).forEach(button =&gt; button.addEventListener(&#x27;click&#x27;, () =&gt; {
+        const key = button.dataset.domainSort;
+        domainSort = { key, direction: domainSort.key === key &amp;&amp; domainSort.direction === &#x27;desc&#x27; ? &#x27;asc&#x27; : &#x27;desc&#x27; };
+        sortDomainRows();
+      }));
+      sortDomainRows();
+
+      const instanceSearch = root.querySelector(&#x27;[data-instance-search]&#x27;);
+      const instanceRows = [...root.querySelectorAll(&#x27;[data-instance-body] tr&#x27;)];
+      const instanceSummary = root.querySelector(&#x27;[data-instance-summary]&#x27;);
+      instanceSearch.addEventListener(&#x27;input&#x27;, () =&gt; {
+        const query = instanceSearch.value.trim().toLocaleLowerCase();
+        let visible = 0;
+        instanceRows.forEach(row =&gt; {
+          const match = !query || row.textContent.toLocaleLowerCase().includes(query);
+          row.hidden = !match;
+          if (match) visible += 1;
+        });
+        instanceSummary.textContent = query ? `匹配${visible}条当前样例` : &#x27;184条当前在途 · 当前展示4条样例&#x27;;
+      });
+
+      const rankings = {
+        long: [[&#x27;一般法人期货开户&#x27;,&#x27;6.8天&#x27;],[&#x27;期货程序化报备与外部接入&#x27;,&#x27;6.2天&#x27;],[&#x27;客户资金限制审批&#x27;,&#x27;4.9天&#x27;],[&#x27;客户特殊情况出金&#x27;,&#x27;4.6天&#x27;],[&#x27;预算立项申请&#x27;,&#x27;4.4天&#x27;]],
+        rise: [[&#x27;期货程序化报备与外部接入&#x27;,&#x27;+26.4%&#x27;],[&#x27;客户中金所套保套利额度&#x27;,&#x27;+18.1%&#x27;],[&#x27;客户资金限制审批&#x27;,&#x27;+8.7%&#x27;],[&#x27;机构客户风险评估&#x27;,&#x27;+7.2%&#x27;],[&#x27;一般法人股票期权开户&#x27;,&#x27;+5.6%&#x27;]],
+        open: [[&#x27;客户资金限制审批&#x27;,&#x27;184&#x27;],[&#x27;一般法人期货开户&#x27;,&#x27;162&#x27;],[&#x27;交易指令&#x27;,&#x27;148&#x27;],[&#x27;客户特殊情况出金&#x27;,&#x27;96&#x27;],[&#x27;预算立项申请&#x27;,&#x27;83&#x27;]]
+      };
+      const rankList = root.querySelector(&#x27;[data-rank-list]&#x27;);
+      const renderRank = key =&gt; {
+        rankList.innerHTML = rankings[key].map((item, index) =&gt; `&lt;div class=&quot;fcp-rank-item&quot;&gt;&lt;span class=&quot;fcp-rank-num&quot;&gt;${index + 1}&lt;/span&gt;&lt;span class=&quot;fcp-rank-name&quot;&gt;${item[0]}&lt;/span&gt;&lt;span class=&quot;fcp-rank-val&quot;&gt;${item[1]}&lt;/span&gt;&lt;/div&gt;`).join(&#x27;&#x27;);
+      };
+      renderRank(&#x27;long&#x27;);
+      root.querySelectorAll(&#x27;[data-rank]&#x27;).forEach(tab =&gt; tab.addEventListener(&#x27;click&#x27;, () =&gt; {
+        root.querySelectorAll(&#x27;[data-rank]&#x27;).forEach(item =&gt; item.setAttribute(&#x27;aria-selected&#x27;, String(item === tab)));
+        renderRank(tab.dataset.rank);
+      }));
+
+      const diagnosisFlows = [
+        &#x27;客户资金限制审批&#x27;,
+        &#x27;一般法人期货开户&#x27;,
+        &#x27;期货程序化报备与外部接入申请&#x27;,
+        &#x27;客户特殊情况出金申请&#x27;,
+        &#x27;客户中金所套保套利额度申请&#x27;,
+        &#x27;机构客户风险评估&#x27;,
+        &#x27;客户开户异地协助申请&#x27;,
+        &#x27;客户长期银期转账参数调整&#x27;
+      ];
+      const quickFilters = {
+        all: { summary: &#x27;当前显示：全部流程&#x27;, flows: diagnosisFlows },
+        opportunity: { summary: &#x27;匹配18个流程，下拉展示部分样例&#x27;, flows: [diagnosisFlows[0], diagnosisFlows[2], diagnosisFlows[4], diagnosisFlows[5]] },
+        volume: { summary: &#x27;匹配23个流程，下拉展示部分样例&#x27;, flows: [diagnosisFlows[0], diagnosisFlows[1], diagnosisFlows[3], diagnosisFlows[6]] },
+        waiting: { summary: &#x27;匹配16个流程，下拉展示部分样例&#x27;, flows: [diagnosisFlows[0], diagnosisFlows[1], diagnosisFlows[2], diagnosisFlows[7]] },
+        extended: { summary: &#x27;匹配12个流程，下拉展示部分样例&#x27;, flows: [diagnosisFlows[0], diagnosisFlows[2], diagnosisFlows[4], diagnosisFlows[5]] }
+      };
+      const quickSummary = root.querySelector(&#x27;[data-quick-summary]&#x27;);
+      const diagnosisFlowSelect = root.querySelector(&#x27;#diag-flow&#x27;);
+      root.querySelectorAll(&#x27;[data-quick-filter]&#x27;).forEach(button =&gt; button.addEventListener(&#x27;click&#x27;, () =&gt; {
+        root.querySelectorAll(&#x27;[data-quick-filter]&#x27;).forEach(item =&gt; item.setAttribute(&#x27;aria-pressed&#x27;, String(item === button)));
+        const filter = quickFilters[button.dataset.quickFilter];
+        const previousValue = diagnosisFlowSelect.value;
+        diagnosisFlowSelect.innerHTML = filter.flows.map(flow =&gt; `&lt;option&gt;${flow}&lt;/option&gt;`).join(&#x27;&#x27;);
+        if (filter.flows.includes(previousValue)) diagnosisFlowSelect.value = previousValue;
+        quickSummary.textContent = filter.summary;
+      }));
+
+      const flowCatalog = {
+        &#x27;客户资金限制审批&#x27;: { domain: &#x27;运营中台&#x27;, nodes: [[&#x27;营业部初审&#x27;,&#x27;人工审批&#x27;,&#x27;自然时间&#x27;,&#x27;普通审批节点&#x27;],[&#x27;运营复核&#x27;,&#x27;人工审批&#x27;,&#x27;自然时间&#x27;,&#x27;核心运营节点&#x27;],[&#x27;风险审批&#x27;,&#x27;人工审批&#x27;,&#x27;自然时间&#x27;,&#x27;风险控制节点&#x27;],[&#x27;系统处理&#x27;,&#x27;系统自动&#x27;,&#x27;7×24&#x27;,&#x27;系统自动执行节点&#x27;]] },
+        &#x27;一般法人期货开户&#x27;: { domain: &#x27;机构开户&#x27;, nodes: [[&#x27;提交开户材料&#x27;,&#x27;发起节点&#x27;,&#x27;自然时间&#x27;,&#x27;材料提交&#x27;],[&#x27;营业部审核&#x27;,&#x27;人工审批&#x27;,&#x27;自然时间&#x27;,&#x27;开户材料初审&#x27;],[&#x27;反洗钱审核&#x27;,&#x27;人工审批&#x27;,&#x27;自然时间&#x27;,&#x27;客户身份与反洗钱核验&#x27;],[&#x27;合规审批&#x27;,&#x27;人工审批&#x27;,&#x27;自然时间&#x27;,&#x27;合规准入审批&#x27;],[&#x27;开户处理&#x27;,&#x27;人工处理&#x27;,&#x27;自然时间&#x27;,&#x27;开户落地处理&#x27;]] },
+        &#x27;期货程序化报备与外部接入申请&#x27;: { domain: &#x27;客户IT服务&#x27;, nodes: [[&#x27;业务初审&#x27;,&#x27;人工审批&#x27;,&#x27;自然时间&#x27;,&#x27;业务材料审核&#x27;],[&#x27;合规审核&#x27;,&#x27;人工审批&#x27;,&#x27;自然时间&#x27;,&#x27;程序化交易合规审核&#x27;],[&#x27;信息技术复核&#x27;,&#x27;人工审批&#x27;,&#x27;自然时间&#x27;,&#x27;技术方案与接入审核&#x27;],[&#x27;外部接入处理&#x27;,&#x27;人工处理&#x27;,&#x27;自然时间&#x27;,&#x27;接入配置与验证&#x27;]] },
+        &#x27;客户特殊情况出金申请&#x27;: { domain: &#x27;运营中台&#x27;, nodes: [[&#x27;营业部初审&#x27;,&#x27;人工审批&#x27;,&#x27;自然时间&#x27;,&#x27;出金原因初审&#x27;],[&#x27;运营复核&#x27;,&#x27;人工审批&#x27;,&#x27;自然时间&#x27;,&#x27;特殊出金复核&#x27;],[&#x27;风险审批&#x27;,&#x27;人工审批&#x27;,&#x27;自然时间&#x27;,&#x27;风险控制审批&#x27;],[&#x27;财务出金&#x27;,&#x27;人工处理&#x27;,&#x27;自然时间&#x27;,&#x27;资金出账处理&#x27;]] },
+        &#x27;客户中金所套保套利额度申请&#x27;: { domain: &#x27;运营中台&#x27;, nodes: [[&#x27;业务受理&#x27;,&#x27;人工处理&#x27;,&#x27;自然时间&#x27;,&#x27;额度申请受理&#x27;],[&#x27;材料审核&#x27;,&#x27;人工审批&#x27;,&#x27;自然时间&#x27;,&#x27;申请材料审核&#x27;],[&#x27;风险审批&#x27;,&#x27;人工审批&#x27;,&#x27;自然时间&#x27;,&#x27;套保套利风险审核&#x27;],[&#x27;额度设置&#x27;,&#x27;人工处理&#x27;,&#x27;自然时间&#x27;,&#x27;额度配置&#x27;]] },
+        &#x27;交易指令&#x27;: { domain: &#x27;资管综合管理&#x27;, nodes: [[&#x27;指令提交&#x27;,&#x27;发起节点&#x27;,&#x27;自然时间&#x27;,&#x27;交易指令提交&#x27;],[&#x27;投资经理复核&#x27;,&#x27;人工审批&#x27;,&#x27;自然时间&#x27;,&#x27;投资要素复核&#x27;],[&#x27;合规审核&#x27;,&#x27;人工审批&#x27;,&#x27;自然时间&#x27;,&#x27;交易合规审核&#x27;],[&#x27;指令执行&#x27;,&#x27;人工处理&#x27;,&#x27;自然时间&#x27;,&#x27;交易执行&#x27;]] },
+        &#x27;产品成立流程&#x27;: { domain: &#x27;资管综合管理&#x27;, nodes: [[&#x27;材料提交&#x27;,&#x27;发起节点&#x27;,&#x27;自然时间&#x27;,&#x27;产品成立材料提交&#x27;],[&#x27;产品审核&#x27;,&#x27;人工审批&#x27;,&#x27;自然时间&#x27;,&#x27;产品要素审核&#x27;],[&#x27;合规审批&#x27;,&#x27;人工审批&#x27;,&#x27;自然时间&#x27;,&#x27;合规准入审批&#x27;],[&#x27;产品建档&#x27;,&#x27;人工处理&#x27;,&#x27;自然时间&#x27;,&#x27;产品信息建档&#x27;]] },
+        &#x27;预算立项申请&#x27;: { domain: &#x27;预算管理&#x27;, nodes: [[&#x27;立项提交&#x27;,&#x27;发起节点&#x27;,&#x27;自然时间&#x27;,&#x27;立项材料提交&#x27;],[&#x27;部门审核&#x27;,&#x27;人工审批&#x27;,&#x27;自然时间&#x27;,&#x27;部门预算审核&#x27;],[&#x27;预算复核&#x27;,&#x27;人工审批&#x27;,&#x27;自然时间&#x27;,&#x27;预算额度复核&#x27;],[&#x27;立项确认&#x27;,&#x27;人工处理&#x27;,&#x27;自然时间&#x27;,&#x27;立项结果确认&#x27;]] },
+        &#x27;客户机构信息修改&#x27;: { domain: &#x27;运营中台&#x27;, nodes: [[&#x27;修改申请&#x27;,&#x27;发起节点&#x27;,&#x27;自然时间&#x27;,&#x27;机构信息修改申请&#x27;],[&#x27;材料复核&#x27;,&#x27;人工审批&#x27;,&#x27;自然时间&#x27;,&#x27;证明材料复核&#x27;],[&#x27;运营审核&#x27;,&#x27;人工审批&#x27;,&#x27;自然时间&#x27;,&#x27;客户信息审核&#x27;],[&#x27;信息更新&#x27;,&#x27;系统自动&#x27;,&#x27;7×24&#x27;,&#x27;系统自动更新&#x27;]] },
+        &#x27;手续费开票申请&#x27;: { domain: &#x27;财务流程&#x27;, nodes: [[&#x27;开票申请&#x27;,&#x27;发起节点&#x27;,&#x27;自然时间&#x27;,&#x27;开票信息提交&#x27;],[&#x27;业务复核&#x27;,&#x27;人工审批&#x27;,&#x27;自然时间&#x27;,&#x27;业务信息复核&#x27;],[&#x27;财务审核&#x27;,&#x27;人工审批&#x27;,&#x27;自然时间&#x27;,&#x27;财务开票审核&#x27;],[&#x27;发票开具&#x27;,&#x27;人工处理&#x27;,&#x27;自然时间&#x27;,&#x27;发票开具&#x27;]] },
+        &#x27;网络及安全变更申请单&#x27;: { domain: &#x27;信息技术事务&#x27;, nodes: [[&#x27;变更申请&#x27;,&#x27;发起节点&#x27;,&#x27;自然时间&#x27;,&#x27;变更内容提交&#x27;],[&#x27;安全评估&#x27;,&#x27;人工审批&#x27;,&#x27;自然时间&#x27;,&#x27;安全风险评估&#x27;],[&#x27;技术复核&#x27;,&#x27;人工审批&#x27;,&#x27;自然时间&#x27;,&#x27;技术方案复核&#x27;],[&#x27;变更实施&#x27;,&#x27;人工处理&#x27;,&#x27;自然时间&#x27;,&#x27;变更执行&#x27;]] }
+      };
+      const nodeSelections = {};
+      const nodeDurationSelections = {};
+      const includedFlows = root.querySelector(&#x27;[data-included-flows]&#x27;);
+      const nodeBody = root.querySelector(&#x27;[data-node-config-body]&#x27;);
+      const nodeTitle = root.querySelector(&#x27;[data-node-config-title]&#x27;);
+      const nodeSelectAll = root.querySelector(&#x27;[data-select-all-nodes]&#x27;);
+      const settingFlow = root.querySelector(&#x27;#setting-flow&#x27;);
+      const configFlowSearch = root.querySelector(&#x27;[data-config-flow-search]&#x27;);
+      const configListSummary = root.querySelector(&#x27;[data-config-list-summary]&#x27;);
+      const configPrev = root.querySelector(&#x27;[data-config-prev]&#x27;);
+      const configNext = root.querySelector(&#x27;[data-config-next]&#x27;);
+      const configPageState = root.querySelector(&#x27;[data-config-page-state]&#x27;);
+      const configPageSize = 4;
+      let configPage = 1;
+      let activeConfigFlow = &#x27;客户资金限制审批&#x27;;
+
+      const refreshConfigList = () =&gt; {
+        const query = configFlowSearch.value.trim().toLocaleLowerCase();
+        const rows = [...includedFlows.querySelectorAll(&#x27;[data-config-flow]&#x27;)];
+        const matchedRows = rows.filter(row =&gt; !query || row.textContent.toLocaleLowerCase().includes(query));
+        const totalPages = Math.max(1, Math.ceil(matchedRows.length / configPageSize));
+        configPage = Math.min(configPage, totalPages);
+        const start = (configPage - 1) * configPageSize;
+        const pageRows = new Set(matchedRows.slice(start, start + configPageSize));
+        rows.forEach(row =&gt; row.hidden = !pageRows.has(row));
+        configPrev.disabled = configPage === 1;
+        configNext.disabled = configPage === totalPages;
+        configPageState.textContent = `${configPage} / ${totalPages}`;
+        const end = Math.min(start + configPageSize, matchedRows.length);
+        configListSummary.textContent = matchedRows.length ? `显示${start + 1}–${end}，共${matchedRows.length}个流程` : &#x27;未找到匹配流程&#x27;;
+      };
+
+      const ensureNodeSelection = flowName =&gt; {
+        if (!nodeSelections[flowName]) nodeSelections[flowName] = new Set(flowCatalog[flowName].nodes.map(node =&gt; node[0]));
+        return nodeSelections[flowName];
+      };
+      const ensureNodeDurationSelection = flowName =&gt; {
+        if (!nodeDurationSelections[flowName]) nodeDurationSelections[flowName] = new Set(flowCatalog[flowName].nodes.filter(node =&gt; node[1] !== &#x27;系统自动&#x27;).map(node =&gt; node[0]));
+        return nodeDurationSelections[flowName];
+      };
+      const syncSelectAll = () =&gt; {
+        const all = flowCatalog[activeConfigFlow].nodes.length;
+        const selected = ensureNodeSelection(activeConfigFlow).size;
+        nodeSelectAll.checked = selected === all;
+        nodeSelectAll.indeterminate = selected &gt; 0 &amp;&amp; selected &lt; all;
+      };
+      const renderNodeConfig = flowName =&gt; {
+        activeConfigFlow = flowName;
+        const selected = ensureNodeSelection(flowName);
+        nodeTitle.textContent = `流程：${flowName} · 节点默认全部纳入统计`;
+        if ([...settingFlow.options].some(option =&gt; option.value === flowName)) settingFlow.value = flowName;
+        nodeBody.innerHTML = flowCatalog[flowName].nodes.map(node =&gt; {
+          const checked = selected.has(node[0]);
+          const includeDuration = ensureNodeDurationSelection(flowName).has(node[0]);
+          return `&lt;tr class=&quot;fcp-node-row${checked ? &#x27;&#x27; : &#x27; is-disabled&#x27;}&quot; data-node-name=&quot;${node[0]}&quot;&gt;&lt;td&gt;&lt;input class=&quot;fcp-node-select&quot; type=&quot;checkbox&quot; ${checked ? &#x27;checked&#x27; : &#x27;&#x27;} aria-label=&quot;纳入${node[0]}节点统计&quot;&gt;&lt;/td&gt;&lt;td&gt;${node[0]}&lt;/td&gt;&lt;td&gt;${node[1]}&lt;/td&gt;&lt;td&gt;&lt;label class=&quot;fcp-switch&quot;&gt;&lt;input class=&quot;fcp-duration-select&quot; type=&quot;checkbox&quot; ${includeDuration ? &#x27;checked&#x27; : &#x27;&#x27;} ${checked ? &#x27;&#x27; : &#x27;disabled&#x27;}&gt;计入&lt;/label&gt;&lt;/td&gt;&lt;td&gt;${node[2]}&lt;/td&gt;&lt;td&gt;${node[3]}&lt;/td&gt;&lt;/tr&gt;`;
+        }).join(&#x27;&#x27;);
+        includedFlows.querySelectorAll(&#x27;[data-config-flow]&#x27;).forEach(row =&gt; {
+          const active = row.dataset.configFlow === flowName;
+          row.classList.toggle(&#x27;is-active&#x27;, active);
+          const action = row.querySelector(&#x27;button&#x27;);
+          if (action) action.textContent = active ? &#x27;当前配置&#x27; : &#x27;配置节点&#x27;;
+        });
+        syncSelectAll();
+      };
+      const addFlow = flowName =&gt; {
+        let row = [...includedFlows.querySelectorAll(&#x27;[data-config-flow]&#x27;)].find(item =&gt; item.dataset.configFlow === flowName);
+        if (!row) {
+          row = document.createElement(&#x27;tr&#x27;);
+          row.className = &#x27;fcp-config-row&#x27;;
+          row.dataset.configFlow = flowName;
+          row.innerHTML = `&lt;td&gt;${flowName}&lt;/td&gt;&lt;td&gt;${flowCatalog[flowName].domain}&lt;/td&gt;&lt;td&gt;&lt;label class=&quot;fcp-switch&quot;&gt;&lt;input type=&quot;checkbox&quot; checked&gt;已启用&lt;/label&gt;&lt;/td&gt;&lt;td&gt;正式运行&lt;/td&gt;&lt;td&gt;&lt;button class=&quot;fcp-secondary-action&quot; type=&quot;button&quot;&gt;配置节点&lt;/button&gt;&lt;/td&gt;`;
+          includedFlows.appendChild(row);
+        }
+        configFlowSearch.value = &#x27;&#x27;;
+        configPage = Math.ceil([...includedFlows.querySelectorAll(&#x27;[data-config-flow]&#x27;)].length / configPageSize);
+        nodeSelections[flowName] = new Set(flowCatalog[flowName].nodes.map(node =&gt; node[0]));
+        nodeDurationSelections[flowName] = new Set(flowCatalog[flowName].nodes.filter(node =&gt; node[1] !== &#x27;系统自动&#x27;).map(node =&gt; node[0]));
+        renderNodeConfig(flowName);
+        refreshConfigList();
+      };
+      root.querySelector(&#x27;[data-add-flow]&#x27;).addEventListener(&#x27;click&#x27;, () =&gt; addFlow(settingFlow.value));
+      includedFlows.addEventListener(&#x27;click&#x27;, event =&gt; {
+        if (event.target.matches(&#x27;input&#x27;)) return;
+        const row = event.target.closest(&#x27;[data-config-flow]&#x27;);
+        if (row) renderNodeConfig(row.dataset.configFlow);
+      });
+      configFlowSearch.addEventListener(&#x27;input&#x27;, () =&gt; {
+        configPage = 1;
+        refreshConfigList();
+      });
+      configPrev.addEventListener(&#x27;click&#x27;, () =&gt; {
+        configPage = Math.max(1, configPage - 1);
+        refreshConfigList();
+      });
+      configNext.addEventListener(&#x27;click&#x27;, () =&gt; {
+        configPage += 1;
+        refreshConfigList();
+      });
+      nodeBody.addEventListener(&#x27;change&#x27;, event =&gt; {
+        const row = event.target.closest(&#x27;[data-node-name]&#x27;);
+        if (event.target.classList.contains(&#x27;fcp-duration-select&#x27;)) {
+          const durationSelected = ensureNodeDurationSelection(activeConfigFlow);
+          if (event.target.checked) durationSelected.add(row.dataset.nodeName); else durationSelected.delete(row.dataset.nodeName);
+          return;
+        }
+        if (!event.target.classList.contains(&#x27;fcp-node-select&#x27;)) return;
+        const selected = ensureNodeSelection(activeConfigFlow);
+        if (event.target.checked) selected.add(row.dataset.nodeName); else selected.delete(row.dataset.nodeName);
+        row.classList.toggle(&#x27;is-disabled&#x27;, !event.target.checked);
+        row.querySelectorAll(&#x27;select, input:not(.fcp-node-select)&#x27;).forEach(control =&gt; control.disabled = !event.target.checked);
+        syncSelectAll();
+      });
+      nodeSelectAll.addEventListener(&#x27;change&#x27;, () =&gt; {
+        const selected = ensureNodeSelection(activeConfigFlow);
+        selected.clear();
+        if (nodeSelectAll.checked) flowCatalog[activeConfigFlow].nodes.forEach(node =&gt; selected.add(node[0]));
+        renderNodeConfig(activeConfigFlow);
+      });
+      refreshConfigList();
+      renderNodeConfig(activeConfigFlow);
+
+      const businessData = {
+        &#x27;限制类型&#x27;: [[&#x27;出金限制&#x27;,1280,1196,84,2.1,5.8,118,37],[&#x27;交易限制&#x27;,920,872,48,1.7,4.6,72,28],[&#x27;银期限制&#x27;,668,636,32,1.3,3.9,31,19],[&#x27;账户限制&#x27;,418,398,20,.9,2.7,13,8]],
+        &#x27;客户类型&#x27;: [[&#x27;机构客户&#x27;,1968,1851,117,2.2,5.4,151,49],[&#x27;自然人客户&#x27;,1318,1251,67,1.3,3.8,83,43]],
+        &#x27;所属营业部&#x27;: [[&#x27;上海分公司&#x27;,986,924,62,1.9,5.1,86,31],[&#x27;深圳分公司&#x27;,842,801,41,1.6,4.4,61,24],[&#x27;北京分公司&#x27;,788,742,46,2.0,5.3,57,22],[&#x27;其他营业部&#x27;,670,635,35,1.4,3.9,30,15]],
+        &#x27;资金账户类型&#x27;: [[&#x27;普通资金账户&#x27;,1756,1662,94,1.6,4.3,121,46],[&#x27;信用资金账户&#x27;,918,857,61,2.1,5.6,76,31],[&#x27;专用资金账户&#x27;,612,583,29,1.3,3.7,37,15]]
+      };
+      const secondaryValues = {
+        &#x27;限制类型&#x27;: [&#x27;出金限制&#x27;,&#x27;其他限制&#x27;],
+        &#x27;客户类型&#x27;: [&#x27;机构客户&#x27;,&#x27;自然人客户&#x27;],
+        &#x27;所属营业部&#x27;: [&#x27;重点营业部&#x27;,&#x27;其他营业部&#x27;],
+        &#x27;资金账户类型&#x27;: [&#x27;普通资金账户&#x27;,&#x27;其他资金账户&#x27;]
+      };
+      const businessDimensionSelect = root.querySelector(&#x27;#biz-dim1&#x27;);
+      const businessSplitSelect = root.querySelector(&#x27;#biz-dim2&#x27;);
+      const businessHead = root.querySelector(&#x27;[data-business-head]&#x27;);
+      const businessBody = root.querySelector(&#x27;[data-business-body]&#x27;);
+      const renderBusinessTable = () =&gt; {
+        const primary = businessDimensionSelect.value;
+        const secondary = businessSplitSelect.value;
+        const split = secondary !== &#x27;不再细分&#x27;;
+        businessHead.innerHTML = `&lt;tr&gt;&lt;th&gt;${primary}&lt;/th&gt;${split ? `&lt;th&gt;${secondary}&lt;/th&gt;` : &#x27;&#x27;}&lt;th&gt;发起量&lt;/th&gt;&lt;th&gt;正常完成量&lt;/th&gt;&lt;th&gt;当前在途&lt;/th&gt;&lt;th&gt;P50审批时长&lt;/th&gt;&lt;th&gt;P90审批时长&lt;/th&gt;&lt;th&gt;退回流程&lt;/th&gt;&lt;th&gt;转交流程&lt;/th&gt;&lt;/tr&gt;`;
+        const rows = [];
+        businessData[primary].forEach(row =&gt; {
+          const [name, started, completed, open, p50, p90, returned, transferred] = row;
+          if (!split) {
+            rows.push(`&lt;tr&gt;&lt;td&gt;${name}&lt;/td&gt;&lt;td&gt;${started.toLocaleString()}&lt;/td&gt;&lt;td&gt;${completed.toLocaleString()}&lt;/td&gt;&lt;td&gt;${open}&lt;/td&gt;&lt;td&gt;${p50.toFixed(1)}天&lt;/td&gt;&lt;td&gt;${p90.toFixed(1)}天&lt;/td&gt;&lt;td&gt;${returned}&lt;/td&gt;&lt;td&gt;${transferred}&lt;/td&gt;&lt;/tr&gt;`);
+            return;
+          }
+          secondaryValues[secondary].forEach((subgroup, index) =&gt; {
+            const factor = index === 0 ? .62 : .38;
+            rows.push(`&lt;tr&gt;&lt;td&gt;${name}&lt;/td&gt;&lt;td&gt;${subgroup}&lt;/td&gt;&lt;td&gt;${Math.round(started * factor).toLocaleString()}&lt;/td&gt;&lt;td&gt;${Math.round(completed * factor).toLocaleString()}&lt;/td&gt;&lt;td&gt;${Math.round(open * factor)}&lt;/td&gt;&lt;td&gt;${(p50 + index * .2).toFixed(1)}天&lt;/td&gt;&lt;td&gt;${(p90 + index * .3).toFixed(1)}天&lt;/td&gt;&lt;td&gt;${Math.round(returned * factor)}&lt;/td&gt;&lt;td&gt;${Math.round(transferred * factor)}&lt;/td&gt;&lt;/tr&gt;`);
+          });
+        });
+        businessBody.innerHTML = rows.join(&#x27;&#x27;);
+      };
+      const syncBusinessSplitOptions = () =&gt; {
+        const previous = businessSplitSelect.value;
+        const options = [&#x27;不再细分&#x27;, ...Object.keys(businessData).filter(item =&gt; item !== businessDimensionSelect.value)];
+        businessSplitSelect.innerHTML = options.map(item =&gt; `&lt;option&gt;${item}&lt;/option&gt;`).join(&#x27;&#x27;);
+        if (options.includes(previous)) businessSplitSelect.value = previous;
+        renderBusinessTable();
+      };
+      businessDimensionSelect.addEventListener(&#x27;change&#x27;, syncBusinessSplitOptions);
+      businessSplitSelect.addEventListener(&#x27;change&#x27;, renderBusinessTable);
+      syncBusinessSplitOptions();
+
+      const exportButton = root.querySelector(&#x27;[data-export-business]&#x27;);
+      exportButton.addEventListener(&#x27;click&#x27;, () =&gt; {
+        const rows = [...root.querySelectorAll(&#x27;[data-business-table] tr&#x27;)];
+        const csv = rows.map(row =&gt; [...row.children].map(cell =&gt; `&quot;${cell.textContent.trim().replaceAll(&#x27;&quot;&#x27;, &#x27;&quot;&quot;&#x27;)}&quot;`).join(&#x27;,&#x27;)).join(&#x27;\r\n&#x27;);
+        const blob = new Blob([&#x27;\ufeff&#x27; + csv], { type: &#x27;text/csv;charset=utf-8&#x27; });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement(&#x27;a&#x27;);
+        link.href = url;
+        link.download = &#x27;客户资金限制审批_业务统计.csv&#x27;;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        URL.revokeObjectURL(url);
+      });
+    })();
+  &lt;/script&gt;
+&lt;/div&gt;
+
+&lt;script src=&quot;https://unpkg.com/@floating-ui/core@1.7.3/dist/floating-ui.core.umd.min.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;https://unpkg.com/@floating-ui/dom@1.7.4/dist/floating-ui.dom.umd.min.js&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+(() =&gt; {
+  if (window.FloatingUIDOM == null) {
+    return;
+  }
+  const { autoUpdate, computePosition, flip, offset, shift, size } =
+    window.FloatingUIDOM;
+  const tooltipPlacements = new Set([&quot;top&quot;, &quot;right&quot;, &quot;bottom&quot;, &quot;left&quot;]);
+  const tooltipId = `codex-visualization-tooltip-${
+    window.crypto?.randomUUID?.() ?? Date.now().toString(36)
+  }`;
+  const tooltipGap = 5;
+  const hoverDelay = 700;
+  const skipDelay = 300;
+  let activeTrigger = null;
+  let pendingTrigger = null;
+  let tooltip = null;
+  let openTimeout = null;
+  let autoUpdateCleanup = null;
+  let positionRequest = 0;
+  let skipDelayUntil = 0;
+
+  const getTrigger = (target) =&gt;
+    target?.nodeType === Node.ELEMENT_NODE
+      ? target.closest(&quot;[data-tooltip]&quot;)
+      : null;
+  const containsTarget = (trigger, target) =&gt;
+    target?.nodeType != null &amp;&amp; trigger.contains(target);
+  const getContent = (trigger) =&gt;
+    trigger.getAttribute(&quot;data-tooltip&quot;)?.trim() ?? &quot;&quot;;
+  const getPlacement = (trigger) =&gt; {
+    const placement = trigger.getAttribute(&quot;data-tooltip-placement&quot;);
+    return tooltipPlacements.has(placement) ? placement : &quot;top&quot;;
+  };
+  const getTooltip = () =&gt; {
+    if (tooltip == null) {
+      tooltip = document.createElement(&quot;div&quot;);
+      tooltip.id = tooltipId;
+      tooltip.className = &quot;tooltip&quot;;
+      tooltip.setAttribute(&quot;role&quot;, &quot;tooltip&quot;);
+    }
+    return tooltip;
+  };
+  const setDescribedBy = (trigger, described) =&gt; {
+    const ids = new Set(
+      (trigger.getAttribute(&quot;aria-describedby&quot;) ?? &quot;&quot;)
+        .split(/\s+/)
+        .filter(Boolean),
+    );
+    if (described) {
+      ids.add(tooltipId);
+    } else {
+      ids.delete(tooltipId);
+    }
+    if (ids.size === 0) {
+      trigger.removeAttribute(&quot;aria-describedby&quot;);
+    } else {
+      trigger.setAttribute(&quot;aria-describedby&quot;, [...ids].join(&quot; &quot;));
+    }
+  };
+  const clearOpenTimeout = () =&gt; {
+    if (openTimeout != null) {
+      window.clearTimeout(openTimeout);
+      openTimeout = null;
+    }
+    pendingTrigger = null;
+  };
+  const closeTooltip = (activateSkipDelay = true) =&gt; {
+    clearOpenTimeout();
+    positionRequest += 1;
+    autoUpdateCleanup?.();
+    autoUpdateCleanup = null;
+    if (activeTrigger == null) {
+      return;
+    }
+    setDescribedBy(activeTrigger, false);
+    activeTrigger = null;
+    tooltip?.remove();
+    if (activateSkipDelay) {
+      skipDelayUntil = Date.now() + skipDelay;
+    }
+  };
+  const updatePosition = (trigger, floating) =&gt; {
+    const request = ++positionRequest;
+    void computePosition(trigger, floating, {
+      middleware: [
+        offset(tooltipGap),
+        flip({ padding: tooltipGap }),
+        shift({ padding: tooltipGap }),
+        size({
+          padding: tooltipGap,
+          apply({ availableHeight, availableWidth, elements }) {
+            elements.floating.style.setProperty(
+              &quot;--tooltip-available-width&quot;,
+              `${Math.max(0, availableWidth)}px`,
+            );
+            elements.floating.style.setProperty(
+              &quot;--tooltip-available-height&quot;,
+              `${Math.max(0, availableHeight)}px`,
+            );
+          },
+        }),
+      ],
+      placement: getPlacement(trigger),
+      strategy: &quot;fixed&quot;,
+    })
+      .then(({ x, y }) =&gt; {
+        if (activeTrigger !== trigger || request !== positionRequest) {
+          return;
+        }
+        const scale = window.devicePixelRatio || 1;
+        floating.style.transform = `translate(${Math.round(x * scale) / scale}px, ${Math.round(y * scale) / scale}px)`;
+        floating.style.visibility = &quot;visible&quot;;
+      })
+      .catch(() =&gt; {
+        if (activeTrigger === trigger &amp;&amp; request === positionRequest) {
+          closeTooltip(false);
+        }
+      });
+  };
+  const openTooltip = (trigger) =&gt; {
+    const content = getContent(trigger);
+    if (!trigger.isConnected || content.length === 0) {
+      return;
+    }
+    clearOpenTimeout();
+    if (activeTrigger === trigger) {
+      return;
+    }
+    closeTooltip();
+    const floating = getTooltip();
+    floating.textContent = content;
+    floating.style.visibility = &quot;hidden&quot;;
+    floating.style.transform = &quot;translate(0, 0)&quot;;
+    document.body.appendChild(floating);
+    activeTrigger = trigger;
+    setDescribedBy(trigger, true);
+    autoUpdateCleanup = autoUpdate(trigger, floating, () =&gt; {
+      updatePosition(trigger, floating);
+    });
+  };
+  const requestOpen = (trigger, immediate = false) =&gt; {
+    if (
+      getContent(trigger).length === 0 ||
+      activeTrigger === trigger ||
+      pendingTrigger === trigger
+    ) {
+      return;
+    }
+    clearOpenTimeout();
+    pendingTrigger = trigger;
+    const delay =
+      immediate || activeTrigger != null || Date.now() &lt; skipDelayUntil
+        ? 0
+        : hoverDelay;
+    if (delay === 0) {
+      openTooltip(trigger);
+      return;
+    }
+    openTimeout = window.setTimeout(() =&gt; {
+      openTimeout = null;
+      pendingTrigger = null;
+      openTooltip(trigger);
+    }, delay);
+  };
+  const handlePointerOpen = (event) =&gt; {
+    if (event.pointerType === &quot;touch&quot;) {
+      return;
+    }
+    const trigger = getTrigger(event.target);
+    if (trigger == null || containsTarget(trigger, event.relatedTarget)) {
+      return;
+    }
+    requestOpen(trigger);
+  };
+  const handleLeave = (event) =&gt; {
+    const trigger = getTrigger(event.target);
+    if (trigger == null || containsTarget(trigger, event.relatedTarget)) {
+      return;
+    }
+    if (activeTrigger === trigger || pendingTrigger === trigger) {
+      closeTooltip();
+    }
+  };
+  const handleFocusIn = (event) =&gt; {
+    const trigger = getTrigger(event.target);
+    if (trigger?.matches(&quot;:focus-visible&quot;)) {
+      requestOpen(trigger, true);
+    }
+  };
+  const handleKeyDown = (event) =&gt; {
+    if (event.key === &quot;Escape&quot;) {
+      closeTooltip();
+    }
+  };
+  const handleContextMenu = (event) =&gt; {
+    const trigger = getTrigger(event.target);
+    if (activeTrigger === trigger || pendingTrigger === trigger) {
+      closeTooltip();
+    }
+  };
+  const destroy = () =&gt; {
+    closeTooltip(false);
+    document.removeEventListener(&quot;pointerover&quot;, handlePointerOpen);
+    document.removeEventListener(&quot;pointerout&quot;, handleLeave);
+    document.removeEventListener(&quot;focusin&quot;, handleFocusIn);
+    document.removeEventListener(&quot;focusout&quot;, handleLeave);
+    document.removeEventListener(&quot;keydown&quot;, handleKeyDown);
+    document.removeEventListener(&quot;contextmenu&quot;, handleContextMenu);
+    tooltip = null;
+  };
+
+  document.addEventListener(&quot;pointerover&quot;, handlePointerOpen);
+  document.addEventListener(&quot;pointerout&quot;, handleLeave);
+  document.addEventListener(&quot;focusin&quot;, handleFocusIn);
+  document.addEventListener(&quot;focusout&quot;, handleLeave);
+  document.addEventListener(&quot;keydown&quot;, handleKeyDown);
+  document.addEventListener(&quot;contextmenu&quot;, handleContextMenu);
+  window.addEventListener(&quot;pagehide&quot;, destroy, { once: true });
+})();
+&lt;/script&gt;
+&lt;script id=&quot;codex-visualization-lucide&quot; async src=&quot;https://unpkg.com/lucide@1.17.0/dist/umd/lucide.js&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+(() =&gt; {
+  const initialize = () =&gt; {
+    globalThis.lucide?.createIcons({ attrs: { width: 16, height: 16 } });
+  };
+  if (globalThis.lucide != null) {
+    initialize();
+    return;
+  }
+  document
+    .getElementById(&quot;codex-visualization-lucide&quot;)
+    ?.addEventListener(&quot;load&quot;, initialize, { once: true });
+})();
+&lt;/script&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;
+"></iframe>
+</body>
+</html>
