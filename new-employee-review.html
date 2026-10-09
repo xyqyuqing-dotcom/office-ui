@@ -1,0 +1,1315 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#ffffff">
+  <title>新员工述职 | 事务中心</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --blue: #3478f6;
+      --text: #202b38;
+      --muted: #89919a;
+      --line: #e7e9ec;
+      --canvas: #f5f6f8;
+      --watermark: rgba(120, 130, 140, .055);
+      font-family: "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", Arial, sans-serif;
+      color: var(--text);
+      font-synthesis: none;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; }
+    body { background: var(--canvas); font-size: 14px; }
+    button, input, textarea, select { font: inherit; }
+    button { color: inherit; }
+
+    .topbar {
+      height: 58px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 34px;
+      background: #fff;
+      border-bottom: 1px solid #dedfe2;
+      position: relative;
+      z-index: 2;
+    }
+    .brand { font-size: 17px; font-weight: 650; letter-spacing: .2px; }
+    .top-actions { display: flex; align-items: center; gap: 26px; color: #5e6872; }
+    .top-action { display: inline-flex; align-items: center; gap: 7px; white-space: nowrap; }
+    .top-action svg { width: 17px; height: 17px; stroke: currentColor; fill: none; stroke-width: 1.6; }
+    .top-divider { height: 20px; width: 1px; background: #e6e7e9; margin-left: -8px; }
+    .icon-button {
+      display: inline-grid; place-items: center; width: 28px; height: 28px;
+      padding: 0; border: 0; background: transparent; color: #74808b; cursor: pointer;
+    }
+    .icon-button svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 1.7; }
+
+    .workspace {
+      height: calc(100vh - 58px);
+      min-height: 650px;
+      display: flex;
+      gap: 20px;
+      padding: 21px 34px 0;
+      overflow: hidden;
+      transition: gap .2s ease;
+    }
+    .main-column { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 22px; }
+    .report-header, .form-card, .process-card { background: #fff; border-radius: 9px; }
+    .report-header { min-height: 161px; padding: 20px 31px 18px; position: relative; overflow: hidden; }
+    .report-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 18px; }
+    .report-title { margin: 0; font-size: 20px; font-weight: 650; line-height: 1.45; }
+    .heading-tools { display: flex; align-items: center; gap: 18px; flex-shrink: 0; }
+    .period-picker { display: inline-flex; align-items: center; gap: 7px; color: #707a84; white-space: nowrap; }
+    .period-picker select { height: 32px; border: 1px solid #dce1e7; border-radius: 5px; padding: 0 25px 0 9px; color: #46515d; background: #fff; cursor: pointer; }
+    .status-tag { border: 1px solid #ffad62; color: #fa851b; background: #fffaf6; border-radius: 2px; font-size: 13px; line-height: 25px; padding: 0 8px; }
+    .summary-toggle { display: block; margin: 23px 0 0 auto; padding: 0; color: #68717a; background: none; border: 0; cursor: pointer; }
+    .summary-toggle::after { content: "⌄"; padding-left: 6px; }
+    .creator-line { display: flex; align-items: center; gap: 11px; margin-top: 29px; color: #8a929b; }
+    .bot-avatar {
+      width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center;
+      border: 3px solid #dce8ff; background: linear-gradient(140deg, #2f7cf3, #78a8ff); color: #fff; font-size: 16px;
+    }
+    .creator-name { color: #69727b; }
+    .priority { border: 1px solid #b9bec4; border-radius: 2px; padding: 1px 5px; color: #78818a; font-size: 12px; }
+    .menu-mark { color: #69727b; font-size: 18px; line-height: 1; }
+
+    .form-card {
+      flex: 1 1 auto; min-height: 0; overflow: auto; position: relative;
+      padding: 29px 33px 34px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='480' height='310' viewBox='0 0 480 310'%3E%3Cg transform='rotate(-28 110 90)' fill='%2378828c' fill-opacity='.055' font-family='Arial,sans-serif' font-size='17'%3E%3Ctext x='45' y='90'%3E%E6%9D%A8%E8%89%B3%E8%8B%B1%3C/text%3E%3Ctext x='47' y='111' font-size='11'%3E20252270%3C/text%3E%3Ctext x='285' y='230'%3E%E6%9D%A8%E8%89%B3%E8%8B%B1%3C/text%3E%3Ctext x='287' y='251' font-size='11'%3E20252270%3C/text%3E%3C/g%3E%3C/svg%3E");
+      background-repeat: repeat;
+      scrollbar-color: #c9cdd2 transparent;
+      scrollbar-width: thin;
+    }
+    .intro { display: flex; justify-content: space-between; align-items: center; gap: 20px; min-height: 64px; margin-bottom: 30px; }
+    .intro p { margin: 0; line-height: 1.8; color: #1f252a; }
+    .text-link { border: 0; background: none; color: var(--blue); padding: 4px 0; cursor: pointer; white-space: nowrap; }
+    .section-title { color: var(--blue); font-size: 16px; font-weight: 500; margin: 0 0 20px; }
+    .section-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+    .section-head .section-title { margin: 0; }
+
+    .basic-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      column-gap: 26px; row-gap: 30px;
+      padding: 0 6px 0 4px;
+    }
+    .inline-field { display: grid; grid-template-columns: max-content minmax(100px, 1fr); align-items: center; gap: 12px; min-width: 0; }
+    .field-label { white-space: nowrap; color: #29323a; }
+    .required::before { content: "*"; color: #f04444; margin-right: 4px; }
+    .control {
+      width: 100%; min-width: 0; height: 42px; border: 1px solid #d7dadd;
+      border-radius: 6px; outline: 0; background: rgba(255,255,255,.93); color: #333b43; padding: 0 12px;
+      transition: border-color .15s, box-shadow .15s;
+    }
+    .control::placeholder, textarea::placeholder { color: #b4bbc2; }
+    .control:focus, textarea:focus { border-color: #72a7ff; box-shadow: 0 0 0 2px rgba(52,120,246,.08); }
+    .control.readonly-look { background: #f3f3f3; }
+    select.control { appearance: none; padding-right: 34px; cursor: pointer; color: #a2a8ae; }
+    .select-wrap { position: relative; min-width: 0; }
+    .select-wrap::after { content: ""; position: absolute; right: 14px; top: 16px; width: 8px; height: 8px; border-right: 1px solid #aeb4ba; border-bottom: 1px solid #aeb4ba; transform: rotate(45deg); pointer-events: none; }
+
+    .report-section { margin-top: 38px; }
+    .long-field { margin-top: 25px; }
+    .long-field:first-of-type { margin-top: 0; }
+    .long-label { display: block; margin-bottom: 10px; color: #303941; }
+    .hint { color: #7c858e; margin: 0 0 10px; line-height: 1.7; }
+    .textarea-wrap { position: relative; }
+    textarea {
+      width: 100%; min-height: 111px; resize: vertical; display: block;
+      border: 1px solid #d9dcdf; border-radius: 7px; outline: 0;
+      background: rgba(255,255,255,.92); color: #303941; padding: 12px 15px 29px; line-height: 1.7;
+      transition: border-color .15s, box-shadow .15s;
+    }
+    .textarea-wrap.focused textarea { border-color: #5b95ff; }
+    textarea.short { min-height: 106px; }
+    textarea.review { min-height: 112px; background: rgba(244,244,244,.94); }
+    .counter { position: absolute; right: 12px; bottom: 8px; color: #a0a6ac; font-size: 12px; pointer-events: none; }
+    .period-note { color: #8a929b; font-size: 13px; margin: -8px 0 10px; }
+    .extra-info { display: none; grid-column: 1 / -1; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 30px 26px; margin-top: 2px; }
+    .extra-info.open { display: grid; }
+
+    .side-rail { flex: 0 0 27.4%; min-width: 320px; position: relative; transition: flex-basis .2s ease, min-width .2s ease; }
+    .process-card { height: 100%; padding: 34px 32px; overflow: auto; position: relative; }
+    .process-head { display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+    .process-title { font-size: 18px; font-weight: 600; margin: 0; }
+    .flow-link { color: #424a52; border: 0; background: none; cursor: pointer; display: inline-flex; gap: 7px; align-items: center; white-space: nowrap; }
+    .flow-link svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 1.6; }
+    .process-controls { display: flex; justify-content: space-between; align-items: center; gap: 18px; margin-top: 34px; }
+    .tabs { display: inline-flex; border: 1px solid #e4e6e9; border-radius: 4px; padding: 2px; background: #f7f8f9; }
+    .tab { border: 0; background: transparent; padding: 6px 11px; color: #7c848c; cursor: pointer; border-radius: 3px; }
+    .tab.active { color: #414950; background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,.08); }
+    .filters { display: flex; align-items: center; gap: 14px; color: #565f68; white-space: nowrap; }
+    .check { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; }
+    .check input { accent-color: #3982f6; width: 14px; height: 14px; margin: 0; }
+    .timeline { margin: 43px 0 0; padding: 0; list-style: none; }
+    .timeline-item { display: grid; grid-template-columns: 14px 42px minmax(0,1fr) auto; align-items: start; gap: 14px; }
+    .timeline-dot { width: 7px; height: 7px; border-radius: 50%; background: #3982f6; margin: 17px auto 0; }
+    .person-avatar { width: 42px; height: 42px; border-radius: 50%; display: grid; place-items: center; background: linear-gradient(135deg,#e6d4c4,#c4d6e3); font-size: 21px; position: relative; }
+    .person-avatar::after { content: "◷"; position: absolute; right: -3px; bottom: -3px; width: 16px; height: 16px; border-radius: 50%; background: #ffc35e; color: #fff; font-size: 10px; text-align: center; line-height: 16px; }
+    .timeline-copy { min-width: 0; padding-top: 1px; }
+    .timeline-name { color: #272f36; margin-bottom: 8px; }
+    .timeline-user { color: #767f88; }
+    .timeline-meta { text-align: right; }
+    .working-tag { display: inline-block; color: #f18821; border: 1px solid #ffa344; border-radius: 2px; padding: 3px 7px; white-space: nowrap; }
+    .time { color: #a1a6ab; font-size: 12px; margin-top: 8px; white-space: nowrap; }
+    .empty-note { color: #9ca3aa; margin: 26px 0 0 70px; display: none; }
+    .collapse-rail {
+      position: absolute; z-index: 1; left: -12px; top: 50%; transform: translateY(-50%);
+      width: 25px; height: 64px; border: 1px solid #e0e3e7; border-radius: 4px;
+      background: #fff; color: #89929b; cursor: pointer; box-shadow: 0 1px 3px rgba(0,0,0,.05);
+    }
+    .collapse-rail::before { content: "◀"; font-size: 11px; }
+    .workspace.sidebar-hidden .side-rail { flex-basis: 0; min-width: 0; overflow: visible; }
+    .workspace.sidebar-hidden .process-card { display: none; }
+    .workspace.sidebar-hidden .collapse-rail::before { content: "▶"; }
+
+    .floating-tools { position: fixed; right: 0; bottom: 20px; width: 46px; height: 46px; border-radius: 50%; background: #fff; box-shadow: 0 3px 18px rgba(20,35,55,.12); color: #8f98a1; display: grid; place-items: center; }
+    .floating-tools svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 1.5; }
+    .modal-backdrop { position: fixed; inset: 0; z-index: 10; display: none; align-items: center; justify-content: center; padding: 24px; background: rgba(24,35,48,.28); }
+    .modal-backdrop.open { display: flex; }
+    .modal { width: min(560px, 100%); border-radius: 10px; background: #fff; box-shadow: 0 16px 50px rgba(15,30,50,.2); padding: 25px 28px 24px; }
+    .modal-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+    .modal-head h2 { margin: 0; font-size: 18px; }
+    .modal p { color: #69727b; line-height: 1.8; margin: 0; }
+    .modal-close { border: 0; background: none; color: #87919a; cursor: pointer; font-size: 22px; }
+    .period-section[hidden] { display: none !important; }
+    .upload-box { padding: 20px; border: 1px dashed #cbd5e0; border-radius: 7px; background: rgba(250,252,255,.9); }
+    .upload-box p { margin: 0 0 14px; color: #7d8792; }
+    .upload-button { min-height: 38px; padding: 0 14px; border: 1px solid #a8c8f8; border-radius: 5px; color: #3478d4; background: #fff; cursor: pointer; }
+    .upload-button:hover { border-color: #6ea4f0; background: #f5f9ff; }
+    .upload-input { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+    .uploaded-files { margin: 14px 0 0; padding: 0; list-style: none; color: #58636e; }
+    .uploaded-files li { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 7px 0; border-top: 1px solid #edf0f3; }
+    .uploaded-file-name { min-width: 0; overflow-wrap: anywhere; }
+    .remove-upload { flex: 0 0 auto; padding: 3px 7px; border: 0; background: none; color: #8a929b; cursor: pointer; }
+    .remove-upload:hover { color: #d44b4b; }
+    .rating-directions { display: flex; flex-direction: column; gap: 13px; }
+    .rating-direction-card { padding: 15px 17px 16px; border: 1px solid #e8edf4; border-radius: 9px; background: #fff; }
+    .rating-section-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+    .rating-section-head .section-title { margin: 0; }
+    .rating-section-average { flex: 0 0 auto; padding: 7px 11px; }
+    .rating-section-average strong { font-size: 20px; }
+    .rating-direction-label { display: block; margin-bottom: 5px; color: #8996a6; font-size: 12px; }
+    .rating-direction-title { color: #3d5067; font-size: 16px; font-weight: 650; }
+    .rating-direction-copy { min-width: 0; }
+    .rating-direction-title-row { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+    .rating-privacy-note { padding: 4px 8px; border-radius: 4px; color: #3975b5; background: #f0f7ff; font-size: 12px; }
+    .average-box { display: flex; align-items: baseline; gap: 7px; padding: 9px 13px; border: 1px solid #e5eef9; border-radius: 7px; background: #f7fbff; }
+    .average-box span,.average-box small { color: #8795a6; font-size: 12px; }
+    .average-box strong { color: #d9912b; font-size: 23px; }
+    .average-box.rating-section-average strong { font-size: 21px; }
+    .rating-items { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 8px; }
+    .rating-item { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 62px; padding: 8px 10px; border: 1px solid #edf0f4; border-radius: 7px; background: #fff; }
+    .rating-dimension { color: #45566b; font-size: 14px; font-weight: 600; }
+    .rating-help { margin-top: 5px; color: #8995a3; font-size: 12px; line-height: 1.5; }
+    .rating-control { display: flex; flex: 0 0 auto; align-items: center; gap: 6px; }
+    .star-group { display: flex; align-items: center; gap: 2px; }
+    .star-button { width: 27px; height: 34px; padding: 0; border: 0; color: #dfe4ea; background: transparent; font-size: 26px; line-height: 1; cursor: pointer; }
+    .star-button.filled { color: #f3b746; }
+    .star-button.half { color: transparent; background: linear-gradient(90deg,#f3b746 50%,#dfe4ea 50%); background-clip: text; -webkit-background-clip: text; }
+    .rating-value { min-width: 38px; color: #d28b27; font-size: 14px; font-weight: 600; text-align: right; }
+    .text-review { margin-top: 12px; }
+    .text-review label { display: block; margin-bottom: 7px; color: #5d6d80; font-size: 14px; font-weight: 600; }
+    .text-review textarea { width: 100%; min-height: 96px; resize: vertical; padding: 10px 12px; border: 1px solid #dce2e9; border-radius: 6px; outline: none; color: #3e4f63; background: #fff; font: inherit; font-size: 14px; line-height: 1.7; }
+    .text-review textarea:focus { border-color: #86b8fa; box-shadow: 0 0 0 3px rgba(51,140,244,.08); }
+    .text-review-actions { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 7px; }
+    .evaluation-save-status { margin-right: auto; color: #8795a6; font-size: 13px; }
+    .rating-directions .btn { height: 36px; padding: 0 15px; border: 1px solid #d9e0e8; border-radius: 6px; color: #445467; background: #fff; font-size: 13px; white-space: nowrap; cursor: pointer; }
+    .rating-directions .btn:hover { border-color: #a9cafa; }
+    .rating-directions .btn.primary { border-color: var(--blue); color: #fff; background: var(--blue); box-shadow: 0 3px 8px rgba(51,140,244,.18); }
+    .rating-directions .btn.primary:hover { background: #1f78e8; }
+    .text-review-actions .btn { height: 34px; font-size: 12px; }
+    .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; clip-path: inset(50%); }
+    .rotation-table-wrap { overflow-x: auto; border: 1px solid #e7eaee; border-radius: 6px; background: rgba(255,255,255,.88); }
+    .rotation-table { width: 100%; min-width: 560px; border-collapse: collapse; }
+    .rotation-table th, .rotation-table td { padding: 15px 18px; border-bottom: 1px solid #eceef1; text-align: left; }
+    .rotation-table th { background: rgba(248,250,252,.96); color: #5c6876; font-weight: 600; }
+    .rotation-table tr:last-child td { border-bottom: 0; }
+    .rotation-table td:last-child, .rotation-table th:last-child { text-align: center; }
+    .rotation-detail-button { padding: 0; border: 0; background: none; color: var(--blue); cursor: pointer; }
+    .rotation-detail-button:hover { text-decoration: underline; }
+    .rotation-record-dialog { width: min(1440px,calc(100vw - 44px)); height: min(960px,calc(100vh - 44px)); max-height: none; display: flex; flex-direction: column; overflow: hidden; padding: 0; }
+    #rotationDetailModal { padding: 22px; background: rgba(24,35,48,.28); }
+    .rotation-record-head { min-height: 62px; display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 0 22px; border-bottom: 1px solid #edf0f4; }
+    .rotation-record-head h2 { margin: 0; color: #25374b; font-size: 19px; font-weight: 650; }
+    .rotation-record-head p { margin: 4px 0 0; color: #98a3b0; font-size: 13px; }
+    .rotation-close { width: 34px; height: 34px; flex: 0 0 auto; border: 0; border-radius: 6px; color: #8995a3; background: transparent; font-size: 25px; line-height: 1; cursor: pointer; }
+    .rotation-close:hover { background: #f3f6f9; }
+    .rotation-profile { display: grid; grid-template-columns: repeat(7,minmax(0,1fr)); gap: 10px 13px; padding: 15px 21px 13px; border-bottom: 1px solid #edf0f4; background: #fbfcfe; }
+    .rotation-profile-field { min-width: 0; }
+    .rotation-profile-field label { display: block; margin-bottom: 6px; color: #758397; font-size: 13px; }
+    .rotation-profile-value { width: 100%; min-width: 0; height: 38px; padding: 0 10px; border: 1px solid #dce2e9; border-radius: 6px; color: #566477; background: #f2f5f8; font: inherit; font-size: 14px; }
+    .rotation-profile-field.profile-period { grid-column: span 2; }
+    .rotation-period-inputs { display: grid; grid-template-columns: minmax(0,1fr) auto minmax(0,1fr); gap: 7px; align-items: center; }
+    .rotation-period-inputs span { color: #9aa5b1; font-size: 14px; }
+    .rotation-profile-actions { grid-column: 1 / -1; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .rotation-profile-actions small { color: #9aa5b1; font-size: 12px; }
+    .rotation-save { height: 34px; padding: 0 13px; border: 1px solid #3488f4; border-radius: 5px; color: #fff; background: #3488f4; font-size: 13px; }
+    .rotation-tabs { flex: 0 0 auto; display: flex; gap: 26px; padding: 0 22px; border-bottom: 1px solid #e8edf3; }
+    .rotation-tab { position: relative; height: 48px; padding: 0 2px; border: 0; color: #788596; background: transparent; font-size: 15px; cursor: pointer; }
+    .rotation-tab.active { color: #287bd6; font-weight: 600; }
+    .rotation-tab.active::after { position: absolute; right: 0; bottom: -1px; left: 0; height: 2px; border-radius: 2px; background: #338cf4; content: ""; }
+    .rotation-pane { flex: 1; min-height: 0; overflow: hidden; }
+    .rotation-pane[hidden] { display: none !important; }
+    .rotation-logs-pane { display: flex; }
+    .rotation-logs-layout { width: 100%; height: 100%; min-height: 0; display: grid; grid-template-columns: 270px minmax(0,1fr); }
+    .rotation-log-sidebar { min-height: 0; display: flex; flex-direction: column; border-right: 1px solid #edf0f4; background: #fbfcfe; }
+    .rotation-log-sidebar-head { min-height: 50px; display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 0 14px; border-bottom: 1px solid #edf0f4; color: #536176; font-size: 14px; font-weight: 600; }
+    .rotation-log-add { flex: 0 0 auto; padding: 5px 0; border: 0; color: #3488f4; background: transparent; font: inherit; font-size: 13px; cursor: pointer; }
+    .rotation-log-add:hover, .rotation-log-edit:hover { color: #176bd0; }
+    .rotation-log-nav { flex: 1; overflow: auto; padding: 8px; }
+    .rotation-log-nav-item { width: 100%; display: block; margin-bottom: 6px; padding: 10px; border: 1px solid transparent; border-radius: 7px; color: #445467; background: transparent; text-align: left; cursor: pointer; }
+    .rotation-log-nav-item:hover { background: #f4f8fd; }
+    .rotation-log-nav-item.active { border-color: #c8ddfa; background: #eef6ff; }
+    .rotation-log-nav-item strong { display: block; overflow: hidden; color: #384a60; font-size: 14px; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
+    .rotation-log-nav-item span { display: block; margin-top: 6px; color: #9aa5b1; font-size: 12px; }
+    .rotation-log-main { min-width: 0; overflow: auto; padding: 20px 25px 28px; }
+    .rotation-log-main-head { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin-bottom: 12px; }
+    .rotation-log-main-head-tools { display: flex; align-items: center; gap: 8px; }
+    .rotation-log-main-head h3 { margin: 0; color: #34465a; font-size: 20px; }
+    .rotation-log-title-input { flex: 1; min-width: 0; padding: 4px 0; border: 0; border-bottom: 1px solid #dce2e9; outline: 0; color: #34465a; background: transparent; font: inherit; font-size: 20px; font-weight: 650; }
+    .rotation-log-title-input:focus { border-color: #78aef2; }
+    .rotation-log-edit { height: 34px; padding: 0 11px; border: 1px solid #dce2e9; border-radius: 5px; color: #526174; background: #fff; font-size: 13px; cursor: pointer; }
+    .rotation-log-edit-actions { display: flex; justify-content: flex-end; gap: 8px; margin: 12px 0; }
+    .rotation-log-edit-actions button { height: 34px; padding: 0 13px; border: 1px solid #dce2e9; border-radius: 5px; color: #526174; background: #fff; font-size: 13px; cursor: pointer; }
+    .rotation-log-edit-actions button.primary { border-color: #3488f4; color: #fff; background: #3488f4; }
+    .rotation-log-updated { color: #a0aab5; font-size: 12px; white-space: nowrap; }
+    .rotation-log-content { padding: 17px 19px; border: 1px solid #e8edf4; border-radius: 8px; color: #44566b; background: #fcfdff; font-size: 15px; line-height: 1.8; }
+    .rotation-log-content h4 { margin: 12px 0 4px; color: #34465a; font-size: 16px; }
+    .rotation-log-content h4:first-child { margin-top: 0; }
+    .rotation-log-content p { margin: 0; }
+    .rotation-log-section-editor { width: 100%; min-height: 76px; margin: 0 0 8px; padding: 9px 11px; border: 1px solid #dce2e9; border-radius: 6px; outline: 0; color: #44566b; background: #fff; font: inherit; font-size: 14px; line-height: 1.7; resize: vertical; }
+    .rotation-log-section-editor:focus { border-color: #86b8fa; }
+    .rotation-comments { margin-top: 20px; padding-top: 15px; border-top: 1px solid #edf0f4; }
+    .rotation-comments-head { margin-bottom: 10px; color: #46566a; font-size: 14px; font-weight: 600; }
+    .rotation-comment-composer { display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 8px; align-items: start; margin-bottom: 12px; }
+    .rotation-comment-composer textarea { width: 100%; min-height: 64px; resize: vertical; padding: 9px 11px; border: 1px solid #dce2e9; border-radius: 6px; outline: none; color: #3e4f63; font: inherit; font-size: 13px; }
+    .rotation-comment-composer textarea:focus { border-color: #86b8fa; }
+    .rotation-comment-composer button { height: 36px; padding: 0 13px; border: 1px solid #3488f4; border-radius: 5px; color: #fff; background: #3488f4; font-size: 13px; cursor: pointer; }
+    .rotation-comment-card { margin: 8px 0; padding: 10px 12px; border: 1px solid #edf0f4; border-radius: 7px; background: #fff; }
+    .rotation-comment-byline { display: flex; align-items: center; justify-content: space-between; gap: 8px; color: #788596; font-size: 12px; }
+    .rotation-comment-byline strong { color: #536176; font-size: 13px; }
+    .rotation-comment-edited { margin-left: 7px; color: #9aa5b1; font-size: 11px; font-weight: 400; }
+    .rotation-comment-card p { margin: 6px 0 7px; color: #526174; font-size: 13px; line-height: 1.7; white-space: pre-wrap; }
+    .rotation-comment-card p.rotation-comment-deleted { color: #9aa5b1; font-style: italic; }
+    .rotation-message-actions { display: flex; align-items: center; gap: 12px; margin-top: 8px; }
+    .rotation-message-actions button { padding: 0; border: 0; color: #3488f4; background: transparent; font-size: 12px; cursor: pointer; }
+    .rotation-message-actions button.delete { color: #a67979; }
+    .rotation-comment-edit-form { margin-top: 8px; }
+    .rotation-comment-edit-form textarea { width: 100%; min-height: 56px; padding: 8px 10px; border: 1px solid #dce2e9; border-radius: 5px; color: #3e4f63; font: inherit; font-size: 13px; line-height: 1.6; resize: vertical; }
+    .rotation-comment-edit-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 6px; }
+    .rotation-comment-edit-actions button { height: 30px; padding: 0 10px; border: 1px solid #dce2e9; border-radius: 5px; color: #536176; background: #fff; font-size: 12px; cursor: pointer; }
+    .rotation-comment-edit-actions button.primary { border-color: #3488f4; color: #fff; background: #3488f4; }
+    .rotation-comment-reply { margin: 8px 0 0 18px; padding: 8px 11px; border-left: 2px solid #d8e8fb; border-radius: 0 6px 6px 0; background: #f8fbff; }
+    .rotation-comment-reply .rotation-comment-byline { font-size: 12px; }
+    .rotation-reply-button { margin-top: 8px; padding: 0; border: 0; color: #3488f4; background: transparent; font-size: 12px; cursor: pointer; }
+    .rotation-reply-composer { display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 7px; margin-top: 8px; }
+    .rotation-reply-composer textarea { min-height: 48px; padding: 8px 10px; border: 1px solid #dce2e9; border-radius: 5px; color: #3e4f63; font: inherit; font-size: 12px; resize: vertical; }
+    .rotation-reply-composer button { align-self: start; height: 32px; padding: 0 10px; border: 1px solid #3488f4; border-radius: 5px; color: #fff; background: #3488f4; font-size: 12px; cursor: pointer; }
+    .rotation-rating-pane { overflow: auto; padding: 20px 25px 26px; }
+    .rotation-rating-directions { display: flex; flex-direction: column; gap: 13px; }
+    .rotation-rating-card { padding: 15px 17px 16px; border: 1px solid #e8edf4; border-radius: 9px; background: #fff; }
+    .rotation-rating-head { display: flex; align-items: center; justify-content: space-between; gap: 14px; }
+    .rotation-rating-head > div:first-child { display:flex;align-items:center;flex-wrap:wrap;gap:8px; }
+    .rotation-rating-title { color: #3d5067; font-size: 16px; font-weight: 650; }
+    .rotation-rating-privacy { color: #3975b5; font-size: 12px; }
+    .rotation-rating-average { display: flex; align-items: baseline; gap: 6px; padding: 9px 12px; border: 1px solid #e5eef9; border-radius: 7px; color: #8795a6; background: #f7fbff; font-size: 12px; }
+    .rotation-rating-average strong { color: #d9912b; font-size: 21px; }
+    .rotation-rating-items { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 8px; margin-top: 12px; }
+    .rotation-rating-item { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 62px; padding: 8px 10px; border: 1px solid #edf0f4; border-radius: 7px; background: #fbfcfe; }
+    .rotation-rating-item strong { color: #45566b; font-size: 14px; }
+    .rotation-rating-stars { display:flex;align-items:center;gap:1px;white-space:nowrap; }
+    .rotation-rating-stars span { display:inline-block;width:24px;color:#dfe4ea;font-size:22px;line-height:1;text-align:center; }
+    .rotation-rating-stars span.filled { color:#f3b746; }
+    .rotation-star-empty { color: #dfe4ea; }
+    .rotation-star-half { color: transparent; background: linear-gradient(90deg,#f3b746 50%,#dfe4ea 50%); background-clip: text; -webkit-background-clip: text; }
+    .rotation-rating-comment { margin-top: 12px; color: #526174; font-size: 13px; line-height: 1.7; }
+    .rotation-rating-note { width:100%;min-height:56px;margin-top:7px;padding:11px 13px;border-left:3px solid #d7e6f8;border-radius:0 7px 7px 0;color:#3e4f63;background:#f7f9fc;font-size:14px;line-height:1.7;white-space:pre-wrap;overflow-wrap:anywhere; }
+    .rotation-rating-note.empty { color:#9aa5b1; }
+    .rotation-readonly-note { color:#9aa5b1;font-size:12px; }
+    .rotation-record-foot { min-height: 48px; display: flex; align-items: center; justify-content: flex-end; gap: 12px; padding: 0 20px; border-top: 1px solid #edf0f4; background: #fbfcfe; }
+    .rotation-record-foot span { color: #9aa5b1; font-size: 12px; }
+    .rotation-record-foot button { height: 34px; padding: 0 13px; border: 1px solid #dce2e9; border-radius: 5px; color: #445467; background: #fff; font-size: 13px; cursor: pointer; }
+    @media (max-width: 900px) {
+      .rotation-record-dialog { width: calc(100vw - 44px); height: calc(100vh - 44px); }
+      .rotation-profile { grid-template-columns: repeat(3,minmax(0,1fr)); }
+      .rotation-logs-layout { grid-template-columns: 210px minmax(0,1fr); }
+      .rotation-rating-items { grid-template-columns: 1fr; }
+      .rating-items { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 600px) {
+      #rotationDetailModal { padding: 10px; }
+      .rotation-record-dialog { width: calc(100vw - 20px); height: calc(100vh - 20px); }
+      .rotation-record-head { padding: 0 14px; }
+      .rotation-profile { grid-template-columns: repeat(2,minmax(0,1fr)); padding: 12px; }
+      .rotation-profile-field.profile-period { grid-column: span 2; }
+      .rotation-profile-actions { align-items: flex-start; flex-direction: column; }
+      .rotation-logs-layout { grid-template-columns: 1fr; grid-template-rows: minmax(118px,34%) minmax(0,1fr); }
+      .rotation-log-sidebar { border-right: 0; border-bottom: 1px solid #edf0f4; }
+      .rotation-log-main { padding: 15px; }
+      .rotation-log-main-head { align-items: flex-start; flex-direction: column; gap: 6px; }
+      .rotation-log-main-head-tools { width: 100%; justify-content: space-between; }
+      .rotation-rating-pane { padding: 14px; }
+      .rotation-rating-head { align-items: flex-start; flex-direction: column; }
+      .rating-section-head { align-items: flex-start; }
+      .rotation-record-foot span { max-width: 65%; }
+    }
+    @media (max-width: 1250px) {
+      .workspace { padding-left: 18px; padding-right: 18px; gap: 14px; }
+      .report-heading { flex-wrap: wrap; }
+      .side-rail { flex-basis: 31%; min-width: 290px; }
+      .report-header { padding-left: 23px; padding-right: 23px; }
+      .form-card { padding-left: 24px; padding-right: 24px; }
+      .basic-grid { column-gap: 16px; }
+      .inline-field { grid-template-columns: 82px minmax(0, 1fr); gap: 8px; }
+      .process-card { padding-left: 23px; padding-right: 23px; }
+      .process-controls { align-items: flex-start; flex-direction: column; margin-top: 24px; }
+    }
+    @media (max-width: 900px) {
+      .topbar { padding: 0 16px; }
+      .top-actions { gap: 14px; }
+      .top-action span { display: none; }
+      .workspace { height: auto; min-height: calc(100vh - 58px); overflow: visible; padding: 14px; flex-direction: column; }
+      .main-column { min-height: 0; }
+      .report-header { min-height: 145px; }
+      .form-card { overflow: visible; }
+      .side-rail { min-width: 0; flex-basis: auto; height: 330px; }
+      .collapse-rail { left: auto; right: 12px; top: -14px; transform: rotate(90deg); width: 34px; height: 24px; }
+      .collapse-rail::before { content: "◀"; }
+      .workspace.sidebar-hidden .side-rail { height: 0; }
+      .workspace.sidebar-hidden .collapse-rail { right: 12px; top: -13px; }
+      .basic-grid, .extra-info { grid-template-columns: repeat(2, minmax(0,1fr)); }
+      .intro { align-items: flex-start; }
+    }
+    @media (max-width: 600px) {
+      .brand { font-size: 15px; }
+      .top-actions { gap: 8px; }
+      .top-divider { display: none; }
+      .workspace { padding: 10px; gap: 12px; }
+      .main-column { gap: 12px; }
+      .report-header { padding: 18px; min-height: 148px; }
+      .report-title { font-size: 16px; }
+      .heading-tools { gap: 8px; }
+      .heading-tools { width: 100%; justify-content: space-between; }
+      .period-picker { gap: 4px; font-size: 12px; }
+      .period-picker select { padding-left: 6px; padding-right: 17px; }
+      .rotation-meta-grid { grid-template-columns: 1fr; gap: 12px; }
+      .creator-line { margin-top: 22px; flex-wrap: wrap; gap: 7px; font-size: 12px; }
+      .bot-avatar { width: 30px; height: 30px; }
+      .form-card { padding: 20px 16px 26px; }
+      .intro { display: block; margin-bottom: 24px; }
+      .intro p { font-size: 13px; }
+      .intro .text-link { margin-top: 8px; }
+      .basic-grid, .extra-info { grid-template-columns: 1fr; row-gap: 14px; }
+      .inline-field { grid-template-columns: 86px minmax(0,1fr); }
+      .report-section { margin-top: 29px; }
+      .long-field { margin-top: 20px; }
+      .process-card { padding: 23px 18px; }
+      .process-controls { flex-direction: column; align-items: flex-start; }
+      .timeline-item { grid-template-columns: 12px 38px minmax(0,1fr) auto; gap: 9px; }
+      .person-avatar { width: 38px; height: 38px; }
+      .filters { gap: 11px; font-size: 12px; }
+      .working-tag { font-size: 12px; }
+      .time { font-size: 11px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">新员工述职</div>
+    <nav class="top-actions" aria-label="顶部导航">
+      <div class="top-action"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span>事务中心</span></div>
+      <div class="top-action"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-1.7 2.9-.2-.1a1.7 1.7 0 0 0-1.8.1 1.7 1.7 0 0 0-.8 1.5v.2h-3.4v-.2a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.8.1l-.2.1-1.7-2.9.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H5.9v-3.4h.2a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1 1.7-2.9.2.1a1.7 1.7 0 0 0 1.8-.1 1.7 1.7 0 0 0 .8-1.5V3h3.4v.2a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.1l.2-.1 1.7 2.9-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.5 1h.2v3.4h-.2a1.7 1.7 0 0 0-1.5 1z"/></svg><span>设置</span></div>
+      <span class="top-divider" aria-hidden="true"></span>
+      <button class="icon-button" aria-label="首页"><svg viewBox="0 0 24 24"><path d="m3 11 9-8 9 8M5.5 9.5V21h13V9.5M9.5 21v-7h5v7"/></svg></button>
+      <button class="icon-button" aria-label="消息"><svg viewBox="0 0 24 24"><path d="M4 5.5A3.5 3.5 0 0 1 7.5 2h9A3.5 3.5 0 0 1 20 5.5v8a3.5 3.5 0 0 1-3.5 3.5H9l-5 4v-5.2A3.5 3.5 0 0 1 4 13.5z"/><path d="M8 9h.01M12 9h.01M16 9h.01" stroke-width="2.5"/></svg></button>
+    </nav>
+  </header>
+
+  <div class="workspace" id="workspace">
+    <main class="main-column">
+      <section class="report-header" aria-label="述职报告信息">
+        <div class="report-heading">
+          <h1 class="report-title" id="reportHeadingTitle">杨艳英的2026-09新员工述职报告(第1/6期)</h1>
+          <div class="heading-tools">
+            <span class="status-tag">新员工填写</span>
+            <label class="period-picker"><span>演示期次</span><select id="periodSelect" aria-label="切换述职期次">
+              <option value="1">第1期</option><option value="2">第2期</option><option value="3">第3期</option><option value="4">第4期</option><option value="5">第5期</option><option value="6">第6期</option>
+            </select></label>
+            <span class="menu-mark" aria-hidden="true">☰</span>
+          </div>
+        </div>
+        <div class="creator-line">
+          <span class="bot-avatar" aria-hidden="true">◉</span>
+          <span class="creator-name">人力小助手(信息技术部)</span>
+          <span>09-02 16:21</span><span>发起</span><span class="priority">一般</span>
+        </div>
+        <button class="summary-toggle" id="summaryToggle" aria-expanded="true">摘要</button>
+      </section>
+
+      <section class="form-card" aria-label="新员工述职表单">
+        <div class="intro" id="introText">
+          <p>本流程适用于全体新员工试用期阶段性述职，总结入职以来工作履职成效与个人成长收获，梳理现存不足并明确下一阶段工作提升规划，相关述职记录统一归档留存，为员工阶段性考核与人才培养提供支撑。</p>
+          <button class="text-link" data-modal="helpModal">查看填写说明</button>
+        </div>
+
+        <section aria-labelledby="basicTitle">
+          <div class="section-head">
+            <h2 class="section-title" id="basicTitle">员工基本信息</h2>
+            <button class="text-link" id="moreInfo" aria-expanded="false">查看更多信息</button>
+          </div>
+          <div class="basic-grid">
+            <label class="inline-field"><span class="field-label">姓名</span><input class="control readonly-look" placeholder="请输入" aria-label="姓名"></label>
+            <label class="inline-field"><span class="field-label">部门</span><input class="control readonly-look" placeholder="请输入" aria-label="部门"></label>
+            <label class="inline-field"><span class="field-label">岗位</span><input class="control readonly-look" placeholder="请输入" aria-label="岗位"></label>
+            <label class="inline-field"><span class="field-label">入职时间</span><input class="control readonly-look" placeholder="请输入" aria-label="入职时间"></label>
+            <label class="inline-field"><span class="field-label">拟转正时间</span><input class="control readonly-look" placeholder="请输入" aria-label="拟转正时间"></label>
+            <label class="inline-field"><span class="field-label required">述职部门</span><span class="select-wrap"><select class="control" aria-label="述职部门"><option value="">请选择</option><option>信息技术部</option><option>人力资源部</option><option>综合管理部</option></select></span></label>
+            <label class="inline-field"><span class="field-label required">指导老师</span><span class="select-wrap"><select class="control" aria-label="指导老师"><option value="">请选择</option><option>王老师</option><option>李老师</option><option>张老师</option></select></span></label>
+            <label class="inline-field"><span class="field-label required">部门负责人</span><span class="select-wrap"><select class="control" aria-label="部门负责人"><option value="">请选择</option><option>王经理</option><option>李经理</option><option>张经理</option></select></span></label>
+            <div class="extra-info" id="extraInfo">
+              <label class="inline-field"><span class="field-label">员工编号</span><input class="control readonly-look" placeholder="请输入" aria-label="员工编号"></label>
+              <label class="inline-field"><span class="field-label">工作地点</span><input class="control readonly-look" placeholder="请输入" aria-label="工作地点"></label>
+              <label class="inline-field"><span class="field-label">用工类型</span><input class="control readonly-look" placeholder="请输入" aria-label="用工类型"></label>
+            </div>
+          </div>
+        </section>
+
+        <section class="report-section" aria-labelledby="reportTitle">
+          <h2 class="section-title" id="reportTitle">述职员工报告</h2>
+          <div class="long-field">
+            <label class="long-label required" for="mainWork">主要工作</label>
+            <div class="textarea-wrap focused"><textarea id="mainWork" maxlength="2000" placeholder="请描述本阶段承担的主要工作、完成情况及工作成果" data-counter></textarea><span class="counter">0 / 2000</span></div>
+          </div>
+          <div class="long-field">
+            <label class="long-label required" for="reflection">心得与感悟</label>
+            <div class="textarea-wrap"><textarea class="short" id="reflection" maxlength="2000" placeholder="在工作中的收获、思考、感悟和体会等" data-counter></textarea><span class="counter">0 / 2000</span></div>
+          </div>
+          <div class="long-field">
+            <label class="long-label required" for="nextPlan">下月计划</label>
+            <div class="textarea-wrap"><textarea class="short" id="nextPlan" maxlength="2000" placeholder="请填写下月重点工作计划及具体安排" data-counter></textarea><span class="counter">0 / 2000</span></div>
+          </div>
+          <div class="long-field">
+            <label class="long-label" for="suggestions">意见、建议、需求</label>
+            <div class="textarea-wrap"><textarea class="short" id="suggestions" maxlength="2000" placeholder="针对工作中相关事项的意见和建议，以及自己是否有进一步的需求等，推荐使用“涉及部门”+“具体事项”的形式描述" data-counter></textarea><span class="counter">0 / 2000</span></div>
+          </div>
+        </section>
+
+        <section class="report-section period-section" id="quarterMaterialsSection" aria-labelledby="quarterMaterialsTitle" hidden>
+          <h2 class="section-title" id="quarterMaterialsTitle">新员工季度总结述职</h2>
+          <div class="upload-box">
+            <p>请上传本期季度总结述职材料</p>
+            <input class="upload-input" type="file" id="quarterMaterialInput" multiple aria-label="选择季度总结述职材料">
+            <button class="upload-button" id="chooseQuarterFiles" type="button">上传材料</button>
+            <ul class="uploaded-files" id="quarterFileList" aria-live="polite"></ul>
+          </div>
+        </section>
+
+        <section class="report-section period-section" id="mentorEvaluationSection" aria-labelledby="mentorEvaluationTitle" hidden>
+          <div class="rating-section-head">
+            <h2 class="section-title" id="mentorEvaluationTitle">员工对指导老师的评价</h2>
+            <div class="average-box rating-section-average" aria-label="评价均分">
+              <span>评价均分</span><strong id="mentorRatingAverage">—</strong><small>/ 5 分</small>
+            </div>
+          </div>
+          <div class="rating-directions" id="mentorRatingDirections"></div>
+        </section>
+
+        <section class="report-section period-section" id="rotationSection" aria-labelledby="rotationTitle" hidden>
+          <h2 class="section-title" id="rotationTitle">轮岗记录</h2>
+          <div class="rotation-table-wrap">
+            <table class="rotation-table">
+              <thead><tr><th scope="col">轮岗部门</th><th scope="col">带教老师</th><th scope="col">轮岗周期</th><th scope="col">操作</th></tr></thead>
+              <tbody id="rotationRows"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="report-section" id="guideTeacherEvaluationSection" aria-labelledby="guideTeacherEvaluationTitle">
+          <h2 class="section-title" id="guideTeacherEvaluationTitle">指导老师评价</h2>
+          <div class="textarea-wrap"><textarea class="review" maxlength="1000" placeholder="建议评价人可从新员工的以下方面进行评价，包括但不限于学习能力、业务能力、协同能力、团队融入、责任心、工作态度等" data-counter aria-label="指导老师评价"></textarea><span class="counter">0 / 1000</span></div>
+        </section>
+
+        <section class="report-section period-section" id="departmentEvaluationSection" aria-labelledby="departmentEvaluationTitle" hidden>
+          <h2 class="section-title" id="departmentEvaluationTitle">部门负责人评价</h2>
+          <p class="period-note">仅第3期、第6期需要部门负责人评价。</p>
+          <div class="textarea-wrap"><textarea class="review" maxlength="1000" placeholder="建议评价人可从新员工的以下方面进行评价，包括但不限于学习能力、业务能力、协同能力、团队融入、责任心、工作态度等" data-counter aria-label="部门负责人评价"></textarea><span class="counter">0 / 1000</span></div>
+        </section>
+
+      </section>
+    </main>
+
+    <aside class="side-rail" aria-label="流程记录">
+      <section class="process-card">
+        <div class="process-head">
+          <h2 class="process-title">流程记录</h2>
+          <button class="flow-link" data-modal="flowModal"><svg viewBox="0 0 24 24"><rect x="9" y="2" width="6" height="5" rx="1"/><rect x="2" y="17" width="6" height="5" rx="1"/><rect x="9" y="17" width="6" height="5" rx="1"/><rect x="16" y="17" width="6" height="5" rx="1"/><path d="M12 7v5M5 17v-3h14v3"/></svg>流程图</button>
+        </div>
+        <div class="process-controls">
+          <div class="tabs" role="tablist" aria-label="流程记录排序">
+            <button class="tab active" role="tab" aria-selected="true" data-tab="time">按时间</button>
+            <button class="tab" role="tab" aria-selected="false" data-tab="node">按节点</button>
+          </div>
+          <div class="filters">
+            <label class="check"><input type="checkbox" checked data-filter="approval">审批意见</label>
+            <label class="check"><input type="checkbox" checked data-filter="comment">评论</label>
+          </div>
+        </div>
+        <ol class="timeline" id="timeline">
+          <li class="timeline-item" data-kind="approval">
+            <span class="timeline-dot" aria-hidden="true"></span>
+            <span class="person-avatar" aria-hidden="true">👩🏻</span>
+            <div class="timeline-copy"><div class="timeline-name">新员工填写</div><div class="timeline-user">杨艳英</div></div>
+            <div class="timeline-meta"><span class="working-tag">办理中</span><div class="time">09-02 16:21</div></div>
+          </li>
+        </ol>
+        <p class="empty-note" id="emptyNote">当前筛选条件下暂无流程记录</p>
+      </section>
+      <button class="collapse-rail" id="collapseRail" aria-label="折叠流程记录"></button>
+    </aside>
+  </div>
+
+  <div class="floating-tools" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></div>
+
+  <div class="modal-backdrop" id="helpModal" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
+    <div class="modal"><div class="modal-head"><h2 id="helpTitle">填写说明</h2><button class="modal-close" aria-label="关闭">×</button></div><p>请结合试用期阶段性工作情况填写主要工作、心得与感悟及下月计划。意见、建议或需求可按“涉及部门 + 具体事项”的形式描述。带红色星号的字段为必填项。</p></div>
+  </div>
+  <div class="modal-backdrop" id="flowModal" role="dialog" aria-modal="true" aria-labelledby="flowTitle">
+    <div class="modal"><div class="modal-head"><h2 id="flowTitle">流程图</h2><button class="modal-close" aria-label="关闭">×</button></div><p>新员工填写 → 指导老师评价 → 部门负责人审批 → 人力归档。第3期增加新员工季度总结述职材料上传和部门负责人评价；第6期增加员工对指导老师的评价、轮岗记录和部门负责人评价。</p></div>
+  </div>
+  <div class="modal-backdrop" id="rotationDetailModal" role="dialog" aria-modal="true" aria-labelledby="rotationDetailTitle">
+    <section class="modal rotation-record-dialog" role="document">
+      <header class="rotation-record-head"><div><h2 id="rotationDetailTitle">杨艳英 · 轮岗记录</h2><p>记录轮岗实践、导师反馈与阶段评价</p></div><button class="modal-close rotation-close" type="button" aria-label="关闭">×</button></header>
+      <section class="rotation-profile" aria-label="轮岗安排信息">
+        <div class="rotation-profile-field"><label for="rotationDetailName">姓名</label><input class="rotation-profile-value" id="rotationDetailName" readonly></div>
+        <div class="rotation-profile-field"><label for="rotationDetailPosition">岗位</label><input class="rotation-profile-value" id="rotationDetailPosition" readonly></div>
+        <div class="rotation-profile-field"><label for="rotationDetailEntryDepartment">部门</label><input class="rotation-profile-value" id="rotationDetailEntryDepartment" readonly></div>
+        <div class="rotation-profile-field"><label for="rotationDetailDepartment">轮岗部门</label><input class="rotation-profile-value" id="rotationDetailDepartment" readonly></div>
+        <div class="rotation-profile-field"><label for="rotationDetailMentor">带教老师</label><input class="rotation-profile-value" id="rotationDetailMentor" readonly></div>
+        <div class="rotation-profile-field profile-period"><label>轮岗周期</label><div class="rotation-period-inputs"><input class="rotation-profile-value" id="rotationDetailStart" type="date" aria-label="轮岗开始日期" readonly><span>至</span><input class="rotation-profile-value" id="rotationDetailEnd" type="date" aria-label="轮岗结束日期" readonly></div></div>
+      </section>
+      <div class="rotation-tabs" role="tablist" aria-label="轮岗记录详情分类">
+        <button class="rotation-tab active" id="rotationLogsTab" type="button" role="tab" aria-selected="true" aria-controls="rotationLogsPane">轮岗记录</button>
+        <button class="rotation-tab" id="rotationRatingsTab" type="button" role="tab" aria-selected="false" aria-controls="rotationRatingsPane">轮岗评价</button>
+      </div>
+      <section class="rotation-pane rotation-logs-pane" id="rotationLogsPane" role="tabpanel" aria-labelledby="rotationLogsTab">
+        <div class="rotation-logs-layout">
+          <aside class="rotation-log-sidebar"><div class="rotation-log-sidebar-head"><strong>记录列表</strong></div><div class="rotation-log-nav" id="rotationDetailLogNav"></div></aside>
+          <div class="rotation-log-main" id="rotationDetailLogMain"></div>
+        </div>
+      </section>
+      <section class="rotation-pane rotation-rating-pane" id="rotationRatingsPane" role="tabpanel" aria-labelledby="rotationRatingsTab" hidden>
+        <div class="rotation-rating-directions" id="rotationRatingDirections"></div>
+      </section>
+      <footer class="rotation-record-foot"><button class="modal-close" type="button">关闭</button></footer>
+    </section>
+  </div>
+
+  <script>
+    const workspace = document.getElementById('workspace');
+    const periodSelect = document.getElementById('periodSelect');
+    const quarterMaterialsSection = document.getElementById('quarterMaterialsSection');
+    const mentorEvaluationSection = document.getElementById('mentorEvaluationSection');
+    const rotationSection = document.getElementById('rotationSection');
+    const departmentEvaluationSection = document.getElementById('departmentEvaluationSection');
+    const rotationDetailModal = document.getElementById('rotationDetailModal');
+    const rotationAssignments = [
+      {
+        department: '信息技术部', mentor: '罗景行', start: '2026-09-01', end: '2026-10-31',
+        logs: [
+          { title: '研发岗位需求梳理与协作流程', date: '2026-10-05', sections: [['工作内容', '参与前端研发岗位需求评审，跟随团队梳理岗位画像、工作流程和协作方式。'], ['学习收获', '了解了需求确认、任务拆分与阶段反馈之间的协作流程。'], ['问题困惑', '对部分技术能力的分级标准还需要进一步熟悉。'], ['后续计划', '整理阶段工作要点，并和带教老师复盘需要提升的内容。']], comments: [{ author: '杨艳英（轮岗员工）', date: '2026-10-05', text: '老师，岗位能力要求中的熟练度要如何区分？', replies: [{ author: '罗景行（带教老师）', date: '2026-10-05', text: '可以结合独立完成任务、排查问题和协作情况综合判断。'}] }] },
+          { title: '技术流程学习记录', date: '2026-10-02', sections: [['工作内容', '旁听团队工作讨论，记录任务推进过程中的沟通节点和资料要求。'], ['学习收获', '熟悉了工作任务从提出、确认到跟进的基本步骤。'], ['问题困惑', '遇到跨团队事项时，对责任节点还不够熟悉。'], ['后续计划', '整理问题清单，下次跟岗时继续了解。']], comments: [] }
+        ],
+        ratings: { employee: [4.5, 4, 5], mentor: [4.5, 5, 4.5], employeeComment: '带教老师反馈及时，能结合实际任务讲解工作方法。', mentorComment: '工作态度认真，能主动沟通并跟进安排。' }
+      },
+      {
+        department: '风险管理部', mentor: '顾云舟', start: '2026-08-01', end: '2026-10-31',
+        logs: [{ title: '风险管理工作流程熟悉记录', date: '2026-10-04', sections: [['工作内容', '参与部门日常复核，了解问题登记和流转处理方式。'], ['学习收获', '熟悉了风险事项从发现到反馈的基本路径。'], ['问题困惑', '部分历史数据口径调整的处理方式还需要进一步了解。'], ['后续计划', '继续跟进一次完整流程，并整理复盘记录。']], comments: [] }],
+        ratings: { employee: [4, 4.5, 4], mentor: [4.5, 4, 4.5], employeeComment: '带教安排清晰，沟通问题时能及时给予说明。', mentorComment: '能够认真完成安排的学习与跟岗任务。' }
+      },
+      {
+        department: '运营管理部', mentor: '秦书宁', start: '2026-09-01', end: '2026-11-30',
+        logs: [{ title: '运营流程体验与问题整理', date: '2026-10-03', sections: [['工作内容', '跟随团队了解业务咨询处理和跨部门转办流程。'], ['学习收获', '掌握了问题登记、分类和进度跟进的基本步骤。'], ['问题困惑', '多部门共同处理事项的责任节点还需要进一步熟悉。'], ['后续计划', '整理典型案例，在后续工作中继续复盘。']], comments: [] }],
+        ratings: { employee: [4.5, 4.5, 4], mentor: [4, 4.5, 5], employeeComment: '老师耐心解答问题，帮助我更快熟悉轮岗工作。', mentorComment: '学习积极，能根据反馈调整工作方法。' }
+      }
+    ];
+    let activeRotation = null;
+    let activeRotationLogIndex = 0;
+    let activeRotationReplyIndex = null;
+    let activeRotationEditingMessage = null;
+    let rotationEvaluationDraft = null;
+    const rotationEvaluationStoragePrefix = 'new-employee-rotation-evaluation-v1';
+    const rotationLogCommentStoreKey = 'new-employee-rotation-log-comments-v1';
+    let rotationLogCommentStore = {};
+    try { rotationLogCommentStore = JSON.parse(localStorage.getItem(rotationLogCommentStoreKey) || '{}') || {}; } catch {}
+    const mentorEvaluationStoreKey = 'new-employee-mentor-evaluation-v1';
+    const mentorEvaluationRecordKey = 'yang-yanying|6';
+    const mentorRatingDimensions = [
+      { name: '带教投入', hint: '带教老师投入的时间、精力与关注程度' },
+      { name: '带教方法', hint: '讲解、示范、反馈和实践安排是否有效' },
+      { name: '带教成效', hint: '带教对业务理解和岗位能力提升的帮助' }
+    ];
+    let mentorEvaluationStore = {};
+    let mentorEvaluationDraft = null;
+    let mentorEvaluationStatusMessage = '';
+    try { mentorEvaluationStore = JSON.parse(localStorage.getItem(mentorEvaluationStoreKey) || '{}') || {}; } catch {}
+
+    function getMentorEvaluation() {
+      const stored = mentorEvaluationStore[mentorEvaluationRecordKey] || {};
+      const storedRatings = Array.isArray(stored.ratings) ? stored.ratings : stored.ratings && stored.ratings.employee;
+      const ratings = mentorRatingDimensions.map((_, index) => {
+        const value = Number(storedRatings && storedRatings[index] || 0);
+        return Number.isFinite(value) && value >= 0 && value <= 5 ? value : 0;
+      });
+      const comment = stored.evaluationNotes && stored.evaluationNotes.employee != null
+        ? stored.evaluationNotes.employee
+        : stored.comment || '';
+      return { ratings, comment: String(comment) };
+    }
+
+    function persistMentorEvaluation() {
+      if (!mentorEvaluationDraft) return;
+      mentorEvaluationDraft.comment = mentorEvaluationDraft.comment.trim();
+      mentorEvaluationStore[mentorEvaluationRecordKey] = {
+        ratings: { employee: mentorEvaluationDraft.ratings.slice() },
+        evaluationNotes: { employee: mentorEvaluationDraft.comment }
+      };
+      try { localStorage.setItem(mentorEvaluationStoreKey, JSON.stringify(mentorEvaluationStore)); } catch {}
+    }
+
+    function renderMentorEvaluation() {
+      const container = document.getElementById('mentorRatingDirections');
+      if (!mentorEvaluationDraft) {
+        const saved = getMentorEvaluation();
+        mentorEvaluationDraft = { ratings: saved.ratings.slice(), comment: saved.comment };
+      }
+      container.replaceChildren();
+
+      const values = mentorEvaluationDraft.ratings;
+      const scored = values.filter((value) => value > 0);
+      const average = scored.length ? scored.reduce((sum, value) => sum + value, 0) / scored.length : null;
+      document.getElementById('mentorRatingAverage').textContent = average == null ? '—' : average.toFixed(1);
+      const card = document.createElement('section');
+      card.className = 'rating-direction-card';
+      card.setAttribute('aria-label', '员工对指导老师的评价');
+
+      const items = document.createElement('div');
+      items.className = 'rating-items';
+      mentorRatingDimensions.forEach((dimension, index) => {
+        const value = Number(values[index] || 0);
+        const item = document.createElement('article');
+        item.className = 'rating-item';
+        const description = document.createElement('div');
+        const name = document.createElement('div');
+        name.className = 'rating-dimension';
+        name.textContent = dimension.name;
+        const hint = document.createElement('div');
+        hint.className = 'rating-help';
+        hint.textContent = dimension.hint;
+        description.append(name, hint);
+
+        const control = document.createElement('div');
+        control.className = 'rating-control';
+        const stars = document.createElement('div');
+        stars.className = 'star-group';
+        for (let starIndex = 0; starIndex < 5; starIndex += 1) {
+          const star = document.createElement('button');
+          star.type = 'button';
+          star.className = 'star-button' + (value >= starIndex + 1 ? ' filled' : value >= starIndex + 0.5 ? ' half' : '');
+          star.dataset.starIndex = String(starIndex);
+          star.dataset.dimensionIndex = String(index);
+          star.dataset.ratingDirection = 'employee';
+          star.setAttribute('aria-label', `${dimension.name}打${starIndex + 0.5}分或${starIndex + 1}分`);
+          star.textContent = '★';
+          stars.appendChild(star);
+        }
+        const score = document.createElement('span');
+        score.className = 'rating-value';
+        score.textContent = value ? value.toFixed(1) : '未评';
+        control.append(stars, score);
+        item.append(description, control);
+        items.appendChild(item);
+      });
+      card.appendChild(items);
+
+      const textReview = document.createElement('div');
+      textReview.className = 'text-review';
+      const textLabel = document.createElement('label');
+      textLabel.htmlFor = 'evaluationText-employee';
+      textLabel.textContent = '文字评价';
+      const textInput = document.createElement('textarea');
+      textInput.id = 'evaluationText-employee';
+      textInput.dataset.evaluationText = 'employee';
+      textInput.placeholder = '请结合具体表现填写文字评价';
+      textInput.value = mentorEvaluationDraft.comment;
+      const actions = document.createElement('div');
+      actions.className = 'text-review-actions';
+      const status = document.createElement('span');
+      status.className = 'evaluation-save-status';
+      status.id = 'mentorEvaluationStatus';
+      status.setAttribute('role', 'status');
+      status.setAttribute('aria-live', 'polite');
+      status.textContent = mentorEvaluationStatusMessage;
+      const saveButton = document.createElement('button');
+      saveButton.className = 'btn primary';
+      saveButton.type = 'button';
+      saveButton.dataset.action = 'save-rating';
+      saveButton.dataset.ratingDirection = 'employee';
+      saveButton.textContent = '保存评价';
+      actions.append(status, saveButton);
+      textReview.append(textLabel, textInput, actions);
+      card.appendChild(textReview);
+      container.appendChild(card);
+    }
+
+    function setMentorRating(index, starIndex, clientX, rect) {
+      const isHalf = clientX - rect.left < rect.width / 2;
+      mentorEvaluationDraft.ratings[index] = starIndex + (isHalf ? 0.5 : 1);
+      mentorEvaluationStatusMessage = '评价尚未保存';
+      renderMentorEvaluation();
+    }
+
+    function setRotationDetailTab(name) {
+      const showLogs = name === 'logs';
+      document.getElementById('rotationLogsTab').classList.toggle('active', showLogs);
+      document.getElementById('rotationRatingsTab').classList.toggle('active', !showLogs);
+      document.getElementById('rotationLogsTab').setAttribute('aria-selected', String(showLogs));
+      document.getElementById('rotationRatingsTab').setAttribute('aria-selected', String(!showLogs));
+      document.getElementById('rotationLogsPane').hidden = !showLogs;
+      document.getElementById('rotationRatingsPane').hidden = showLogs;
+    }
+
+    function renderRotationLogNav() {
+      const nav = document.getElementById('rotationDetailLogNav');
+      nav.replaceChildren();
+      if (!activeRotation || !activeRotation.logs.length) {
+        nav.textContent = '暂无轮岗记录';
+        return;
+      }
+      activeRotation.logs.forEach((log, index) => {
+        const button = document.createElement('button');
+        button.className = `rotation-log-nav-item${index === activeRotationLogIndex ? ' active' : ''}`;
+        button.type = 'button';
+        button.setAttribute('aria-pressed', String(index === activeRotationLogIndex));
+        const title = document.createElement('strong');
+        title.textContent = log.title || '未命名日志';
+        const date = document.createElement('span');
+        date.textContent = `记录日期：${log.date}`;
+        button.append(title, date);
+        button.addEventListener('click', () => {
+          activeRotationLogIndex = index;
+          activeRotationReplyIndex = null;
+          activeRotationEditingMessage = null;
+          renderRotationLogNav();
+          renderRotationLog();
+        });
+        nav.appendChild(button);
+      });
+    }
+
+    function renderRotationLog() {
+      const main = document.getElementById('rotationDetailLogMain');
+      main.replaceChildren();
+      const log = activeRotation && activeRotation.logs[activeRotationLogIndex];
+      if (!log) {
+        main.textContent = '从左侧选择一条轮岗记录。';
+        return;
+      }
+
+      const head = document.createElement('div');
+      head.className = 'rotation-log-main-head';
+      const title = document.createElement('h3');
+      title.textContent = log.title;
+      const updated = document.createElement('span');
+      updated.className = 'rotation-log-updated';
+      updated.textContent = `记录日期：${log.date}`;
+      head.append(title, updated);
+      main.appendChild(head);
+
+      const content = document.createElement('article');
+      content.className = 'rotation-log-content';
+      (log.sections || []).forEach(([heading, text]) => {
+        const sectionHeading = document.createElement('h4');
+        sectionHeading.textContent = heading;
+        const paragraph = document.createElement('p');
+        paragraph.textContent = text;
+        content.append(sectionHeading, paragraph);
+      });
+      main.appendChild(content);
+
+      renderRotationComments(main, log);
+    }
+
+    function rotationCommentKey(rotation, log) {
+      return `${rotation.department}|${log.date}|${log.title}`;
+    }
+
+    function getRotationLogComments(rotation, log) {
+      const key = rotationCommentKey(rotation, log);
+      if (Array.isArray(rotationLogCommentStore[key])) log.comments = rotationLogCommentStore[key];
+      if (!Array.isArray(log.comments)) log.comments = [];
+      return log.comments;
+    }
+
+    function saveRotationLogComments(rotation, log) {
+      rotationLogCommentStore[rotationCommentKey(rotation, log)] = log.comments || [];
+      try { localStorage.setItem(rotationLogCommentStoreKey, JSON.stringify(rotationLogCommentStore)); } catch {}
+    }
+
+    function todayDateString() {
+      const now = new Date();
+      return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+    }
+
+    function renderRotationComments(main, log) {
+      const comments = document.createElement('section');
+      comments.className = 'rotation-comments';
+      const commentsHeading = document.createElement('div');
+      commentsHeading.className = 'rotation-comments-head';
+      commentsHeading.textContent = '评论与回复';
+      comments.appendChild(commentsHeading);
+
+      const composer = document.createElement('div');
+      composer.className = 'rotation-comment-composer';
+      const input = document.createElement('textarea');
+      input.maxLength = 1000;
+      input.placeholder = '写下评论';
+      input.setAttribute('aria-label', '发表评论');
+      const publish = document.createElement('button');
+      publish.type = 'button';
+      publish.textContent = '发表评论';
+      publish.addEventListener('click', () => {
+        const text = input.value.trim();
+        if (!text) { input.focus(); return; }
+        const commentsData = getRotationLogComments(activeRotation, log);
+        commentsData.push({ id: 'rotation-comment-' + Date.now(), author: '当前用户', date: todayDateString(), text, replies: [] });
+        saveRotationLogComments(activeRotation, log);
+        activeRotationReplyIndex = null;
+        activeRotationEditingMessage = null;
+        log.updatedAt = todayDateString();
+        renderRotationLog();
+      });
+      composer.append(input, publish);
+
+      const commentsData = getRotationLogComments(activeRotation, log);
+      if (!commentsData.length) {
+        const empty = document.createElement('p');
+        empty.className = 'rotation-log-updated';
+        empty.textContent = '暂无评论，欢迎留言。';
+        comments.appendChild(empty);
+      }
+      commentsData.forEach((comment, commentIndex) => {
+        const card = document.createElement('article');
+        card.className = 'rotation-comment-card';
+        const byline = document.createElement('div');
+        byline.className = 'rotation-comment-byline';
+        const author = document.createElement('strong');
+        author.textContent = comment.author;
+        const date = document.createElement('span');
+        date.textContent = comment.date;
+        if (comment.edited) {
+          const edited = document.createElement('span');
+          edited.className = 'rotation-comment-edited';
+          edited.textContent = '已编辑';
+          date.appendChild(edited);
+        }
+        byline.append(author, date);
+        card.appendChild(byline);
+        if (activeRotationEditingMessage && activeRotationEditingMessage.commentIndex === commentIndex && activeRotationEditingMessage.replyIndex === null) {
+          card.appendChild(createRotationCommentEditForm(log, commentIndex, null, comment));
+        } else {
+          const text = document.createElement('p');
+          text.textContent = comment.deleted ? '该评论已删除' : comment.text;
+          if (comment.deleted) text.classList.add('rotation-comment-deleted');
+          card.appendChild(text);
+          appendRotationMessageActions(card, log, commentIndex, null, comment, !comment.deleted);
+        }
+        (comment.replies || []).forEach((reply, replyIndex) => {
+          const replyLine = document.createElement('div');
+          replyLine.className = 'rotation-comment-reply';
+          const replyByline = document.createElement('div');
+          replyByline.className = 'rotation-comment-byline';
+          const replyAuthor = document.createElement('strong');
+          replyAuthor.textContent = reply.author;
+          const replyDate = document.createElement('span');
+          replyDate.textContent = reply.date;
+          if (reply.edited) {
+            const edited = document.createElement('span');
+            edited.className = 'rotation-comment-edited';
+            edited.textContent = '已编辑';
+            replyDate.appendChild(edited);
+          }
+          replyByline.append(replyAuthor, replyDate);
+          replyLine.appendChild(replyByline);
+          if (activeRotationEditingMessage && activeRotationEditingMessage.commentIndex === commentIndex && activeRotationEditingMessage.replyIndex === replyIndex) {
+            replyLine.appendChild(createRotationCommentEditForm(log, commentIndex, replyIndex, reply));
+          } else {
+            const replyText = document.createElement('p');
+            replyText.textContent = reply.text;
+            replyLine.appendChild(replyText);
+            appendRotationMessageActions(replyLine, log, commentIndex, replyIndex, reply, true);
+          }
+          card.appendChild(replyLine);
+        });
+
+        if (!comment.deleted) {
+          const replyButton = document.createElement('button');
+          replyButton.type = 'button';
+          replyButton.className = 'rotation-reply-button';
+          replyButton.textContent = '回复';
+          replyButton.addEventListener('click', () => {
+            activeRotationReplyIndex = activeRotationReplyIndex === commentIndex ? null : commentIndex;
+            activeRotationEditingMessage = null;
+            renderRotationLog();
+          });
+          card.appendChild(replyButton);
+        }
+
+        if (activeRotationReplyIndex === commentIndex) {
+          const replyComposer = document.createElement('div');
+          replyComposer.className = 'rotation-reply-composer';
+          const replyInput = document.createElement('textarea');
+          replyInput.maxLength = 1000;
+          replyInput.placeholder = '回复这条评论';
+          replyInput.setAttribute('aria-label', '回复评论');
+          const submitReply = document.createElement('button');
+          submitReply.type = 'button';
+          submitReply.textContent = '发送回复';
+          submitReply.addEventListener('click', () => {
+            const replyText = replyInput.value.trim();
+            if (!replyText) { replyInput.focus(); return; }
+            const replies = getRotationLogComments(activeRotation, log)[commentIndex].replies || [];
+            replies.push({ id: 'rotation-reply-' + Date.now(), author: '当前用户', date: todayDateString(), text: replyText });
+            commentsData[commentIndex].replies = replies;
+            saveRotationLogComments(activeRotation, log);
+            activeRotationReplyIndex = null;
+            activeRotationEditingMessage = null;
+            log.updatedAt = todayDateString();
+            renderRotationLog();
+          });
+          replyComposer.append(replyInput, submitReply);
+          card.appendChild(replyComposer);
+        }
+        comments.appendChild(card);
+      });
+      comments.appendChild(composer);
+      main.appendChild(comments);
+    }
+
+    function appendRotationMessageActions(parent, log, commentIndex, replyIndex, message, allowActions) {
+      if (!allowActions || message.author !== '当前用户') return;
+      const actions = document.createElement('div');
+      actions.className = 'rotation-message-actions';
+      const edit = document.createElement('button');
+      edit.type = 'button';
+      edit.textContent = '编辑';
+      edit.addEventListener('click', () => {
+        activeRotationReplyIndex = null;
+        activeRotationEditingMessage = { commentIndex, replyIndex };
+        renderRotationLog();
+      });
+      const remove = document.createElement('button');
+      remove.type = 'button';
+      remove.className = 'delete';
+      remove.textContent = '删除';
+      remove.addEventListener('click', () => {
+        const comment = getRotationLogComments(activeRotation, log)[commentIndex];
+        if (replyIndex === null) {
+          const hasReplies = (comment.replies || []).length > 0;
+          const prompt = hasReplies ? '这条评论已有回复。删除后会保留回复并显示“该评论已删除”。确定删除吗？' : '确定删除这条评论吗？';
+          if (!window.confirm(prompt)) return;
+          if (hasReplies) { comment.deleted = true; comment.text = ''; }
+          else getRotationLogComments(activeRotation, log).splice(commentIndex, 1);
+        } else {
+          const replies = comment.replies || [];
+          const removesThread = comment.deleted && replies.length === 1;
+          const prompt = removesThread ? '这是该评论的最后一条回复，删除后整条对话记录都会移除。确定删除吗？' : '确定删除这条回复吗？';
+          if (!window.confirm(prompt)) return;
+          replies.splice(replyIndex, 1);
+          if (comment.deleted && replies.length === 0) getRotationLogComments(activeRotation, log).splice(commentIndex, 1);
+        }
+        activeRotationEditingMessage = null;
+        activeRotationReplyIndex = null;
+        log.updatedAt = todayDateString();
+        saveRotationLogComments(activeRotation, log);
+        renderRotationLog();
+      });
+      actions.append(edit, remove);
+      parent.appendChild(actions);
+    }
+
+    function createRotationCommentEditForm(log, commentIndex, replyIndex, message) {
+      const form = document.createElement('div');
+      form.className = 'rotation-comment-edit-form';
+      const input = document.createElement('textarea');
+      input.maxLength = 1000;
+      input.value = message.text || '';
+      input.setAttribute('aria-label', replyIndex === null ? '编辑评论' : '编辑回复');
+      const actions = document.createElement('div');
+      actions.className = 'rotation-comment-edit-actions';
+      const cancel = document.createElement('button');
+      cancel.type = 'button';
+      cancel.textContent = '取消';
+      cancel.addEventListener('click', () => { activeRotationEditingMessage = null; renderRotationLog(); });
+      const save = document.createElement('button');
+      save.type = 'button';
+      save.className = 'primary';
+      save.textContent = '保存';
+      save.addEventListener('click', () => {
+        const value = input.value.trim();
+        if (!value) { input.focus(); return; }
+        const targetComment = getRotationLogComments(activeRotation, log)[commentIndex];
+        const target = replyIndex === null ? targetComment : targetComment.replies[replyIndex];
+        target.text = value;
+        target.edited = true;
+        target.editedAt = todayDateString();
+        log.updatedAt = todayDateString();
+        activeRotationEditingMessage = null;
+        saveRotationLogComments(activeRotation, log);
+        renderRotationLog();
+      });
+      actions.append(cancel, save);
+      form.append(input, actions);
+      return form;
+    }
+
+    function loadRotationEvaluation(rotation) {
+      const source = rotation.ratings || {};
+      let stored = null;
+      try { stored = JSON.parse(localStorage.getItem(`${rotationEvaluationStoragePrefix}:${rotation.department}`) || 'null'); } catch {}
+      const values = stored || source;
+      const normalize = (list) => Array.from({ length: 3 }, (_, index) => {
+        const value = Number(list && list[index] || 0);
+        return Number.isFinite(value) && value >= 0 && value <= 5 ? Math.round(value * 2) / 2 : 0;
+      });
+      return {
+        mentor: normalize(values.mentor), employee: normalize(values.employee),
+        mentorComment: String(values.mentorComment || ''), employeeComment: String(values.employeeComment || '')
+      };
+    }
+
+    function renderRotationRatings() {
+      const container = document.getElementById('rotationRatingDirections');
+      container.replaceChildren();
+      if (!activeRotation || !rotationEvaluationDraft) return;
+      const directions = [
+        { key: 'mentor', title: '带教老师评价新员工', privacy: '此评价对新员工不可见', dimensions: ['专业胜任力', '工作积极性', '文化认同感'] },
+        { key: 'employee', title: '新员工评价带教老师', privacy: '此评价对带教老师不可见', dimensions: ['带教投入', '带教方法', '带教成效'] }
+      ];
+      directions.forEach((direction) => {
+        const values = rotationEvaluationDraft[direction.key] || [];
+        const rated = values.filter((value) => value > 0);
+        const average = rated.length ? rated.reduce((sum, value) => sum + value, 0) / rated.length : null;
+        const card = document.createElement('section');
+        card.className = 'rotation-rating-card';
+        const head = document.createElement('div');head.className = 'rotation-rating-head';
+        const label = document.createElement('div');
+        const name = document.createElement('strong');name.className = 'rotation-rating-title';name.textContent = direction.title;
+        const privacy = document.createElement('span');privacy.className = 'rotation-rating-privacy';privacy.textContent = direction.privacy;
+        label.append(name, privacy);
+        const score = document.createElement('div');score.className = 'rotation-rating-average';score.append('评价均分 ');
+        const scoreValue = document.createElement('strong');scoreValue.textContent = average == null ? '—' : average.toFixed(1);
+        score.append(scoreValue, ' / 5 分');head.append(label, score);card.append(head);
+        const items = document.createElement('div');items.className = 'rotation-rating-items';
+        direction.dimensions.forEach((dimension, index) => {
+          const item = document.createElement('div');item.className = 'rotation-rating-item';
+          const dimensionName = document.createElement('strong');dimensionName.textContent = dimension;
+          const rating = Number(values[index] || 0);const stars = document.createElement('span');stars.className = 'rotation-rating-stars';stars.setAttribute('role','img');stars.setAttribute('aria-label',`${dimension} ${rating.toFixed(1)} 分，共 5 分`);
+          for (let starIndex = 0; starIndex < 5; starIndex += 1) {
+            const star = document.createElement('span');star.textContent = '★';star.className = rating >= starIndex + 1 ? 'filled' : rating >= starIndex + 0.5 ? 'rotation-star-half' : 'rotation-star-empty';stars.appendChild(star);
+          }
+          const value = document.createElement('span');value.className='rating-value';value.textContent = rating ? rating.toFixed(1) : '未评';
+          item.append(dimensionName, stars, value);items.appendChild(item);
+        });
+        card.appendChild(items);
+        const noteLabel = document.createElement('label');noteLabel.className='rotation-rating-comment';noteLabel.textContent='文字评价';
+        const comment = rotationEvaluationDraft[`${direction.key}Comment`] || '';
+        const note = document.createElement('div');note.className=`rotation-rating-note${comment ? '' : ' empty'}`;note.setAttribute('aria-label',`${direction.title}文字评价`);note.textContent=comment || '暂未填写文字评价';
+        card.append(noteLabel,note);container.appendChild(card);
+      });
+    }
+
+    function showRotationDetail(rotation) {
+      activeRotation = rotation;
+      activeRotationLogIndex = 0;
+      activeRotationReplyIndex = null;
+      activeRotationEditingMessage = null;
+      rotationEvaluationDraft = loadRotationEvaluation(rotation);
+      document.getElementById('rotationDetailTitle').textContent = `杨艳英 · ${rotation.department} 轮岗记录`;
+      document.getElementById('rotationDetailName').value = '杨艳英';
+      document.getElementById('rotationDetailPosition').value = '新员工';
+      document.getElementById('rotationDetailEntryDepartment').value = '信息技术部';
+      document.getElementById('rotationDetailDepartment').value = rotation.department;
+      document.getElementById('rotationDetailMentor').value = rotation.mentor;
+      document.getElementById('rotationDetailStart').value = rotation.start;
+      document.getElementById('rotationDetailEnd').value = rotation.end;
+      renderRotationLogNav();
+      renderRotationLog();
+      renderRotationRatings();
+      setRotationDetailTab('logs');
+      rotationDetailModal.classList.add('open');
+    }
+
+    function renderRotationRows() {
+      const rows = document.getElementById('rotationRows');
+      rows.replaceChildren();
+      rotationAssignments.forEach((rotation) => {
+        const row = document.createElement('tr');
+        [rotation.department, rotation.mentor, `${rotation.start} 至 ${rotation.end}`].forEach((value) => {
+          const cell = document.createElement('td');
+          cell.textContent = value;
+          row.appendChild(cell);
+        });
+        const actionCell = document.createElement('td');
+        const detailButton = document.createElement('button');
+        detailButton.className = 'rotation-detail-button';
+        detailButton.type = 'button';
+        detailButton.textContent = '详情';
+        detailButton.addEventListener('click', () => showRotationDetail(rotation));
+        actionCell.appendChild(detailButton);
+        row.appendChild(actionCell);
+        rows.appendChild(row);
+      });
+    }
+
+    function setPeriod(period) {
+      const reportTitle = document.getElementById('reportHeadingTitle');
+      reportTitle.textContent = `杨艳英的2026-09新员工述职报告(第${period}/6期)`;
+      quarterMaterialsSection.hidden = period !== '3';
+      mentorEvaluationSection.hidden = period !== '6';
+      rotationSection.hidden = period !== '6' || rotationAssignments.length === 0;
+      departmentEvaluationSection.hidden = period !== '3' && period !== '6';
+      if (period === '6') renderMentorEvaluation();
+    }
+
+    periodSelect.addEventListener('change', () => setPeriod(periodSelect.value));
+    renderRotationRows();
+    setPeriod(periodSelect.value);
+    document.getElementById('rotationLogsTab').addEventListener('click', () => setRotationDetailTab('logs'));
+    document.getElementById('rotationRatingsTab').addEventListener('click', () => setRotationDetailTab('ratings'));
+
+    const quarterMaterialInput = document.getElementById('quarterMaterialInput');
+    const selectedQuarterFiles = new Map();
+    function renderQuarterFiles() {
+      const list = document.getElementById('quarterFileList');
+      list.replaceChildren();
+      selectedQuarterFiles.forEach((file, key) => {
+        const item = document.createElement('li');
+        const name = document.createElement('span');
+        name.className = 'uploaded-file-name';
+        name.textContent = file.name;
+        const remove = document.createElement('button');
+        remove.className = 'remove-upload';
+        remove.type = 'button';
+        remove.textContent = '移除';
+        remove.setAttribute('aria-label', `移除材料：${file.name}`);
+        remove.addEventListener('click', () => {
+          selectedQuarterFiles.delete(key);
+          renderQuarterFiles();
+        });
+        item.append(name, remove);
+        list.appendChild(item);
+      });
+    }
+    document.getElementById('chooseQuarterFiles').addEventListener('click', () => quarterMaterialInput.click());
+    quarterMaterialInput.addEventListener('change', (event) => {
+      Array.from(event.currentTarget.files).forEach((file) => {
+        const key = `${file.name}|${file.size}|${file.lastModified}`;
+        selectedQuarterFiles.set(key, file);
+      });
+      renderQuarterFiles();
+      quarterMaterialInput.value = '';
+    });
+
+    const mentorRatingDirections = document.getElementById('mentorRatingDirections');
+    mentorRatingDirections.addEventListener('input', (event) => {
+      const input = event.target.closest('[data-evaluation-text="employee"]');
+      if (!input || !mentorEvaluationDraft) return;
+      mentorEvaluationDraft.comment = input.value;
+      mentorEvaluationStatusMessage = '评价尚未保存';
+      document.getElementById('mentorEvaluationStatus').textContent = mentorEvaluationStatusMessage;
+    });
+    mentorRatingDirections.addEventListener('click', (event) => {
+      const saveButton = event.target.closest('[data-action="save-rating"]');
+      if (saveButton) {
+        persistMentorEvaluation();
+        mentorEvaluationStatusMessage = '评价已保存';
+        document.getElementById('mentorEvaluationStatus').textContent = mentorEvaluationStatusMessage;
+        document.getElementById('evaluationText-employee').value = mentorEvaluationDraft.comment;
+        return;
+      }
+      const star = event.target.closest('[data-star-index][data-dimension-index]');
+      if (!star || !mentorEvaluationDraft) return;
+      const rect = star.getBoundingClientRect();
+      setMentorRating(Number(star.dataset.dimensionIndex), Number(star.dataset.starIndex), event.clientX, rect);
+    });
+
+    const collapseRail = document.getElementById('collapseRail');
+    collapseRail.addEventListener('click', () => {
+      const hidden = workspace.classList.toggle('sidebar-hidden');
+      collapseRail.setAttribute('aria-label', hidden ? '展开流程记录' : '折叠流程记录');
+    });
+
+    document.querySelectorAll('[data-counter]').forEach((textarea) => {
+      const counter = textarea.parentElement.querySelector('.counter');
+      const update = () => { counter.textContent = `${textarea.value.length} / ${textarea.maxLength}`; };
+      textarea.addEventListener('input', update);
+      textarea.addEventListener('focus', () => textarea.parentElement.classList.add('focused'));
+      textarea.addEventListener('blur', () => textarea.parentElement.classList.remove('focused'));
+      update();
+    });
+
+    document.getElementById('moreInfo').addEventListener('click', (event) => {
+      const extra = document.getElementById('extraInfo');
+      const open = extra.classList.toggle('open');
+      event.currentTarget.setAttribute('aria-expanded', String(open));
+      event.currentTarget.textContent = open ? '收起更多信息' : '查看更多信息';
+    });
+
+    document.getElementById('summaryToggle').addEventListener('click', (event) => {
+      const intro = document.getElementById('introText');
+      const expanded = event.currentTarget.getAttribute('aria-expanded') === 'true';
+      intro.hidden = expanded;
+      event.currentTarget.setAttribute('aria-expanded', String(!expanded));
+      event.currentTarget.textContent = expanded ? '展开摘要' : '摘要';
+    });
+
+    document.querySelectorAll('[data-modal]').forEach((button) => {
+      button.addEventListener('click', () => document.getElementById(button.dataset.modal).classList.add('open'));
+    });
+    document.querySelectorAll('.modal-backdrop').forEach((backdrop) => {
+      backdrop.addEventListener('click', (event) => {
+        if (event.target === backdrop || event.target.closest('.modal-close')) backdrop.classList.remove('open');
+      });
+    });
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') document.querySelectorAll('.modal-backdrop.open').forEach((modal) => modal.classList.remove('open'));
+    });
+
+    document.querySelectorAll('[data-tab]').forEach((tab) => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('[data-tab]').forEach((other) => {
+          const active = other === tab;
+          other.classList.toggle('active', active);
+          other.setAttribute('aria-selected', String(active));
+        });
+        document.getElementById('timeline').dataset.mode = tab.dataset.tab;
+      });
+    });
+    document.querySelectorAll('[data-filter]').forEach((checkbox) => {
+      checkbox.addEventListener('change', () => {
+        const visible = [...document.querySelectorAll('[data-kind]')].some((item) => {
+          const filter = document.querySelector(`[data-filter="${item.dataset.kind}"]`);
+          item.hidden = filter ? !filter.checked : false;
+          return !item.hidden;
+        });
+        document.getElementById('emptyNote').style.display = visible ? 'none' : 'block';
+      });
+    });
+  </script>
+</body>
+</html>

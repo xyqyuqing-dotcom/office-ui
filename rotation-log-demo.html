@@ -1,0 +1,993 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>轮岗记录｜人才管理</title>
+  <style>
+    :root {
+      --blue: #338cf4;
+      --ink: #25374b;
+      --muted: #8c98a6;
+      --line: #edf0f4;
+      --bg: #f7f9fc;
+      font-size: 14px;
+      font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans SC", Arial, sans-serif;
+      color: var(--ink);
+      background: var(--bg);
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-width: 1120px; min-height: 100%; }
+    body { background: #fff; overflow-x: hidden; }
+    button, input, textarea { font: inherit; }
+    button { cursor: pointer; }
+    .topbar { position: relative; height: 60px; display: flex; align-items: center; padding: 0 17px 0 20px; border-bottom: 1px solid #e7ebf0; overflow: hidden; background: linear-gradient(109deg, #fff 0%, #f8fbff 56%, #edf5fe 100%); }
+    .topbar::after { content: ""; position: absolute; inset: 0 0 0 auto; width: 42%; opacity: .36; pointer-events: none; background: repeating-linear-gradient(138deg, transparent 0 13px, rgba(100, 151, 213, .16) 14px 15px); mask-image: linear-gradient(90deg, transparent, #000 30%); }
+    .brand { position: relative; z-index: 1; color: #5799f4; font-size: 18px; letter-spacing: .2px; white-space: nowrap; }
+    .topnav { position: absolute; z-index: 1; left: 50%; transform: translateX(-50%); height: 100%; display: flex; align-items: stretch; gap: 26px; }
+    .topnav button, .topnav-link { position: relative; display: flex; align-items: center; border: 0; background: transparent; color: #788493; padding: 0 9px; font-size: 14px; white-space: nowrap; }
+    .topnav-link { text-decoration: none; }
+    .topnav .active { color: var(--blue); font-weight: 600; }
+    .topnav .active::after { content: ""; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 22px; height: 4px; border-radius: 4px 4px 0 0; background: var(--blue); }
+    .user-actions { z-index: 1; margin-left: auto; display: flex; align-items: center; gap: 16px; color: #8491a0; font-size: 13px; }
+    .home-icon, .chat-icon { width: 18px; height: 18px; opacity: .78; }
+    .avatar { width: 30px; height: 30px; border-radius: 50%; background: radial-gradient(circle at 50% 30%, #f4c9a8 0 23%, transparent 24%), linear-gradient(145deg, #273343 0 45%, #a77758 46% 57%, #303947 58%); }
+    .page { min-height: calc(100vh - 60px); margin-left: 248px; padding: 22px 28px 44px; background: #f7f9fc; }
+    .page-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin: 0 0 18px; }
+    .page-heading h1 { margin: 0; color: #1e2d3e; font-size: 21px; font-weight: 650; }
+    .page-heading p { margin: 7px 0 0; color: #8b97a5; font-size: 13px; }
+    .btn { height: 36px; padding: 0 15px; border: 1px solid #d9e0e8; border-radius: 6px; color: #445467; background: #fff; font-size: 13px; white-space: nowrap; }
+    .btn:hover { border-color: #a9cafa; }
+    .btn.primary { border-color: var(--blue); color: #fff; background: var(--blue); box-shadow: 0 3px 8px rgba(51, 140, 244, .18); }
+    .btn.primary:hover { background: #1f78e8; }
+    .intro { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 15px; padding: 14px 17px; border: 1px solid #e9f1fb; border-radius: 8px; background: #f7fbff; }
+    .intro strong { display: block; margin-bottom: 4px; color: #355477; font-size: 13px; }
+    .intro span { color: #8393a6; font-size: 12px; }
+    .panel { border: 1px solid #edf0f4; border-radius: 10px; background: #fff; box-shadow: 0 3px 14px rgba(45, 64, 88, .035); overflow: hidden; }
+    .table-heading { display: flex; align-items: center; justify-content: space-between; padding: 17px 19px 14px; }
+    .table-heading h2 { margin: 0; color: #26384d; font-size: 15px; font-weight: 600; }
+    .table-heading p { margin: 5px 0 0; color: #99a4b0; font-size: 11px; }
+    .table-wrap { overflow: auto; }
+    .sort-button { width: 100%; display: inline-flex; align-items: center; justify-content: space-between; gap: 8px; padding: 0; border: 0; color: inherit; background: transparent; font: inherit; font-weight: inherit; text-align: left; white-space: nowrap; }
+    .sort-button:hover { color: #262626; }
+    .sort-indicator { width: 10px; height: 16px; display: inline-flex; flex: 0 0 10px; flex-direction: column; align-items: center; justify-content: center; gap: 2px; color: #bfbfbf; }
+    .sort-caret { width: 0; height: 0; display: block; border-right: 4px solid transparent; border-left: 4px solid transparent; }
+    .sort-caret-up { border-bottom: 4px solid #bfbfbf; }
+    .sort-caret-down { border-top: 4px solid #bfbfbf; }
+    .sort-indicator[data-order="asc"] .sort-caret-up { border-bottom-color: #1677ff; }
+    .sort-indicator[data-order="desc"] .sort-caret-down { border-top-color: #1677ff; }
+    th:hover { background: #f5f5f5; }
+    .table-tools { min-height: 58px; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 10px 17px; border-top: 1px solid #edf0f4; }
+    .search-count { color: #96a2b0; font-size: 11px; }
+    .global-search { display: flex; align-items: center; gap: 8px; }
+    .global-search label { color: #68788d; font-size: 12px; white-space: nowrap; }
+    .global-search input { width: min(370px, 34vw); height: 34px; padding: 0 10px; border: 1px solid #dce2e9; border-radius: 6px; outline: none; color: #3e4f63; background: #fff; font-size: 12px; }
+    .global-search input:focus { border-color: #86b8fa; box-shadow: 0 0 0 3px rgba(51,140,244,.08); }
+    .global-search .btn { height: 34px; font-size: 11px; }
+    .empty-row td { height: 82px; color: #9aa5b1; text-align: center; }
+    table { width: 100%; min-width: 1120px; border-collapse: collapse; table-layout: fixed; font-size: 13px; }
+    th { height: 46px; padding: 0 13px; text-align: left; color: #566477; background: #fafbfd; border-top: 1px solid #f0f2f5; border-bottom: 1px solid #edf0f4; font-weight: 600; white-space: nowrap; }
+    td { height: 60px; padding: 8px 13px; color: #405167; border-bottom: 1px solid #f0f2f5; vertical-align: middle; overflow: hidden; text-overflow: ellipsis; }
+    tbody tr:hover td { background: #f8fbff; }
+    .title-link { max-width: 100%; padding: 0; border: 0; color: #2c83ed; background: transparent; text-align: left; font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .title-link:hover { color: #176fd5; text-decoration: underline; }
+    .date-cell { color: #98a4b1; font-size: 11px; white-space: nowrap; }
+    .drawer-backdrop { position: fixed; z-index: 10; inset: 60px auto 0 0; height: calc(100vh - 60px); display: block; width: 248px; background: #fff; box-shadow: 1px 0 10px rgba(40, 70, 110, .06); transition: width .22s ease; }
+    .drawer { position: absolute; inset: 0; width: 248px; background: #fff; transition: width .22s ease; }
+    .drawer-list { padding: 7px 5px; }
+    .drawer-group { margin: 0; padding: 0; list-style: none; }
+    .drawer-item { width: 100%; height: 50px; display: flex; align-items: center; gap: 13px; padding: 0 20px; border: 0; border-radius: 9px; color: #16202e; background: transparent; text-align: left; text-decoration: none; font-size: 14px; white-space: nowrap; overflow: hidden; }
+    .drawer-item:hover, .drawer-item.active { background: #f7f7f8; }
+    .drawer-item.active { color: #1f78e8; }
+    .drawer-item svg { flex: 0 0 20px; width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 1.7; }
+    .drawer-collapse { position: absolute; z-index: 2; top: 50%; right: -16px; width: 16px; height: 62px; display: grid; place-items: center; padding: 0; border: 0; border-radius: 0 7px 7px 0; color: #fff; background: #338cf4; transform: translateY(-50%); }
+    .drawer-collapse svg { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 2.2; transition: transform .22s ease; }
+    body.menu-collapsed .drawer-backdrop, body.menu-collapsed .drawer { width: 56px; }
+    body.menu-collapsed .page { margin-left: 56px; }
+    body.menu-collapsed .drawer-item { gap: 0; padding: 0; justify-content: center; }
+    body.menu-collapsed .drawer-item span { display: none; }
+    body.menu-collapsed .drawer-collapse svg { transform: rotate(180deg); }
+    .form-control { width: 100%; min-width: 0; height: 36px; padding: 0 10px; border: 1px solid #dce2e9; border-radius: 6px; outline: none; color: #3e4f63; background: #fff; font-size: 12px; }
+    .form-control:focus { border-color: #86b8fa; box-shadow: 0 0 0 3px rgba(51, 140, 244, .1); }
+    .period-inputs { display: grid; grid-template-columns: minmax(0,1fr) auto minmax(0,1fr); gap: 7px; align-items: center; }
+    .period-inputs span { color: #9aa5b1; font-size: 12px; }
+    .period-cell { color: #657386; white-space: nowrap; }
+    .detail-link,.text-button { padding: 0; border: 0; color: #2c83ed; background: transparent; font-size: 12px; }
+    .detail-link:hover,.text-button:hover { color: #176fd5; text-decoration: underline; }
+    .record-backdrop { position: fixed; z-index: 50; inset: 0; display: grid; place-items: center; padding: 22px; background: rgba(24, 39, 57, .4); }
+    .record-backdrop[hidden] { display: none; }
+    .record-dialog { width: min(1440px, calc(100vw - 44px)); height: min(960px, calc(100vh - 44px)); display: flex; flex-direction: column; overflow: hidden; border: 1px solid rgba(233,238,244,.9); border-radius: 12px; background: #fff; box-shadow: 0 22px 70px rgba(20,36,55,.25); }
+    .record-dialog-head { min-height: 62px; display: flex; align-items: center; justify-content: space-between; padding: 0 22px; border-bottom: 1px solid #edf0f4; }
+    .record-dialog-head h2 { margin: 0; color: #25374b; font-size: 17px; font-weight: 650; }
+    .record-dialog-head p { margin: 4px 0 0; color: #98a3b0; font-size: 11px; }
+    .close-modal { width: 34px; height: 34px; border: 0; border-radius: 6px; color: #8995a3; background: transparent; font-size: 25px; line-height: 1; }
+    .close-modal:hover { background: #f3f6f9; }
+    .record-profile { display: grid; grid-template-columns: repeat(7,minmax(0,1fr)); gap: 10px 13px; padding: 15px 21px 13px; border-bottom: 1px solid #edf0f4; background: #fbfcfe; }
+    .profile-field { min-width: 0; }
+    .profile-field label { display: block; margin-bottom: 5px; color: #758397; font-size: 11px; }
+    .required-mark { color: #d85a64; font-style: normal; }
+    .profile-field .form-control[readonly] { color: #566477; background: #f2f5f8; }
+    .profile-period { grid-column: span 2; }
+    .profile-actions { grid-column: 1 / -1; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .profile-actions small { color: #9aa5b1; font-size: 10px; }
+    .profile-actions .btn { height: 31px; font-size: 11px; }
+    .record-tabs { flex: 0 0 auto; display: flex; gap: 26px; padding: 0 22px; border-bottom: 1px solid #e8edf3; }
+    .record-tab { position: relative; height: 45px; padding: 0 2px; border: 0; color: #788596; background: transparent; font-size: 13px; }
+    .record-tab.active { color: #287bd6; font-weight: 600; }
+    .record-tab.active::after { position: absolute; right: 0; bottom: -1px; left: 0; height: 2px; border-radius: 2px; background: #338cf4; content: ""; }
+    .record-pane { flex: 1; min-height: 0; overflow: hidden; }
+    .record-pane[hidden] { display: none; }
+    #logsPane { display: flex; }
+    #logsPane[hidden] { display: none; }
+    .logs-layout { width: 100%; height: 100%; min-height: 0; display: grid; grid-template-columns: 270px minmax(0,1fr); }
+    .log-sidebar { min-height: 0; display: flex; flex-direction: column; border-right: 1px solid #edf0f4; background: #fbfcfe; }
+    .log-sidebar-head { min-height: 48px; display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 0 14px; border-bottom: 1px solid #edf0f4; }
+    .log-sidebar-head strong { color: #536176; font-size: 12px; }
+    .log-nav { flex: 1; overflow: auto; padding: 8px; }
+    .log-nav-entry { position: relative; margin-bottom: 6px; }
+    .log-nav-item { width: 100%; display: block; padding: 10px 54px 10px 10px; border: 1px solid transparent; border-radius: 7px; color: #445467; background: transparent; text-align: left; }
+    .log-nav-item:hover { background: #f4f8fd; }
+    .log-nav-item.active { border-color: #c8ddfa; background: #eef6ff; }
+    .log-nav-item strong { display: block; overflow: hidden; color: #384a60; font-size: 12px; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
+    .log-nav-item span { display: block; margin-top: 5px; color: #9aa5b1; font-size: 10px; }
+    .log-delete-button { position: absolute; top: 8px; right: 8px; padding: 4px 6px; border: 0; border-radius: 4px; color: #9a6570; background: transparent; font-size: 10px; }
+    .log-delete-button:hover { color: #c43d50; background: #fff0f1; }
+    .log-main { min-width: 0; overflow: auto; padding: 20px 25px 28px; }
+    .log-main-empty { display: grid; height: 100%; min-height: 240px; place-items: center; color: #9aa5b1; font-size: 13px; }
+    .log-editor-head { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin-bottom: 10px; }
+    .log-title-input { width: min(620px,100%); height: 38px; padding: 0 10px; border: 1px solid transparent; border-radius: 6px; outline: none; color: #2d4056; background: transparent; font-size: 18px; font-weight: 650; }
+    .log-title-input:focus,.log-title-input:not([readonly]) { border-color: #dce2e9; background: #fff; }
+    .log-title-input[readonly] { cursor: default; }
+    .log-editor-tools { display: flex; flex: 0 0 auto; align-items: center; gap: 8px; }
+    .log-updated { color: #a0aab5; font-size: 10px; white-space: nowrap; }
+    .log-editor-tools .btn { height: 31px; padding: 0 11px; font-size: 11px; }
+    .log-prompt { margin: 0 0 12px; padding: 11px 13px; border: 1px solid #e6effa; border-radius: 7px; color: #71839a; background: #f7fbff; font-size: 11px; line-height: 1.7; }
+    .log-prompt strong { color: #496889; }
+    .log-prompt ul { display: grid; grid-template-columns: 1fr 1fr; gap: 3px 20px; margin: 5px 0 4px; padding-left: 17px; }
+    .heading-tools { display: flex; align-items: center; flex-wrap: wrap; gap: 5px; margin-bottom: 7px; }
+    .heading-tools span { margin-right: 3px; color: #8996a6; font-size: 10px; }
+    .heading-tools button { height: 26px; padding: 0 8px; border: 1px solid #e2e7ed; border-radius: 5px; color: #566477; background: #fff; font-size: 10px; }
+    .heading-tools button:hover { border-color: #a9cafa; color: #2478d4; background: #f7fbff; }
+    .heading-tools button:disabled { cursor: not-allowed; opacity: .5; }
+    .rich-editor { min-height: 180px; padding: 13px 15px; border: 1px solid #dce2e9; border-radius: 7px; outline: none; color: #3e4f63; background: #fff; font-size: 12px; line-height: 1.8; overflow-wrap: anywhere; }
+    .rich-editor:focus { border-color: #86b8fa; box-shadow: 0 0 0 3px rgba(51, 140, 244, .1); }
+    .rich-editor[contenteditable="false"] { background: #fcfdff; }
+    .rich-editor:empty::before { content: attr(data-placeholder); color: #aab4bf; pointer-events: none; }
+    .rich-editor h1 { margin: 15px 0 6px; color: #34465a; font-size: 15px; }
+    .rich-editor h2 { margin: 12px 0 5px; color: #46566a; font-size: 13px; }
+    .rich-editor h3 { margin: 10px 0 4px; color: #566477; font-size: 12px; }
+    .rich-editor p { margin: 0 0 8px; }
+    .editor-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 9px; }
+    .editor-actions .btn { height: 31px; font-size: 11px; }
+    .comment-edit-hint { margin-top: 18px; padding: 12px; border-radius: 6px; color: #8795a6; background: #f7f9fc; font-size: 11px; text-align: right; }
+    .comments { margin-top: 20px; padding-top: 15px; border-top: 1px solid #edf0f4; }
+    .comments-head { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; color: #46566a; font-size: 14px; font-weight: 600; }
+    .comment-composer { display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 8px; align-items: start; margin-bottom: 12px; }
+    .comment-composer textarea,.reply-composer textarea { width: 100%; min-height: 64px; resize: vertical; padding: 9px 11px; border: 1px solid #dce2e9; border-radius: 6px; outline: none; color: #3e4f63; font: inherit; font-size: 13px; }
+    .reply-composer textarea { min-height: 48px; padding: 8px 10px; font-size: 12px; }
+    .comment-composer textarea:focus,.reply-composer textarea:focus { border-color: #86b8fa; }
+    .comment-composer .btn,.reply-composer .btn { height: 36px; font-size: 13px; }
+    .reply-composer .btn { height: 32px; font-size: 12px; }
+    .comment-card { margin: 8px 0; padding: 10px 12px; border: 1px solid #edf0f4; border-radius: 7px; background: #fff; }
+    .comment-empty { margin: 0 0 10px; color: #a0aab5; font-size: 12px; }
+    .comment-byline { display: flex; align-items: center; justify-content: space-between; gap: 8px; color: #788596; font-size: 12px; }
+    .comment-byline strong { color: #536176; font-size: 13px; }
+    .comment-edited-tag { margin-left: 7px; color: #9aa5b1; font-size: 11px; font-weight: 400; }
+    .comment-text { margin: 6px 0 7px; color: #526174; font-size: 13px; line-height: 1.7; white-space: pre-wrap; }
+    .comment-text.deleted { color: #9aa5b1; font-style: italic; }
+    .comment-message-actions { display: flex; align-items: center; gap: 12px; margin: 8px 0 0; }
+    .comment-message-actions button { padding: 0; border: 0; color: #3488f4; background: transparent; font-size: 12px; cursor: pointer; }
+    .comment-message-actions button.delete { color: #a67979; }
+    .comment-edit-form { margin-top: 8px; }
+    .comment-edit-form textarea { width: 100%; min-height: 56px; padding: 8px 10px; border: 1px solid #dce2e9; border-radius: 5px; color: #3e4f63; font: inherit; font-size: 13px; line-height: 1.6; resize: vertical; }
+    .comment-edit-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 6px; }
+    .comment-edit-actions button { height: 30px; padding: 0 10px; border: 1px solid #dce2e9; border-radius: 5px; color: #536176; background: #fff; font-size: 12px; cursor: pointer; }
+    .comment-edit-actions button.primary { border-color: #3488f4; color: #fff; background: #3488f4; }
+    .reply-button { margin-top: 8px; padding: 0; border: 0; color: #3488f4; background: transparent; font-size: 12px; cursor: pointer; }
+    .comment-reply { margin: 8px 0 0 18px; padding: 8px 11px; border-left: 2px solid #d8e8fb; border-radius: 0 6px 6px 0; background: #f8fbff; }
+    .reply-composer { display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 7px; margin: 8px 0 0 18px; }
+    .rating-pane { overflow: auto; padding: 20px 25px 26px; }
+    .rating-directions { display: flex; flex-direction: column; gap: 13px; margin-top: 13px; }
+    .rating-direction-card { padding: 15px 17px 16px; border: 1px solid #e8edf4; border-radius: 9px; background: #fff; }
+    .rating-direction-head { display: flex; align-items: center; justify-content: space-between; gap: 14px; }
+    .rating-direction-label { display: block; margin-bottom: 4px; color: #8996a6; font-size: 10px; }
+    .rating-direction-title { color: #3d5067; font-size: 14px; font-weight: 650; }
+    .rating-direction-copy { min-width: 0; }
+    .rating-direction-title-row { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+    .rating-privacy-note { padding: 3px 7px; border-radius: 4px; color: #3975b5; background: #f0f7ff; font-size: 10px; }
+    .average-box { display: flex; align-items: baseline; gap: 7px; padding: 9px 13px; border: 1px solid #e5eef9; border-radius: 7px; background: #f7fbff; }
+    .average-box span,.average-box small { color: #8795a6; font-size: 10px; }
+    .average-box strong { color: #d9912b; font-size: 21px; }
+    .permission-note { padding: 11px 14px; border: 1px solid #f1e8d7; border-radius: 7px; color: #8a7755; background: #fffbf3; }
+    .permission-note strong { font-size: 11px; }
+    .permission-note p { margin: 5px 0 0; font-size: 10px; line-height: 1.7; }
+    .permission-note ol { margin: 5px 0 0; padding-left: 18px; font-size: 10px; line-height: 1.7; }
+    .permission-note li + li { margin-top: 2px; }
+    .rating-items { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 8px; margin-top: 12px; }
+    .rating-item { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 62px; padding: 8px 10px; border: 1px solid #edf0f4; border-radius: 7px; background: #fff; }
+    .rating-dimension { color: #45566b; font-size: 12px; font-weight: 600; }
+    .rating-help { margin-top: 4px; color: #a0aab5; font-size: 10px; }
+    .rating-control { display: flex; flex: 0 0 auto; align-items: center; gap: 6px; }
+    .star-group { display: flex; align-items: center; gap: 2px; }
+    .star-button { width: 24px; height: 30px; padding: 0; border: 0; color: #dfe4ea; background: transparent; font-size: 23px; line-height: 1; }
+    .star-button.filled { color: #f3b746; }
+    .star-button.half { color: transparent; background: linear-gradient(90deg,#f3b746 50%,#dfe4ea 50%); background-clip: text; -webkit-background-clip: text; }
+    .rating-value { min-width: 34px; color: #d28b27; font-size: 12px; font-weight: 600; text-align: right; }
+    .text-review { margin-top: 12px; }
+    .text-review label { display: block; margin-bottom: 6px; color: #5d6d80; font-size: 11px; font-weight: 600; }
+    .text-review textarea { width: 100%; min-height: 80px; resize: vertical; padding: 9px 11px; border: 1px solid #dce2e9; border-radius: 6px; outline: none; color: #3e4f63; font: inherit; font-size: 11px; line-height: 1.7; }
+    .text-review textarea:focus { border-color: #86b8fa; box-shadow: 0 0 0 3px rgba(51,140,244,.08); }
+    .text-review-actions { display: flex; justify-content: flex-end; margin-top: 7px; }
+    .text-review-actions .btn { height: 30px; font-size: 10px; }
+    .record-dialog-foot { min-height: 48px; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 0 20px; border-top: 1px solid #edf0f4; background: #fbfcfe; }
+    .record-dialog-foot span { color: #9aa5b1; font-size: 10px; }
+    .record-dialog-foot .btn { height: 30px; font-size: 11px; }
+    .toast { position: fixed; z-index: 60; top: 61px; left: 50%; transform: translate(-50%, -8px); padding: 10px 16px; border: 1px solid #d9eee4; border-radius: 7px; color: #277d5c; background: #f1fbf5; box-shadow: 0 5px 18px rgba(30, 60, 90, .1); font-size: 12px; opacity: 0; pointer-events: none; transition: opacity .18s, transform .18s; }
+    .toast.show { transform: translate(-50%, 0); opacity: 1; }
+    @media (max-width: 1320px) { .page { padding-right: 18px; padding-left: 18px; } .topnav { gap: 8px; } }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <span class="brand">人力资源管理</span>
+    <nav class="topnav" aria-label="顶部导航">
+      <button type="button">人力资源管理</button>
+      <button type="button" class="active" aria-current="page">人才管理</button>
+      <a class="topnav-link" href="interview-results-demo.html">面试管理</a>
+      <a class="topnav-link" href="interviewer-rating-demo.html">面试官评分</a>
+    </nav>
+    <div class="user-actions">
+      <svg class="home-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="m3 11 9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1v-9Z"/></svg>
+      <svg class="chat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M20 12a7 7 0 0 1-7 7H8l-4 3v-5a7 7 0 1 1 16-5Z"/><path d="M8 12h.01M12 12h.01M16 12h.01"/></svg>
+      <span class="avatar" aria-hidden="true"></span>
+      <span>谢雨晴</span><span>⌄</span>
+    </div>
+  </header>
+
+  <main class="page">
+    <div class="page-heading">
+      <div><h1>轮岗记录</h1><p>按员工在各轮岗部门的安排查看日志、跟进反馈与轮岗评价。</p></div>
+      <button class="btn primary" id="newRecordBtn" type="button">＋ 新增轮岗记录</button>
+    </div>
+    <div class="intro"><div><strong>记录轮岗期间的实践、学习与反馈</strong><span>每个轮岗岗位周期需提交轮岗日志；员工所属部门可查看该员工全部轮岗记录，轮岗部门可查看员工在本部门轮岗期间的记录。</span></div></div>
+    <section class="panel" aria-label="轮岗记录列表">
+      <div class="table-heading"><div><h2>轮岗记录</h2><p id="recordCount"></p></div></div>
+      <div class="table-wrap">
+        <table>
+          <colgroup><col style="width:110px"><col style="width:150px"><col style="width:180px"><col style="width:180px"><col style="width:130px"><col style="width:240px"><col style="width:105px"></colgroup>
+          <thead><tr><th data-sort-header="name"><button class="sort-button" type="button" data-sort-key="name">姓名<span class="sort-indicator" aria-hidden="true"><i class="sort-caret sort-caret-up"></i><i class="sort-caret sort-caret-down"></i></span></button></th><th data-sort-header="position"><button class="sort-button" type="button" data-sort-key="position">岗位<span class="sort-indicator" aria-hidden="true"><i class="sort-caret sort-caret-up"></i><i class="sort-caret sort-caret-down"></i></span></button></th><th data-sort-header="department"><button class="sort-button" type="button" data-sort-key="department">部门<span class="sort-indicator" aria-hidden="true"><i class="sort-caret sort-caret-up"></i><i class="sort-caret sort-caret-down"></i></span></button></th><th data-sort-header="rotationDepartment"><button class="sort-button" type="button" data-sort-key="rotationDepartment">轮岗部门<span class="sort-indicator" aria-hidden="true"><i class="sort-caret sort-caret-up"></i><i class="sort-caret sort-caret-down"></i></span></button></th><th data-sort-header="mentor"><button class="sort-button" type="button" data-sort-key="mentor">带教老师<span class="sort-indicator" aria-hidden="true"><i class="sort-caret sort-caret-up"></i><i class="sort-caret sort-caret-down"></i></span></button></th><th data-sort-header="periodStart"><button class="sort-button" type="button" data-sort-key="periodStart">轮岗周期<span class="sort-indicator" aria-hidden="true"><i class="sort-caret sort-caret-up"></i><i class="sort-caret sort-caret-down"></i></span></button></th><th>操作</th></tr></thead>
+          <tbody id="recordTableBody"></tbody>
+        </table>
+      </div>
+      <div class="table-tools"><span class="search-count" id="searchCount">显示全部轮岗记录</span><div class="global-search"><label for="globalSearch">全局搜索</label><input id="globalSearch" type="search" placeholder="搜索姓名、岗位、部门、带教老师等"><button class="btn" id="clearSearch" type="button">清空</button></div></div>
+    </section>
+  </main>
+
+  <div class="drawer-backdrop" id="navBackdrop">
+    <aside class="drawer" aria-label="轮岗记录菜单">
+      <button class="drawer-collapse" id="toggleMenu" aria-label="收起菜单" title="收起菜单"><svg viewBox="0 0 24 24"><path d="m14 5-7 7 7 7"/></svg></button>
+      <div class="drawer-list"><ul class="drawer-group">
+        <li><a class="drawer-item active" href="rotation-log-demo.html" aria-current="page"><svg viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6zM14 3v5h5M9 12h7M9 16h7"/></svg><span>轮岗记录</span></a></li>
+      </ul></div>
+    </aside>
+  </div>
+
+  <div class="record-backdrop" id="recordBackdrop" hidden>
+    <section class="record-dialog" role="dialog" aria-modal="true" aria-labelledby="recordDialogTitle">
+      <header class="record-dialog-head"><div><h2 id="recordDialogTitle">轮岗记录详情</h2><p id="recordDialogSubtitle">查看轮岗安排、工作日志与评价</p></div><button class="close-modal" id="closeRecord" type="button" aria-label="关闭">×</button></header>
+      <section class="record-profile" aria-label="轮岗安排信息">
+        <div class="profile-field"><label for="profileName">姓名 <em class="required-mark">*</em></label><input class="form-control" id="profileName" required readonly></div>
+        <div class="profile-field"><label for="profilePosition">岗位 <em class="required-mark">*</em></label><input class="form-control" id="profilePosition" required readonly></div>
+        <div class="profile-field"><label for="profileDepartment">部门 <em class="required-mark">*</em></label><input class="form-control" id="profileDepartment" required readonly></div>
+        <div class="profile-field"><label for="profileRotationDepartment">轮岗部门 <em class="required-mark">*</em></label><input class="form-control" id="profileRotationDepartment" list="rotationDepartmentOptions" autocomplete="off" placeholder="输入名称搜索部门" required><datalist id="rotationDepartmentOptions"></datalist></div>
+        <div class="profile-field"><label for="profileMentor">带教老师 <em class="required-mark">*</em></label><input class="form-control" id="profileMentor" list="mentorOptions" autocomplete="off" placeholder="输入姓名搜索带教老师" required><datalist id="mentorOptions"></datalist></div>
+        <div class="profile-field profile-period"><label>轮岗周期 <em class="required-mark">*</em></label><div class="period-inputs"><input class="form-control" id="profilePeriodStart" type="date" aria-label="轮岗周期开始日期" required><span>至</span><input class="form-control" id="profilePeriodEnd" type="date" aria-label="轮岗周期结束日期" required></div></div>
+        <div class="profile-actions"><small>带 * 为必填；姓名、岗位、部门使用当前用户信息且不可修改。</small><button class="btn primary" id="saveProfile" type="button">保存安排</button></div>
+      </section>
+      <div class="record-tabs" role="tablist" aria-label="轮岗记录详情分类">
+        <button class="record-tab active" id="logsTab" type="button" role="tab" aria-selected="true" aria-controls="logsPane">轮岗日志</button>
+        <button class="record-tab" id="ratingTab" type="button" role="tab" aria-selected="false" aria-controls="ratingPane">轮岗评价</button>
+      </div>
+      <section class="record-pane" id="logsPane" role="tabpanel" aria-labelledby="logsTab">
+        <div class="logs-layout">
+          <aside class="log-sidebar"><div class="log-sidebar-head"><strong>日志列表</strong><button class="text-button" id="addLogBtn" type="button">＋ 新增日志</button></div><div class="log-nav" id="logNav"></div></aside>
+          <div class="log-main" id="logMain"></div>
+        </div>
+      </section>
+      <section class="record-pane rating-pane" id="ratingPane" role="tabpanel" aria-labelledby="ratingTab" hidden>
+        <div class="permission-note"><strong>原型注释（实际页面不展示）</strong><ol><li>员工与带教老师互不可见双方评分；员工所属部门负责人可查看该员工全部轮岗评分，轮岗部门负责人仅可查看本部门员工评分。带教老师兼任负责人时，不可查看员工对自己的评分，只能查看自己给员工的评分。</li><li>轮岗结束前一天，如任一方尚未评价，推送消息提醒双方完成双向评分。</li><li>轮岗周期结束后 1 周内可修改评价。</li></ol><p>以上仅作规则注释，演示未实现权限与消息推送。</p></div>
+        <div class="rating-directions" id="ratingDirections"></div>
+      </section>
+      <footer class="record-dialog-foot"><span id="recordFootHint">修改安排后记得保存；日志与评价按轮岗记录分别维护。</span><button class="btn" id="closeRecordFoot" type="button">关闭</button></footer>
+    </section>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    const records = [
+      {
+        id:'rotation-1', name:'谢雨晴', position:'招聘专员', department:'人力资源部', rotationDepartment:'信息技术部', mentor:'罗景行',
+        periodStart:'2026-09-01', periodEnd:'2026-10-31', updatedAt:'2026-10-05',
+        logs:[
+          {id:'log-1a',title:'研发岗位需求梳理与协作流程',updatedAt:'2026-10-05',html:'<h1>工作内容</h1><p>参与前端研发岗位需求评审，跟随招聘同事梳理岗位画像、面试环节和用人部门的协作方式。</p><h1>学习收获</h1><p>了解了研发岗位从需求确认到候选人反馈的流程，也熟悉了技术面试评价表的使用方法。</p><h1>问题困惑</h1><p>对部分前端技术栈的能力分级还不够熟悉。</p><h1>后续计划</h1><p>整理一份常见技术栈对照表，并请带教老师帮助校准岗位要求。</p>',comments:[{id:'comment-1',role:'employee',author:'谢雨晴（轮岗员工）',date:'2026-10-05',text:'老师，岗位画像中的框架熟练度要如何区分初级和中级？',replies:[{author:'罗景行（带教老师）',date:'2026-10-05',text:'可以结合独立完成模块、排查问题和代码规范三个方面判断，下一次评审我带你一起看。'}]}]},
+          {id:'log-1b',title:'技术面试流程旁听记录',updatedAt:'2026-10-02',html:'<h1>工作内容</h1><p>旁听两场前端岗位技术面试，记录面试官的问题结构和候选人回答情况。</p><h1>学习收获</h1><p>面试问题通常由基础知识、项目经历和现场分析组成，追问会围绕候选人的实际贡献展开。</p><h1>问题困惑</h1><p>暂时不确定如何在有限时间内判断项目经历的真实性。</p><h1>后续计划</h1><p>整理面试问题清单，和带教老师复盘追问方式。</p>',comments:[]}
+        ],
+        ratings:{employee:[4.5,4,5,4.5],mentor:[4.5,5,4.5,4]}
+      },
+      {
+        id:'rotation-2', name:'赵明远', position:'数据分析师', department:'数字科技部', rotationDepartment:'风险管理部', mentor:'顾云舟',
+        periodStart:'2026-08-01', periodEnd:'2026-10-31', updatedAt:'2026-10-04',
+        logs:[
+          {id:'log-2a',title:'风险指标看板口径对齐记录',updatedAt:'2026-10-04',html:'<h1>工作内容</h1><p>参与风险指标看板的日常复核，跟进异常交易提示的流转过程，并核对指标定义和刷新频率。</p><h1>学习收获</h1><p>熟悉了风险指标从数据采集、规则判断到问题反馈的处理路径。</p><h1>问题困惑</h1><p>部分历史指标口径调整后，旧数据如何保留还需要进一步了解。</p><h1>后续计划</h1><p>请导师讲解指标版本变更记录，并尝试独立完成一次口径复核。</p>',comments:[]}
+        ],
+        ratings:{employee:[4,4.5,4,4.5],mentor:[4.5,4,4.5,5]}
+      },
+      {
+        id:'rotation-3', name:'林书瑶', position:'招聘专员', department:'人力资源部', rotationDepartment:'运营管理部', mentor:'秦书宁',
+        periodStart:'2026-09-01', periodEnd:'2026-11-30', updatedAt:'2026-10-03',
+        logs:[
+          {id:'log-3a',title:'业务流程体验与用户反馈整理',updatedAt:'2026-10-03',html:'<h1>工作内容</h1><p>跟随运营同事处理业务咨询，记录资料提交和进度查询中的常见问题。</p><h1>学习收获</h1><p>掌握了咨询分流、工单登记与跨部门转办的基本步骤。</p><h1>问题困惑</h1><p>遇到需要多个部门共同处理的问题时，对责任节点的判断还不够熟练。</p><h1>后续计划</h1><p>整理典型工单案例，复盘不同问题的处理时限和协作方式。</p>',comments:[]}
+        ],
+        ratings:{employee:[4.5,4.5,4,5],mentor:[4,4.5,5,4.5]}
+      },
+      {
+        id:'rotation-4', name:'周子涵', position:'客户经理', department:'机构业务部', rotationDepartment:'研究所', mentor:'沈亦舟',
+        periodStart:'2026-09-01', periodEnd:'2026-11-30', updatedAt:'2026-10-02',
+        logs:[
+          {id:'log-4a',title:'行业晨会跟岗与客户需求访谈',updatedAt:'2026-10-02',html:'<h1>工作内容</h1><p>旁听行业晨会，参与客户需求访谈记录整理，并将客户关注点归纳为业务、产品和行业信息三类。</p><h1>学习收获</h1><p>了解研究观点如何转化为客户沟通材料，也熟悉了晨会纪要的基本结构。</p><h1>问题困惑</h1><p>对部分行业指标的计算口径还需要导师进一步说明。</p><h1>后续计划</h1><p>补充行业资料，尝试独立完成一页客户沟通摘要。</p>',comments:[]}
+        ],
+        ratings:{employee:[4,4.5,4.5,4],mentor:[5,4.5,4,4.5]}
+      },
+      {
+        id:'rotation-5', name:'陈佳宁', position:'人力资源专员', department:'人力资源部', rotationDepartment:'财务管理部', mentor:'梁清禾',
+        periodStart:'2026-08-15', periodEnd:'2026-10-15', updatedAt:'2026-09-30',
+        logs:[
+          {id:'log-5a',title:'预算编制流程学习记录',updatedAt:'2026-09-30',html:'<h1>工作内容</h1><p>熟悉部门预算编制流程，参与费用申请材料核对和月度预算执行情况整理。</p><h1>学习收获</h1><p>理解了费用申请、预算审核和执行跟踪之间的对应关系。</p><h1>问题困惑</h1><p>对于跨部门费用分摊的确认依据还不熟悉。</p><h1>后续计划</h1><p>练习使用历史数据制作费用趋势分析，并请导师复核。</p>',comments:[]}
+        ],
+        ratings:{employee:[4.5,4,4.5,4],mentor:[4,5,4.5,4.5]}
+      },
+      {
+        id:'rotation-6', name:'谢雨晴', position:'招聘专员', department:'人力资源部', rotationDepartment:'运营管理部', mentor:'秦书宁',
+        periodStart:'2026-11-01', periodEnd:'2026-12-31', updatedAt:'2026-10-01',
+        logs:[
+          {id:'log-6a',title:'运营数据分析岗位跟岗计划',updatedAt:'2026-10-01',html:'<h1>工作内容</h1><p>与运营管理部确认下一阶段跟岗安排，了解业务数据周报的来源和使用场景。</p><h1>学习收获</h1><p>明确了轮岗期间需要熟悉的报表、流程和协作对象。</p><h1>问题困惑</h1><p>对业务指标的异常判断标准还需进一步学习。</p><h1>后续计划</h1><p>入岗后先跟随导师完成一次周报复核，再独立整理一份分析摘要。</p>',comments:[]}
+        ],
+        ratings:{employee:[0,0,0,0],mentor:[0,0,0,0]}
+      }
+    ];
+    const CURRENT_USER = {name:'谢雨晴',position:'招聘专员',department:'人力资源部'};
+    records.forEach(record => (record.logs || []).forEach(log => {
+      if (log.recordDate == null) log.recordDate = log.draft || !log.title ? '' : (log.updatedAt || '');
+    }));
+    const $ = id => document.getElementById(id);
+    const ratingDimensions = {
+      mentor:[
+        {name:'专业胜任力',hint:'专业知识、岗位技能与解决问题的能力'},
+        {name:'工作积极性',hint:'工作主动性、责任意识与投入程度'},
+        {name:'文化认同感',hint:'对团队价值观、协作方式与组织文化的认同'}
+      ],
+      employee:[
+        {name:'带教投入',hint:'带教老师投入的时间、精力与关注程度'},
+        {name:'带教方法',hint:'讲解、示范、反馈和实践安排是否有效'},
+        {name:'带教成效',hint:'带教对业务理解和岗位能力提升的帮助'}
+      ]
+    };
+    let currentRecord = null;
+    let ratingDraft = null;
+    let currentLogId = null;
+    let isDraftRecord = false;
+    let isEditingLog = false;
+    let replyingToId = null;
+    let editingMessage = null;
+    let toastTimer;
+    let tableSort = {key:null,direction:null};
+    const logCommentStorageKey = 'rotation-log-comments-v2';
+    let storedLogComments = {};
+    try { storedLogComments = JSON.parse(localStorage.getItem(logCommentStorageKey) || '{}') || {}; } catch {}
+
+    function getLogComments(log) {
+      if (Array.isArray(storedLogComments[log.id])) log.comments = storedLogComments[log.id];
+      if (!Array.isArray(log.comments)) log.comments = [];
+      return log.comments;
+    }
+    function saveLogComments(log) {
+      storedLogComments[log.id] = log.comments || [];
+      try { localStorage.setItem(logCommentStorageKey, JSON.stringify(storedLogComments)); } catch {}
+    }
+
+    function escapeHtml(value) {
+      return String(value == null ? '' : value).replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+    }
+    function sanitizeRichHtml(html) {
+      const allowed = new Set(['P','DIV','BR','STRONG','B','EM','I','U','UL','OL','LI','H1','H2','H3','BLOCKQUOTE']);
+      const parsed = new DOMParser().parseFromString(String(html || ''), 'text/html');
+      const clean = parent => Array.from(parent.childNodes).forEach(node => {
+        if (node.nodeType === Node.TEXT_NODE) return;
+        if (node.nodeType !== Node.ELEMENT_NODE) { node.remove(); return; }
+        if (!allowed.has(node.tagName)) {
+          if (['SCRIPT','STYLE','IFRAME','OBJECT'].includes(node.tagName)) { node.remove(); return; }
+          clean(node);
+          node.replaceWith(...Array.from(node.childNodes));
+          return;
+        }
+        Array.from(node.attributes).forEach(attribute => node.removeAttribute(attribute.name));
+        clean(node);
+      });
+      clean(parsed.body);
+      return parsed.body.innerHTML;
+    }
+    function today() {
+      const now = new Date();
+      return String(now.getFullYear()) + '-' + String(now.getMonth()+1).padStart(2,'0') + '-' + String(now.getDate()).padStart(2,'0');
+    }
+    function formatPeriod(record) {
+      return record.periodStart && record.periodEnd ? record.periodStart + ' 至 ' + record.periodEnd : '待填写';
+    }
+    function renderProfileOptions() {
+      const departments = new Set(records.flatMap(record => [record.rotationDepartment,record.department]).filter(Boolean));
+      const mentors = new Set(records.map(record => record.mentor).filter(Boolean));
+      $('rotationDepartmentOptions').innerHTML = Array.from(departments).sort((a,b) => a.localeCompare(b,'zh-CN')).map(value => '<option value="' + escapeHtml(value) + '"></option>').join('');
+      $('mentorOptions').innerHTML = Array.from(mentors).sort((a,b) => a.localeCompare(b,'zh-CN')).map(value => '<option value="' + escapeHtml(value) + '"></option>').join('');
+    }
+    function showToast(message) {
+      $('toast').textContent = message;
+      $('toast').classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => $('toast').classList.remove('show'), 2500);
+    }
+    function updateRecordTime() {
+      if (!currentRecord) return;
+      currentRecord.updatedAt = today();
+      renderRows();
+    }
+    function renderRows() {
+      $('recordCount').textContent = '共 ' + records.length + ' 条轮岗记录';
+      const query = $('globalSearch').value.trim().toLocaleLowerCase();
+      const searchable = record => [record.name,record.position,record.department,record.rotationDepartment,record.mentor,formatPeriod(record)]
+        .join(' ').toLocaleLowerCase().includes(query);
+      const visibleRecords = records.filter(searchable).slice();
+      if (tableSort.key) visibleRecords.sort((a,b) => {
+        const left = String(a[tableSort.key] || '').toLocaleLowerCase();
+        const right = String(b[tableSort.key] || '').toLocaleLowerCase();
+        return left.localeCompare(right,'zh-CN',{numeric:true,sensitivity:'base'}) * (tableSort.direction === 'asc' ? 1 : -1);
+      });
+      $('searchCount').textContent = query ? '匹配 ' + visibleRecords.length + ' 条记录（共 ' + records.length + ' 条）' : '显示全部 ' + records.length + ' 条轮岗记录';
+      document.querySelectorAll('[data-sort-header]').forEach(header => {
+        const active = header.dataset.sortHeader === tableSort.key;
+        header.setAttribute('aria-sort', active ? (tableSort.direction === 'asc' ? 'ascending' : 'descending') : 'none');
+        const button = header.querySelector('.sort-button');
+        const indicator = button.querySelector('.sort-indicator');
+        indicator.dataset.order = active ? tableSort.direction : '';
+      });
+      if (!visibleRecords.length) {
+        $('recordTableBody').innerHTML = '<tr class="empty-row"><td colspan="7">没有找到匹配的轮岗记录</td></tr>';
+        return;
+      }
+      $('recordTableBody').innerHTML = visibleRecords.map(record => '<tr>' +
+        '<td>' + escapeHtml(record.name) + '</td>' +
+        '<td>' + escapeHtml(record.position) + '</td>' +
+        '<td>' + escapeHtml(record.department) + '</td>' +
+        '<td>' + escapeHtml(record.rotationDepartment) + '</td>' +
+        '<td>' + escapeHtml(record.mentor) + '</td>' +
+        '<td class="period-cell">' + escapeHtml(formatPeriod(record)) + '</td>' +
+        '<td><button class="detail-link" type="button" data-record-id="' + escapeHtml(record.id) + '">详情</button></td>' +
+      '</tr>').join('');
+    }
+    function setTab(name) {
+      const isLogs = name === 'logs';
+      $('logsTab').classList.toggle('active', isLogs);
+      $('ratingTab').classList.toggle('active', !isLogs);
+      $('logsTab').setAttribute('aria-selected', String(isLogs));
+      $('ratingTab').setAttribute('aria-selected', String(!isLogs));
+      $('logsPane').hidden = !isLogs;
+      $('ratingPane').hidden = isLogs;
+      if (!isLogs) renderRatings();
+    }
+    function fillProfile(record) {
+      renderProfileOptions();
+      $('profileName').value = record.name || '';
+      $('profilePosition').value = record.position || '';
+      $('profileDepartment').value = record.department || '';
+      $('profileRotationDepartment').value = record.rotationDepartment || '';
+      $('profileMentor').value = record.mentor || '';
+      $('profilePeriodStart').value = record.periodStart || '';
+      $('profilePeriodEnd').value = record.periodEnd || '';
+      ['profileName','profilePosition','profileDepartment'].forEach(id => { $(id).readOnly = true; });
+      $('recordDialogTitle').textContent = isDraftRecord ? '新增轮岗记录' : record.name + ' · ' + record.rotationDepartment + ' 轮岗记录';
+      $('recordDialogSubtitle').textContent = isDraftRecord ? '填写必填轮岗安排后保存' : '记录轮岗实践、导师反馈与阶段评价';
+      $('recordFootHint').textContent = isDraftRecord ? '先保存轮岗安排，再添加该岗位期间的日志。' : '每个轮岗岗位周期对应一条记录；日志和评价在本记录内维护。';
+    }
+    function openRecord(record) {
+      currentRecord = record;
+      ratingDraft = null;
+      isDraftRecord = false;
+      currentLogId = record.logs.length ? record.logs[0].id : null;
+      isEditingLog = false;
+      replyingToId = null;
+      editingMessage = null;
+      fillProfile(record);
+      setTab('logs');
+      renderLogNav();
+      renderLogEditor();
+      renderRatings();
+      $('recordBackdrop').hidden = false;
+    }
+    function createRecordDraft() {
+      currentRecord = {
+        id:'draft-' + Date.now(), name:CURRENT_USER.name, position:CURRENT_USER.position, department:CURRENT_USER.department, rotationDepartment:'', mentor:'',
+        periodStart:'', periodEnd:'', updatedAt:today(), logs:[],
+        ratings:{employee:[0,0,0,0],mentor:[0,0,0,0]}
+      };
+      ratingDraft = null;
+      isDraftRecord = true;
+      currentLogId = null;
+      isEditingLog = false;
+      replyingToId = null;
+      editingMessage = null;
+      fillProfile(currentRecord);
+      setTab('logs');
+      renderLogNav();
+      renderLogEditor();
+      renderRatings();
+      $('recordBackdrop').hidden = false;
+    }
+    function closeRecord() {
+      $('recordBackdrop').hidden = true;
+      isDraftRecord = false;
+      replyingToId = null;
+      editingMessage = null;
+    }
+    function saveProfile() {
+      const name = isDraftRecord ? CURRENT_USER.name : $('profileName').value.trim();
+      const position = isDraftRecord ? CURRENT_USER.position : $('profilePosition').value.trim();
+      const department = isDraftRecord ? CURRENT_USER.department : $('profileDepartment').value.trim();
+      const rotationDepartment = $('profileRotationDepartment').value.trim();
+      const mentor = $('profileMentor').value.trim();
+      const periodStart = $('profilePeriodStart').value;
+      const periodEnd = $('profilePeriodEnd').value;
+      if (!name || !position || !department || !rotationDepartment || !mentor || !periodStart || !periodEnd) {
+        showToast('请填写姓名、岗位、部门、轮岗部门、带教老师和轮岗周期');
+        return;
+      }
+      if (periodEnd < periodStart) {
+        showToast('轮岗周期结束日期不能早于开始日期');
+        return;
+      }
+      const normalizedName = name.toLocaleLowerCase();
+      const overlap = records.some(item => String(item.id) !== String(currentRecord.id) &&
+        item.name.trim().toLocaleLowerCase() === normalizedName &&
+        item.periodStart && item.periodEnd && periodStart <= item.periodEnd && periodEnd >= item.periodStart);
+      if (overlap) {
+        showToast('该员工的轮岗周期与已有记录重叠，无法保存');
+        return;
+      }
+      currentRecord.name = name;
+      currentRecord.position = position;
+      currentRecord.department = department;
+      currentRecord.rotationDepartment = rotationDepartment;
+      currentRecord.mentor = mentor;
+      currentRecord.periodStart = periodStart;
+      currentRecord.periodEnd = periodEnd;
+      currentRecord.updatedAt = today();
+      if (isDraftRecord) {
+        records.unshift(currentRecord);
+        isDraftRecord = false;
+      }
+      fillProfile(currentRecord);
+      renderRows();
+      renderLogNav();
+      renderLogEditor();
+      showToast('轮岗安排已保存');
+    }
+    function renderLogNav() {
+      const list = currentRecord ? currentRecord.logs : [];
+      if (!list.length) {
+        $('logNav').innerHTML = '<div class="log-main-empty" style="min-height:160px;padding:14px;text-align:center">暂无轮岗日志</div>';
+        currentLogId = null;
+        return;
+      }
+      if (!list.some(log => String(log.id) === String(currentLogId))) currentLogId = list[0].id;
+      const ordered = list.slice().sort((a,b) => String(b.updatedAt || '').localeCompare(String(a.updatedAt || '')));
+      $('logNav').innerHTML = ordered.map(log => {
+        const canDelete = Boolean(log.draft || !log.title || !log.recordDate);
+        return '<div class="log-nav-entry"><button class="log-nav-item ' + (String(log.id) === String(currentLogId) ? 'active' : '') +
+          '" type="button" data-log-id="' + escapeHtml(log.id) + '"><strong>' + escapeHtml(log.title || '未命名日志') +
+          '</strong><span>记录日期：' + escapeHtml(log.recordDate || '未提交') + '</span></button>' +
+          (canDelete ? '<button class="log-delete-button" type="button" data-delete-log-id="' + escapeHtml(log.id) + '" title="删除未命名或未保存日志" aria-label="删除未命名或未保存日志">删除</button>' : '') +
+          '</div>';
+      }).join('');
+    }
+    function renderComments(log) {
+      const comments = getLogComments(log);
+      const composer = '<div class="comment-composer">' +
+        '<textarea data-comment-text placeholder="写下评论"></textarea>' +
+        '<button class="btn primary" type="button" data-action="publish-comment">发表评论</button></div>';
+      const cards = comments.map(comment => {
+        const editedMark = message => message.edited ? '<span class="comment-edited-tag">已编辑</span>' : '';
+        const actions = (message, replyIndex, enabled) => !enabled || message.author !== '当前用户' ? '' :
+          '<div class="comment-message-actions"><button type="button" data-action="edit-own-message" data-comment-id="' + escapeHtml(comment.id) + '" data-reply-index="' +
+          (replyIndex == null ? '' : replyIndex) + '">编辑</button><button class="delete" type="button" data-action="delete-own-message" data-comment-id="' + escapeHtml(comment.id) + '" data-reply-index="' +
+          (replyIndex == null ? '' : replyIndex) + '">删除</button></div>';
+        const editForm = (message, replyIndex) => '<div class="comment-edit-form"><textarea maxlength="1000" data-edit-message-text aria-label="' +
+          (replyIndex == null ? '编辑评论' : '编辑回复') + '">' + escapeHtml(message.text) + '</textarea><div class="comment-edit-actions"><button type="button" data-action="cancel-edit-message">取消</button>' +
+          '<button class="primary" type="button" data-action="save-edit-message" data-comment-id="' + escapeHtml(comment.id) + '" data-reply-index="' +
+          (replyIndex == null ? '' : replyIndex) + '">保存</button></div></div>';
+        const commentEditing = editingMessage && String(editingMessage.commentId) === String(comment.id) && editingMessage.replyIndex == null;
+        const commentBody = commentEditing ? editForm(comment, null) : '<div class="comment-text' + (comment.deleted ? ' deleted' : '') + '">' +
+          escapeHtml(comment.deleted ? '该评论已删除' : comment.text) + '</div>' + actions(comment, null, !comment.deleted);
+        const replies = (comment.replies || []).map((reply, replyIndex) => {
+          const replyEditing = editingMessage && String(editingMessage.commentId) === String(comment.id) && Number(editingMessage.replyIndex) === replyIndex;
+          return '<div class="comment-reply"><div class="comment-byline"><strong>' + escapeHtml(reply.author) + '</strong><span>' + escapeHtml(reply.date) + editedMark(reply) + '</span></div>' +
+            (replyEditing ? editForm(reply, replyIndex) : '<div class="comment-text">' + escapeHtml(reply.text) + '</div>' + actions(reply, replyIndex, true)) + '</div>';
+        }).join('');
+        const replyForm = !comment.deleted && String(replyingToId) === String(comment.id) ?
+          '<div class="reply-composer"><textarea data-reply-text placeholder="回复这条评论"></textarea><button class="btn primary" type="button" data-action="publish-reply" data-comment-id="' +
+          escapeHtml(comment.id) + '">回复</button></div>' : '';
+        const replyButton = comment.deleted ? '' : '<button class="reply-button" type="button" data-action="open-reply" data-comment-id="' + escapeHtml(comment.id) + '">回复</button>';
+        return '<article class="comment-card"><div class="comment-byline"><strong>' + escapeHtml(comment.author) + '</strong><span>' + escapeHtml(comment.date) + editedMark(comment) +
+          '</span></div>' + commentBody + replies + replyButton + replyForm + '</article>';
+      }).join('');
+      return '<section class="comments"><div class="comments-head">评论与回复</div>' +
+        (cards || '<div class="comment-empty">还没有评论，欢迎留下问题或反馈。</div>') + composer + '</section>';
+    }
+    function renderLogEditor() {
+      if (!currentRecord) return;
+      const log = currentRecord.logs.find(item => String(item.id) === String(currentLogId));
+      if (!log) {
+        $('logMain').innerHTML = '<div class="log-main-empty">' + (isDraftRecord ? '请先保存轮岗安排，再添加该岗位的日志。' : '从左侧选择日志，或点击“新增日志”开始记录。') + '</div>';
+        return;
+      }
+      const content = log.html ? sanitizeRichHtml(log.html) : '';
+      const editing = isEditingLog;
+      const titleReadonly = editing ? '' : ' readonly';
+      const contentEditable = editing ? 'true' : 'false';
+      const headAction = editing ? '<span class="log-updated">正在编辑</span>' : '<button class="btn" type="button" data-action="edit-log">编辑日志</button>';
+      const editorActions = editing ? '<div class="editor-actions"><button class="btn" type="button" data-action="cancel-edit-log">取消</button><button class="btn primary" type="button" data-action="save-log">保存日志</button></div>' : '';
+      $('logMain').innerHTML = '<div class="log-editor-head"><input class="log-title-input" id="currentLogTitle" maxlength="60" placeholder="请输入日志标题"' + titleReadonly +
+        ' value="' + escapeHtml(log.title) + '"><div class="log-editor-tools"><span class="log-updated">更新时间：' + escapeHtml(log.updatedAt || '—') +
+        '</span>' + headAction + '</div></div>' +
+        '<div class="log-prompt"><strong>填写提示</strong><ul><li>工作内容：参与的具体工作事项、跟岗环节及系统操作</li><li>学习收获：新掌握的业务知识、流程规范、工具方法</li><li>问题困惑：尚未理解或需进一步明确的事项</li><li>后续计划：下一阶段拟重点了解的内容及所需支持</li></ul><span>每篇建议300字以内，内容务求具体、真实。日志将由轮岗导师及人力资源部跟进反馈。</span></div>' +
+        '<div class="heading-tools"><span>插入一级标题：</span><button type="button" data-action="insert-h1" data-heading="工作内容" ' + (editing ? '' : 'disabled') + '>工作内容</button><button type="button" data-action="insert-h1" data-heading="学习收获" ' + (editing ? '' : 'disabled') + '>学习收获</button><button type="button" data-action="insert-h1" data-heading="问题困惑" ' + (editing ? '' : 'disabled') + '>问题困惑</button><button type="button" data-action="insert-h1" data-heading="后续计划" ' + (editing ? '' : 'disabled') + '>后续计划</button><span>选中文字设为：</span><button type="button" data-action="format-heading" data-level="h2" ' + (editing ? '' : 'disabled') + '>二级标题</button><button type="button" data-action="format-heading" data-level="h3" ' + (editing ? '' : 'disabled') + '>三级标题</button></div>' +
+        '<div class="rich-editor" id="logEditor" contenteditable="' + contentEditable + '" role="textbox" aria-label="轮岗日志正文" aria-multiline="true" data-placeholder="按上方提示记录具体工作、学习收获、问题和后续计划">' + content + '</div>' +
+        editorActions + (editing ? '<div class="comment-edit-hint">保存日志后可以继续评论或回复。</div>' : renderComments(log));
+    }
+    function openLog(id) {
+      currentLogId = id;
+      isEditingLog = false;
+      replyingToId = null;
+      editingMessage = null;
+      renderLogNav();
+      renderLogEditor();
+    }
+    function deleteUnsavedLog(id) {
+      const log = currentRecord && currentRecord.logs.find(item => String(item.id) === String(id));
+      if (!log || !(log.draft || !log.title || !log.recordDate)) return;
+      const wasActive = String(currentLogId) === String(id);
+      currentRecord.logs = currentRecord.logs.filter(item => String(item.id) !== String(id));
+      if (wasActive) {
+        const nextLog = currentRecord.logs.slice().sort((a,b) => String(b.updatedAt || '').localeCompare(String(a.updatedAt || '')))[0];
+        currentLogId = nextLog ? nextLog.id : null;
+        isEditingLog = false;
+        replyingToId = null;
+        editingMessage = null;
+      }
+      renderLogNav();
+      renderLogEditor();
+      showToast('未命名或未保存日志已删除');
+    }
+    function addLog() {
+      if (isDraftRecord) {
+        showToast('请先保存轮岗安排');
+        return;
+      }
+      const log = {id:'log-' + Date.now(),title:'',recordDate:'',updatedAt:today(),html:'',comments:[],draft:true};
+      currentRecord.logs.unshift(log);
+      currentLogId = log.id;
+      isEditingLog = true;
+      replyingToId = null;
+      editingMessage = null;
+      renderLogNav();
+      renderLogEditor();
+      const title = $('currentLogTitle');
+      if (title) title.focus();
+    }
+    function saveLog() {
+      const log = currentRecord.logs.find(item => String(item.id) === String(currentLogId));
+      if (!log) return;
+      const title = $('currentLogTitle').value.trim();
+      const editor = $('logEditor');
+      const text = editor.innerText.trim();
+      if (!title) {
+        showToast('请填写日志标题');
+        $('currentLogTitle').focus();
+        return;
+      }
+      if (!text) {
+        showToast('请填写日志正文');
+        editor.focus();
+        return;
+      }
+      log.title = title;
+      log.html = sanitizeRichHtml(editor.innerHTML);
+      log.recordDate = log.recordDate || today();
+      log.updatedAt = today();
+      delete log.draft;
+      currentRecord.updatedAt = today();
+      isEditingLog = false;
+      renderRows();
+      renderLogNav();
+      renderLogEditor();
+      showToast('日志已保存');
+    }
+    function cancelLogEdit() {
+      const log = currentRecord.logs.find(item => String(item.id) === String(currentLogId));
+      if (log && log.draft) {
+        currentRecord.logs = currentRecord.logs.filter(item => item !== log);
+        currentLogId = currentRecord.logs.length ? currentRecord.logs[0].id : null;
+      }
+      isEditingLog = false;
+      renderLogNav();
+      renderLogEditor();
+    }
+    function addComment() {
+      const log = currentRecord.logs.find(item => String(item.id) === String(currentLogId));
+      const composer = $('logMain').querySelector('.comment-composer');
+      const text = composer.querySelector('[data-comment-text]').value.trim();
+      if (!text) { showToast('请填写评论内容'); return; }
+      log.comments = log.comments || [];
+      log.comments.push({
+        id:'comment-' + Date.now(),
+        author:'当前用户',
+        date:today(),text:text,replies:[]
+      });
+      saveLogComments(log);
+      log.updatedAt = today();
+      replyingToId = null;
+      editingMessage = null;
+      updateRecordTime();
+      renderLogEditor();
+      showToast('评论已发表');
+    }
+    function addReply(commentId) {
+      const log = currentRecord.logs.find(item => String(item.id) === String(currentLogId));
+      const comment = (log.comments || []).find(item => String(item.id) === String(commentId));
+      const form = $('logMain').querySelector('.reply-composer');
+      const text = form.querySelector('[data-reply-text]').value.trim();
+      if (!text) { showToast('请填写回复内容'); return; }
+      comment.replies = comment.replies || [];
+      comment.replies.push({
+        id:'reply-' + Date.now(),
+        author:'当前用户',
+        date:today(),text:text
+      });
+      saveLogComments(log);
+      log.updatedAt = today();
+      replyingToId = null;
+      editingMessage = null;
+      updateRecordTime();
+      renderLogEditor();
+      showToast('回复已发表');
+    }
+    function getCommentMessage(commentId, replyIndex) {
+      const log = currentRecord && currentRecord.logs.find(item => String(item.id) === String(currentLogId));
+      if (!log) return null;
+      const comment = getLogComments(log).find(item => String(item.id) === String(commentId));
+      if (!comment) return null;
+      const message = replyIndex == null ? comment : (comment.replies || [])[replyIndex];
+      if (!message || message.author !== '当前用户' || (replyIndex == null && comment.deleted)) return null;
+      return {log,comment,message};
+    }
+    function saveOwnMessageEdit(commentId, replyIndex) {
+      const target = getCommentMessage(commentId, replyIndex);
+      const input = $('logMain').querySelector('[data-edit-message-text]');
+      const text = input && input.value.trim();
+      if (!target || !text) { if (input) input.focus(); return; }
+      target.message.text = text;
+      target.message.edited = true;
+      target.message.editedAt = today();
+      target.log.updatedAt = today();
+      saveLogComments(target.log);
+      editingMessage = null;
+      updateRecordTime();
+      renderLogEditor();
+      showToast('评论已修改');
+    }
+    function deleteOwnMessage(commentId, replyIndex) {
+      const target = getCommentMessage(commentId, replyIndex);
+      if (!target) return;
+      if (replyIndex == null) {
+        const hasReplies = (target.comment.replies || []).length > 0;
+        const prompt = hasReplies ? '这条评论已有回复。删除后会保留回复并显示“该评论已删除”。确定删除吗？' : '确定删除这条评论吗？';
+        if (!window.confirm(prompt)) return;
+        if (hasReplies) { target.comment.deleted = true; target.comment.text = ''; }
+        else target.log.comments = target.log.comments.filter(comment => String(comment.id) !== String(commentId));
+      } else {
+        const replies = target.comment.replies || [];
+        const removesThread = target.comment.deleted && replies.length === 1;
+        const prompt = removesThread ? '这是该评论的最后一条回复，删除后整条对话记录都会移除。确定删除吗？' : '确定删除这条回复吗？';
+        if (!window.confirm(prompt)) return;
+        replies.splice(replyIndex, 1);
+        if (target.comment.deleted && replies.length === 0) {
+          target.log.comments = target.log.comments.filter(comment => String(comment.id) !== String(commentId));
+        }
+      }
+      target.log.updatedAt = today();
+      saveLogComments(target.log);
+      editingMessage = null;
+      replyingToId = null;
+      updateRecordTime();
+      renderLogEditor();
+      showToast('已删除');
+    }
+    function renderRatings() {
+      if (!currentRecord) return;
+      currentRecord.ratings = currentRecord.ratings || {employee:[0,0,0,0],mentor:[0,0,0,0]};
+      currentRecord.ratings.employee = (currentRecord.ratings.employee || [0,0,0]).slice(0,3);
+      currentRecord.ratings.mentor = (currentRecord.ratings.mentor || [0,0,0]).slice(0,3);
+      currentRecord.evaluationNotes = currentRecord.evaluationNotes || {employee:'',mentor:''};
+      if (!ratingDraft || String(ratingDraft.recordId) !== String(currentRecord.id)) {
+        ratingDraft = {
+          recordId:currentRecord.id,
+          ratings:{employee:currentRecord.ratings.employee.slice(),mentor:currentRecord.ratings.mentor.slice()},
+          evaluationNotes:{employee:currentRecord.evaluationNotes.employee || '',mentor:currentRecord.evaluationNotes.mentor || ''}
+        };
+      }
+      const directions = [
+        {key:'mentor',label:'带教老师评价新员工'},
+        {key:'employee',label:'新员工评价带教老师'}
+      ];
+      $('ratingDirections').innerHTML = directions.map(direction => {
+        const values = ratingDraft.ratings[direction.key];
+        const dimensions = ratingDimensions[direction.key];
+        const scored = values.filter(value => value > 0);
+        const average = scored.length ? scored.reduce((sum,value) => sum + value, 0) / scored.length : null;
+        const items = dimensions.map((dimension,index) => {
+          const value = values[index] || 0;
+          const stars = [0,1,2,3,4].map(star => {
+            const kind = value >= star + 1 ? 'filled' : value >= star + 0.5 ? 'half' : '';
+            return '<button class="star-button ' + kind + '" type="button" data-star-index="' + star + '" data-dimension-index="' + index +
+              '" data-rating-direction="' + direction.key + '" aria-label="' + escapeHtml(dimension.name) + '打' + (star + 0.5) + '分或' + (star + 1) + '分">★</button>';
+          }).join('');
+          return '<article class="rating-item"><div><div class="rating-dimension">' + escapeHtml(dimension.name) +
+            '</div><div class="rating-help">' + escapeHtml(dimension.hint) + '</div></div><div class="rating-control"><div class="star-group">' + stars +
+            '</div><span class="rating-value">' + (value ? value.toFixed(1) : '未评') + '</span></div></article>';
+        }).join('');
+        const directionName = direction.key === 'mentor' ? 'mentor' : 'employee';
+        const privacyTarget = direction.key === 'mentor' ? '新员工' : '带教老师';
+        return '<section class="rating-direction-card" aria-label="' + escapeHtml(direction.label) + '"><div class="rating-direction-head"><div class="rating-direction-copy"><span class="rating-direction-label">评价方向</span><div class="rating-direction-title-row"><div class="rating-direction-title">' + escapeHtml(direction.label) +
+          '</div><span class="rating-privacy-note">你提交的评价对' + privacyTarget + '不可见</span></div></div><div class="average-box"><span>评价均分</span><strong>' + (average == null ? '—' : average.toFixed(1)) + '</strong><small>/ 5 分</small></div></div>' +
+          '<div class="rating-items">' + items + '</div><div class="text-review"><label for="evaluationText-' + directionName + '">文字评价</label><textarea id="evaluationText-' + directionName + '" data-evaluation-text="' + direction.key + '" placeholder="请结合具体表现填写文字评价">' + escapeHtml(ratingDraft.evaluationNotes[direction.key] || '') +
+          '</textarea><div class="text-review-actions"><button class="btn primary" type="button" data-action="save-rating" data-rating-direction="' + direction.key + '">保存评价</button></div></div></section>';
+      }).join('');
+    }
+    function setRating(direction, index, starIndex, clientX, rect) {
+      const isHalf = clientX - rect.left < rect.width / 2;
+      const value = starIndex + (isHalf ? 0.5 : 1);
+      ratingDraft.ratings[direction][index] = value;
+      renderRatings();
+    }
+    function saveRating(direction) {
+      if (!currentRecord || !ratingDraft) return;
+      currentRecord.ratings = currentRecord.ratings || {employee:[0,0,0],mentor:[0,0,0]};
+      currentRecord.evaluationNotes = currentRecord.evaluationNotes || {employee:'',mentor:''};
+      currentRecord.ratings[direction] = ratingDraft.ratings[direction].slice();
+      currentRecord.evaluationNotes[direction] = ratingDraft.evaluationNotes[direction].trim();
+      ratingDraft.evaluationNotes[direction] = currentRecord.evaluationNotes[direction];
+      currentRecord.updatedAt = today();
+      renderRows();
+      renderRatings();
+      showToast('评价已保存');
+    }
+
+    $('newRecordBtn').addEventListener('click', createRecordDraft);
+    document.querySelector('thead').addEventListener('click', event => {
+      const button = event.target.closest('[data-sort-key]');
+      if (!button) return;
+      const key = button.dataset.sortKey;
+      if (tableSort.key !== key) tableSort = {key,direction:'asc'};
+      else if (tableSort.direction === 'asc') tableSort.direction = 'desc';
+      else tableSort = {key:null,direction:null};
+      renderRows();
+    });
+    $('globalSearch').addEventListener('input', renderRows);
+    $('clearSearch').addEventListener('click', () => {
+      $('globalSearch').value = '';
+      renderRows();
+      $('globalSearch').focus();
+    });
+    $('recordTableBody').addEventListener('click', event => {
+      const button = event.target.closest('[data-record-id]');
+      if (!button) return;
+      const record = records.find(item => String(item.id) === String(button.dataset.recordId));
+      if (record) openRecord(record);
+    });
+    $('closeRecord').addEventListener('click', closeRecord);
+    $('closeRecordFoot').addEventListener('click', closeRecord);
+    $('recordBackdrop').addEventListener('click', event => { if (event.target === $('recordBackdrop')) closeRecord(); });
+    $('saveProfile').addEventListener('click', saveProfile);
+    $('logsTab').addEventListener('click', () => setTab('logs'));
+    $('ratingTab').addEventListener('click', () => setTab('rating'));
+    $('addLogBtn').addEventListener('click', addLog);
+    $('logNav').addEventListener('click', event => {
+      const deleteButton = event.target.closest('[data-delete-log-id]');
+      if (deleteButton) {
+        deleteUnsavedLog(deleteButton.dataset.deleteLogId);
+        return;
+      }
+      const button = event.target.closest('[data-log-id]');
+      if (button) openLog(button.dataset.logId);
+    });
+    $('logMain').addEventListener('mousedown', event => {
+      if (event.target.closest('.heading-tools button')) event.preventDefault();
+    });
+    $('logMain').addEventListener('click', event => {
+      const button = event.target.closest('[data-action]');
+      if (!button) return;
+      const action = button.dataset.action;
+      if (action === 'edit-log') { isEditingLog = true; renderLogEditor(); return; }
+      if (action === 'save-log') { saveLog(); return; }
+      if (action === 'cancel-edit-log') { cancelLogEdit(); return; }
+      if (action === 'insert-h1') {
+        const editor = $('logEditor');
+        editor.focus();
+        document.execCommand('insertHTML', false, '<h1>' + escapeHtml(button.dataset.heading) + '</h1><p><br></p>');
+        return;
+      }
+      if (action === 'format-heading') {
+        $('logEditor').focus();
+        document.execCommand('formatBlock', false, '<' + button.dataset.level + '>');
+        return;
+      }
+      if (action === 'publish-comment') { addComment(); return; }
+      if (action === 'open-reply') {
+        replyingToId = button.dataset.commentId;
+        editingMessage = null;
+        renderLogEditor();
+        const input = $('logMain').querySelector('[data-reply-text]');
+        if (input) input.focus();
+        return;
+      }
+      if (action === 'publish-reply') { addReply(button.dataset.commentId); }
+      if (action === 'edit-own-message') {
+        const replyIndex = button.dataset.replyIndex === '' ? null : Number(button.dataset.replyIndex);
+        if (!getCommentMessage(button.dataset.commentId, replyIndex)) return;
+        replyingToId = null;
+        editingMessage = {commentId:button.dataset.commentId,replyIndex};
+        renderLogEditor();
+        const input = $('logMain').querySelector('[data-edit-message-text]');
+        if (input) { input.focus(); input.setSelectionRange(input.value.length, input.value.length); }
+        return;
+      }
+      if (action === 'cancel-edit-message') { editingMessage = null; renderLogEditor(); return; }
+      if (action === 'save-edit-message') {
+        const replyIndex = button.dataset.replyIndex === '' ? null : Number(button.dataset.replyIndex);
+        saveOwnMessageEdit(button.dataset.commentId, replyIndex);
+        return;
+      }
+      if (action === 'delete-own-message') {
+        const replyIndex = button.dataset.replyIndex === '' ? null : Number(button.dataset.replyIndex);
+        deleteOwnMessage(button.dataset.commentId, replyIndex);
+      }
+    });
+    $('ratingDirections').addEventListener('input', event => {
+      const input = event.target.closest('[data-evaluation-text]');
+      if (input && currentRecord && ratingDraft) ratingDraft.evaluationNotes[input.dataset.evaluationText] = input.value;
+    });
+    $('ratingDirections').addEventListener('click', event => {
+      const saveButton = event.target.closest('[data-action="save-rating"]');
+      if (saveButton) { saveRating(saveButton.dataset.ratingDirection); return; }
+      const star = event.target.closest('[data-star-index]');
+      if (!star) return;
+      const rect = star.getBoundingClientRect();
+      setRating(star.dataset.ratingDirection, Number(star.dataset.dimensionIndex), Number(star.dataset.starIndex), event.clientX, rect);
+    });
+    $('toggleMenu').addEventListener('click', () => {
+      const collapsed = document.body.classList.toggle('menu-collapsed');
+      $('toggleMenu').setAttribute('aria-label', collapsed ? '展开菜单' : '收起菜单');
+      $('toggleMenu').setAttribute('title', collapsed ? '展开菜单' : '收起菜单');
+    });
+    document.addEventListener('keydown', event => { if (event.key === 'Escape') closeRecord(); });
+    renderRows();
+  </script>
+</body>
+</html>

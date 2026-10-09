@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>面试结果查询｜人力资源管理</title>
+  <title>面试管理｜人力资源管理</title>
   <style>
     :root {
       --blue: #338cf4;
@@ -14,6 +14,7 @@
       --panel: #fff;
       --bg: #f7f9fc;
       --shadow: 0 12px 34px rgba(40, 70, 110, .15);
+      font-size: 14px;
       font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans SC", Arial, sans-serif;
       color: var(--ink);
       background: var(--bg);
@@ -26,11 +27,10 @@
 
     .topbar {
       position: relative;
-      height: 44px;
-      margin-left: 248px;
+      height: 60px;
       display: flex;
       align-items: center;
-      padding: 0 17px 0 7px;
+      padding: 0 17px 0 20px;
       border-bottom: 1px solid #e7ebf0;
       overflow: hidden;
       background: linear-gradient(109deg, #fff 0%, #f8fbff 56%, #edf5fe 100%);
@@ -45,19 +45,20 @@
       background: repeating-linear-gradient(138deg, transparent 0 13px, rgba(100, 151, 213, .16) 14px 15px);
       mask-image: linear-gradient(90deg, transparent, #000 30%);
     }
-    .brand { color: #5799f4; font-size: 18px; letter-spacing: .2px; white-space: nowrap; }
+    .brand { position: relative; z-index: 1; color: #5799f4; font-size: 18px; letter-spacing: .2px; white-space: nowrap; }
     .topnav { position: absolute; z-index: 1; left: 50%; transform: translateX(-50%); height: 100%; display: flex; align-items: stretch; gap: 26px; }
-    .topnav button { position: relative; border: 0; background: transparent; color: #788493; padding: 0 10px; font-size: 14px; white-space: nowrap; }
-    .topnav button.active { color: var(--blue); font-weight: 600; }
-    .topnav button.active::after { content: ""; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 22px; height: 4px; border-radius: 4px 4px 0 0; background: var(--blue); }
+    .topnav button, .topnav-link { position: relative; display: flex; align-items: center; border: 0; background: transparent; color: #788493; padding: 0 10px; font-size: 14px; white-space: nowrap; }
+    .topnav-link { text-decoration: none; }
+    .topnav .active { color: var(--blue); font-weight: 600; }
+    .topnav .active::after { content: ""; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 22px; height: 4px; border-radius: 4px 4px 0 0; background: var(--blue); }
     .user-actions { z-index: 1; margin-left: auto; display: flex; align-items: center; gap: 16px; color: #8491a0; font-size: 13px; }
     .home-icon, .chat-icon { width: 18px; height: 18px; opacity: .78; }
     .avatar { width: 30px; height: 30px; border-radius: 50%; object-fit: cover; background: radial-gradient(circle at 50% 30%, #f4c9a8 0 23%, transparent 24%), linear-gradient(145deg, #273343 0 45%, #a77758 46% 57%, #303947 58%); }
     .user-name { max-width: 54px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; color: #637181; }
     .menu-trigger { display: none; }
 
-    .page { min-height: calc(100vh - 44px); margin-left: 248px; background: #fff; }
-    .filters { display: grid; grid-template-columns: 1.18fr 1.18fr 1.18fr 1.18fr; column-gap: 32px; row-gap: 26px; padding: 17px 30px 27px 21px; background: #fff; }
+    .page { min-height: calc(100vh - 60px); margin-left: 248px; padding: 10px 0 24px; background: #f7f9fc; }
+    .filters { display: grid; grid-template-columns: 1.18fr 1.18fr 1.18fr 1.18fr; column-gap: 32px; row-gap: 26px; margin: 0 5px 16px; padding: 17px 30px 27px 21px; border: 1px solid #edf0f4; border-radius: 10px; background: #fff; box-shadow: 0 3px 14px rgba(45,64,88,.035); }
     .field { display: flex; align-items: center; min-width: 0; gap: 14px; }
     .field label { flex: 0 0 auto; font-size: 14px; color: #182333; font-weight: 600; white-space: nowrap; }
     .control { height: 36px; width: 100%; min-width: 0; padding: 0 13px; border: 1px solid #dce1e7; border-radius: 6px; outline: none; color: #536172; background: #fff; font-size: 13px; transition: border-color .18s, box-shadow .18s; }
@@ -70,13 +71,13 @@
     .date-control span { color: #b4bdc7; }
     .filter-result { grid-column: 1 / span 1; }
     .filter-actions { grid-column: 4; display: flex; justify-content: flex-end; align-items: end; gap: 9px; }
-    .btn { height: 36px; padding: 0 17px; border-radius: 7px; border: 1px solid #d9dee5; color: #344252; background: #fff; font-size: 14px; }
+    .btn { height: 36px; padding: 0 17px; border-radius: 7px; border: 1px solid #d9dee5; color: #344252; background: #fff; font-size: 13px; }
     .btn.primary { border-color: var(--blue); color: #fff; background: var(--blue); box-shadow: 0 3px 8px rgba(51, 140, 244, .2); }
     .btn:hover { filter: brightness(.98); }
 
-    .table-shell { position: relative; margin: 0 5px 0 5px; border-radius: 10px 10px 0 0; overflow: hidden; background: #fff; box-shadow: 0 -2px 12px rgba(45, 64, 88, .035); }
+    .table-shell { position: relative; margin: 0 5px; border-radius: 10px; overflow: hidden; background: #fff; box-shadow: 0 3px 14px rgba(45,64,88,.035); }
     .table-wrap { overflow-x: auto; overflow-y: auto; max-height: calc(100vh - 224px); min-height: 425px; }
-    table { border-collapse: collapse; table-layout: fixed; font-size: 14px; }
+    table { border-collapse: collapse; table-layout: fixed; font-size: 13px; }
     th { height: 59px; padding: 0 17px; text-align: left; color: #162537; background: #fafafa; font-weight: 600; border-bottom: 1px solid #f0f2f5; white-space: nowrap; }
     td { height: 61px; padding: 0 17px; border-bottom: 1px solid #f0f1f3; color: #304156; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     tbody tr:hover td { background: #f8fbff; }
@@ -91,13 +92,13 @@
     .table-wrap::-webkit-scrollbar-track { background: #f1f2f3; }
     .table-wrap::-webkit-scrollbar-thumb { border-radius: 9px; background: #bfc4ca; border: 3px solid #f1f2f3; }
 
-    .drawer-backdrop { position: fixed; z-index: 10; inset: 0 auto 0 0; display: block; width: 248px; pointer-events: none; background: #fff; box-shadow: 1px 0 10px rgba(40, 70, 110, .06); transition: width .22s ease; }
+    .drawer-backdrop { position: fixed; z-index: 10; inset: 60px auto 0 0; height: calc(100vh - 60px); display: block; width: 248px; pointer-events: none; background: #fff; box-shadow: 1px 0 10px rgba(40, 70, 110, .06); transition: width .22s ease; }
     .drawer { position: absolute; inset: 0; width: 248px; padding-top: 0; background: #fff; pointer-events: auto; transition: width .22s ease; }
-    .drawer-title { height: 65px; display: flex; align-items: center; padding: 0 19px; color: #5799f4; font-size: 19px; border-bottom: 1px solid #edf0f3; white-space: nowrap; overflow: hidden; transition: padding .22s ease, font-size .22s ease; }
     .drawer-close { display: none; }
     .drawer-list { padding: 7px 5px; }
     .drawer-group { margin: 0; padding: 0; list-style: none; }
-    .drawer-item { width: 100%; height: 50px; display: flex; align-items: center; gap: 13px; padding: 0 20px; border: 0; border-radius: 9px; color: #16202e; background: transparent; text-align: left; font-size: 15px; white-space: nowrap; overflow: hidden; transition: padding .22s ease, gap .22s ease; }
+    .drawer-item { width: 100%; height: 50px; display: flex; align-items: center; gap: 13px; padding: 0 20px; border: 0; border-radius: 9px; color: #16202e; background: transparent; text-align: left; font-size: 14px; white-space: nowrap; overflow: hidden; transition: padding .22s ease, gap .22s ease; }
+    .drawer-item[href] { text-decoration: none; }
     .drawer-item:hover, .drawer-item.active { background: #f7f7f8; }
     .drawer-item.active { color: #1f78e8; }
     .drawer-item svg { flex: 0 0 20px; width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 1.7; }
@@ -106,10 +107,7 @@
     .drawer-collapse svg { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 2.2; transition: transform .22s ease; }
     body.menu-collapsed .drawer-backdrop { width: 56px; }
     body.menu-collapsed .drawer { width: 56px; }
-    body.menu-collapsed .topbar { margin-left: 56px; }
     body.menu-collapsed .page { margin-left: 56px; }
-    body.menu-collapsed .drawer-title { padding: 0; justify-content: center; font-size: 0; }
-    body.menu-collapsed .drawer-title::before { content: "人"; font-size: 19px; color: #5799f4; }
     body.menu-collapsed .drawer-item { gap: 0; padding: 0; justify-content: center; }
     body.menu-collapsed .drawer-item span { display: none; }
     body.menu-collapsed .drawer-collapse svg { transform: rotate(180deg); }
@@ -134,10 +132,12 @@
 </head>
 <body>
   <header class="topbar">
+    <span class="brand">人力资源管理</span>
     <nav class="topnav" aria-label="顶部导航">
       <button type="button">人力资源管理</button>
-      <button type="button" class="active">面试结果查询</button>
-      <button type="button">面试官评分</button>
+      <a class="topnav-link" href="rotation-log-demo.html">人才管理</a>
+      <button type="button" class="active" aria-current="page">面试管理</button>
+      <a class="topnav-link" href="interviewer-rating-demo.html">面试官评分</a>
     </nav>
     <div class="user-actions">
       <svg class="home-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="m3 11 9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1v-9Z"/></svg>
@@ -172,12 +172,12 @@
 
   <div class="drawer-backdrop" id="drawerBackdrop">
     <aside class="drawer" aria-label="人力资源管理菜单">
-      <div class="drawer-title">人力资源管理</div>
       <button class="drawer-collapse" id="toggleMenu" aria-label="收起菜单" title="收起菜单"><svg viewBox="0 0 24 24"><path d="m14 5-7 7 7 7"/></svg></button>
       <div class="drawer-list">
         <ul class="drawer-group">
           <li><button class="drawer-item active" data-view="recruit"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 5V3h8v2M8 10h8M8 14h5M8 17h3"/></svg><span>招聘/转岗面试结果</span></button></li>
           <li><button class="drawer-item" data-view="regular"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3"/><path d="M5 20c.7-3.3 3-5 7-5s6.3 1.7 7 5M16 17l2 2 3-4"/></svg><span>转正面试结果</span></button></li>
+          <li><a class="drawer-item" href="interview-progress-demo.html"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2M4 4l2 2"/></svg><span>面试进度</span></a></li>
         </ul>
       </div>
     </aside>
@@ -209,7 +209,7 @@
         {date:'2026-07-02', name:'赵安琪', sex:'女/27', dept:'人力资源部', position:'招聘专员', grade:'B', result:'淘汰', entry:'已入职', entryDate:'2026.8.2', note:'--'}
       ]
     };
-    let currentView = 'recruit';
+    let currentView = new URLSearchParams(location.search).get('view') === 'regular' ? 'regular' : 'recruit';
     const $ = id => document.getElementById(id);
     const headerFor = view => view === 'regular'
       ? ['面试日期','姓名','性别/年龄','部门','岗位','评分等级','面试结果','入职情况','备注','材料']
@@ -263,7 +263,7 @@
     });
     $('closeModal').addEventListener('click', () => $('modalBackdrop').classList.remove('open'));
     $('modalBackdrop').addEventListener('click', event => { if (event.target === $('modalBackdrop')) $('modalBackdrop').classList.remove('open'); });
-    render();
+    switchView(currentView);
   </script>
 </body>
 </html>

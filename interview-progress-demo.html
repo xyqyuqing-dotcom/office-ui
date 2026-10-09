@@ -1,0 +1,1311 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>面试进度｜人力资源管理</title>
+  <style>
+    :root {
+      --blue: #338cf4;
+      --blue-dark: #1f78e8;
+      --ink: #25374b;
+      --muted: #8c98a6;
+      --line: #edf0f4;
+      --bg: #f7f9fc;
+      font-size: 14px;
+      font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans SC", Arial, sans-serif;
+      color: var(--ink);
+      background: var(--bg);
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-width: 1120px; min-height: 100%; }
+    body { background: #fff; overflow-x: hidden; }
+    button, input, select { font: inherit; }
+    button { cursor: pointer; }
+    .topbar { position: relative; height: 60px; display: flex; align-items: center; padding: 0 17px 0 20px; border-bottom: 1px solid #e7ebf0; overflow: hidden; background: linear-gradient(109deg, #fff 0%, #f8fbff 56%, #edf5fe 100%); }
+    .topbar::after { content: ""; position: absolute; inset: 0 0 0 auto; width: 42%; opacity: .36; pointer-events: none; background: repeating-linear-gradient(138deg, transparent 0 13px, rgba(100, 151, 213, .16) 14px 15px); mask-image: linear-gradient(90deg, transparent, #000 30%); }
+    .brand { position: relative; z-index: 1; color: #5799f4; font-size: 18px; letter-spacing: .2px; white-space: nowrap; }
+    .topnav { position: absolute; z-index: 1; left: 50%; transform: translateX(-50%); height: 100%; display: flex; align-items: stretch; gap: 26px; }
+    .topnav button, .topnav-link { position: relative; display: flex; align-items: center; border: 0; background: transparent; color: #788493; padding: 0 10px; font-size: 14px; white-space: nowrap; }
+    .topnav-link { text-decoration: none; }
+    .topnav .active { color: var(--blue); font-weight: 600; }
+    .topnav .active::after { content: ""; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 22px; height: 4px; border-radius: 4px 4px 0 0; background: var(--blue); }
+    .user-actions { z-index: 1; margin-left: auto; display: flex; align-items: center; gap: 16px; color: #8491a0; font-size: 13px; }
+    .home-icon, .chat-icon { width: 18px; height: 18px; opacity: .78; }
+    .avatar { width: 30px; height: 30px; border-radius: 50%; background: radial-gradient(circle at 50% 30%, #f4c9a8 0 23%, transparent 24%), linear-gradient(145deg, #273343 0 45%, #a77758 46% 57%, #303947 58%); }
+    .page { min-height: calc(100vh - 60px); margin-left: 248px; padding: 22px 28px 42px; background: #f7f9fc; }
+    .page-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; margin: 0 0 18px; }
+    .page-heading h1 { margin: 0; color: #1e2d3e; font-size: 21px; font-weight: 650; }
+    .page-heading p { margin: 7px 0 0; color: #8b97a5; font-size: 13px; }
+    .panel { border: 1px solid #edf0f4; border-radius: 10px; background: #fff; box-shadow: 0 3px 14px rgba(45, 64, 88, .035); }
+    .demo-mark { padding: 4px 8px; border-radius: 5px; color: #8090a3; background: #f4f7fa; font-size: 11px; }
+    .field { min-width: 0; }
+    .field label { display: block; margin-bottom: 7px; color: #647184; font-size: 13px; }
+    .control { width: 100%; height: 36px; padding: 0 11px; border: 1px solid #dce2e9; border-radius: 6px; outline: none; color: #425164; background: #fff; font-size: 13px; }
+    .control:focus { border-color: #86b8fa; box-shadow: 0 0 0 3px rgba(51, 140, 244, .1); }
+    select.control { appearance: none; padding-right: 30px; background: linear-gradient(45deg, transparent 50%, #aeb9c5 50%) calc(100% - 15px) 15px / 7px 7px no-repeat, linear-gradient(135deg, #aeb9c5 50%, transparent 50%) calc(100% - 10px) 15px / 7px 7px no-repeat, #fff; }
+    .btn { height: 36px; padding: 0 15px; border: 1px solid #d9e0e8; border-radius: 6px; color: #445467; background: #fff; font-size: 13px; white-space: nowrap; }
+    .btn:hover { border-color: #a9cafa; }
+    .btn.primary { border-color: var(--blue); color: #fff; background: var(--blue); box-shadow: 0 3px 8px rgba(51, 140, 244, .18); }
+    .btn.primary:hover { background: var(--blue-dark); }
+    .type-pill { display: inline-flex; align-items: center; height: 24px; padding: 0 9px; border-radius: 5px; color: #3e7dce; background: #edf5ff; font-size: 12px; }
+    .interviewer-add-toolbar { justify-content: flex-end; }
+    .interviewer-add-toolbar .manage-section-title { margin-right: auto !important; }
+    .interviewer-add-toolbar .interviewer-picker { width: min(440px,52vw); min-width: 260px; }
+    .editor-tag-list { align-items: flex-start; }
+    .editor-tag-list label { padding: 4px 6px; border: 1px solid #e7edf5; border-radius: 4px; background: #fbfdff; }
+    .interviewer-note { min-width: 220px; }
+    .table-panel { margin-top: 17px; overflow: hidden; }
+    .table-heading { display: flex; align-items: center; justify-content: space-between; padding: 17px 20px 14px; }
+    .table-heading h2 { margin: 0; color: #26384d; font-size: 15px; font-weight: 600; }
+    .table-heading p { margin: 5px 0 0; color: #99a4b0; font-size: 11px; }
+    .table-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
+    .table-tags .tag-color { padding: 2px 6px; font-size: 10px; }
+    .table-hint { color: #8a96a4; font-size: 11px; white-space: nowrap; }
+    .table-tools { display: flex; align-items: center; gap: 8px; }
+    .table-tools .btn { height: 32px; padding: 0 11px; }
+    .schedule-filters { display: flex; align-items: end; gap: 12px; padding: 12px 20px 14px; border-top: 1px solid #f0f2f5; background: #fbfcfe; }
+    .schedule-filters .field { width: 180px; }
+    .schedule-filters .field.type-filter { width: 190px; }
+    .schedule-filters .control { height: 33px; }
+    .date-range-separator { padding-bottom: 8px; color: #9aa5b2; }
+    .tool-link { border: 0; padding: 0 7px; color: #287bd6; background: transparent; font-size: 12px; white-space: nowrap; }
+    .tool-link:hover { text-decoration: underline; }
+    .table-wrap { overflow: auto; }
+    table { width: 100%; min-width: 1464px; border-collapse: collapse; table-layout: fixed; font-size: 13px; }
+    th { height: 46px; padding: 0 12px; text-align: left; color: #566477; background: #fafbfd; border-top: 1px solid #f0f2f5; border-bottom: 1px solid #edf0f4; font-weight: 600; white-space: nowrap; }
+    td { height: 58px; padding: 8px 12px; color: #405167; border-bottom: 1px solid #f0f2f5; vertical-align: middle; }
+    tbody tr:hover td { background: #f8fbff; }
+    tbody tr.dragging { opacity: .45; }
+    .sort-placeholder td { padding: 6px 12px; border: 1px dashed #338cf4 !important; border-radius: 5px; color: #338cf4; background: #f2f8ff; text-align: center; }
+    .sort-placeholder { pointer-events: none; }
+    .sort-drag-ghost { position: fixed; z-index: 1000; max-width: min(360px,calc(100vw - 24px)); overflow: hidden; padding: 10px 14px; border: 1px solid #9bc4fb; border-radius: 7px; color: #2d5e96; background: rgba(255,255,255,.96); box-shadow: 0 8px 22px rgba(33,72,120,.2); pointer-events: none; white-space: nowrap; text-overflow: ellipsis; font-size: 13px; font-weight: 600; }
+    .order-cell { display: flex; align-items: center; gap: 7px; }
+    .drag-handle { display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 32px; border: 0; border-radius: 4px; color: #9ca9b7; background: transparent; font-size: 16px; letter-spacing: -3px; cursor: grab; user-select: none; touch-action: none; }
+    .drag-handle:hover { color: #287bd6; background: #edf5ff; }
+    .order-badge { display: inline-grid; width: 25px; height: 25px; place-items: center; border-radius: 50%; color: #557cae; background: #edf4fc; font-weight: 600; }
+    .time-cell { color: #34475d; font-variant-numeric: tabular-nums; font-weight: 600; }
+    .interviewer-cell { color: #657386; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .schedule-time { display: inline-flex; min-width: 76px; height: 31px; align-items: center; justify-content: flex-start; gap: 6px; padding: 0 7px; border: 1px solid transparent; border-radius: 5px; color: #34475d; background: transparent; font-size: 12px; font-variant-numeric: tabular-nums; font-weight: 600; line-height: 1; text-align: left; }
+    .schedule-time:hover { border-color: #d9e7f7; color: #2478d4; background: #f7fbff; }
+    .schedule-time:focus-visible { border-color: #86b8fa; outline: 0; background: #fff; box-shadow: 0 0 0 2px rgba(51, 140, 244, .1); }
+    .schedule-time svg { width: 11px; height: 11px; flex: 0 0 11px; stroke: currentColor; stroke-width: 2; fill: none; }
+    .muted-time { color: #a9b2bc; }
+    .unconfigured-value { color: #a9b2bc; font-weight: 400; }
+    .status { display: inline-flex; align-items: center; gap: 6px; padding: 5px 8px; border-radius: 5px; font-size: 11px; white-space: nowrap; }
+    .status::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+    .status.waiting { color: #8793a1; background: #f2f4f6; }
+    .status.current { color: #287bd6; background: #edf5ff; }
+    .status.done { color: #29916b; background: #eaf7f0; }
+    .time-actions,.data-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 4px; }
+    .time-actions .row-action { min-width: 72px; padding: 0 5px; font-size: 10px; }
+    .row-action { min-width: 84px; height: 29px; padding: 0 8px; border: 1px solid #cfe1fb; border-radius: 5px; color: #2c83ed; background: #f4f9ff; font-size: 11px; white-space: nowrap; }
+    .row-action.secondary { min-width: 52px; border-color: #d9e0e8; color: #566579; background: #fff; }
+    .row-action.danger,.danger-text { min-width: 52px; border-color: #f2d2d2; color: #c55c5c; background: #fff; }
+    .danger-text { border: 0; padding: 0 7px; font-size: 12px; }
+    .row-action.delay { border-color: #f4ddbd; color: #b87a27; background: #fffaf2; }
+    .row-action.delay:hover { border-color: #e8c58f; background: #fff5e5; }
+    .row-action:disabled { border-color: #e6e9ed; color: #adb6c0; background: #fafbfc; cursor: default; }
+    .reuse-control { position: relative; display: inline-flex; }
+    .reuse-menu { position: fixed; z-index: 90; top: 8px; right: auto; left: 8px; width: 246px; display: grid; gap: 8px; padding: 12px; border: 1px solid #e1e7ee; border-radius: 7px; background: #fff; box-shadow: 0 8px 24px rgba(30,48,70,.18); }
+    .reuse-menu[hidden] { display: none; }
+    .reuse-menu .reuse-previous { min-height: 32px; border: 1px solid #dce7f4; border-radius: 5px; color: #287bd6; background: #f7fbff; font-size: 12px; }
+    .reuse-menu .reuse-previous:disabled { color: #9ba5b0; background: #f7f8fa; cursor: default; }
+    .reuse-menu label { color: #778493; font-size: 11px; }
+    .reuse-source-picker { position: relative; min-width: 0; }
+    .reuse-source-trigger { width: 100%; min-height: 34px; display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 6px 9px; border: 1px solid #dce2e9; border-radius: 5px; color: #46586d; background: #fff; text-align: left; font-size: 11px; }
+    .reuse-source-trigger:hover,.reuse-source-trigger:focus-visible { border-color: #86b8fa; outline: none; }
+    .reuse-source-trigger span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .reuse-source-trigger.has-value { color: #287bd6; }
+    .reuse-source-panel { position: absolute; z-index: 80; top: calc(100% + 5px); left: 0; width: 100%; min-width: 250px; max-width: min(320px,calc(100vw - 24px)); padding: 8px; border: 1px solid #e1e7ee; border-radius: 7px; background: #fff; box-shadow: 0 8px 24px rgba(30,48,70,.18); }
+    .reuse-source-panel[hidden] { display: none; }
+    .reuse-source-search { height: 32px; margin-bottom: 6px; font-size: 11px; }
+    .reuse-source-options { max-height: 142px; overflow: auto; }
+    .reuse-source-option { width: 100%; min-height: 30px; display: block; overflow: hidden; padding: 6px 8px; border: 0; border-radius: 4px; color: #536477; background: #fff; text-align: left; text-overflow: ellipsis; white-space: nowrap; font-size: 11px; }
+    .reuse-source-option:hover,.reuse-source-option.selected { color: #287bd6; background: #edf5ff; }
+    .reuse-source-empty { padding: 8px; color: #8a96a4; font-size: 11px; }
+    .reuse-menu .btn { height: 30px; font-size: 11px; }
+    .time-popover { position: fixed; z-index: 50; width: 280px; padding: 15px; border: 1px solid #e5eaf0; border-radius: 9px; background: #fff; box-shadow: 0 12px 32px rgba(27, 47, 71, .2); }
+    .time-popover[hidden] { display: none; }
+    .time-popover-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+    .time-popover-head strong { color: #2d4055; font-size: 13px; }
+    .time-popover-close { width: 26px; height: 26px; border: 0; border-radius: 4px; color: #8995a3; background: transparent; font-size: 20px; }
+    .time-popover p { margin: 0 0 11px; color: #8b97a5; font-size: 11px; line-height: 1.5; }
+    .time-picker-input { width: 100%; height: 39px; padding: 0 10px; border: 1px solid #dce2e9; border-radius: 6px; outline: none; color: #34475d; background: #fff; font-size: 14px; }
+    .time-picker-input:focus { border-color: #86b8fa; box-shadow: 0 0 0 3px rgba(51, 140, 244, .1); }
+    .time-popover-actions { display: flex; justify-content: flex-end; gap: 7px; margin-top: 13px; }
+    .time-popover-actions .btn { height: 31px; padding: 0 11px; font-size: 12px; }
+    .time-popover-actions .btn[hidden] { display: none; }
+    .time-picker-input[hidden] { display: none; }
+    .manage-backdrop { position: fixed; z-index: 60; inset: 0; display: grid; place-items: center; padding: 24px; background: rgba(28,42,59,.42); }
+    .manage-backdrop[hidden] { display: none; }
+    .manage-modal { width: min(1440px,calc(100vw - 48px)); height: min(92vh,980px); display: flex; flex-direction: column; overflow: hidden; border-radius: 9px; background: #fff; box-shadow: 0 18px 60px rgba(22,39,59,.28); }
+    .manage-modal.compact { width: min(900px,calc(100vw - 48px)); }
+    .manage-head { min-height: 48px; display: flex; align-items: center; justify-content: space-between; padding: 0 18px; color: #fff; background: #08629d; }
+    .manage-head h2 { margin: 0; font-size: 17px; font-weight: 600; }
+    .manage-close { width: 32px; height: 32px; border: 0; color: #fff; background: transparent; font-size: 24px; }
+    .manage-body { min-height: 0; flex: 1 1 auto; overflow: auto; padding: 18px; }
+    .manage-section-title { margin: 0 0 14px; color: #34465b; font-size: 14px; font-weight: 600; }
+    .manage-fields { display: grid; grid-template-columns: repeat(4,minmax(150px,1fr)); gap: 14px; margin-bottom: 18px; }
+    .manage-fields .control { height: 36px; }
+    .manage-toolbar { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin: 14px 0; }
+    .manage-toolbar input,.manage-toolbar select { width: auto; min-width: 180px; }
+    .manage-table-wrap { overflow: auto; border: 1px solid #e6eaf0; border-radius: 6px; }
+    .manage-table { width: 100%; min-width: 1080px; border-collapse: collapse; table-layout: fixed; font-size: 13px; }
+    .manage-table th,.manage-table td { height: auto; padding: 9px 10px; border-bottom: 1px solid #e9edf2; text-align: left; vertical-align: middle; }
+    .manage-table th { color: #5b6a7c; background: #f7f8fa; font-weight: 600; }
+    .manage-table tr:last-child td { border-bottom: 0; }
+    .manage-table .control { height: 32px; }
+    .manage-table textarea.control { height: 48px; padding-top: 7px; resize: vertical; }
+    .tag-checks { display: flex; align-items: center; flex-wrap: wrap; gap: 5px 9px; }
+    .tag-checks label { display: inline-flex; align-items: center; gap: 4px; color: #55667a; font-size: 12px; white-space: nowrap; }
+    .tag-checks input { accent-color: #338cf4; }
+    .interviewer-checks { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 5px 10px; min-width: 260px; max-height: 180px; overflow: auto; padding: 10px; border: 1px solid #e6eaf0; border-radius: 6px; background: #fff; box-shadow: 0 5px 15px rgba(20,40,60,.08); }
+    .interviewer-checks label { display: flex; align-items: center; gap: 6px; color: #536477; font-size: 12px; white-space: nowrap; }
+    .interviewer-checks input { accent-color: #338cf4; }
+    .manage-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 18px; border-top: 1px solid #e9edf2; }
+    .manage-foot-actions { display: flex; gap: 8px; }
+    .interviewer-edit-table { min-width: 1120px; }
+    .interviewer-edit-table .control { min-width: 100px; }
+    .interviewer-edit-table textarea.control { height: 54px; }
+    .interviewer-table-wrap { overflow: visible; border: 0; }
+    .interviewer-drag-handle { display: inline-flex; width: 26px; height: 30px; flex: 0 0 26px; align-items: center; justify-content: center; margin-right: 6px; border-radius: 4px; color: #8795a5; cursor: grab; user-select: none; touch-action: none; }
+    .interviewer-drag-handle:hover { color: #287bd6; background: #edf5ff; }
+    .interviewer-edit-table tr.dragging { opacity: .45; pointer-events: none; }
+    .interviewer-sort-placeholder td { border: 1px dashed #338cf4 !important; border-radius: 5px; color: #338cf4; background: #f2f8ff; text-align: center; }
+    .person-editor-summary { display: grid; grid-template-columns: 1.2fr 1.2fr 1fr 1fr; gap: 12px; padding: 14px; border: 1px solid #e6ebf1; border-radius: 7px; background: #f8fafc; }
+    .person-editor-summary > div { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+    .person-editor-summary span { color: #8491a0; font-size: 11px; }
+    .person-editor-summary strong { color: #35485f; font-size: 13px; }
+    .identity-source-note { margin-top: 8px; }
+    .tag-select { position: relative; min-width: 180px; }
+    .tag-select-trigger { width: 100%; min-height: 34px; display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 5px 9px; border: 1px solid #dce2e9; border-radius: 5px; color: #46586d; background: #fff; text-align: left; }
+    .tag-select-trigger:hover,.tag-select-trigger:focus-visible { border-color: #86b8fa; outline: none; }
+    .tag-select-value { overflow: hidden; color: #9aa5b2; font-size: 11px; line-height: 1.4; text-overflow: ellipsis; white-space: nowrap; }
+    .tag-select-value.has-value { color: #3e7dce; }
+    .tag-select-chevron { flex: 0 0 auto; color: #8996a5; }
+    .tag-select-panel { position: absolute; z-index: 70; top: calc(100% + 4px); left: 0; width: min(300px,80vw); padding: 8px; border: 1px solid #e1e7ee; border-radius: 7px; background: #fff; box-shadow: 0 8px 24px rgba(30,48,70,.16); }
+    .tag-select-panel[hidden] { display: none; }
+    .tag-select-search { height: 30px !important; margin-bottom: 6px; font-size: 11px !important; }
+    .tag-select-options { max-height: 168px; overflow: auto; }
+    .tag-select-option { width: 100%; display: flex; align-items: center; gap: 8px; padding: 7px 6px; border-radius: 4px; color: #536477; background: #fff; text-align: left; font-size: 11px; cursor: pointer; }
+    .tag-select-option:hover { background: #f5f9ff; }
+    .tag-select-option.selected { color: #287bd6; background: #edf5ff; }
+    .tag-select-option input { width: 16px; height: 16px; flex: 0 0 16px; margin: 0; accent-color: #338cf4; }
+    .interviewer-picker { position: relative; }
+    .interviewer-picker-trigger { width: 100%; min-height: 36px; display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 6px 10px; border: 1px solid #dce2e9; border-radius: 6px; color: #8d99a7; background: #fff; text-align: left; font-size: 12px; }
+    .interviewer-picker-trigger.has-value { color: #3e7dce; }
+    .interviewer-picker-trigger:hover,.interviewer-picker-trigger:focus-visible { border-color: #86b8fa; outline: none; }
+    .interviewer-picker-trigger span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .interviewer-picker-panel { position: absolute; z-index: 80; top: calc(100% + 4px); left: 0; width: 100%; min-width: 300px; padding: 8px; border: 1px solid #e1e7ee; border-radius: 7px; background: #fff; box-shadow: 0 8px 24px rgba(30,48,70,.16); }
+    .interviewer-picker-panel[hidden] { display: none; }
+    .interviewer-picker-search { height: 32px !important; margin-bottom: 6px; }
+    .interviewer-picker-options { max-height: 190px; overflow: auto; }
+    .interviewer-picker-option { width: 100%; justify-content: flex-start; text-align: left; }
+    .interviewer-picker-option span { flex: 1; text-align: left; }
+    .manage-toolbar .interviewer-picker-option input { width: 16px; min-width: 16px; flex: 0 0 16px; }
+    .interviewer-picker-option input:disabled { opacity: .45; }
+    .roster-search { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+    .roster-search .control { max-width: 420px; }
+    .roster-table { min-width: 720px; }
+    .roster-table .btn.small { height: 29px; padding: 0 12px; font-size: 11px; }
+    .duration-inline { width: 70px; height: 30px; padding: 0 6px; border: 1px solid #dce2e9; border-radius: 5px; color: #405167; font-size: 12px; }
+    .duration-inline:focus { border-color: #86b8fa; outline: 0; box-shadow: 0 0 0 2px rgba(51,140,244,.1); }
+    .history-filters { display: flex; flex-wrap: wrap; align-items: end; gap: 12px; padding: 14px; border-radius: 6px; background: #f3f4f6; }
+    .history-filters .field { width: 155px; }
+    .history-table { min-width: 980px; }
+    .tag-admin-table { min-width: 650px; }
+    .tag-drag-handle { color: #4d5968; cursor: grab; font-size: 17px; letter-spacing: -3px; user-select: none; }
+    .tag-color { display: inline-flex; padding: 4px 9px; border-radius: 4px; color: #317dc8; background: #edf5ff; }
+    .session-interviewer-chip { display: inline-flex; align-items: center; gap: 5px; padding: 4px 7px 4px 9px; border-radius: 4px; color: #317dc8; background: #edf5ff; font-size: 12px; }
+    .session-interviewer-chip button { padding: 0; border: 0; color: #6794c8; background: transparent; font-size: 15px; line-height: 1; }
+    .empty-row { padding: 30px !important; color: #929eac; text-align: center !important; }
+    .drawer-backdrop { position: fixed; z-index: 10; inset: 60px auto 0 0; height: calc(100vh - 60px); display: block; width: 248px; background: #fff; box-shadow: 1px 0 10px rgba(40, 70, 110, .06); transition: width .22s ease; }
+    .drawer { position: absolute; inset: 0; width: 248px; background: #fff; transition: width .22s ease; }
+    .drawer-list { padding: 7px 5px; }
+    .drawer-group { margin: 0; padding: 0; list-style: none; }
+    .drawer-item { width: 100%; height: 50px; display: flex; align-items: center; gap: 13px; padding: 0 20px; border: 0; border-radius: 9px; color: #16202e; background: transparent; text-align: left; text-decoration: none; font-size: 14px; white-space: nowrap; overflow: hidden; }
+    .drawer-item:hover, .drawer-item.active { background: #f7f7f8; }
+    .drawer-item.active { color: #1f78e8; }
+    .drawer-item svg { flex: 0 0 20px; width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 1.7; }
+    .drawer-collapse { position: absolute; z-index: 2; top: 50%; right: -16px; width: 16px; height: 62px; display: grid; place-items: center; padding: 0; border: 0; border-radius: 0 7px 7px 0; color: #fff; background: #338cf4; transform: translateY(-50%); }
+    .drawer-collapse svg { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 2.2; transition: transform .22s ease; }
+    body.menu-collapsed .drawer-backdrop, body.menu-collapsed .drawer { width: 56px; }
+    body.menu-collapsed .page { margin-left: 56px; }
+    body.menu-collapsed .drawer-item { gap: 0; padding: 0; justify-content: center; }
+    body.menu-collapsed .drawer-item span { display: none; }
+    body.menu-collapsed .drawer-collapse svg { transform: rotate(180deg); }
+    .toast { position: fixed; z-index: 90; top: 61px; left: 50%; transform: translate(-50%, -8px); padding: 10px 16px; border: 1px solid #d9eee4; border-radius: 7px; color: #277d5c; background: #f1fbf5; box-shadow: 0 5px 18px rgba(30, 60, 90, .1); font-size: 12px; opacity: 0; pointer-events: none; transition: opacity .18s, transform .18s; }
+    .toast.show { transform: translate(-50%, 0); opacity: 1; }
+    @media (max-width: 1350px) {
+      .page { padding-right: 18px; padding-left: 18px; }
+      .schedule-filters { flex-wrap: wrap; }
+    }
+    @media (max-width: 1200px) {
+      .manage-fields { grid-template-columns: repeat(2,minmax(150px,1fr)); }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <span class="brand">人力资源管理</span>
+    <nav class="topnav" aria-label="顶部导航">
+      <button type="button">人力资源管理</button>
+      <a class="topnav-link" href="rotation-log-demo.html">人才管理</a>
+      <button type="button" class="active" aria-current="page">面试管理</button>
+      <a class="topnav-link" href="interviewer-rating-demo.html">面试官评分</a>
+    </nav>
+    <div class="user-actions">
+      <svg class="home-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="m3 11 9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1v-9Z"/></svg>
+      <svg class="chat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M20 12a7 7 0 0 1-7 7H8l-4 3v-5a7 7 0 1 1 16-5Z"/><path d="M8 12h.01M12 12h.01M16 12h.01"/></svg>
+      <span class="avatar" aria-hidden="true"></span>
+      <span>谢雨晴</span><span>⌄</span>
+    </div>
+  </header>
+
+  <main class="page">
+    <div class="page-heading">
+      <div><h1>面试进度</h1><p>面试对象及日期来自上游名单；在此维护面试官安排并更新面试进度。</p></div>
+      <span class="demo-mark">交互演示 · 模拟数据</span>
+    </div>
+
+    <section class="panel table-panel" aria-label="面试进度列表">
+      <div class="table-heading"><div><h2>人员面试安排</h2><p id="scheduleSummary"></p></div><div class="table-tools"><button class="btn primary" id="addCandidateBtn" type="button">从名单新增</button><button class="tool-link" id="historyInterviewersBtn" type="button">查看历史面试官信息</button><button class="tool-link" id="manageTagsBtn" type="button">标签管理</button></div></div>
+      <div class="schedule-filters" aria-label="面试筛选"><div class="field"><label for="filterDateFrom">面试日期</label><input class="control" type="date" id="filterDateFrom" aria-label="开始日期"></div><span class="date-range-separator">至</span><div class="field"><label for="filterDateTo">&nbsp;</label><input class="control" type="date" id="filterDateTo" aria-label="结束日期"></div><div class="field type-filter"><label for="filterType">面试类型</label><select class="control" id="filterType"><option value="">全部类型</option><option value="招聘">招聘</option><option value="转岗">转岗</option><option value="持续考察">持续考察</option><option value="转正">转正</option></select></div><button class="btn" id="clearFiltersBtn" type="button">清空筛选</button><span class="table-hint">日期留空时显示全部日期</span></div>
+      <div class="table-wrap">
+        <table>
+          <colgroup><col style="width:76px"><col style="width:105px"><col style="width:104px"><col style="width:140px"><col style="width:270px"><col style="width:124px"><col style="width:124px"><col style="width:100px"><col style="width:100px"><col style="width:180px"><col style="width:205px"></colgroup>
+          <thead><tr><th>顺序</th><th>面试日期</th><th>面试类型</th><th>面试对象姓名</th><th>面试官</th><th>预估开始时间</th><th>预估结束时间</th><th>面试时长</th><th>状态</th><th>时间操作</th><th>人员操作</th></tr></thead>
+          <tbody id="scheduleBody"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <div class="time-popover" id="timePopover" role="dialog" aria-labelledby="timePopoverTitle" hidden>
+    <div class="time-popover-head"><strong id="timePopoverTitle">设置面试时间</strong><button class="time-popover-close" id="closeTimePopover" type="button" aria-label="关闭">×</button></div>
+    <p id="timePopoverHelp">选择分钟后选择器会自动收起；确认开始时间后，点击“应用并重排”。</p>
+    <input class="time-picker-input" id="timePicker" type="time" aria-label="面试时间">
+    <div class="time-popover-actions"><button class="btn" id="cancelTimeEdit" type="button">取消</button><button class="btn" id="finishAtTime" type="button" hidden>按此时间结束</button><button class="btn primary" id="applyTimeEdit" type="button">应用并重排</button></div>
+  </div>
+  <div class="manage-backdrop" id="manageBackdrop" hidden>
+    <section class="manage-modal" id="manageModal" role="dialog" aria-modal="true" aria-labelledby="manageTitle">
+      <header class="manage-head"><h2 id="manageTitle"></h2><button class="manage-close" id="manageClose" type="button" aria-label="关闭">×</button></header>
+      <div class="manage-body" id="manageBody"></div>
+      <footer class="manage-foot" id="manageFoot"></footer>
+    </section>
+  </div>
+  <div class="drawer-backdrop" id="drawerBackdrop">
+    <aside class="drawer" aria-label="人力资源管理菜单">
+      <button class="drawer-collapse" id="toggleMenu" aria-label="收起菜单" title="收起菜单"><svg viewBox="0 0 24 24"><path d="m14 5-7 7 7 7"/></svg></button>
+      <div class="drawer-list"><ul class="drawer-group">
+        <li><a class="drawer-item" href="interview-results-demo.html?view=recruit"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 5V3h8v2M8 10h8M8 14h5M8 17h3"/></svg><span>招聘/转岗面试结果</span></a></li>
+        <li><a class="drawer-item" href="interview-results-demo.html?view=regular"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3"/><path d="M5 20c.7-3.3 3-5 7-5s6.3 1.7 7 5M16 17l2 2 3-4"/></svg><span>转正面试结果</span></a></li>
+        <li><a class="drawer-item active" href="interview-progress-demo.html" aria-current="page"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2M4 4l2 2"/></svg><span>面试进度</span></a></li>
+      </ul></div>
+    </aside>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    const sessions = [
+      {id:'2026-09-29', date:'2026-09-29', start:'09:00', duration:30, roster:[{name:'林若宁',type:'招聘',interviewers:['邵景行','顾言川','秦书宁','沈亦舟','梁清禾']},{name:'陈书涵',type:'招聘',interviewers:['顾言川','秦书宁','程予安','许知远','唐星澜']},{name:'赵子墨',type:'转岗',interviewers:['邵景行','沈亦舟','梁清禾','方允之','江知夏']},{name:'周闻溪',type:'持续考察',interviewers:['秦书宁','程予安','许知远','方允之','江知夏']},{name:'孙予安',type:'招聘',interviewers:['邵景行','顾言川','梁清禾','唐星澜','江知夏']}]},
+      {id:'2026-09-25', date:'2026-09-25', start:'13:30', duration:35, roster:[{name:'杨梓轩',type:'转岗',interviewers:['邵景行','顾言川','程予安','唐星澜','方允之']},{name:'胡思远',type:'持续考察',interviewers:['秦书宁','沈亦舟','许知远','梁清禾','江知夏']},{name:'于海涛',type:'转岗',interviewers:['顾言川','沈亦舟','梁清禾','许知远','方允之']},{name:'王浩然',type:'招聘',interviewers:['邵景行','秦书宁','程予安','唐星澜','江知夏']}]},
+      {id:'2026-09-24', date:'2026-09-24', start:'14:00', duration:25, roster:[{name:'陈悦宁',type:'持续考察',interviewers:['邵景行','顾言川','秦书宁','唐星澜','江知夏']},{name:'赵安琪',type:'持续考察',interviewers:['沈亦舟','梁清禾','程予安','许知远','方允之']},{name:'林婉清',type:'招聘',interviewers:['邵景行','秦书宁','沈亦舟','许知远','唐星澜']}]},
+      {id:'2026-09-22', date:'2026-09-22', start:'09:30', duration:30, roster:[{name:'顾清禾',type:'招聘',interviewers:['邵景行','顾言川','梁清禾','程予安','江知夏']},{name:'何景明',type:'招聘',interviewers:['秦书宁','沈亦舟','许知远','唐星澜','方允之']},{name:'沈知夏',type:'转岗',interviewers:['顾言川','秦书宁','梁清禾','许知远','江知夏']},{name:'叶承安',type:'持续考察',interviewers:['邵景行','沈亦舟','程予安','唐星澜','方允之']},{name:'唐可心',type:'招聘',interviewers:['邵景行','顾言川','秦书宁','梁清禾','唐星澜']}]},
+      {id:'2026-09-16', date:'2026-09-16', start:'10:00', duration:30, roster:[{name:'方明远',type:'转岗',interviewers:['邵景行','顾言川','程予安','许知远','江知夏']},{name:'季书瑶',type:'持续考察',interviewers:['秦书宁','沈亦舟','梁清禾','唐星澜','方允之']},{name:'陆子谦',type:'招聘',interviewers:['邵景行','秦书宁','沈亦舟','许知远','唐星澜']},{name:'高予辰',type:'转正',interviewers:['邵景行','顾言川','秦书宁','沈亦舟','梁清禾']}]}
+    ];
+    const mockPositions = {'林若宁':'数据分析岗','陈书涵':'后端开发工程师','赵子墨':'系统开发岗','周闻溪':'业务分析岗','孙予安':'前端开发工程师','杨梓轩':'客户经理','胡思远':'风险分析岗','于海涛':'数据产品岗','王浩然':'产品运营岗','陈悦宁':'业务运营岗','赵安琪':'行业研究岗','林婉清':'招聘专员','顾清禾':'客户体验岗','何景明':'系统运维岗','沈知夏':'数据治理岗','叶承安':'合规管理岗','唐可心':'产品设计岗','方明远':'数据平台岗','季书瑶':'组织发展岗','陆子谦':'后端开发岗','高予辰':'平台开发岗'};
+    sessions.forEach(session=>{
+      session.type = '招聘/持续考察面试';
+      session.interviewers = [...new Set(session.roster.flatMap(person=>person.interviewers))];
+      session.evaluationTags=[]; session.note='';
+      session.people=session.roster.map((person,index)=>({...person,sourceId:`roster-${session.id}-${index}`,date:session.date,position:person.position||mockPositions[person.name]||'业务专员',status:'waiting',durationMinutes:session.duration,evaluationTags:[],note:''}));
+    });
+    const $ = id => document.getElementById(id);
+    const tagLibrary = [
+      {name:'专业过硬',category:'interviewer'},{name:'识人精准',category:'interviewer'},{name:'客观公正',category:'interviewer'},{name:'挖掘深入',category:'interviewer'},{name:'准备充分',category:'interviewer'},
+      {name:'沟通清晰',category:'evaluation'},{name:'逻辑严谨',category:'evaluation'},{name:'经验匹配',category:'evaluation'},{name:'建议复试',category:'evaluation'},{name:'重点关注',category:'evaluation'}
+    ];
+    const allInterviewerNames = [...new Set(sessions.flatMap(session => session.interviewers))];
+    const interviewerProfiles = allInterviewerNames.map((name,index) => ({name,department:['机构金融部','信息技术部','风险管理部','运营管理部'][index%4],position:['部门总经理','产品经理岗','部门副总经理','业务负责人'][index%4],count:sessions.reduce((sum,session)=>sum+session.people.filter(person=>person.interviewers.includes(name)).length,0),tags:[tagLibrary[index%5].name,index%3===0?tagLibrary[(index+2)%5].name:''].filter(Boolean),note:index%4===0?'提问角度清晰，判断客观。':''}));
+    const upstreamCandidateList = [
+      ...sessions.flatMap(session=>session.people.map(person=>({id:person.sourceId,name:person.name,position:person.position,type:person.type,date:person.date}))),
+      {id:'roster-extra-01',name:'伍嘉祺',position:'产品运营岗',type:'招聘',date:'2026-09-29'},
+      {id:'roster-extra-02',name:'汪沛霖',position:'合规分析岗',type:'转岗',date:'2026-09-25'},
+      {id:'roster-extra-03',name:'许知行',position:'数据治理岗',type:'持续考察',date:'2026-09-24'},
+      {id:'roster-extra-04',name:'蒋思齐',position:'平台研发岗',type:'转正',date:'2026-09-30'},
+      {id:'roster-extra-05',name:'苏沐橙',position:'招聘专员',type:'招聘',date:'2026-09-29'},
+      {id:'roster-extra-06',name:'邵婉宁',position:'风险策略岗',type:'招聘',date:'2026-09-30'},
+      {id:'roster-extra-07',name:'邢子越',position:'数据产品岗',type:'转岗',date:'2026-09-30'}
+    ];
+    const latestRosterDate=upstreamCandidateList.reduce((latest,candidate)=>candidate.date>latest?candidate.date:latest,'');
+    const latestRosterCandidates=upstreamCandidateList.filter(candidate=>candidate.date===latestRosterDate);
+    if (latestRosterCandidates.length) {
+      sessions.push({
+        id:`date-${latestRosterDate}`,date:latestRosterDate,start:'09:00',duration:30,type:'招聘/持续考察面试',interviewers:[],evaluationTags:[],note:'',
+        people:latestRosterCandidates.map(candidate=>({sourceId:candidate.id,date:candidate.date,name:candidate.name,position:candidate.position,type:candidate.type,status:'waiting',durationMinutes:null,interviewers:[],interviewerDetails:[],evaluationTags:[],note:'',setupSample:true,setupPending:true,startConfigured:false,endConfigured:false,durationConfigured:false}))
+      });
+    }
+    sessions.forEach(session=>session.people.forEach(person=>{
+      person.interviewerDetails = person.interviewers.map(name=>{
+        const profile = interviewerProfiles.find(item=>item.name===name);
+        return {name,position:profile?.position||'待补充',interviewerTags:[...(profile?.tags||[])],evaluationTags:[],note:''};
+      });
+    }));
+    let activeSession = sessions[0];
+    let toastTimer;
+
+    function durationValue(session = activeSession) {
+      return Math.max(5, Math.min(180, Math.round(Number(session.duration) || 30)));
+    }
+    function toMinutes(time) {
+      const [hours, minutes] = (time || '09:00').split(':').map(Number);
+      return hours * 60 + minutes;
+    }
+    function toTime(minutes) {
+      const normalized = ((minutes % 1440) + 1440) % 1440;
+      return `${String(Math.floor(normalized / 60)).padStart(2,'0')}:${String(normalized % 60).padStart(2,'0')}`;
+    }
+    function timeDifference(start, end) {
+      let minutes = toMinutes(end) - toMinutes(start);
+      if (minutes <= 0) minutes += 1440;
+      return minutes;
+    }
+    function currentPendingIndex(session = activeSession) {
+      return session.people.findIndex(person => person.status !== 'done');
+    }
+    function refreshSetupPending(person) {
+      if (!person.setupSample) return;
+      person.setupPending=!((person.interviewers||[]).length>0&&person.startConfigured&&person.endConfigured&&person.durationConfigured);
+    }
+    function previousPersonOnSameDate(session, index) {
+      const orderedRows = sessions.slice().sort((a,b)=>b.date.localeCompare(a.date)).flatMap(item=>item.people.map((person,personIndex)=>({session:item,index:personIndex})));
+      const currentIndex = orderedRows.findIndex(item=>item.session.id===session.id&&item.index===index);
+      const previous = currentIndex > 0 ? orderedRows[currentIndex-1] : null;
+      return previous?.session.date===session.date ? previous : null;
+    }
+    function clearManualTimesAfter(index, session = activeSession) {
+      session.people.slice(index + 1).forEach(person => {
+        if (person.status === 'done') return;
+        delete person.manualStart;
+        delete person.manualEnd;
+      });
+    }
+    function recalculate(session = activeSession, shouldRender = true) {
+      let cursor = toMinutes(session.start);
+      session.people.forEach(person => {
+        if (person.status === 'done') {
+          person.startTime = person.actualStart;
+          person.endTime = person.actualEnd;
+          person.durationShown = timeDifference(person.actualStart, person.actualEnd);
+          cursor = toMinutes(person.actualEnd);
+        } else {
+          const start = person.manualStart ? toMinutes(person.manualStart) : cursor;
+          const end = person.manualEnd ? toMinutes(person.manualEnd) : start + (Number(person.durationMinutes) || durationValue(session));
+          person.startTime = toTime(start);
+          person.endTime = toTime(end);
+          person.durationShown = timeDifference(person.startTime, person.endTime);
+          cursor = end;
+        }
+      });
+      if (shouldRender) renderTable();
+    }
+    function filteredSessions() {
+      const from = $('filterDateFrom').value;
+      const to = $('filterDateTo').value;
+      return sessions.filter(session => (!from || session.date >= from) && (!to || session.date <= to)).sort((a,b)=>b.date.localeCompare(a.date));
+    }
+    function renderScheduleSummary() {
+      const visible = filteredSessions().flatMap(session => session.people.map(person => ({session,person}))).filter(({person}) => !$('filterType').value || person.type === $('filterType').value);
+      const dates = [...new Set(visible.map(item => item.session.date))];
+      const sortedDates=[...dates].sort();
+      $('scheduleSummary').textContent = `${sortedDates.length ? `${sortedDates[0]}${sortedDates.length > 1 ? ` 至 ${sortedDates[sortedDates.length-1]}` : ''} · ` : ''}筛选结果 ${visible.length} 位面试对象 · 共 ${dates.length} 场`;
+    }
+    function renderTable() {
+      const visible = filteredSessions().flatMap(session => session.people.map((person,index) => ({session,person,index}))).filter(({person}) => !$('filterType').value || person.type === $('filterType').value);
+      $('scheduleBody').innerHTML = visible.length ? visible.map(({session,person,index}) => {
+        const activeIndex = currentPendingIndex(session);
+        const done = person.status === 'done';
+        const isCurrent = !done && index === activeIndex;
+        const setupPending=Boolean(person.setupPending);
+        const state = done ? '<span class="status done">已结束</span>' : setupPending ? '<span class="status waiting">待安排</span>' : isCurrent ? '<span class="status current">进行中</span>' : '<span class="status waiting">待面试</span>';
+        const timeActions = done ? '<button class="row-action" type="button" disabled>已结束</button>' : setupPending ? '<button class="row-action" type="button" disabled>待安排</button>' : isCurrent ? `<button class="row-action" type="button" data-action="finish" data-index="${index}" data-session-id="${session.id}">现在结束</button><button class="row-action delay" type="button" data-action="delay" data-index="${index}" data-session-id="${session.id}">延时10分钟</button>` : '<button class="row-action" type="button" disabled>等待中</button>';
+        const reuseOptions=sessions.flatMap(sourceSession=>sourceSession.people.map((sourcePerson,sourceIndex)=>({sourceSession,sourcePerson,sourceIndex}))).filter(item=>item.sourceSession.id!==session.id||item.sourceIndex!==index).map(item=>{
+          const sourceValue=`${item.sourceSession.id}::${item.sourceIndex}`;
+          return `<button class="reuse-source-option" type="button" data-reuse-source-option data-source-value="${escapeHtml(sourceValue)}">#${item.sourceIndex+1} · ${escapeHtml(item.sourcePerson.name)} · ${escapeHtml(item.sourceSession.date)}</button>`;
+        }).join('');
+        const previous = previousPersonOnSameDate(session,index);
+        const emptyReuseOptions=reuseOptions?'<div class="reuse-source-empty" data-reuse-source-empty hidden>没有匹配的面试对象</div>':'<div class="reuse-source-empty" data-reuse-source-empty>暂无可复用对象</div>';
+        const reuseActions=`<div class="reuse-control"><button class="row-action secondary" type="button" data-reuse-toggle>复用⌄</button><div class="reuse-menu" data-reuse-menu hidden><button class="reuse-previous" type="button" data-reuse-previous data-index="${index}" data-session-id="${session.id}" data-source-session-id="${previous?.session.id||''}" data-source-index="${previous?.index??''}" ${previous?'':'disabled'}>复用前一条（同一日期）</button><label>按编号选择</label><div class="reuse-source-picker" data-reuse-picker><input type="hidden" data-reuse-source><button class="reuse-source-trigger" type="button" data-reuse-source-trigger aria-expanded="false"><span data-reuse-source-label>请选择面试对象</span><span aria-hidden="true">⌄</span></button><div class="reuse-source-panel" data-reuse-source-panel hidden><input class="control reuse-source-search" type="search" data-reuse-source-search placeholder="搜索姓名或日期"><div class="reuse-source-options" data-reuse-source-options>${emptyReuseOptions}${reuseOptions}</div></div></div><button class="btn primary" type="button" data-reuse-apply data-index="${index}" data-session-id="${session.id}">应用复用</button></div></div>`;
+        const dataActions=`<div class="data-actions"><button class="row-action secondary" type="button" data-edit-person="${index}" data-session-id="${session.id}">编辑</button>${reuseActions}<button class="row-action danger" type="button" data-delete-person="${index}" data-session-id="${session.id}">删除</button></div>`;
+        const timeChevron = '<svg viewBox="0 0 12 12" aria-hidden="true"><path d="m2.5 4.5 3.5 3 3.5-3"/></svg>';
+        const interviewerNames=(person.interviewers||[]).join('、');
+        const interviewerDisplay=interviewerNames?escapeHtml(interviewerNames):setupPending?'<span class="unconfigured-value">未设置</span>':'—';
+        const startValue=person.setupSample&&!person.startConfigured?'<span class="unconfigured-value">未设置</span>':escapeHtml(person.startTime||'—');
+        const endValue=person.setupSample&&!person.endConfigured?'<span class="unconfigured-value">未设置</span>':escapeHtml(person.endTime||'—');
+        const startDisplay = done ? `<span class="time-cell">${person.startTime || '—'}</span>` : `<button class="schedule-time" type="button" data-time-edit="start" data-index="${index}" data-session-id="${session.id}" aria-label="设置${person.name}的开始时间"><span>${startValue}</span>${timeChevron}</button>`;
+        const endDisplay = done ? `<span class="time-cell">${person.endTime || '—'}<span class="muted-time"> 实际</span></span>` : `<button class="schedule-time" type="button" data-time-edit="end" data-index="${index}" data-session-id="${session.id}" aria-label="设置${person.name}的结束时间"><span>${endValue}</span>${timeChevron}</button>`;
+        const durationValueDisplay=person.setupSample&&!person.durationConfigured?'':Number(person.durationMinutes)||durationValue(session);
+        return `<tr data-index="${index}" data-session-id="${session.id}">
+          <td><div class="order-cell"><span class="drag-handle" title="按住拖动调整顺序" aria-label="按住拖动调整顺序">⠿</span><span class="order-badge">${index + 1}</span></div></td>
+          <td>${escapeHtml(session.date)}</td>
+          <td><span class="type-pill">${escapeHtml(person.type)}</span></td>
+          <td><strong>${escapeHtml(person.name)}</strong>${person.evaluationTags && person.evaluationTags.length ? `<div class="table-tags">${person.evaluationTags.map(tag=>`<span class="tag-color">${escapeHtml(tag)}</span>`).join('')}</div>` : ''}</td>
+          <td class="interviewer-cell" title="${escapeHtml(interviewerNames)}">${interviewerDisplay}</td>
+          <td>${startDisplay}</td>
+          <td>${endDisplay}</td>
+          <td>${done?`${person.durationShown||durationValue(session)} 分钟`:`<input class="duration-inline" type="number" min="5" max="180" step="5" value="${durationValueDisplay}" placeholder="未设置" data-duration-edit data-index="${index}" data-session-id="${session.id}" aria-label="${escapeHtml(person.name)}面试时长"> 分钟`}</td>
+          <td>${state}</td>
+          <td><div class="time-actions">${timeActions}</div></td>
+          <td>${dataActions}</td>
+        </tr>`;
+      }).join('') : '<tr><td class="empty-row" colspan="11">没有符合条件的面试安排</td></tr>';
+      renderScheduleSummary();
+    }
+    function showToast(message) {
+      $('toast').textContent = message;
+      $('toast').classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => $('toast').classList.remove('show'), 2600);
+    }
+    function escapeHtml(value) {
+      return String(value == null ? '' : value).replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+    }
+    function showManage(title, body, footer, compact = false) {
+      $('manageTitle').textContent = title;
+      $('manageBody').innerHTML = body;
+      $('manageBody').scrollTop = 0;
+      $('manageFoot').innerHTML = footer;
+      $('manageModal').classList.toggle('compact', compact);
+      $('manageBackdrop').hidden = false;
+    }
+    function closeManage() { $('manageBackdrop').hidden = true; personEditor=null; }
+    function selectedTags(field) {
+      try { return JSON.parse(field?.dataset.selectedTags||'[]'); } catch { return []; }
+    }
+    function tagSelectField(category, selected = []) {
+      const available=tagLibrary.filter(tag=>tag.category===category);
+      const values=[...selected];
+      const display=values.length?values.join('、'):'请选择标签';
+      return `<div class="tag-select" data-tags-field="${category}" data-selected-tags="${escapeHtml(JSON.stringify(values))}">
+        <button class="tag-select-trigger" type="button" data-tag-trigger><span class="tag-select-value ${values.length?'has-value':''}" data-tag-display>${escapeHtml(display)}</span><span class="tag-select-chevron">⌄</span></button>
+        <div class="tag-select-panel" data-tag-panel hidden><input class="control tag-select-search" type="search" data-tag-search placeholder="搜索标签"><div class="tag-select-options" data-tag-options>${available.map(tag=>`<label class="tag-select-option ${values.includes(tag.name)?'selected':''}"><input type="checkbox" data-tag-option data-tag-value="${escapeHtml(tag.name)}" ${values.includes(tag.name)?'checked':''}><span>${escapeHtml(tag.name)}</span></label>`).join('')||'<span class="table-hint">暂无标签，请前往标签管理新增</span>'}</div></div>
+      </div>`;
+    }
+    function updateTagSelectField(field, values) {
+      field.dataset.selectedTags=JSON.stringify(values);
+      const display=field.querySelector('[data-tag-display]');
+      display.textContent=values.length?values.join('、'):'请选择标签';
+      display.classList.toggle('has-value',values.length>0);
+      field.querySelectorAll('[data-tag-option]').forEach(option=>{
+        const selected=values.includes(option.dataset.tagValue);
+        option.checked=selected;
+        option.closest('.tag-select-option').classList.toggle('selected',selected);
+      });
+    }
+    function filterTagOptions(input) {
+      const query=input.value.trim().toLowerCase();
+      input.closest('[data-tag-panel]').querySelectorAll('[data-tag-option]').forEach(option=>{option.closest('.tag-select-option').hidden=!option.dataset.tagValue.toLowerCase().includes(query);});
+    }
+    function filterReuseSourceOptions(input) {
+      const query=input.value.trim().toLowerCase();
+      const panel=input.closest('[data-reuse-source-panel]');
+      const options=[...panel.querySelectorAll('[data-reuse-source-option]')];
+      const matches=options.filter(option=>option.textContent.toLowerCase().includes(query));
+      options.forEach(option=>{option.hidden=!matches.includes(option);});
+      const empty=panel.querySelector('[data-reuse-source-empty]');
+      if (empty) { empty.hidden=matches.length>0;empty.textContent=options.length?'没有匹配的面试对象':'暂无可复用对象'; }
+    }
+    function positionReuseMenu(trigger,menu) {
+      const rect=trigger.getBoundingClientRect();
+      const width=menu.offsetWidth||246;
+      const height=menu.offsetHeight;
+      const gap=6;
+      const edge=8;
+      const below=rect.bottom+gap;
+      const top=below+height<=window.innerHeight-edge?below:Math.max(edge,rect.top-height-gap);
+      const left=Math.max(edge,Math.min(rect.right-width,window.innerWidth-width-edge));
+      menu.style.left=`${left}px`;
+      menu.style.top=`${Math.min(top,window.innerHeight-height-edge)}px`;
+      menu._anchorTrigger=trigger;
+    }
+    function positionReuseSourcePanel(trigger,panel) {
+      const rect=trigger.getBoundingClientRect();
+      const belowSpace=window.innerHeight-rect.bottom-8;
+      panel.style.bottom=belowSpace<Math.min(panel.scrollHeight,180)+6?'calc(100% + 5px)':'auto';
+      panel.style.top=belowSpace<Math.min(panel.scrollHeight,180)+6?'auto':'calc(100% + 5px)';
+    }
+    function updateInterviewerPicker() {
+      const picker=$('manageBody').querySelector('[data-interviewer-picker]');
+      if (!picker) return;
+      const names=[...picker.querySelectorAll('[data-interviewer-choice]:checked:not(:disabled)')].map(option=>option.value);
+      const trigger=picker.querySelector('[data-interviewer-picker-trigger]');
+      trigger.classList.toggle('has-value',names.length>0);
+      picker.querySelector('[data-interviewer-picker-label]').textContent=names.length?names.join('、'):'搜索并选择面试官';
+    }
+    function filterInterviewerOptions(input) {
+      const query=input.value.trim().toLowerCase();
+      input.closest('[data-interviewer-picker-panel]').querySelectorAll('.interviewer-picker-option').forEach(option=>{option.hidden=!option.textContent.toLowerCase().includes(query);});
+    }
+    let personEditor = null;
+    function createPersonDraft(session, person, index) {
+      const draft = JSON.parse(JSON.stringify(person));
+      draft.interviewers = draft.interviewers || [];
+      draft.interviewerDetails = draft.interviewerDetails || draft.interviewers.map(name=>({name,position:interviewerProfiles.find(profile=>profile.name===name)?.position||'待补充',interviewerTags:[],evaluationTags:[],note:''}));
+      return {sessionId:session.id,index,person:draft};
+    }
+    function capturePersonDraft() {
+      if (!personEditor) return;
+      const {person} = personEditor;
+      person.interviewerDetails = [...$('manageBody').querySelectorAll('[data-interviewer-row]')].map(row=>({
+        name:row.dataset.interviewerName,
+        position:row.dataset.interviewerPosition,
+        interviewerTags:selectedTags(row.querySelector('[data-tags-field="interviewer"]')),
+        evaluationTags:selectedTags(row.querySelector('[data-tags-field="evaluation"]')),
+        note:row.querySelector('[data-interviewer-note]').value.trim()
+      }));
+      person.interviewers = person.interviewerDetails.map(item=>item.name);
+      person.evaluationTags = [...new Set(person.interviewerDetails.flatMap(item=>item.evaluationTags))];
+    }
+    function renderPersonEditor(context) {
+      personEditor = context;
+      const person = context.person;
+      const rows = person.interviewerDetails.map((detail,index)=>`<tr data-interviewer-row data-index="${index}" data-interviewer-name="${escapeHtml(detail.name)}" data-interviewer-position="${escapeHtml(detail.position||'待补充')}">
+        <td><span class="interviewer-drag-handle" title="按住拖拽调整面试官顺序" aria-label="按住拖拽调整面试官顺序">⠿</span><strong>${escapeHtml(detail.name)}</strong><div class="table-hint">${escapeHtml(detail.position||'待补充')}</div></td>
+        <td>${tagSelectField('interviewer',detail.interviewerTags||[])}</td>
+        <td>${tagSelectField('evaluation',detail.evaluationTags||[])}</td>
+        <td><textarea class="control interviewer-note" data-interviewer-note placeholder="填写该面试官的本场备注">${escapeHtml(detail.note||'')}</textarea></td>
+        <td><button class="tool-link danger-text" type="button" data-remove-interviewer="${index}">移除</button></td>
+      </tr>`).join('');
+      const assignedInterviewers=new Set(person.interviewerDetails.map(detail=>detail.name));
+      const interviewerOptions=allInterviewerNames.map(name=>{
+        const assigned=assignedInterviewers.has(name);
+        return `<label class="tag-select-option interviewer-picker-option ${assigned?'selected':''}"><input type="checkbox" data-interviewer-choice value="${escapeHtml(name)}" ${assigned?'checked disabled':''}><span>${escapeHtml(name)}</span></label>`;
+      }).join('');
+      const body = `<div class="person-editor-summary"><div><span>面试对象</span><strong>${escapeHtml(person.name)}</strong></div><div><span>岗位</span><strong>${escapeHtml(person.position)}</strong></div><div><span>面试类型</span><strong>${escapeHtml(person.type)}</strong></div><div><span>面试日期</span><strong>${escapeHtml(person.date||sessions.find(item=>item.id===context.sessionId)?.date||'')}</strong></div></div><p class="table-hint identity-source-note">姓名、岗位、类型和日期来自上游名单，在本页保持固定。</p>
+        <div class="manage-toolbar interviewer-add-toolbar"><h3 class="manage-section-title" style="margin:0 auto 0 0">面试官信息</h3><div class="interviewer-picker" data-interviewer-picker><button class="interviewer-picker-trigger" type="button" data-interviewer-picker-trigger aria-expanded="false"><span data-interviewer-picker-label>搜索并选择面试官</span><span aria-hidden="true">⌄</span></button><div class="interviewer-picker-panel" data-interviewer-picker-panel hidden><input class="control interviewer-picker-search" type="search" data-interviewer-picker-search placeholder="搜索面试官姓名"><div class="interviewer-picker-options" data-interviewer-picker-options>${interviewerOptions||'<span class="table-hint">暂无可选面试官</span>'}</div></div></div><button class="btn" type="button" data-add-interviewer>批量添加</button></div>
+        <div class="manage-table-wrap interviewer-table-wrap"><table class="manage-table interviewer-edit-table"><thead><tr><th style="width:190px">排序 / 姓名 / 岗位</th><th style="width:260px">面试官标签</th><th style="width:260px">本场评价标签</th><th>本场备注</th><th style="width:72px">操作</th></tr></thead><tbody>${rows||'<tr><td class="empty-row" colspan="5">请添加本场面试官</td></tr>'}</tbody></table></div>`;
+      const footerHint=context.reused?'已复用指定对象的面试官和面试时长；本场评价标签与备注已清空。':'一个面试对象可安排多位面试官；标签和备注分别记录在对应面试官行。';
+      const footer = `<span class="table-hint">${footerHint}</span><div class="manage-foot-actions"><button class="btn" type="button" data-manage-cancel>取消</button><button class="btn primary" type="button" data-save-person>保存面试</button></div>`;
+      showManage('编辑面试',body,footer);
+    }
+    function openCandidatePicker() {
+      const body=`<div class="roster-search"><input class="control" type="search" id="rosterSearch" data-roster-search placeholder="搜索姓名、岗位、类型或日期"><span class="table-hint">选择上游名单中的对象，面试日期和类型会自动带入。</span></div><div class="manage-table-wrap"><table class="manage-table roster-table"><thead><tr><th style="width:130px">面试日期</th><th style="width:150px">姓名</th><th style="width:130px">岗位</th><th style="width:110px">面试类型</th><th style="width:150px">操作</th></tr></thead><tbody id="rosterCandidateRows"></tbody></table></div>`;
+      showManage('从上游名单新增面试对象',body,`<span class="table-hint">已在面试安排中的对象会自动隐藏；删除后可再次从名单中添加。</span><div class="manage-foot-actions"><button class="btn" type="button" data-manage-cancel>关闭</button></div>`);
+      renderCandidateRows();
+    }
+    function renderCandidateRows() {
+      const body=$('rosterCandidateRows');
+      if (!body) return;
+      const query=($('rosterSearch')?.value||'').trim().toLowerCase();
+      const assigned=new Set(sessions.flatMap(session=>session.people.map(person=>person.sourceId)).filter(Boolean));
+      const available=upstreamCandidateList.filter(candidate=>!assigned.has(candidate.id)&&[candidate.name,candidate.position,candidate.type,candidate.date].some(value=>String(value).toLowerCase().includes(query))).sort((a,b)=>a.date.localeCompare(b.date)||a.name.localeCompare(b.name,'zh-CN'));
+      body.innerHTML=available.length?available.map(candidate=>`<tr><td>${escapeHtml(candidate.date)}</td><td><strong>${escapeHtml(candidate.name)}</strong></td><td>${escapeHtml(candidate.position)}</td><td><span class="type-pill">${escapeHtml(candidate.type)}</span></td><td><button class="btn primary small" type="button" data-add-source-candidate="${escapeHtml(candidate.id)}">添加</button></td></tr>`).join(''):'<tr><td class="empty-row" colspan="5">没有匹配的可添加对象</td></tr>';
+    }
+    function addRosterCandidate(id) {
+      const candidate=upstreamCandidateList.find(item=>item.id===id);
+      if (!candidate) return;
+      if (sessions.some(session=>session.people.some(person=>person.sourceId===id))) { showToast('该对象已在面试安排中');return; }
+      let session=sessions.find(item=>item.date===candidate.date);
+      if (!session) {
+        session={id:`date-${candidate.date}`,date:candidate.date,start:'09:00',duration:30,type:'招聘/持续考察面试',people:[],interviewers:[],evaluationTags:[],note:''};
+        sessions.push(session);
+      }
+      session.people.push({sourceId:candidate.id,date:candidate.date,name:candidate.name,position:candidate.position,type:candidate.type,status:'waiting',durationMinutes:null,interviewers:[],interviewerDetails:[],evaluationTags:[],note:'',setupSample:true,setupPending:true,startConfigured:false,endConfigured:false,durationConfigured:false});
+      activeSession=session;
+      recalculate(session,false);
+      $('filterDateFrom').value=candidate.date;$('filterDateTo').value=candidate.date;$('filterType').value='';
+      renderTable();renderCandidateRows();showToast(`${candidate.name}已加入 ${candidate.date} 的面试安排，可继续从名单添加`);
+    }
+    function detailsForPerson(person) {
+      return person.interviewerDetails || (person.interviewers||[]).map(name=>({name,position:interviewerProfiles.find(profile=>profile.name===name)?.position||'待补充',interviewerTags:[...(interviewerProfiles.find(profile=>profile.name===name)?.tags||[])],evaluationTags:[],note:''}));
+    }
+    function applyReuse(targetSession,targetIndex,sourceSession,sourceIndex) {
+      if (!targetSession||!sourceSession||targetIndex<0||sourceIndex<0) return;
+      const target=targetSession.people[targetIndex];
+      const source=sourceSession.people[sourceIndex];
+      if (!target||!source||target===source) return;
+      target.interviewerDetails=detailsForPerson(source).map(detail=>({name:detail.name,position:detail.position||'待补充',interviewerTags:[...(detail.interviewerTags||[])],evaluationTags:[],note:''}));
+      target.interviewers=target.interviewerDetails.map(detail=>detail.name);
+      target.evaluationTags=[];target.note='';
+      const sourceDuration=Number(source.durationShown)||((source.startTime&&source.endTime)?timeDifference(source.startTime,source.endTime):Number(source.durationMinutes))||durationValue(sourceSession);
+      target.durationMinutes=sourceDuration;
+      const previous=previousPersonOnSameDate(targetSession,targetIndex);
+      const previousPerson=previous?.session.people[previous.index];
+      const previousHasTime=Boolean(previousPerson&&(previousPerson.status==='done'||previousPerson.manualStart||previousPerson.manualEnd||previousPerson.durationMinutes||previousPerson.startConfigured||previousPerson.endConfigured||previousPerson.durationConfigured));
+      if (previousHasTime&&previousPerson.endTime) target.manualStart=previousPerson.endTime;
+      delete target.manualEnd;
+      if (target.setupSample) {
+        target.durationConfigured=true;
+        if (previousHasTime) target.startConfigured=true;
+        target.endConfigured=Boolean(target.startConfigured);
+        refreshSetupPending(target);
+      }
+      targetSession.interviewers=[...new Set(targetSession.people.flatMap(person=>person.interviewers||[]))];
+      clearManualTimesAfter(targetIndex,targetSession);
+      recalculate(targetSession);
+      showToast(`已复用 ${source.name} 的面试官和面试时长；本场评价与备注已清空`);
+    }
+    function applyReuseSelection(targetSession,targetIndex,value) {
+      const separator=value.lastIndexOf('::');
+      if (separator<0) { showToast('请选择要复用的面试对象');return; }
+      const sourceSession=sessions.find(item=>item.id===value.slice(0,separator));
+      const sourceIndex=Number(value.slice(separator+2));
+      if (!sourceSession||!sourceSession.people[sourceIndex]) { showToast('复用来源已不存在，请重新选择');return; }
+      applyReuse(targetSession,targetIndex,sourceSession,sourceIndex);
+    }
+    function openPersonEditor(session, index) {
+      const person = session.people[index];
+      if (person && !person.interviewerDetails) {
+        person.interviewerDetails = (person.interviewers||[]).map(name=>({name,position:interviewerProfiles.find(profile=>profile.name===name)?.position||'待补充',interviewerTags:[...(interviewerProfiles.find(profile=>profile.name===name)?.tags||[])],evaluationTags:[],note:''}));
+      }
+      const context=createPersonDraft(session,person,index);
+      renderPersonEditor(context);
+    }
+    function addInterviewerToDraft() {
+      if (!personEditor) return;
+      const names=[...$('manageBody').querySelectorAll('[data-interviewer-choice]:checked:not(:disabled)')].map(option=>option.value);
+      if (!names.length) { showToast('请先选择一位或多位面试官'); return; }
+      capturePersonDraft();
+      const existing=new Set(personEditor.person.interviewerDetails.map(item=>item.name));
+      const added=[];
+      names.forEach(name=>{
+        if (existing.has(name)) return;
+        const profile=interviewerProfiles.find(item=>item.name===name);
+        personEditor.person.interviewerDetails.push({name,position:profile?.position||'待补充',interviewerTags:[...(profile?.tags||[])],evaluationTags:[],note:''});
+        existing.add(name);added.push(name);
+      });
+      if (!added.length) { showToast('所选面试官已全部添加'); return; }
+      renderPersonEditor(personEditor);
+      showToast(`已批量添加 ${added.length} 位面试官`);
+    }
+    function savePersonEditor() {
+      if (!personEditor) return;
+      capturePersonDraft();
+      const {person,index,sessionId}=personEditor;
+      const source=sessions.find(item=>item.id===sessionId);
+      if (!source) return;
+      person.interviewerDetails.forEach(detail=>{
+        let profile=interviewerProfiles.find(item=>item.name===detail.name);
+        if (!profile) { profile={name:detail.name,department:'待补充',position:detail.position||'待补充',count:0,tags:[],note:''};interviewerProfiles.push(profile);allInterviewerNames.push(detail.name); }
+        detail.position=profile.position;
+      });
+      person.interviewers=person.interviewerDetails.map(item=>item.name);
+      person.evaluationTags=[...new Set(person.interviewerDetails.flatMap(item=>item.evaluationTags))];
+      refreshSetupPending(person);
+      source.people[index]=person;
+      source.interviewers=[...new Set(source.people.flatMap(item=>item.interviewers||[]))];
+      recalculate(source,false);
+      interviewerProfiles.forEach(profile=>{
+        const tags=sessions.flatMap(item=>item.people).flatMap(item=>item.interviewerDetails||[]).filter(detail=>detail.name===profile.name).flatMap(detail=>detail.interviewerTags||[]);
+        profile.tags=[...new Set(tags)];
+      });
+      activeSession=source;
+      personEditor=null;
+      renderTable();closeManage();showToast('面试对象安排已保存');
+    }
+    function openHistoryInterviewers() {
+      const filters = `<div class="history-filters"><div class="field"><label>面试官姓名</label><input class="control" id="historyName" placeholder="请输入姓名"></div><div class="field"><label>部门</label><input class="control" id="historyDepartment" placeholder="请输入部门"></div><div class="field"><label>岗位</label><input class="control" id="historyPosition" placeholder="请输入岗位"></div><div class="field"><label>面试官标签</label><input class="control" id="historyTag" placeholder="输入标签关键词"></div><button class="btn primary" type="button" data-history-search>查询</button><button class="btn" type="button" data-history-reset>重置</button></div>`;
+      showManage('面试官信息',`${filters}<div class="manage-table-wrap" style="margin-top:18px"><table class="manage-table history-table"><thead><tr><th><input type="checkbox" aria-label="全选"></th><th>姓名</th><th>部门</th><th>岗位</th><th>参数面试数</th><th>面试官标签</th><th>备注</th></tr></thead><tbody id="historyRows"></tbody></table></div>`,`<span class="table-hint">历史面试官信息为原型演示数据</span><div class="manage-foot-actions"><button class="btn" type="button" data-manage-cancel>关闭</button></div>`);
+      renderHistoryRows();
+    }
+    function renderHistoryRows() {
+      const body = $('historyRows');
+      if (!body) return;
+      const name = ($('historyName').value||'').trim();
+      const department = ($('historyDepartment').value||'').trim();
+      const position = ($('historyPosition').value||'').trim();
+      const tag = ($('historyTag').value||'').trim();
+      const matches = interviewerProfiles.filter(profile=>profile.name.includes(name)&&profile.department.includes(department)&&profile.position.includes(position)&&(!tag||profile.tags.some(item=>item.includes(tag))));
+      body.innerHTML = matches.length ? matches.map(profile=>{const count=sessions.reduce((sum,session)=>sum+session.people.filter(person=>person.interviewers.includes(profile.name)).length,0);return `<tr><td><input type="checkbox"></td><td>${escapeHtml(profile.name)}</td><td>${escapeHtml(profile.department)}</td><td>${escapeHtml(profile.position)}</td><td>${count}</td><td>${profile.tags.map(item=>`<span class="tag-color">${escapeHtml(item)}</span>`).join(' ')}</td><td>${escapeHtml(profile.note)}</td></tr>`}).join('') : '<tr><td class="empty-row" colspan="7">没有符合条件的历史面试官</td></tr>';
+    }
+    function openTagManager() {
+      const body = `<div class="manage-toolbar"><select class="control" id="newTagCategory"><option value="evaluation">本场评价标签</option><option value="interviewer">面试官标签</option></select><input class="control" id="newTagName" placeholder="请输入标签名称"><button class="btn primary" type="button" data-create-tag>添加此标签</button></div><div class="manage-table-wrap"><table class="manage-table tag-admin-table"><thead><tr><th style="width:70px">排序</th><th>标签类别</th><th>标签名称</th><th style="width:180px">操作</th></tr></thead><tbody id="tagRows"></tbody></table></div>`;
+      showManage('标签管理',body,`<span class="table-hint">可维护本场评价标签和面试官标签</span><div class="manage-foot-actions"><button class="btn" type="button" data-manage-cancel>关闭</button></div>`);
+      renderTagRows();
+    }
+    function renderTagRows() {
+      const body = $('tagRows');
+      if (!body) return;
+      body.innerHTML = tagLibrary.map((tag,index)=>`<tr draggable="true" data-tag-index="${index}"><td><span class="tag-drag-handle" draggable="true" title="拖拽排序">≡</span></td><td>${tag.category==='interviewer'?'面试官标签':'本场评价标签'}</td><td><span class="tag-color">${escapeHtml(tag.name)}</span></td><td><button class="tool-link" type="button" data-rename-tag="${index}">重命名</button><button class="tool-link danger-text" type="button" data-delete-tag="${index}">删除</button></td></tr>`).join('');
+    }
+    function activateSession(id) {
+      const session = sessions.find(item=>item.id===id);
+      if (!session) return;
+      activeSession = session;
+    }
+    let editingTime = null;
+    function requestNativeTimePicker() {
+      const picker = $('timePicker');
+      if (typeof picker.showPicker === 'function') {
+        try { picker.showPicker(); } catch {}
+      }
+    }
+    function showNativeTimePicker() {
+      $('timePicker').hidden = false;
+      $('timePicker').focus();
+      requestNativeTimePicker();
+    }
+    function openTimeEditor(button) {
+      activateSession(button.dataset.sessionId);
+      const index = Number(button.dataset.index);
+      const role = button.dataset.timeEdit;
+      const person = activeSession.people[index];
+      if (!person || person.status === 'done') return;
+      const canFinishAtTime = role === 'end' && index === currentPendingIndex() && !person.setupPending;
+      editingTime = {index, role, original:role === 'start' ? person.startTime : person.endTime};
+      $('timePopoverTitle').textContent = role === 'start' ? `设置${person.name}的开始时间` : `设置${person.name}的结束时间`;
+      $('timePopoverHelp').textContent = canFinishAtTime
+        ? '选择分钟后选择器会自动收起；可更新预估时间，或按此时间结束本场。'
+        : role === 'end'
+          ? '选择分钟后选择器会自动收起；确认新的预估结束时间后，点击“应用并重排”。'
+          : '选择分钟后选择器会自动收起；确认开始时间后，点击“应用并重排”。';
+      $('finishAtTime').hidden = !canFinishAtTime;
+      $('timePicker').value = editingTime.original || '';
+      $('timePicker').hidden = false;
+      $('timePopover').hidden = false;
+      const rect = button.getBoundingClientRect();
+      const popover = $('timePopover');
+      const box = popover.getBoundingClientRect();
+      const preferredLeft = rect.left + rect.width / 2 - box.width / 2;
+      const left = Math.max(10, Math.min(preferredLeft, window.innerWidth - box.width - 10));
+      const top = rect.bottom + box.height + 10 <= window.innerHeight ? rect.bottom + 6 : Math.max(10, rect.top - box.height - 6);
+      popover.style.left = `${left}px`;
+      popover.style.top = `${top}px`;
+      showNativeTimePicker();
+    }
+    function closeTimeEditor() {
+      $('timePopover').hidden = true;
+      editingTime = null;
+    }
+    function finishInterviewNow(index) {
+      if (index !== currentPendingIndex()) return;
+      const person = activeSession.people[index];
+      if (!person || person.status === 'done') return;
+      const now = new Date();
+      const currentMinutes = now.getHours() * 60 + now.getMinutes();
+      const earliestEnd = toMinutes(person.startTime) + 5;
+      const actualEnd = toTime(Math.max(currentMinutes, earliestEnd));
+      person.status = 'done';
+      person.actualStart = person.startTime;
+      person.actualEnd = actualEnd;
+      clearManualTimesAfter(index);
+      recalculate();
+      const message = currentMinutes < earliestEnd
+        ? `${person.name}已记录结束，后续时间已重排（结束时间按开始后5分钟计）`
+        : `${person.name}已按当前时刻结束，后续预估时间已自动重排`;
+      showToast(message);
+    }
+    function finishInterviewAtSelectedTime() {
+      if (!editingTime || editingTime.role !== 'end') return;
+      const {index} = editingTime;
+      if (index !== currentPendingIndex()) return;
+      const person = activeSession.people[index];
+      let actualEnd = $('timePicker').value;
+      if (!actualEnd) { showToast('请选择结束时间'); return; }
+      if (toMinutes(actualEnd) - toMinutes(person.startTime) < 5) {
+        actualEnd = toTime(toMinutes(person.startTime) + 5);
+        showToast(`结束时间至少晚于开始时间5分钟，已调整为 ${actualEnd}`);
+      } else {
+        showToast(`${person.name}已按所选时间结束，后续预估时间已自动重排`);
+      }
+      person.status = 'done';
+      person.actualStart = person.startTime;
+      person.actualEnd = actualEnd;
+      closeTimeEditor();
+      clearManualTimesAfter(index);
+      recalculate();
+    }
+    function applyTimeEditor() {
+      if (!editingTime) return;
+      const {index, role, original} = editingTime;
+      const person = activeSession.people[index];
+      let value = $('timePicker').value;
+      if (!value) { showToast('请选择时间'); return; }
+      const alreadyConfigured=role==='start'?person.startConfigured:person.endConfigured;
+      if (value === original && (!person.setupSample||alreadyConfigured)) { closeTimeEditor(); return; }
+      let message = '时间已更新，后续面试已自动重排';
+      if (role === 'start') {
+        if (index > 0) {
+          const earliest = activeSession.people[index - 1].endTime;
+          if (toMinutes(value) < toMinutes(earliest)) {
+            value = earliest;
+            message = `开始时间不能早于上一位面试结束时间，已调整为 ${value}`;
+          }
+        }
+        person.manualStart = value;
+        if (person.setupSample) person.startConfigured=true;
+        if (person.manualEnd && timeDifference(value,person.manualEnd) < 5) {
+          delete person.manualEnd;
+          message = '结束时间已按单人面试时长重算，后续面试已自动重排';
+        } else if (person.manualEnd) {
+          person.durationMinutes=timeDifference(value,person.manualEnd);
+          if (person.setupSample) person.durationConfigured=true;
+        }
+      } else {
+        if (toMinutes(value) - toMinutes(person.startTime) < 5) {
+          value = toTime(toMinutes(person.startTime) + 5);
+          message = `结束时间至少晚于开始时间5分钟，已调整为 ${value}`;
+        }
+        person.manualEnd = value;
+        person.durationMinutes=timeDifference(person.startTime,value);
+        if (person.setupSample) person.endConfigured=true;
+        if (person.setupSample) person.durationConfigured=true;
+      }
+      refreshSetupPending(person);
+      clearManualTimesAfter(index);
+      closeTimeEditor();
+      recalculate();
+      showToast(message);
+    }
+    function closeTimePickerAfterMinuteSelection() {
+      if (!editingTime) return;
+      const value = $('timePicker').value;
+      const originalMinute = editingTime?.original?.slice(3, 5);
+      if (!value || value.slice(3, 5) === originalMinute) return;
+      $('timePicker').blur();
+      (editingTime.role === 'end' ? $('finishAtTime') : $('applyTimeEdit')).focus();
+    }
+    $('timePicker').addEventListener('click', requestNativeTimePicker);
+    $('timePicker').addEventListener('input', closeTimePickerAfterMinuteSelection);
+    $('addCandidateBtn').addEventListener('click',openCandidatePicker);
+    $('historyInterviewersBtn').addEventListener('click', openHistoryInterviewers);
+    $('manageTagsBtn').addEventListener('click', openTagManager);
+    $('filterDateFrom').addEventListener('change', renderTable);
+    $('filterDateTo').addEventListener('change', renderTable);
+    $('filterType').addEventListener('change', renderTable);
+    $('clearFiltersBtn').addEventListener('click', () => {
+      $('filterDateFrom').value = ''; $('filterDateTo').value = ''; $('filterType').value = '';
+      renderTable();
+    });
+    $('scheduleBody').addEventListener('click', event => {
+      const row = event.target.closest('tr[data-session-id]');
+      if (!row) return;
+      const session = sessions.find(item=>item.id===row.dataset.sessionId);
+      if (!session) return;
+      activateSession(session.id);
+      const reuseToggle=event.target.closest('[data-reuse-toggle]');
+      if (reuseToggle) {
+        const menu=reuseToggle.parentElement.querySelector('[data-reuse-menu]');
+        const willOpen=menu.hidden;
+        $('scheduleBody').querySelectorAll('[data-reuse-menu]').forEach(item=>{if(item!==menu)item.hidden=true;});
+        menu.hidden=!willOpen;
+        if (willOpen) {
+          positionReuseMenu(reuseToggle,menu);
+          const panel=menu.querySelector('[data-reuse-source-panel]');
+          const sourceTrigger=menu.querySelector('[data-reuse-source-trigger]');
+          if (panel) panel.hidden=true;
+          if (sourceTrigger) sourceTrigger.setAttribute('aria-expanded','false');
+        }
+        return;
+      }
+      const sourceTrigger=event.target.closest('[data-reuse-source-trigger]');
+      if (sourceTrigger) {
+        const picker=sourceTrigger.closest('[data-reuse-picker]');
+        const panel=picker.querySelector('[data-reuse-source-panel]');
+        const willOpen=panel.hidden;
+        $('scheduleBody').querySelectorAll('[data-reuse-source-panel]').forEach(item=>item.hidden=true);
+        $('scheduleBody').querySelectorAll('[data-reuse-source-trigger]').forEach(item=>item.setAttribute('aria-expanded','false'));
+        if (willOpen) {
+          panel.hidden=false;
+          sourceTrigger.setAttribute('aria-expanded','true');
+          positionReuseSourcePanel(sourceTrigger,panel);
+          const search=picker.querySelector('[data-reuse-source-search]');
+          search.value='';filterReuseSourceOptions(search);search.focus();
+        }
+        return;
+      }
+      const sourceOption=event.target.closest('[data-reuse-source-option]');
+      if (sourceOption) {
+        const picker=sourceOption.closest('[data-reuse-picker]');
+        picker.querySelector('[data-reuse-source]').value=sourceOption.dataset.sourceValue;
+        const trigger=picker.querySelector('[data-reuse-source-trigger]');
+        trigger.querySelector('[data-reuse-source-label]').textContent=sourceOption.textContent.trim();
+        trigger.classList.add('has-value');
+        trigger.setAttribute('aria-expanded','false');
+        picker.querySelectorAll('[data-reuse-source-option]').forEach(option=>option.classList.toggle('selected',option===sourceOption));
+        picker.querySelector('[data-reuse-source-panel]').hidden=true;
+        return;
+      }
+      const reusePrevious=event.target.closest('[data-reuse-previous]');
+      if (reusePrevious) {
+        if (reusePrevious.disabled) return;
+        applyReuse(session,Number(reusePrevious.dataset.index),sessions.find(item=>item.id===reusePrevious.dataset.sourceSessionId),Number(reusePrevious.dataset.sourceIndex));
+        return;
+      }
+      const reuseApply=event.target.closest('[data-reuse-apply]');
+      if (reuseApply) {
+        const index=Number(reuseApply.dataset.index);
+        const value=reuseApply.parentElement.querySelector('[data-reuse-source]').value;
+        applyReuseSelection(session,index,value);return;
+      }
+      const editPerson = event.target.closest('[data-edit-person]');
+      if (editPerson) { openPersonEditor(session,Number(editPerson.dataset.editPerson)); return; }
+      const deletePerson = event.target.closest('[data-delete-person]');
+      if (deletePerson) {
+        const index = Number(deletePerson.dataset.deletePerson);
+        const person = session.people[index];
+        if (person && confirm(`确定删除面试对象“${person.name}”吗？`)) {
+          session.people.splice(index,1);
+          session.interviewers=[...new Set(session.people.flatMap(item=>item.interviewers||[]))];
+          recalculate(session,false); renderTable(); showToast('面试对象已删除');
+        }
+        return;
+      }
+      const timeButton = event.target.closest('[data-time-edit]');
+      if (timeButton) { openTimeEditor(timeButton); return; }
+      const button = event.target.closest('[data-action]');
+      if (!button) return;
+      const index = Number(button.dataset.index);
+      if (index !== currentPendingIndex(session)) return;
+      const person = session.people[index];
+      if (button.dataset.action === 'finish') {
+        finishInterviewNow(index);
+      } else if (button.dataset.action === 'delay') {
+        person.manualEnd = toTime(toMinutes(person.endTime) + 10);
+        clearManualTimesAfter(index,session);
+        recalculate(session);
+        showToast(`${person.name}的面试已延时10分钟，后续预估时间已自动重排`);
+      }
+    });
+    $('scheduleBody').addEventListener('change',event=>{
+      const durationInput=event.target.closest('[data-duration-edit]');
+      if (!durationInput) return;
+      const session=sessions.find(item=>item.id===durationInput.dataset.sessionId);
+      if (!session) return;
+      const index=Number(durationInput.dataset.index);
+      const person=session.people[index];
+      if (person.setupSample&&durationInput.value.trim()==='') return;
+      const value=Math.round(Number(durationInput.value));
+      if (!Number.isFinite(value)||value<5||value>180) { showToast('面试时长请输入 5 至 180 分钟');renderTable();return; }
+      person.durationMinutes=value;
+      if (person.setupSample) {
+        person.durationConfigured=true;
+        person.endConfigured=Boolean(person.startConfigured||person.manualStart);
+      }
+      refreshSetupPending(person);
+      delete person.manualEnd;
+      clearManualTimesAfter(index,session);
+      recalculate(session);
+      showToast('该面试对象的时长已更新，后续时间已自动重排');
+    });
+    $('scheduleBody').addEventListener('input',event=>{
+      const search=event.target.closest('[data-reuse-source-search]');
+      if (search) filterReuseSourceOptions(search);
+    });
+    $('manageBody').addEventListener('change',event=>{
+      const interviewerChoice=event.target.closest('[data-interviewer-choice]');
+      if (interviewerChoice) {
+        interviewerChoice.closest('.interviewer-picker-option').classList.toggle('selected',interviewerChoice.checked);
+        updateInterviewerPicker();
+        return;
+      }
+      const tagOption=event.target.closest('[data-tag-option]');
+      if (!tagOption) return;
+      const field=tagOption.closest('[data-tags-field]');
+      const values=selectedTags(field);
+      const next=tagOption.checked ? [...new Set([...values,tagOption.dataset.tagValue])] : values.filter(item=>item!==tagOption.dataset.tagValue);
+      updateTagSelectField(field,next);
+    });
+    $('manageBody').addEventListener('click', event => {
+      if (event.target.closest('[data-manage-cancel]')) { closeManage(); return; }
+      const addSource=event.target.closest('[data-add-source-candidate]');
+      if (addSource) { addRosterCandidate(addSource.dataset.addSourceCandidate);return; }
+      const interviewerTrigger=event.target.closest('[data-interviewer-picker-trigger]');
+      if (interviewerTrigger) {
+        const picker=interviewerTrigger.closest('[data-interviewer-picker]');
+        const panel=picker.querySelector('[data-interviewer-picker-panel]');
+        const opening=panel.hidden;
+        $('manageBody').querySelectorAll('[data-interviewer-picker-panel]').forEach(item=>item.hidden=true);
+        $('manageBody').querySelectorAll('[data-interviewer-picker-trigger]').forEach(item=>item.setAttribute('aria-expanded','false'));
+        $('manageBody').querySelectorAll('[data-tag-panel]').forEach(item=>item.hidden=true);
+        panel.hidden=!opening;
+        interviewerTrigger.setAttribute('aria-expanded',String(opening));
+        if (opening) {
+          const search=picker.querySelector('[data-interviewer-picker-search]');
+          search.value='';filterInterviewerOptions(search);search.focus();
+        }
+        return;
+      }
+      const tagTrigger=event.target.closest('[data-tag-trigger]');
+      if (tagTrigger) {
+        const field=tagTrigger.closest('[data-tags-field]');
+        $('manageBody').querySelectorAll('[data-interviewer-picker-panel]').forEach(item=>item.hidden=true);
+        $('manageBody').querySelectorAll('[data-interviewer-picker-trigger]').forEach(item=>item.setAttribute('aria-expanded','false'));
+        $('manageBody').querySelectorAll('[data-tag-panel]').forEach(panel=>{if(panel!==field.querySelector('[data-tag-panel]'))panel.hidden=true;});
+        field.querySelector('[data-tag-panel]').hidden=!field.querySelector('[data-tag-panel]').hidden;
+        if (!field.querySelector('[data-tag-panel]').hidden) field.querySelector('[data-tag-search]').focus();
+        return;
+      }
+      if (event.target.closest('[data-add-interviewer]')) { addInterviewerToDraft(); return; }
+      const removeInterviewer = event.target.closest('[data-remove-interviewer]');
+      if (removeInterviewer) {
+        capturePersonDraft();personEditor.person.interviewerDetails.splice(Number(removeInterviewer.dataset.removeInterviewer),1);renderPersonEditor(personEditor);return;
+      }
+      if (event.target.closest('[data-create-tag]')) {
+        const name = $('newTagName').value.trim();
+        const category = $('newTagCategory').value;
+        if (!name) { showToast('请输入标签名称'); return; }
+        if (tagLibrary.some(tag=>tag.name===name&&tag.category===category)) { showToast('该标签已存在'); return; }
+        tagLibrary.push({name,category}); renderTagRows(); $('newTagName').value=''; showToast('标签已添加'); return;
+      }
+      const renameTag = event.target.closest('[data-rename-tag]');
+      if (renameTag) {
+        const tag = tagLibrary[Number(renameTag.dataset.renameTag)];
+        const next = prompt('请输入新的标签名称',tag.name);
+        if (next && next.trim()) {
+          const old = tag.name; tag.name = next.trim();
+          if(tag.category==='evaluation') sessions.forEach(session=>{
+            if (session.evaluationTags) session.evaluationTags=session.evaluationTags.map(item=>item===old?tag.name:item);
+            session.people.forEach(person=>{ if(person.evaluationTags) person.evaluationTags=person.evaluationTags.map(item=>item===old?tag.name:item);(person.interviewerDetails||[]).forEach(detail=>detail.evaluationTags=(detail.evaluationTags||[]).map(item=>item===old?tag.name:item)); });
+          });
+          if(tag.category==='interviewer') { interviewerProfiles.forEach(profile=>{profile.tags=profile.tags.map(item=>item===old?tag.name:item);});sessions.forEach(session=>session.people.forEach(person=>(person.interviewerDetails||[]).forEach(detail=>detail.interviewerTags=(detail.interviewerTags||[]).map(item=>item===old?tag.name:item)))); }
+          renderTagRows(); showToast('标签已重命名');
+        }
+        return;
+      }
+      const deleteTag = event.target.closest('[data-delete-tag]');
+      if (deleteTag) {
+        const index=Number(deleteTag.dataset.deleteTag); const tag=tagLibrary[index];
+        if (confirm(`确定删除标签“${tag.name}”吗？`)) {
+          tagLibrary.splice(index,1);
+          if(tag.category==='evaluation') sessions.forEach(session=>{
+            session.evaluationTags=(session.evaluationTags||[]).filter(item=>item!==tag.name);
+            session.people.forEach(person=>{person.evaluationTags=(person.evaluationTags||[]).filter(item=>item!==tag.name);(person.interviewerDetails||[]).forEach(detail=>detail.evaluationTags=(detail.evaluationTags||[]).filter(item=>item!==tag.name));});
+          });
+          if(tag.category==='interviewer') { interviewerProfiles.forEach(profile=>profile.tags=profile.tags.filter(item=>item!==tag.name));sessions.forEach(session=>session.people.forEach(person=>(person.interviewerDetails||[]).forEach(detail=>detail.interviewerTags=(detail.interviewerTags||[]).filter(item=>item!==tag.name)))); }
+          renderTagRows(); showToast('标签已删除');
+        }
+      }
+    });
+    $('manageBody').addEventListener('input',event=>{
+      const search=event.target.closest('[data-roster-search]');
+      if (search) renderCandidateRows();
+      const tagSearch=event.target.closest('[data-tag-search]');
+      if (tagSearch) filterTagOptions(tagSearch);
+      const interviewerSearch=event.target.closest('[data-interviewer-picker-search]');
+      if (interviewerSearch) filterInterviewerOptions(interviewerSearch);
+    });
+    $('manageBody').addEventListener('click', event => {
+      if (event.target.closest('[data-history-search]')) renderHistoryRows();
+      if (event.target.closest('[data-history-reset]')) {
+        ['historyName','historyDepartment','historyPosition','historyTag'].forEach(id=>$(id).value='');
+        renderHistoryRows();
+      }
+    });
+    let draggedTagIndex = null;
+    $('manageBody').addEventListener('dragstart', event=>{
+      const handle=event.target.closest('.tag-drag-handle');
+      const row=handle&&handle.closest('[data-tag-index]');
+      if(!row) return;
+      draggedTagIndex=Number(row.dataset.tagIndex);
+      event.dataTransfer.effectAllowed='move';
+      event.dataTransfer.setData('text/plain',String(draggedTagIndex));
+    });
+    $('manageBody').addEventListener('dragover', event=>{
+      const row=event.target.closest('#tagRows [data-tag-index]');
+      if(row&&draggedTagIndex!==null) event.preventDefault();
+    });
+    $('manageBody').addEventListener('drop', event=>{
+      const row=event.target.closest('#tagRows [data-tag-index]');
+      if(!row||draggedTagIndex===null) return;
+      event.preventDefault();
+      const targetIndex=Number(row.dataset.tagIndex);
+      const [tag]=tagLibrary.splice(draggedTagIndex,1);
+      tagLibrary.splice(targetIndex,0,tag);
+      draggedTagIndex=null;
+      renderTagRows();
+    });
+    $('manageBody').addEventListener('dragend',()=>{draggedTagIndex=null;});
+    let draggedInterviewerRow = null;
+    let interviewerDragHandle = null;
+    let interviewerDragPointerId = null;
+    let interviewerSortPlaceholder = null;
+    let interviewerSortGhost = null;
+    let interviewerOriginalIndex = -1;
+    function createSortGhost(label,clientX,clientY,width) {
+      const ghost=document.createElement('div');
+      ghost.className='sort-drag-ghost';
+      ghost.textContent=label;
+      ghost.style.width=`${Math.min(Math.max(width,150),360)}px`;
+      ghost.style.left=`${clientX+12}px`;
+      ghost.style.top=`${clientY+12}px`;
+      document.body.appendChild(ghost);
+      return ghost;
+    }
+    function moveSortGhost(ghost,event) {
+      ghost.style.left=`${event.clientX+12}px`;
+      ghost.style.top=`${event.clientY+12}px`;
+    }
+    function finishInterviewerReorder() {
+      if (!draggedInterviewerRow) return;
+      if (interviewerSortPlaceholder?.parentElement) {
+        interviewerSortPlaceholder.parentElement.insertBefore(draggedInterviewerRow,interviewerSortPlaceholder);
+        interviewerSortPlaceholder.remove();
+      }
+      const rows=[...$('manageBody').querySelectorAll('tr[data-interviewer-row]')];
+      rows.forEach((row,index)=>{
+        row.dataset.index=String(index);
+        row.querySelector('[data-remove-interviewer]').dataset.removeInterviewer=String(index);
+      });
+      draggedInterviewerRow.classList.remove('dragging');
+      if (interviewerDragHandle?.hasPointerCapture?.(interviewerDragPointerId)) interviewerDragHandle.releasePointerCapture(interviewerDragPointerId);
+      interviewerSortGhost?.remove();
+      const newIndex=rows.indexOf(draggedInterviewerRow);
+      const changed=newIndex!==interviewerOriginalIndex;
+      draggedInterviewerRow=null;
+      interviewerDragHandle=null;
+      interviewerDragPointerId=null;
+      interviewerSortPlaceholder=null;
+      interviewerSortGhost=null;
+      interviewerOriginalIndex=-1;
+      capturePersonDraft();
+      if (changed) showToast('面试官顺序已调整');
+    }
+    $('manageBody').addEventListener('pointerdown',event=>{
+      const handle=event.target.closest('.interviewer-drag-handle');
+      const row=handle?.closest('tr[data-interviewer-row]');
+      if (!handle||!row) return;
+      event.preventDefault();
+      capturePersonDraft();
+      const rect=row.getBoundingClientRect();
+      draggedInterviewerRow=row;
+      interviewerDragHandle=handle;
+      interviewerDragPointerId=event.pointerId;
+      interviewerOriginalIndex=Number(row.dataset.index);
+      interviewerSortPlaceholder=document.createElement('tr');
+      interviewerSortPlaceholder.className='sort-placeholder interviewer-sort-placeholder';
+      interviewerSortPlaceholder.innerHTML='<td colspan="5">放到此处</td>';
+      interviewerSortPlaceholder.style.height=`${rect.height}px`;
+      row.parentElement.insertBefore(interviewerSortPlaceholder,row);
+      row.classList.add('dragging');
+      handle.setPointerCapture?.(event.pointerId);
+      row.remove();
+      interviewerSortGhost=createSortGhost(`面试官：${row.dataset.interviewerName}`,event.clientX,event.clientY,rect.width*.45);
+    });
+    document.addEventListener('pointermove',event=>{
+      if (!draggedInterviewerRow||event.pointerId!==interviewerDragPointerId) return;
+      event.preventDefault();
+      moveSortGhost(interviewerSortGhost,event);
+      const target=document.elementFromPoint(event.clientX,event.clientY)?.closest('tr[data-interviewer-row]');
+      if (!target||target.parentElement!==interviewerSortPlaceholder.parentElement) return;
+      const bounds=target.getBoundingClientRect();
+      const insertBefore=event.clientY<bounds.top+bounds.height/2;
+      if (insertBefore&&interviewerSortPlaceholder.nextElementSibling!==target) target.parentElement.insertBefore(interviewerSortPlaceholder,target);
+      else if (!insertBefore&&target.nextElementSibling!==interviewerSortPlaceholder) target.parentElement.insertBefore(interviewerSortPlaceholder,target.nextSibling);
+    },{passive:false});
+    document.addEventListener('pointerup',event=>{if(draggedInterviewerRow&&event.pointerId===interviewerDragPointerId)finishInterviewerReorder();});
+    document.addEventListener('pointercancel',event=>{if(draggedInterviewerRow&&event.pointerId===interviewerDragPointerId)finishInterviewerReorder();});
+    $('manageFoot').addEventListener('click',event=>{
+      if (event.target.closest('[data-manage-cancel]')) { closeManage();return; }
+      if (event.target.closest('[data-save-person]')) { savePersonEditor();return; }
+    });
+    $('manageClose').addEventListener('click', closeManage);
+    $('manageBackdrop').addEventListener('click', event=>{ if(event.target===$('manageBackdrop')) closeManage(); });
+    $('applyTimeEdit').addEventListener('click', applyTimeEditor);
+    $('finishAtTime').addEventListener('click', finishInterviewAtSelectedTime);
+    $('cancelTimeEdit').addEventListener('click', closeTimeEditor);
+    $('closeTimePopover').addEventListener('click', closeTimeEditor);
+    document.addEventListener('click', event => {
+      if (!$('timePopover').hidden && !$('timePopover').contains(event.target) && !event.target.closest('[data-time-edit]')) closeTimeEditor();
+      if (!event.target.closest('.reuse-control')) $('scheduleBody').querySelectorAll('[data-reuse-menu]').forEach(menu=>menu.hidden=true);
+      if (!event.target.closest('.tag-select')) $('manageBody').querySelectorAll('[data-tag-panel]').forEach(panel=>panel.hidden=true);
+      if (!event.target.closest('.interviewer-picker')) {
+        $('manageBody').querySelectorAll('[data-interviewer-picker-panel]').forEach(panel=>panel.hidden=true);
+        $('manageBody').querySelectorAll('[data-interviewer-picker-trigger]').forEach(trigger=>trigger.setAttribute('aria-expanded','false'));
+      }
+    });
+    function repositionOpenReuseMenus() {
+      $('scheduleBody').querySelectorAll('[data-reuse-menu]:not([hidden])').forEach(menu=>{
+        if (menu._anchorTrigger?.isConnected) {
+          positionReuseMenu(menu._anchorTrigger,menu);
+          const sourceTrigger=menu.querySelector('[data-reuse-source-trigger]');
+          const sourcePanel=menu.querySelector('[data-reuse-source-panel]');
+          if (sourceTrigger&&!sourcePanel.hidden) positionReuseSourcePanel(sourceTrigger,sourcePanel);
+        }
+        else menu.hidden=true;
+      });
+    }
+    document.addEventListener('scroll',repositionOpenReuseMenus,true);
+    window.addEventListener('resize',repositionOpenReuseMenus);
+    document.addEventListener('keydown', event => { if (event.key === 'Escape') { closeTimeEditor(); closeManage(); } });
+    let scheduleDrag = null;
+    function finishScheduleReorder() {
+      if (!scheduleDrag) return;
+      const drag=scheduleDrag;
+      if (drag.placeholder.parentElement) {
+        drag.placeholder.parentElement.insertBefore(drag.row,drag.placeholder);
+        drag.placeholder.remove();
+      }
+      drag.row.classList.remove('dragging');
+      drag.ghost.remove();
+      if (drag.handle.hasPointerCapture?.(drag.pointerId)) drag.handle.releasePointerCapture(drag.pointerId);
+      scheduleDrag=null;
+      if (drag.targetIndex===null) return;
+      const session=drag.session;
+      const targetPerson=session.people[drag.targetIndex];
+      if (!targetPerson||targetPerson===drag.person||targetPerson.status==='done') return;
+      const insertionIndex=drag.insertBefore?drag.targetIndex:drag.targetIndex+1;
+      const destination=drag.from<insertionIndex?insertionIndex-1:insertionIndex;
+      if (destination===drag.from) return;
+      session.people.splice(drag.from,1);
+      session.people.splice(destination,0,drag.person);
+      session.people.forEach(person=>{
+        if (person.status!=='done') { delete person.manualStart;delete person.manualEnd; }
+      });
+      activateSession(session.id);
+      recalculate(session);
+      showToast('面试顺序已调整，后续时间已自动重排');
+    }
+    $('scheduleBody').addEventListener('pointerdown',event=>{
+      const handle=event.target.closest('.drag-handle');
+      const row=handle?.closest('tr[data-index][data-session-id]');
+      const session=row&&sessions.find(item=>item.id===row.dataset.sessionId);
+      const person=session?.people[Number(row?.dataset.index)];
+      if (!handle||!row||!session||!person||person.status==='done') return;
+      event.preventDefault();
+      const rect=row.getBoundingClientRect();
+      const placeholder=document.createElement('tr');
+      placeholder.className='sort-placeholder schedule-sort-placeholder';
+      placeholder.innerHTML='<td colspan="11">放到此处</td>';
+      placeholder.style.height=`${rect.height}px`;
+      row.parentElement.insertBefore(placeholder,row);
+      handle.setPointerCapture?.(event.pointerId);
+      row.classList.add('dragging');
+      row.remove();
+      const ghost=createSortGhost(`${Number(row.dataset.index)+1}. ${person.name} · ${person.type}`,event.clientX,event.clientY,Math.min(rect.width*.42,340));
+      scheduleDrag={session,person,row,handle,placeholder,ghost,pointerId:event.pointerId,from:Number(row.dataset.index),targetIndex:null,insertBefore:true};
+    });
+    document.addEventListener('pointermove',event=>{
+      const drag=scheduleDrag;
+      if (!drag||event.pointerId!==drag.pointerId) return;
+      event.preventDefault();
+      moveSortGhost(drag.ghost,event);
+      const target=document.elementFromPoint(event.clientX,event.clientY)?.closest('tr[data-index][data-session-id]');
+      if (!target||target.dataset.sessionId!==drag.session.id) return;
+      const targetIndex=Number(target.dataset.index);
+      const targetPerson=drag.session.people[targetIndex];
+      if (!targetPerson||targetPerson.status==='done') return;
+      const bounds=target.getBoundingClientRect();
+      const insertBefore=event.clientY<bounds.top+bounds.height/2;
+      drag.targetIndex=targetIndex;
+      drag.insertBefore=insertBefore;
+      if (insertBefore&&drag.placeholder.nextElementSibling!==target) target.parentElement.insertBefore(drag.placeholder,target);
+      else if (!insertBefore&&target.nextElementSibling!==drag.placeholder) target.parentElement.insertBefore(drag.placeholder,target.nextSibling);
+    },{passive:false});
+    document.addEventListener('pointerup',event=>{if(scheduleDrag&&event.pointerId===scheduleDrag.pointerId)finishScheduleReorder();});
+    document.addEventListener('pointercancel',event=>{if(scheduleDrag&&event.pointerId===scheduleDrag.pointerId)finishScheduleReorder();});
+    $('toggleMenu').addEventListener('click', () => {
+      const collapsed = document.body.classList.toggle('menu-collapsed');
+      $('toggleMenu').setAttribute('aria-label', collapsed ? '展开菜单' : '收起菜单');
+      $('toggleMenu').setAttribute('title', collapsed ? '展开菜单' : '收起菜单');
+    });
+
+    sessions.forEach(session=>recalculate(session,false));
+    const latestInterviewDate=sessions.reduce((latest,session)=>session.date>latest?session.date:latest,'');
+    if (latestInterviewDate) { $('filterDateFrom').value=latestInterviewDate;$('filterDateTo').value=latestInterviewDate; }
+    renderTable();
+  </script>
+</body>
+</html>
