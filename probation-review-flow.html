@@ -19,7 +19,8 @@
     .footer{height:36px;background:#fff;border-top:1px solid #e1e1e1;display:flex;align-items:center;justify-content:center;gap:17px;color:var(--blue)}.footer button{border:0;background:none;color:inherit;padding:2px 0;white-space:nowrap}.footer button span{font-size:17px;vertical-align:-2px;margin-right:5px}.footer .error-report{position:absolute;right:12px;font-size:11px}.float-tool{position:fixed;right:0;bottom:56px;width:26px;height:26px;border:0;border-radius:50% 0 0 50%;background:#fff;box-shadow:0 2px 10px #0002;color:#9da5ac}
     .modal-cover{position:fixed;inset:0;background:#1c293450;display:none;align-items:center;justify-content:center;z-index:10;padding:20px}.modal-cover.open{display:flex}.modal{background:#fff;border-radius:7px;width:min(430px,100%);box-shadow:0 14px 45px #0003;padding:18px}.modal-header{display:flex;align-items:center;justify-content:space-between}.modal-header h2{font-size:15px;margin:0}.modal-close{border:0;background:none;font-size:19px;color:#858d95}.modal-body{margin:18px 0;line-height:1.8;color:#58616a}.modal-body textarea{width:100%;min-height:75px;border:1px solid #ddd;border-radius:4px;padding:8px;resize:vertical}.modal-actions{display:flex;justify-content:flex-end;gap:8px}.modal-actions button{border:1px solid #d4d9de;background:#fff;border-radius:4px;padding:5px 15px}.modal-actions .primary{border-color:var(--blue);background:var(--blue);color:#fff}.toast{position:fixed;top:46px;left:50%;transform:translateX(-50%);background:#303d49;color:#fff;padding:8px 15px;border-radius:4px;z-index:20;display:none}.toast.show{display:block}
     @media(max-width:950px){.workspace{grid-template-columns:minmax(0,1fr) 310px;padding-left:10px}.toplinks{gap:10px}.checks{gap:5px}.process-card{padding-left:13px;padding-right:10px}.fields{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:700px){.workspace{height:auto;display:block;padding:10px}.left{min-height:630px}.form-card{min-height:520px}.process-card{margin-top:10px;min-height:400px}.fields{grid-template-columns:1fr 1fr}.toplinks .top-text{display:none}.footer{position:sticky;bottom:0;gap:10px}.footer .error-report{display:none}}
-  </style>
+  .fields .field{grid-template-columns:96px minmax(0,1fr);gap:12px}.fields .field label{text-align:right}.fields .field input,.fields .field select{height:42px!important;width:100%;min-width:0;box-sizing:border-box}.review-rotation-teachers{display:flex;align-items:baseline;gap:8px;margin:8px 0 16px;font-size:13px;color:#63758b}.review-rotation-teachers span:first-child{font-size:12px;color:#98a3b1;white-space:nowrap}.review-rotation-teachers span:last-child{line-height:1.6}.review-mentor-group{border:1px solid #e4eaf2;border-radius:8px;overflow:hidden;margin-bottom:12px}.review-mentor-group>summary{display:flex;align-items:center;gap:12px;min-height:50px;padding:12px 16px;background:#fbfcfe;cursor:pointer;list-style:none}.review-mentor-group>summary::-webkit-details-marker{display:none}.review-mentor-group>summary:after{content:'⌄';margin-left:auto;color:#8996a7}.review-mentor-group[open]>summary:after{content:'⌃'}.review-mentor-body{display:flex;flex-direction:column;gap:12px;padding:14px;border-top:1px solid #e9edf3}
+.review-mentor-group{font-family:inherit}.review-mentor-group>summary>strong{font-size:15px;font-weight:600;color:#34465a}.review-mentor-group .transfer-rating-title{font-size:14px;font-weight:500;color:#45566b}.review-mentor-group .transfer-rating-item strong{font-size:13px;font-weight:400;color:#63758b}.review-mentor-group .transfer-rating-comment{font-size:13px;font-weight:400;color:#8795a6}.review-mentor-group .transfer-rating-note{font-size:13px;font-weight:400;line-height:1.8;color:#52647a}.review-mentor-group .transfer-rating-average strong{font-size:20px;font-weight:500}</style>
   <style>
     /* 与“新员工述职”共用的页面视觉规格。 */
     :root{color-scheme:light;--blue:#3478f6;--text:#202b38;--muted:#89919a;--line:#e7e9ec;--canvas:#f5f6f8;font-family:"Microsoft YaHei","PingFang SC","Noto Sans CJK SC",Arial,sans-serif;color:var(--text);font-size:14px;font-synthesis:none}
@@ -153,20 +154,20 @@
     @media(max-width:1250px){.workspace{gap:14px;padding-left:18px;padding-right:18px;grid-template-columns:minmax(0,1fr) minmax(290px,31%)}.page-head{padding-left:23px;padding-right:23px}.form-card{padding-left:24px;padding-right:24px}.fields{column-gap:16px}.field{grid-template-columns:82px minmax(0,1fr);gap:8px}.process-card{padding-left:23px;padding-right:23px}.process-options{align-items:flex-start;flex-direction:column;gap:14px;margin-top:24px}.rating-items{grid-template-columns:1fr}}
     @media(max-width:900px){.topbar{padding:0 16px}.toplinks{gap:14px}.workspace{height:auto;min-height:calc(100vh - 112px);display:flex;flex-direction:column;padding:14px}.page-head{height:auto;min-height:145px}.form-card{overflow:visible}.process-card{min-height:330px}.fields{grid-template-columns:repeat(2,minmax(0,1fr))}.mentor-rating-field-heading{align-items:flex-start}.collapse{left:auto;right:12px;top:-14px;transform:rotate(90deg);width:34px;height:24px}.workspace.hide-process .process-card{min-height:0;height:0}.workspace.hide-process .collapse{left:auto;right:12px}.footer{position:sticky;bottom:0}}
     @media(max-width:600px){.topbar strong{font-size:15px}.toplinks{gap:8px}.toplinks .top-text,.toplinks .divider{display:none}.workspace{padding:10px}.left{min-height:0;gap:12px}.page-head{padding:18px;min-height:148px}.title{font-size:16px}.origin{flex-wrap:wrap;gap:7px;font-size:12px}.bot{width:30px;height:30px}.form-card{min-height:0;padding:20px 16px 26px}.fields{grid-template-columns:1fr;row-gap:14px}.field{grid-template-columns:86px minmax(0,1fr)}.attachment-section,.assessment{margin-top:29px}.process-card{padding:23px 18px}.event{grid-template-columns:12px 38px minmax(0,1fr) auto;gap:9px}.avatar{width:38px;height:38px}.checks{gap:11px;font-size:12px}.badge{font-size:12px}.date{font-size:11px}.footer{justify-content:space-around;gap:4px}.footer button{font-size:11px}.footer button span{font-size:16px;margin-right:3px}.footer .error-report{display:none}}
-  </style>
+  .review-mentor-group{font-family:inherit}.review-mentor-group>summary>strong{font-size:15px;font-weight:600;color:#34465a}.review-mentor-group .transfer-rating-title{font-size:14px;font-weight:500;color:#45566b}.review-mentor-group .transfer-rating-item strong{font-size:13px;font-weight:400;color:#63758b}.review-mentor-group .transfer-rating-comment{font-size:13px;font-weight:400;color:#8795a6}.review-mentor-group .transfer-rating-note{font-size:13px;font-weight:400;line-height:1.8;color:#52647a}.review-mentor-group .transfer-rating-average strong{font-size:20px;font-weight:500}.review-mentor-group{font-family:"PingFang SC","Microsoft YaHei","Noto Sans SC",Arial,sans-serif}.review-mentor-group>summary>strong{font-size:15px;font-weight:600;color:#34465a;line-height:1.5}.review-mentor-group .transfer-rating-title{font-size:14px;font-weight:650;color:#3d5067;line-height:1.5}.review-mentor-group .transfer-rating-item strong{font-size:12px;font-weight:600;color:#45566b;line-height:1.5}.review-mentor-group .transfer-rating-comment{display:block;font-size:12px;font-weight:600;color:#5d6d80;line-height:1.6;margin:12px 0 6px}.review-mentor-group .transfer-rating-note{font-size:13px;font-weight:400;line-height:1.8;color:#3e4f63;margin-top:0;padding:11px 13px}.review-mentor-group .transfer-rating-average strong{font-size:21px;font-weight:700}</style>
 </head>
 <body>
   <header class="topbar"><strong>转正评价流程</strong><nav class="toplinks" aria-label="顶部导航"><button class="top-text" data-modal="事务中心">▦ 事务中心</button><button class="top-text" data-modal="设置">⚙ 设置</button><span class="divider"></span><button aria-label="首页" data-modal="首页"><svg viewBox="0 0 24 24"><path d="m3 11 9-7 9 7M5 10v10h14V10M10 20v-6h4v6"/></svg></button><button aria-label="消息" data-modal="消息"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4V5Z"/><path d="M8 9h8M8 12h5"/></svg></button></nav></header>
   <main class="workspace" id="workspace">
     <div class="left">
       <section class="card page-head" aria-label="流程概览"><div class="head-row"><div class="title">章岸琪的转正评价</div><div class="head-tools"><span class="stage">管理员确认</span><button class="ghost-icon" aria-label="更多操作" data-modal="更多操作">☷</button></div></div><div class="origin-row"><div class="origin"><span class="bot" aria-hidden="true">🤖</span><span class="person">人力小助手(信息技术部)</span><span>06-03 08:56</span><span>发起</span><span class="priority">一般</span></div><button class="summary" id="summaryBtn" aria-expanded="false">摘要⌄</button></div><div class="summary-detail" id="summaryDetail" hidden>流程：转正评价流程<br>申请人：章岸琪<br>当前节点：管理员确认</div></section>
-      <section class="card form-card" aria-label="转正评价表单"><h2 class="section-title">基本信息</h2><div class="fields"><div class="field"><label for="name">姓名</label><input id="name" value="章岸琪" readonly></div><div class="field"><label for="department">部门</label><input id="department" value="信息技术开发" readonly></div><div class="field"><label for="position">岗位</label><input id="position" placeholder="请输入" readonly></div><div class="field"><label for="leader">直属领导</label><input id="leader" value="10null" readonly></div><div class="field"><label for="joined">入职时间</label><input id="joined" value="2021-11-29" readonly></div><div class="field"><label for="regular-date">拟转正时间</label><input id="regular-date" value="2026-12-29" readonly></div></div>
-        <section class="attachment-section"><h2 class="section-title">持续考察信息表</h2><table class="attachment-table"><thead><tr><th>文件</th><th>操作</th></tr></thead><tbody><tr><td>持续考察面试信息表-信息技术开发-章岸琪.pdf</td><td><div class="file-actions"><button aria-label="预览附件" data-modal="附件预览">◉</button><button aria-label="下载附件" id="downloadBtn">⬇</button></div></td></tr></tbody></table></section>
+      <section class="card form-card" aria-label="转正评价表单"><h2 class="section-title">基本信息</h2><div class="fields"><div class="field"><label for="name">姓名</label><input id="name" value="章岸琪" readonly></div><div class="field"><label for="department">部门</label><input id="department" value="信息技术开发" readonly></div><div class="field"><label for="position">岗位</label><input id="position" placeholder="请输入" readonly></div><div class="field"><label for="leader">直属领导</label><input id="leader" value="10null" readonly></div><div class="field"><label for="joined">入职时间</label><input id="joined" value="2021-11-29" readonly></div><div class="field"><label for="regular-date">拟转正时间</label><input id="regular-date" value="2026-12-29" readonly></div><div class="field"><label for="evaluationGuideTeacher">指导老师</label><select id="evaluationGuideTeacher" style="width:100%;height:36px;border:1px solid #dce2e9;border-radius:5px;padding:0 10px;font:inherit"><option value="">请选择</option><option>王老师</option><option>李老师</option><option>张老师</option></select></div></div>
         <section class="transfer-section" aria-labelledby="transferSectionTitle">
           <h2 class="section-title" id="transferSectionTitle">轮岗记录</h2>
           <div class="transfer-table-wrap"><table class="transfer-table"><thead><tr><th scope="col">轮岗部门</th><th scope="col">带教老师</th><th scope="col">轮岗周期</th><th scope="col">操作</th></tr></thead><tbody id="transferRecordRows"></tbody></table></div>
         </section>
-        <section class="assessment"><h2 class="section-title">考察信息</h2><div class="textarea-field"><label for="probation">试用期考核指标完成情况</label><div class="text-wrap"><textarea id="probation" maxlength="950">1</textarea><button class="clear" aria-label="清空试用期考核指标完成情况" data-clear="probation">×</button><span class="count" data-count="probation">1 / 950</span></div></div>
+        <section class="attachment-section"><h2 class="section-title">持续考察信息表</h2><table class="attachment-table"><thead><tr><th>文件</th><th>操作</th></tr></thead><tbody><tr><td>持续考察面试信息表-信息技术开发-章岸琪.pdf</td><td><div class="file-actions"><button aria-label="预览附件" data-modal="附件预览">◉</button><button aria-label="下载附件" id="downloadBtn">⬇</button></div></td></tr></tbody></table></section>
+        <section class="assessment"><h2 class="section-title">考察信息</h2><div class="textarea-field"><label for="probation">试用期考核指标完成情况</label><div class="text-wrap"><textarea id="probation" maxlength="950" placeholder="试用期考核指标完成情况"></textarea><button class="clear" aria-label="清空试用期考核指标完成情况" data-clear="probation">×</button><span class="count" data-count="probation">0 / 950</span></div></div>
           <div class="textarea-field mentor-rating-field">
             <div class="mentor-rating-field-heading">
               <strong class="mentor-rating-field-title"><span class="required">* </span>指导老师评价</strong>
@@ -270,18 +271,23 @@
       mentorRatingDraft.comment=$('mentor').value.trim();
       $('mentor').value=mentorRatingDraft.comment;
       document.querySelector('[data-count="mentor"]').textContent=`${mentorRatingDraft.comment.length} / 950`;
-      try{localStorage.setItem(mentorRatingStorageKey,JSON.stringify({ratings:mentorRatingDraft.ratings.slice(),comment:mentorRatingDraft.comment}))}catch{}
+      try{localStorage.setItem(mentorRatingStorageKey,JSON.stringify({ratings:mentorRatingDraft.ratings.slice(),comment:mentorRatingDraft.comment,meta:{id:'probation-zhang-anqi',employee:{name:$('name').value,department:$('department').value,position:$('position').value},teacher:{name:$('evaluationGuideTeacher').value},period:'转正评价',date:new Date().toLocaleDateString('sv-SE')}}))}catch{}
       $('mentorRatingStatus').textContent='评价已保存';
       showToast('评价已保存');
     });
     const transferRecords=[
       {department:'信息技术部',mentor:'罗景行',start:'2026-09-01',end:'2026-10-31',logs:[
-        {title:'研发岗位需求梳理与协作流程',date:'2026-10-05',sections:[['工作内容','参与前端研发岗位需求评审，跟随团队梳理岗位画像、工作流程和协作方式。'],['学习收获','了解了需求确认、任务拆分与阶段反馈之间的协作流程。'],['问题困惑','对部分技术能力的分级标准还需要进一步熟悉。'],['后续计划','整理阶段工作要点，并和带教老师复盘需要提升的内容。']],comments:[{author:'杨艳英（轮岗员工）',date:'2026-10-05',text:'老师，岗位能力要求中的熟练度要如何区分？',replies:[{author:'罗景行（带教老师）',date:'2026-10-05',text:'可以结合独立完成任务、排查问题和协作情况综合判断。'}]}]},
+        {title:'研发岗位需求梳理与协作流程',date:'2026-10-05',sections:[['工作内容','参与前端研发岗位需求评审，跟随团队梳理岗位画像、工作流程和协作方式。'],['学习收获','了解了需求确认、任务拆分与阶段反馈之间的协作流程。'],['问题困惑','对部分技术能力的分级标准还需要进一步熟悉。'],['后续计划','整理阶段工作要点，并和带教老师复盘需要提升的内容。']],comments:[{author:'章岸琪（轮岗员工）',date:'2026-10-05',text:'老师，岗位能力要求中的熟练度要如何区分？',replies:[{author:'罗景行（带教老师）',date:'2026-10-05',text:'可以结合独立完成任务、排查问题和协作情况综合判断。'}]}]},
         {title:'技术流程学习记录',date:'2026-10-02',sections:[['工作内容','旁听团队工作讨论，记录任务推进过程中的沟通节点和资料要求。'],['学习收获','熟悉了工作任务从提出、确认到跟进的基本步骤。'],['问题困惑','遇到跨团队事项时，对责任节点还不够熟悉。'],['后续计划','整理问题清单，下次跟岗时继续了解。']],comments:[]}
       ],ratings:{mentor:[4.5,5,4.5],employee:[4.5,4,5],mentorComment:'工作态度认真，能主动沟通并跟进安排。',employeeComment:'带教老师反馈及时，能结合实际任务讲解工作方法。'}},
       {department:'风险管理部',mentor:'顾云舟',start:'2026-08-01',end:'2026-10-31',logs:[{title:'风险管理工作流程熟悉记录',date:'2026-10-04',sections:[['工作内容','参与部门日常复核，了解问题登记和流转处理方式。'],['学习收获','熟悉了风险事项从发现到反馈的基本路径。'],['问题困惑','部分历史数据口径调整的处理方式还需要进一步了解。'],['后续计划','继续跟进一次完整流程，并整理复盘记录。']],comments:[]}],ratings:{mentor:[4.5,4,4.5],employee:[4,4.5,4],mentorComment:'能够认真完成安排的学习与跟岗任务。',employeeComment:'带教安排清晰，沟通问题时能及时给予说明。'}},
       {department:'运营管理部',mentor:'秦书宁',start:'2026-09-01',end:'2026-11-30',logs:[{title:'运营流程体验与问题整理',date:'2026-10-03',sections:[['工作内容','跟随团队了解业务咨询处理和跨部门转办流程。'],['学习收获','掌握了问题登记、分类和进度跟进的基本步骤。'],['问题困惑','多部门共同处理事项的责任节点还需要进一步熟悉。'],['后续计划','整理典型案例，在后续工作中继续复盘。']],comments:[]}],ratings:{mentor:[4,4.5,5],employee:[4.5,4.5,4],mentorComment:'学习积极，能根据反馈调整工作方法。',employeeComment:'老师耐心解答问题，帮助我更快熟悉轮岗工作。'}}
     ];
+    transferRecords.forEach((record,index)=>{record.mentors=index===0?[record.mentor,'顾云舟']:[record.mentor];record.logs.forEach((log,logIndex)=>{log.mentors=logIndex===0?record.mentors.slice():[record.mentor]})});
+    function syncTransferRecords(){let stored=[];try{stored=JSON.parse(localStorage.getItem('rotation-records-multi-mentor-v1')||'[]')}catch{}if(!Array.isArray(stored))return;const matched=stored.filter(record=>record.name===$('name').value&&!String(record.id).startsWith('draft-'));if(!matched.length)return;let comments={};try{comments=JSON.parse(localStorage.getItem('rotation-log-comments-v2')||'{}')}catch{}
+      transferRecords.splice(0,transferRecords.length,...matched.map(record=>({sourceRecordId:record.id,department:record.rotationDepartment,mentor:record.mentor,mentors:record.mentors||[record.mentor],start:record.periodStart,end:record.periodEnd,ratings:record.ratings,mentorEvaluations:record.mentorEvaluations,logs:(record.logs||[]).filter(log=>!log.draft).map(log=>({title:log.title,date:log.recordDate||log.updatedAt,html:log.html,mentors:log.mentors||record.mentors||[record.mentor],comments:comments[log.id]||log.comments||[]}))})));
+    }
+    function safeTransferHtml(html){const doc=new DOMParser().parseFromString(html,'text/html'),allowed=new Set(['P','DIV','BR','STRONG','B','EM','I','U','UL','OL','LI','H1','H2','H3','H4','BLOCKQUOTE']);const clean=node=>Array.from(node.children).forEach(child=>{if(['SCRIPT','STYLE','IFRAME','OBJECT','IMG'].includes(child.tagName)){child.remove();return}clean(child);if(!allowed.has(child.tagName)){child.replaceWith(...child.childNodes);return}Array.from(child.attributes).forEach(attribute=>child.removeAttribute(attribute.name))});clean(doc.body);return doc.body.innerHTML}
     const transferLogCommentStorageKey='probation-rotation-log-comments-v1';
     let transferLogCommentStore={};
     let transferReplyingToIndex=null;
@@ -296,7 +302,7 @@
       rows.replaceChildren();
       transferRecords.forEach((record,index)=>{
         const row=document.createElement('tr');
-        [record.department,record.mentor,`${record.start} 至 ${record.end}`].forEach(value=>{const cell=document.createElement('td');cell.textContent=value;row.append(cell)});
+        [record.department,(record.mentors||[record.mentor]).join('、'),`${record.start} 至 ${record.end}`].forEach(value=>{const cell=document.createElement('td');cell.textContent=value;row.append(cell)});
         const action=document.createElement('td');
         const button=document.createElement('button');button.type='button';button.className='transfer-detail-button';button.textContent='详情';button.addEventListener('click',()=>openTransferDetail(index,0));
         action.append(button);row.append(action);rows.append(row);
@@ -304,7 +310,7 @@
     }
     function appendTransferText(parent,tag,className,text){const node=document.createElement(tag);if(className)node.className=className;node.textContent=text;parent.append(node);return node}
     function renderTransferLog(recordIndex,logIndex){
-      const record=transferRecords[recordIndex];const log=record.logs[logIndex];
+      const record=transferRecords[recordIndex];const log=record.logs[logIndex];if(!log){$('transferLogNav').replaceChildren();const empty=$('transferLogContent');empty.replaceChildren();appendTransferText(empty,'p','transfer-log-empty','暂无轮岗日志');return}
       const nav=$('transferLogNav');nav.replaceChildren();
       record.logs.forEach((item,index)=>{
         const button=document.createElement('button');button.type='button';button.className=`transfer-log-nav-item${index===logIndex?' active':''}`;button.setAttribute('aria-current',String(index===logIndex));
@@ -313,8 +319,9 @@
       });
       const content=$('transferLogContent');content.replaceChildren();
       const head=document.createElement('div');head.className='transfer-log-main-head';appendTransferText(head,'h3','',log.title);appendTransferText(head,'span','transfer-log-date',`记录日期：${log.date}`);content.append(head);
+      const teacherLine=document.createElement('div');teacherLine.className='review-rotation-teachers';appendTransferText(teacherLine,'span','','相关带教老师');appendTransferText(teacherLine,'span','',(log.mentors||record.mentors||[record.mentor]).join('、'));content.append(teacherLine);
       const body=document.createElement('div');body.className='transfer-log-body';
-      log.sections.forEach(([heading,text])=>{appendTransferText(body,'h4','',heading);appendTransferText(body,'p','',text)});content.append(body);
+      (log.sections||[]).forEach(([heading,text])=>{appendTransferText(body,'h4','',heading);appendTransferText(body,'p','',text)});if(log.html)body.innerHTML=safeTransferHtml(log.html);content.append(body);
       const comments=document.createElement('section');comments.className='transfer-log-comments';appendTransferText(comments,'h4','', '评论与回复');
       const composer=document.createElement('div');composer.className='transfer-log-comment-composer';
       const input=document.createElement('textarea');input.maxLength=1000;input.placeholder='写下评论';input.setAttribute('aria-label','发表评论');
@@ -368,11 +375,10 @@
     }
     let transferEvaluationDraft=null;
     const transferEvaluationStoragePrefix='probation-rotation-evaluation-v1';
-    function loadTransferEvaluation(record){
-      let stored=null;try{stored=JSON.parse(localStorage.getItem(`${transferEvaluationStoragePrefix}:${record.department}`)||'null')}catch{}
-      const values=stored||record.ratings||{};
-      const normalize=list=>Array.from({length:3},(_,index)=>{const value=Number(list&&list[index]||0);return Number.isFinite(value)&&value>=0&&value<=5?Math.round(value*2)/2:0});
-      return{mentor:normalize(values.mentor),employee:normalize(values.employee),mentorComment:String(values.mentorComment||''),employeeComment:String(values.employeeComment||'')};
+    function loadTransferEvaluation(record,mentor=(record.mentors||[record.mentor])[0]){
+      const first=mentor===(record.mentors||[record.mentor])[0],evaluation=record.mentorEvaluations?.[mentor];const source=evaluation?{mentor:evaluation.ratings?.mentor,employee:evaluation.ratings?.employee,mentorComment:evaluation.evaluationNotes?.mentor,employeeComment:evaluation.evaluationNotes?.employee}:first?record.ratings||{}:{};
+      let stored=null;if(!record.sourceRecordId){try{stored=JSON.parse(localStorage.getItem(transferEvaluationStoragePrefix+':'+record.department+':'+mentor)||'null');if(!stored&&first)stored=JSON.parse(localStorage.getItem(transferEvaluationStoragePrefix+':'+record.department)||'null')}catch{}}
+      const values=stored||source,normalize=list=>Array.from({length:3},(_,index)=>{const value=Number(list?.[index]||0);return Number.isFinite(value)&&value>=0&&value<=5?Math.round(value*2)/2:0});return {mentor:normalize(values.mentor),employee:normalize(values.employee),mentorComment:String(values.mentorComment||''),employeeComment:String(values.employeeComment||'')};
     }
     function setTransferDetailTab(name){
       const showLogs=name==='logs';
@@ -380,17 +386,17 @@
       $('transferLogsTab').setAttribute('aria-selected',String(showLogs));$('transferRatingsTab').setAttribute('aria-selected',String(!showLogs));
       $('transferLogsPane').hidden=!showLogs;$('transferRatingsPane').hidden=showLogs;
     }
-    function renderTransferRatings(){
-      const container=$('transferRatingDirections');container.replaceChildren();if(!transferEvaluationDraft)return;
+    function renderTransferRatings(){const container=$('transferRatingDirections');container.replaceChildren();if(!activeTransferRecord)return;(activeTransferRecord.mentors||[activeTransferRecord.mentor]).forEach((mentor,index)=>{const group=document.createElement('details');group.className='review-mentor-group';group.open=index===0;const head=document.createElement('summary');appendTransferText(head,'strong','',mentor);const body=document.createElement('div');body.className='review-mentor-body';appendTransferRatingCards(body,loadTransferEvaluation(activeTransferRecord,mentor));group.append(head,body);container.append(group)})}
+    function appendTransferRatingCards(container,draft){
       const directions=[
-        {key:'mentor',title:'带教老师评价新员工',privacy:'此评价对新员工不可见',dimensions:['专业胜任力','工作积极性','文化认同感']},
-        {key:'employee',title:'新员工评价带教老师',privacy:'此评价对带教老师不可见',dimensions:['带教投入','带教方法','带教成效']}
+        {key:'mentor',title:'老师对员工的评价',dimensions:['专业胜任力','工作积极性','文化认同感']},
+        {key:'employee',title:'员工对老师的评价',dimensions:['带教投入','带教方法','带教成效']}
       ];
       directions.forEach(direction=>{
-        const values=transferEvaluationDraft[direction.key]||[];const scores=values.filter(value=>value>0);const average=scores.length?scores.reduce((sum,value)=>sum+value,0)/scores.length:null;
+        const values=draft[direction.key]||[];const scores=values.filter(value=>value>0);const average=scores.length?scores.reduce((sum,value)=>sum+value,0)/scores.length:null;
         const card=document.createElement('section');card.className='transfer-rating-card';
         const head=document.createElement('div');head.className='transfer-rating-head';const label=document.createElement('div');
-        appendTransferText(label,'strong','transfer-rating-title',direction.title);appendTransferText(label,'span','transfer-rating-privacy',direction.privacy);
+        appendTransferText(label,'strong','transfer-rating-title',direction.title);
         const averageBox=document.createElement('div');averageBox.className='transfer-rating-average';averageBox.append('评价均分 ');appendTransferText(averageBox,'strong','',average==null?'—':average.toFixed(1));averageBox.append(' / 5 分');head.append(label,averageBox);card.append(head);
         const items=document.createElement('div');items.className='transfer-rating-items';
         direction.dimensions.forEach((dimension,index)=>{
@@ -400,7 +406,7 @@
           const value=appendTransferText(item,'span','transfer-rating-value',rating?rating.toFixed(1):'未评');item.append(stars);item.append(value);items.append(item);
         });
         card.append(items);appendTransferText(card,'label','transfer-rating-comment','文字评价');
-        const comment=transferEvaluationDraft[`${direction.key}Comment`]||'';const note=document.createElement('div');note.className=`transfer-rating-note${comment?'':' empty'}`;note.setAttribute('aria-label',`${direction.title}文字评价`);note.textContent=comment||'暂未填写文字评价';card.append(note);container.append(card);
+        const comment=draft[`${direction.key}Comment`]||'';const note=document.createElement('div');note.className=`transfer-rating-note${comment?'':' empty'}`;note.setAttribute('aria-label',`${direction.title}文字评价`);note.textContent=comment||'暂未填写文字评价';card.append(note);container.append(card);
       });
     }
     let activeTransferRecord=null;
@@ -410,11 +416,11 @@
       activeTransferRecord=record;transferEvaluationDraft=loadTransferEvaluation(record);
       $('transferDetailTitle').textContent=`章岸琪 · ${record.department} 轮岗记录`;
       $('transferDetailName').value='章岸琪';$('transferDetailPosition').value=$('position').value||'新员工';$('transferDetailEntryDepartment').value=$('department').value;
-      $('transferDetailDepartment').value=record.department;$('transferDetailMentor').value=record.mentor;$('transferDetailStart').value=record.start;$('transferDetailEnd').value=record.end;
+      $('transferDetailDepartment').value=record.department;$('transferDetailMentor').value=(record.mentors||[record.mentor]).join('、');$('transferDetailStart').value=record.start;$('transferDetailEnd').value=record.end;
       renderTransferLog(recordIndex,logIndex);renderTransferRatings();setTransferDetailTab('logs');$('transferDetailBackdrop').hidden=false;
     }
     function closeTransferDetail(){$('transferDetailBackdrop').hidden=true}
-    renderTransferRows();
+    syncTransferRecords();renderTransferRows();
     document.querySelectorAll('[data-close-transfer]').forEach(button=>button.addEventListener('click',closeTransferDetail));
     $('transferLogsTab').addEventListener('click',()=>setTransferDetailTab('logs'));
     $('transferRatingsTab').addEventListener('click',()=>setTransferDetailTab('ratings'));
@@ -433,6 +439,12 @@
     $('downloadBtn').addEventListener('click',()=>showToast('未提供附件原文件，暂无法下载'));
     document.querySelector('[data-action="print"]').addEventListener('click',()=>window.print());
     let toastTimer;function showToast(message){const el=$('toast');el.textContent=message;el.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),2800)}
+
+    if(savedMentorRating?.meta?.teacher?.name)$('evaluationGuideTeacher').value=savedMentorRating.meta.teacher.name;
+    window.personEvaluationSnapshot=()=>{let saved=null;try{saved=JSON.parse(localStorage.getItem(mentorRatingStorageKey)||'null')}catch{}return {kind:'probation',saved,employee:{name:$('name').value,department:$('department').value,position:$('position').value},date:$('regular-date').value}};
+    if(new URLSearchParams(location.search).get('focus')==='mentor')document.querySelector('.assessment').scrollIntoView({block:'start'});
   </script>
+  <script src="person-evaluation-examples.js"></script>
+  <script src="person-evaluation-bridge.js"></script>
 </body>
 </html>

@@ -85,7 +85,26 @@
     .drag-handle:hover { color: #287bd6; background: #edf5ff; }
     .order-badge { display: inline-grid; width: 25px; height: 25px; place-items: center; border-radius: 50%; color: #557cae; background: #edf4fc; font-weight: 600; }
     .time-cell { color: #34475d; font-variant-numeric: tabular-nums; font-weight: 600; }
-    .interviewer-cell { color: #657386; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .interviewer-cell { color: #657386; white-space: normal; line-height: 1.8; }
+    .interviewer-names { line-height: 1.8; }
+    .interviewer-names span { white-space: nowrap; }
+    .table-wrap > table { min-width: 1298px; border-collapse: separate; border-spacing: 0; }
+    #scheduleBody td, .table-wrap > table th { padding-left: 9px; padding-right: 9px; }
+    .table-wrap > table tr > :nth-child(-n+3) { position: sticky; z-index: 2; background: #fff; }
+    .table-wrap > table thead tr > th { background: #fafbfd; z-index: 3; }
+    .table-wrap > table tr > :nth-child(1) { left: 0; }
+    .table-wrap > table tr > :nth-child(2) { left: 44px; }
+    .table-wrap > table tr > :nth-child(3) { left: 112px; box-shadow: 3px 0 5px -4px #aab6c4; }
+    .schedule-selection { width: 15px; height: 15px; accent-color: var(--blue); cursor: pointer; }
+    .planned-time-range { display: flex; align-items: center; gap: 2px; }
+    .planned-time-range .schedule-time { min-width: 66px; padding: 0 3px; }
+    .planned-time-range > span { color: #a3adba; }
+    .grade-summary { color: #287bd6; line-height: 1.7; overflow-wrap: anywhere; }
+    .selection-count { color: #8a96a4; font-size: 12px; white-space: nowrap; }
+    #scheduleBody .order-cell { gap: 4px; }
+    #scheduleBody .drag-handle { width: 18px; flex-shrink: 0; }
+    .btn:disabled { color: #a5afbb; border-color: #e2e7ed; background: #f4f6f9; box-shadow: none; cursor: default; }
+    .table-tools { flex-wrap: wrap; justify-content: flex-end; }
     .schedule-time { display: inline-flex; min-width: 76px; height: 31px; align-items: center; justify-content: flex-start; gap: 6px; padding: 0 7px; border: 1px solid transparent; border-radius: 5px; color: #34475d; background: transparent; font-size: 12px; font-variant-numeric: tabular-nums; font-weight: 600; line-height: 1; text-align: left; }
     .schedule-time:hover { border-color: #d9e7f7; color: #2478d4; background: #f7fbff; }
     .schedule-time:focus-visible { border-color: #86b8fa; outline: 0; background: #fff; box-shadow: 0 0 0 2px rgba(51, 140, 244, .1); }
@@ -97,7 +116,8 @@
     .status.waiting { color: #8793a1; background: #f2f4f6; }
     .status.current { color: #287bd6; background: #edf5ff; }
     .status.done { color: #29916b; background: #eaf7f0; }
-    .time-actions,.data-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 4px; }
+    .time-actions,.data-actions { display: flex; align-items: center; flex-wrap: nowrap; gap: 4px; }
+    .time-actions > *, .data-actions > * { flex-shrink: 0; }
     .time-actions .row-action { min-width: 72px; padding: 0 5px; font-size: 10px; }
     .row-action { min-width: 84px; height: 29px; padding: 0 8px; border: 1px solid #cfe1fb; border-radius: 5px; color: #2c83ed; background: #f4f9ff; font-size: 11px; white-space: nowrap; }
     .row-action.secondary { min-width: 52px; border-color: #d9e0e8; color: #566579; background: #fff; }
@@ -270,12 +290,12 @@
     </div>
 
     <section class="panel table-panel" aria-label="面试进度列表">
-      <div class="table-heading"><div><h2>人员面试安排</h2><p id="scheduleSummary"></p></div><div class="table-tools"><button class="btn primary" id="addCandidateBtn" type="button">从名单新增</button><button class="tool-link" id="historyInterviewersBtn" type="button">查看历史面试官信息</button><button class="tool-link" id="manageTagsBtn" type="button">标签管理</button></div></div>
+      <div class="table-heading"><div><h2>人员面试安排</h2><p id="scheduleSummary"></p></div><div class="table-tools"><span class="selection-count" id="selectionCount">已选 0 人</span><button class="btn" id="generateScoresBtn" type="button" disabled>生成评分</button><button class="btn primary" id="addCandidateBtn" type="button">从名单新增</button><button class="tool-link" id="historyInterviewersBtn" type="button">查看历史面试官信息</button><button class="tool-link" id="manageTagsBtn" type="button">标签管理</button></div></div>
       <div class="schedule-filters" aria-label="面试筛选"><div class="field"><label for="filterDateFrom">面试日期</label><input class="control" type="date" id="filterDateFrom" aria-label="开始日期"></div><span class="date-range-separator">至</span><div class="field"><label for="filterDateTo">&nbsp;</label><input class="control" type="date" id="filterDateTo" aria-label="结束日期"></div><div class="field type-filter"><label for="filterType">面试类型</label><select class="control" id="filterType"><option value="">全部类型</option><option value="招聘">招聘</option><option value="转岗">转岗</option><option value="持续考察">持续考察</option><option value="转正">转正</option></select></div><button class="btn" id="clearFiltersBtn" type="button">清空筛选</button><span class="table-hint">日期留空时显示全部日期</span></div>
       <div class="table-wrap">
         <table>
-          <colgroup><col style="width:76px"><col style="width:105px"><col style="width:104px"><col style="width:140px"><col style="width:270px"><col style="width:124px"><col style="width:124px"><col style="width:100px"><col style="width:100px"><col style="width:180px"><col style="width:205px"></colgroup>
-          <thead><tr><th>顺序</th><th>面试日期</th><th>面试类型</th><th>面试对象姓名</th><th>面试官</th><th>预估开始时间</th><th>预估结束时间</th><th>面试时长</th><th>状态</th><th>时间操作</th><th>人员操作</th></tr></thead>
+          <colgroup><col style="width:44px"><col style="width:68px"><col style="width:88px"><col style="width:104px"><col style="width:80px"><col><col style="width:144px"><col style="width:166px"><col style="width:80px"><col style="width:170px"><col style="width:184px"></colgroup>
+          <thead><tr><th><input class="schedule-selection" id="selectAllPeople" type="checkbox" aria-label="全选当前筛选结果"></th><th>顺序</th><th>姓名</th><th>面试日期</th><th>面试类型</th><th>面试官</th><th>评分等级</th><th>预计时间</th><th>时长(min)</th><th>时间操作</th><th>人员操作</th></tr></thead>
           <tbody id="scheduleBody"></tbody>
         </table>
       </div>
@@ -286,7 +306,7 @@
     <div class="time-popover-head"><strong id="timePopoverTitle">设置面试时间</strong><button class="time-popover-close" id="closeTimePopover" type="button" aria-label="关闭">×</button></div>
     <p id="timePopoverHelp">选择分钟后选择器会自动收起；确认开始时间后，点击“应用并重排”。</p>
     <input class="time-picker-input" id="timePicker" type="time" aria-label="面试时间">
-    <div class="time-popover-actions"><button class="btn" id="cancelTimeEdit" type="button">取消</button><button class="btn" id="finishAtTime" type="button" hidden>按此时间结束</button><button class="btn primary" id="applyTimeEdit" type="button">应用并重排</button></div>
+    <div class="time-popover-actions"><button class="btn" id="cancelTimeEdit" type="button">取消</button><button class="btn primary" id="applyTimeEdit" type="button">应用并重排</button></div>
   </div>
   <div class="manage-backdrop" id="manageBackdrop" hidden>
     <section class="manage-modal" id="manageModal" role="dialog" aria-modal="true" aria-labelledby="manageTitle">
@@ -422,6 +442,19 @@
       const sortedDates=[...dates].sort();
       $('scheduleSummary').textContent = `${sortedDates.length ? `${sortedDates[0]}${sortedDates.length > 1 ? ` 至 ${sortedDates[sortedDates.length-1]}` : ''} · ` : ''}筛选结果 ${visible.length} 位面试对象 · 共 ${dates.length} 场`;
     }
+    const selectedPeople = new Set();
+    sessions.forEach(session => session.people.forEach((person,index) => {
+      if (!person.setupPending) person.scoreSummary = ['3A、2A-','1A、1B+、1B、1C+、1C','2A-、3B+'][index % 3];
+    }));
+    function updateScheduleSelection() {
+      const boxes = [...$('scheduleBody').querySelectorAll('[data-select-person]')];
+      const selected = boxes.filter(box => box.checked).length;
+      $('selectAllPeople').checked = boxes.length > 0 && selected === boxes.length;
+      $('selectAllPeople').indeterminate = selected > 0 && selected < boxes.length;
+      $('selectAllPeople').disabled = boxes.length === 0;
+      $('selectionCount').textContent = `已选 ${selected} 人`;
+      $('generateScoresBtn').disabled = selected === 0;
+    }
     function renderTable() {
       const visible = filteredSessions().flatMap(session => session.people.map((person,index) => ({session,person,index}))).filter(({person}) => !$('filterType').value || person.type === $('filterType').value);
       $('scheduleBody').innerHTML = visible.length ? visible.map(({session,person,index}) => {
@@ -429,7 +462,6 @@
         const done = person.status === 'done';
         const isCurrent = !done && index === activeIndex;
         const setupPending=Boolean(person.setupPending);
-        const state = done ? '<span class="status done">已结束</span>' : setupPending ? '<span class="status waiting">待安排</span>' : isCurrent ? '<span class="status current">进行中</span>' : '<span class="status waiting">待面试</span>';
         const timeActions = done ? '<button class="row-action" type="button" disabled>已结束</button>' : setupPending ? '<button class="row-action" type="button" disabled>待安排</button>' : isCurrent ? `<button class="row-action" type="button" data-action="finish" data-index="${index}" data-session-id="${session.id}">现在结束</button><button class="row-action delay" type="button" data-action="delay" data-index="${index}" data-session-id="${session.id}">延时10分钟</button>` : '<button class="row-action" type="button" disabled>等待中</button>';
         const reuseOptions=sessions.flatMap(sourceSession=>sourceSession.people.map((sourcePerson,sourceIndex)=>({sourceSession,sourcePerson,sourceIndex}))).filter(item=>item.sourceSession.id!==session.id||item.sourceIndex!==index).map(item=>{
           const sourceValue=`${item.sourceSession.id}::${item.sourceIndex}`;
@@ -441,27 +473,28 @@
         const dataActions=`<div class="data-actions"><button class="row-action secondary" type="button" data-edit-person="${index}" data-session-id="${session.id}">编辑</button>${reuseActions}<button class="row-action danger" type="button" data-delete-person="${index}" data-session-id="${session.id}">删除</button></div>`;
         const timeChevron = '<svg viewBox="0 0 12 12" aria-hidden="true"><path d="m2.5 4.5 3.5 3 3.5-3"/></svg>';
         const interviewerNames=(person.interviewers||[]).join('、');
-        const interviewerDisplay=interviewerNames?escapeHtml(interviewerNames):setupPending?'<span class="unconfigured-value">未设置</span>':'—';
+        const interviewerDisplay=interviewerNames?`<div class="interviewer-names">${person.interviewers.map(name=>`<span>${escapeHtml(name)}</span>`).join('、')}</div>`:setupPending?'<span class="unconfigured-value">未设置</span>':'—';
         const startValue=person.setupSample&&!person.startConfigured?'<span class="unconfigured-value">未设置</span>':escapeHtml(person.startTime||'—');
         const endValue=person.setupSample&&!person.endConfigured?'<span class="unconfigured-value">未设置</span>':escapeHtml(person.endTime||'—');
         const startDisplay = done ? `<span class="time-cell">${person.startTime || '—'}</span>` : `<button class="schedule-time" type="button" data-time-edit="start" data-index="${index}" data-session-id="${session.id}" aria-label="设置${person.name}的开始时间"><span>${startValue}</span>${timeChevron}</button>`;
         const endDisplay = done ? `<span class="time-cell">${person.endTime || '—'}<span class="muted-time"> 实际</span></span>` : `<button class="schedule-time" type="button" data-time-edit="end" data-index="${index}" data-session-id="${session.id}" aria-label="设置${person.name}的结束时间"><span>${endValue}</span>${timeChevron}</button>`;
         const durationValueDisplay=person.setupSample&&!person.durationConfigured?'':Number(person.durationMinutes)||durationValue(session);
         return `<tr data-index="${index}" data-session-id="${session.id}">
+          <td><input class="schedule-selection" type="checkbox" data-select-person="${escapeHtml(person.sourceId)}" aria-label="选择${escapeHtml(person.name)}" ${selectedPeople.has(person.sourceId)?'checked':''}></td>
           <td><div class="order-cell"><span class="drag-handle" title="按住拖动调整顺序" aria-label="按住拖动调整顺序">⠿</span><span class="order-badge">${index + 1}</span></div></td>
+          <td><strong>${escapeHtml(person.name)}</strong>${person.evaluationTags && person.evaluationTags.length ? `<div class="table-tags">${person.evaluationTags.map(tag=>`<span class="tag-color">${escapeHtml(tag)}</span>`).join('')}</div>` : ''}</td>
           <td>${escapeHtml(session.date)}</td>
           <td><span class="type-pill">${escapeHtml(person.type)}</span></td>
-          <td><strong>${escapeHtml(person.name)}</strong>${person.evaluationTags && person.evaluationTags.length ? `<div class="table-tags">${person.evaluationTags.map(tag=>`<span class="tag-color">${escapeHtml(tag)}</span>`).join('')}</div>` : ''}</td>
           <td class="interviewer-cell" title="${escapeHtml(interviewerNames)}">${interviewerDisplay}</td>
-          <td>${startDisplay}</td>
-          <td>${endDisplay}</td>
-          <td>${done?`${person.durationShown||durationValue(session)} 分钟`:`<input class="duration-inline" type="number" min="5" max="180" step="5" value="${durationValueDisplay}" placeholder="未设置" data-duration-edit data-index="${index}" data-session-id="${session.id}" aria-label="${escapeHtml(person.name)}面试时长"> 分钟`}</td>
-          <td>${state}</td>
+          <td><span class="grade-summary">${escapeHtml(person.scoreSummary || '—')}</span></td>
+          <td><div class="planned-time-range">${startDisplay}<span>—</span>${endDisplay}</div></td>
+          <td>${done?`${person.durationShown||durationValue(session)}`:`<input class="duration-inline" type="number" min="5" max="180" step="5" value="${durationValueDisplay}" placeholder="未设置" data-duration-edit data-index="${index}" data-session-id="${session.id}" aria-label="${escapeHtml(person.name)}面试时长">`}</td>
           <td><div class="time-actions">${timeActions}</div></td>
           <td>${dataActions}</td>
         </tr>`;
       }).join('') : '<tr><td class="empty-row" colspan="11">没有符合条件的面试安排</td></tr>';
       renderScheduleSummary();
+      updateScheduleSelection();
     }
     function showToast(message) {
       $('toast').textContent = message;
@@ -753,15 +786,11 @@
       const role = button.dataset.timeEdit;
       const person = activeSession.people[index];
       if (!person || person.status === 'done') return;
-      const canFinishAtTime = role === 'end' && index === currentPendingIndex() && !person.setupPending;
       editingTime = {index, role, original:role === 'start' ? person.startTime : person.endTime};
       $('timePopoverTitle').textContent = role === 'start' ? `设置${person.name}的开始时间` : `设置${person.name}的结束时间`;
-      $('timePopoverHelp').textContent = canFinishAtTime
-        ? '选择分钟后选择器会自动收起；可更新预估时间，或按此时间结束本场。'
-        : role === 'end'
+      $('timePopoverHelp').textContent = role === 'end'
           ? '选择分钟后选择器会自动收起；确认新的预估结束时间后，点击“应用并重排”。'
           : '选择分钟后选择器会自动收起；确认开始时间后，点击“应用并重排”。';
-      $('finishAtTime').hidden = !canFinishAtTime;
       $('timePicker').value = editingTime.original || '';
       $('timePicker').hidden = false;
       $('timePopover').hidden = false;
@@ -796,26 +825,6 @@
         ? `${person.name}已记录结束，后续时间已重排（结束时间按开始后5分钟计）`
         : `${person.name}已按当前时刻结束，后续预估时间已自动重排`;
       showToast(message);
-    }
-    function finishInterviewAtSelectedTime() {
-      if (!editingTime || editingTime.role !== 'end') return;
-      const {index} = editingTime;
-      if (index !== currentPendingIndex()) return;
-      const person = activeSession.people[index];
-      let actualEnd = $('timePicker').value;
-      if (!actualEnd) { showToast('请选择结束时间'); return; }
-      if (toMinutes(actualEnd) - toMinutes(person.startTime) < 5) {
-        actualEnd = toTime(toMinutes(person.startTime) + 5);
-        showToast(`结束时间至少晚于开始时间5分钟，已调整为 ${actualEnd}`);
-      } else {
-        showToast(`${person.name}已按所选时间结束，后续预估时间已自动重排`);
-      }
-      person.status = 'done';
-      person.actualStart = person.startTime;
-      person.actualEnd = actualEnd;
-      closeTimeEditor();
-      clearManualTimesAfter(index);
-      recalculate();
     }
     function applyTimeEditor() {
       if (!editingTime) return;
@@ -865,13 +874,32 @@
       const originalMinute = editingTime?.original?.slice(3, 5);
       if (!value || value.slice(3, 5) === originalMinute) return;
       $('timePicker').blur();
-      (editingTime.role === 'end' ? $('finishAtTime') : $('applyTimeEdit')).focus();
+      $('applyTimeEdit').focus();
     }
     $('timePicker').addEventListener('click', requestNativeTimePicker);
     $('timePicker').addEventListener('input', closeTimePickerAfterMinuteSelection);
     $('addCandidateBtn').addEventListener('click',openCandidatePicker);
     $('historyInterviewersBtn').addEventListener('click', openHistoryInterviewers);
     $('manageTagsBtn').addEventListener('click', openTagManager);
+    $('selectAllPeople').addEventListener('change', event => {
+      $('scheduleBody').querySelectorAll('[data-select-person]').forEach(box => {
+        box.checked = event.target.checked;
+        if (box.checked) selectedPeople.add(box.dataset.selectPerson);
+        else selectedPeople.delete(box.dataset.selectPerson);
+      });
+      updateScheduleSelection();
+    });
+    $('scheduleBody').addEventListener('change', event => {
+      const box = event.target.closest('[data-select-person]');
+      if (!box) return;
+      if (box.checked) selectedPeople.add(box.dataset.selectPerson);
+      else selectedPeople.delete(box.dataset.selectPerson);
+      updateScheduleSelection();
+    });
+    $('generateScoresBtn').addEventListener('click', () => {
+      const count = $('scheduleBody').querySelectorAll('[data-select-person]:checked').length;
+      if (count) showToast(`已选择 ${count} 人生成评分，可在“面试官评分”中点击“查看结果”查看汇总评分`);
+    });
     $('filterDateFrom').addEventListener('change', renderTable);
     $('filterDateTo').addEventListener('change', renderTable);
     $('filterType').addEventListener('change', renderTable);
@@ -1204,7 +1232,6 @@
     $('manageClose').addEventListener('click', closeManage);
     $('manageBackdrop').addEventListener('click', event=>{ if(event.target===$('manageBackdrop')) closeManage(); });
     $('applyTimeEdit').addEventListener('click', applyTimeEditor);
-    $('finishAtTime').addEventListener('click', finishInterviewAtSelectedTime);
     $('cancelTimeEdit').addEventListener('click', closeTimeEditor);
     $('closeTimePopover').addEventListener('click', closeTimeEditor);
     document.addEventListener('click', event => {

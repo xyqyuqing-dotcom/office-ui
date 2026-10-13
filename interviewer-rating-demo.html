@@ -303,7 +303,95 @@
       .score-footer { align-items: flex-start; flex-direction: column; }
       .score-footer .btn { width: 100%; }
     }
-  </style>
+    /* PAD resume workspace */
+    .resume-box { display: block; }
+    .resume-toolbar { display:flex; align-items:center; justify-content:flex-start; gap:16px; padding-bottom:16px; border-bottom:1px solid #e8edf4; }
+    .resume-toolbar h2 { margin:0; font-size:18px; color:#34465a; }
+    .resume-actions { display:flex; gap:10px; }
+    .resume-btn { min-height:46px; padding:0 18px; flex-direction:row; gap:8px; font-size:16px; }
+    .resume-btn svg { width:22px; height:22px; }
+    .resume-summary { margin-top:8px; }
+    .exam-summary { display:grid; grid-template-columns:140px minmax(0,1fr); align-items:center; gap:14px; margin-top:18px; padding:16px 20px; border:1px solid #e8edf4; border-radius:9px; background:#fff; }
+    .exam-summary h2 { margin:0; color:#65778d; font-size:15px; font-weight:600; }
+    .exam-summary-value { display:flex; align-items:center; flex-wrap:wrap; gap:8px 14px; min-width:0; }
+    .exam-summary strong { color:#36485c; font-size:16px; font-weight:400; line-height:1.7; white-space:nowrap; }
+    .exam-summary strong small { margin-left:4px; font-size:14px; font-weight:500; }
+    .exam-summary .score-report-link { min-height:44px; text-decoration:none; }
+    @media(max-width:1120px) { .exam-summary { grid-template-columns:115px minmax(0,1fr); gap:10px; padding-right:16px; padding-left:16px; } }
+    @media(max-width:640px) { .exam-summary { grid-template-columns:94px minmax(0,1fr); gap:8px; padding-right:14px; padding-left:14px; } }
+    button:disabled { opacity:.4; cursor:default; }
+    button:focus-visible { outline:3px solid #91bcf7; outline-offset:2px; }
+    body.resume-open { overflow:hidden; }
+    .reader-backdrop { position:fixed; inset:0; z-index:18; padding:16px; background:rgba(31,45,62,.42); display:grid; place-items:center; }
+    .reader-backdrop[hidden] { display:none; }
+    .reader { width:min(1560px,100%); height:calc(100dvh - 32px); display:flex; flex-direction:column; overflow:hidden; border-radius:14px; background:#fff; box-shadow:0 24px 80px #14243e40; }
+    .reader-head { flex:none; display:flex; align-items:center; gap:20px; padding:16px 22px; border-bottom:1px solid #e4eaf2; }
+    .reader-person { flex:1; min-width:0; }
+    .reader-name { display:flex; align-items:center; flex-wrap:wrap; gap:12px; }
+    .reader-name h2 { margin:0; font-size:23px; }
+    .reader-context { display:flex; align-items:center; flex-wrap:wrap; gap:4px; margin-top:7px; }
+    .reader-meta { color:#778596; font-size:14px; line-height:1.6; overflow-wrap:anywhere; }
+    .reader-counter { color:#8492a4; font-size:14px; }
+    .reader-navigation { display:flex; align-items:center; gap:8px; }
+    .reader-layout { position:relative; min-height:0; flex:1; display:grid; grid-template-columns:minmax(0,1fr) 320px; }
+    .reader-layout.collapsed { grid-template-columns:minmax(0,1fr); }
+    .reader-layout.collapsed .reader-score { display:none; }
+    .reader-main { min-width:0; min-height:0; display:flex; flex-direction:column; background:#f0f3f8; }
+    .reader-tabs { flex:none; display:flex; align-items:center; gap:8px; padding:10px 20px; border-bottom:1px solid #e4eaf2; background:#fff; }
+    .reader-tab { min-height:44px; padding:0 20px; border:0; border-radius:7px; color:#788596; background:transparent; }
+    .reader-tab.active { color:#2878e5; background:#edf5ff; font-weight:600; }
+    .reader-toggle { min-height:44px; border:0; padding:0 5px 0 10px; color:#657c99; background:transparent; font-size:14px; white-space:nowrap; }
+    .reader-toggle:hover { color:#2878e5; }
+    .reader-expand { display:none; position:absolute; top:10px; right:16px; z-index:3; min-height:44px; padding:0 14px; border:1px solid #b5cff5; border-radius:8px; color:#2878e5; background:#f4f8ff; box-shadow:0 3px 10px #315d8920; font-size:14px; }
+    .reader-layout.collapsed .reader-expand { display:block; }
+    .reader-document { min-height:0; flex:1; overflow:auto; padding:22px; overscroll-behavior:contain; }
+    .reader-document .resume-document,.reader-document .original-resume { min-width:0; padding:24px; }
+    .reader-document .resume-profile-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+    .reader-document .resume-profile-grid div { overflow-wrap:anywhere; }
+    .reader-document .resume-profile-grid strong { width:88px; flex-basis:88px; }
+    .reader-document .resume-data-table { table-layout:fixed; overflow-wrap:anywhere; }
+    .reader-score { min-height:0; display:flex; flex-direction:column; border-left:1px solid #e4eaf2; background:#f8faff; }
+    .reader-score-scroll { flex:1; min-height:0; overflow:auto; padding:20px; overscroll-behavior:contain; }
+    .reader-score-heading { flex:none; display:flex; align-items:center; justify-content:space-between; gap:8px; padding:12px 16px; border-bottom:1px solid #e4eaf2; }
+    .reader-score-heading h3 { margin:0; font-size:18px; }
+    .reader-score-title { display:flex; align-items:center; gap:10px; white-space:nowrap; }
+    .reader-score-title .criteria-link { min-height:44px; font-size:13px; }
+    .reader-exam { display:flex; align-items:center; flex-wrap:wrap; gap:6px; font-size:14px; }
+    .reader-exam.separated::before { content:'｜'; color:#778596; font-size:14px; font-weight:400; line-height:1.6; flex:none; }
+    .reader-exam[hidden] { display:none; }
+    .reader-exam small { color:#778596; font-size:14px; }
+    .reader-exam strong { padding:2px 7px; border-radius:5px; color:#778596; background:#f0f6ff; font-size:14px; font-weight:400; white-space:nowrap; }
+    .reader-exam .score-report-link { min-height:44px; font-size:14px; text-decoration:none; }
+    .reader-score .grades { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:7px; margin-top:0; }
+    .reader-score .grade-btn { min-width:0; padding:0 4px; min-height:48px; font-size:16px; }
+    .reader-score label { display:block; margin:20px 0 10px; font-weight:600; }
+    .reader-score .comment-box { min-height:130px; }
+    .reader-save-state { color:#8492a4; font-size:13px; margin-top:10px; line-height:1.6; }
+    .reader-score-foot { flex:none; padding:14px 16px; border-top:1px solid #e4eaf2; background:white; display:grid; gap:10px; }
+    .reader-score-foot .btn { width:100%; }
+    @media(max-width:820px) and (orientation:portrait), (max-width:640px) {
+      .reader-backdrop { padding:0; }
+      .reader { height:100dvh; border-radius:0; }
+      .reader-head { padding:12px; gap:10px; flex-wrap:wrap; }
+      .reader-person { flex-basis:70%; }
+      .reader-navigation { width:100%; justify-content:flex-end; }
+      .reader-layout { position:relative; grid-template-columns:minmax(0,1fr); }
+      .reader-score { position:absolute; z-index:2; bottom:0; left:0; right:0; max-height:62%; border:1px solid #dce5f1; border-radius:16px 16px 0 0; box-shadow:0 -8px 28px #213d6220; }
+      .reader-score .grades { grid-template-columns:repeat(5,minmax(0,1fr)); }
+      .reader-score-foot { grid-template-columns:1fr 1.5fr; }
+      .reader-tabs { padding:8px; gap:0; }
+      .reader-layout.collapsed .reader-expand { top:auto; bottom:16px; right:16px; }
+      .reader-layout.collapsed .reader-document { padding-bottom:80px; }
+      .reader-tab { padding:0 14px; }
+      .reader-document { padding:12px; }
+      .reader-document .resume-document,.reader-document .original-resume { padding:14px; }
+      .resume-toolbar { gap:8px; }
+      .resume-btn { padding:0 10px; }
+    }
+    .rotation-detail-view{font-family:"PingFang SC","Microsoft YaHei","Noto Sans SC",Arial,sans-serif}.rotation-detail-view .rotation-rating-title{font-size:14px;font-weight:650;color:#3d5067;line-height:1.5}.rotation-detail-view .rotation-rating-item strong{font-size:12px;font-weight:600;color:#45566b;line-height:1.5}.rotation-detail-view .rotation-rating-comment{display:block;font-size:12px;font-weight:600;color:#5d6d80;line-height:1.6;margin:12px 0 6px}.rotation-detail-view .rotation-rating-note{font-size:13px;font-weight:400;line-height:1.8;color:#3e4f63;margin-top:0;padding:11px 13px}.rotation-detail-view .rotation-rating-average strong{font-size:21px;font-weight:700}
+  .score-status.summary-score{color:#2878e5;background:#edf4ff;font-size:14px;line-height:1.5;white-space:normal;text-align:center}.candidate-card-badges{max-width:70%}.rotation-teacher-group{border:1px solid #e4eaf2;border-radius:8px;overflow:hidden;margin-bottom:12px}.rotation-teacher-group>summary{display:flex;align-items:center;min-height:50px;padding:12px 16px;font-size:15px;font-weight:600;color:#34465a;background:#fbfcfe;cursor:pointer;list-style:none}.rotation-teacher-group>summary::-webkit-details-marker{display:none}.rotation-teacher-group>summary:after{content:'⌄';margin-left:auto;color:#8996a7}.rotation-teacher-group[open]>summary:after{content:'⌃'}.rotation-teacher-body{display:flex;flex-direction:column;gap:12px;padding:14px;border-top:1px solid #e9edf3}.rotation-related-teachers{display:flex;align-items:baseline;gap:8px;margin:8px 0 16px;color:#63758b;font-size:13px}.rotation-related-teachers span:first-child{font-size:12px;color:#98a3b1;white-space:nowrap}
+.candidate-name{white-space:nowrap}.candidate-card-head:has(.summary-score){flex-wrap:wrap;row-gap:8px}.candidate-card-head:has(.summary-score) .candidate-name{flex-shrink:0}.candidate-card-head:has(.summary-score) .candidate-card-badges{margin-left:auto}.score-status.summary-score{font-size:13px;padding:7px 10px}
+</style>
 </head>
 <body>
   <header class="topbar">
@@ -344,6 +432,18 @@
     <section class="modal modal--large" id="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
       <div class="modal-head"><h2 id="modalTitle"></h2><button class="modal-close" id="modalClose" type="button" aria-label="关闭">×</button></div>
       <div class="modal-body" id="modalBody"></div>
+    </section>
+  </div>
+  <div class="reader-backdrop" id="resumeReader" hidden>
+    <section class="reader" role="dialog" aria-modal="true" aria-labelledby="readerName">
+      <header class="reader-head">
+        <div class="reader-person"><div class="reader-name"><h2 id="readerName"></h2><span id="readerStatus" class="score-status"></span><span id="readerCounter" class="reader-counter"></span></div><div class="reader-context"><div id="readerMeta" class="reader-meta"></div><div class="reader-exam" id="readerExam"></div></div></div>
+        <div class="reader-navigation"><button class="btn" id="readerPrevious" type="button">‹ 上一位</button><button class="btn" id="readerNext" type="button">下一位 ›</button><button class="modal-close" id="readerClose" type="button" aria-label="关闭简历窗口">×</button></div>
+      </header>
+      <div class="reader-layout" id="readerLayout">
+        <div class="reader-main"><div class="reader-tabs"><div role="tablist" aria-label="简历类型"><button class="reader-tab" id="readerSummaryTab" role="tab" aria-controls="readerDocument" data-reader-tab="summary">简历</button><button class="reader-tab" id="readerOriginalTab" role="tab" aria-controls="readerDocument" data-reader-tab="original">原简历</button></div></div><div class="reader-document" id="readerDocument" role="tabpanel" tabindex="0"></div></div>
+        <button class="reader-expand" id="readerExpand" aria-controls="readerScore" aria-expanded="false" type="button">‹ 展开评分栏</button><aside class="reader-score" id="readerScore" aria-label="面试评分侧栏"><div class="reader-score-heading"><div class="reader-score-title"><h3>面试评分</h3><button class="criteria-link" id="readerCriteria" type="button">评分细则</button></div><button class="reader-toggle" id="readerToggle" aria-controls="readerScore" aria-expanded="true" type="button">收起评分栏 ›</button></div><div class="reader-score-scroll"><div class="grades" id="readerGrades"></div><p class="grade-help">1C-由面试评委会讨论是否淘汰，2C-/1D及以上淘汰（特殊情况可由评委会讨论条件性通过）</p><label for="readerComment">评语</label><textarea class="comment-box" id="readerComment" placeholder="记录面试评价"></textarea><div class="reader-save-state" id="readerSaveState" role="status" aria-live="polite"></div></div></aside>
+      </div>
     </section>
   </div>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -407,10 +507,26 @@
     const scoreStoreKey = 'office-ui-interviewer-ratings-v1';
     let ratings = {};
     try { ratings = JSON.parse(localStorage.getItem(scoreStoreKey) || '{}'); } catch { ratings = {}; }
+    Object.values(ratings).forEach(record=>{delete record.draft;delete record.savedGrade;delete record.savedComment});
+    let autoSaveFailed=false;
+    let resultsMode=false;
+    function candidateScoreInfo(person){
+      const own=ratingFor(person.id),index=currentCandidates.findIndex(candidate=>candidate.id===person.id);
+      const summaryExamples=['3A、2A-','1A、1B+、1B、1C+、1C'];
+      if(resultsMode && index<summaryExamples.length)return {text:summaryExamples[index],aggregate:true,done:true,title:'汇总评分'};
+      return {text:own.grade||'未评分',aggregate:false,done:Boolean(own.grade),title:'我的评分'};
+    }
     let currentCandidateId = '';
     let toastTimer;
     let currentCandidates = [];
     let activeRotationDetail = null;
+    Object.values(sessionData).flat().forEach(person=>(person.rotationRecords||[]).forEach((record,index,records)=>{record.mentors=index===0&&records[1]?[record.mentor,records[1].mentor]:[record.mentor];record.logs.forEach((log,logIndex)=>{log.mentors=logIndex===0?record.mentors.slice():[record.mentor]})}));
+    function syncCandidateRotations(person){
+      let saved=[];try{saved=JSON.parse(localStorage.getItem('rotation-records-multi-mentor-v1')||'[]')}catch{}
+      if(!Array.isArray(saved))return;const matched=saved.filter(record=>record.name===person.name&&!String(record.id).startsWith('draft-'));if(!matched.length)return;
+      person.rotationRecords=matched.map(record=>({sourceRecordId:record.id,department:record.rotationDepartment,mentor:record.mentor,mentors:record.mentors||[record.mentor],period:record.periodStart+' 至 '+record.periodEnd,mentorEvaluations:record.mentorEvaluations,ratings:record.ratings,summary:'',logs:(record.logs||[]).filter(log=>!log.draft).map(log=>({title:log.title,date:log.recordDate||log.updatedAt,html:log.html,mentors:log.mentors||record.mentors||[record.mentor]}))}));
+    }
+    function safeRotationHtml(html){const doc=new DOMParser().parseFromString(html,'text/html'),allowed=new Set(['P','DIV','BR','STRONG','B','EM','I','U','UL','OL','LI','H1','H2','H3','H4','BLOCKQUOTE']);const clean=node=>Array.from(node.children).forEach(child=>{if(['SCRIPT','STYLE','IFRAME','OBJECT','IMG'].includes(child.tagName)){child.remove();return}clean(child);if(!allowed.has(child.tagName)){child.replaceWith(...child.childNodes);return}Array.from(child.attributes).forEach(attribute=>child.removeAttribute(attribute.name))});clean(doc.body);return doc.body.innerHTML}
     const rotationEvaluationStorageKeys = {
       newEmployee: 'new-employee-rotation-evaluation-v1',
       probation: 'probation-rotation-evaluation-v1'
@@ -428,9 +544,94 @@
     function candidatesForDate() { return sessionData[currentDateKey()] || []; }
     function ratingKey(candidateId) { return `${currentDateKey()}|${$('interviewerSelect').value}|${candidateId}`; }
     function ratingFor(candidateId) { return ratings[ratingKey(candidateId)] || {grade:'',comment:''}; }
-    function persistRatings() {
-      try { localStorage.setItem(scoreStoreKey, JSON.stringify(ratings)); } catch {}
+    function ratingStatus(record) { return record.grade ? `已评分 ${record.grade}` : '未评分'; }
+    let readerTab = 'summary';
+    let readerExtra = '';
+    let readerCollapsed = false;
+    let readerReturnFocus = null;
+    function openResumeReader(tab, trigger) {
+      readerTab = tab;
+      readerExtra = '';
+      readerCollapsed = matchMedia('(max-width:820px) and (orientation:portrait), (max-width:640px)').matches;
+      readerReturnFocus = trigger;
+      $('resumeReader').hidden = false;
+      document.body.classList.add('resume-open');
+      document.querySelector('main').inert = true;
+      document.querySelector('.topbar').inert = true;
+      renderResumeReader();
+      $(tab === 'original' ? 'readerOriginalTab' : 'readerSummaryTab').focus();
     }
+    function closeResumeReader() {
+      $('resumeReader').hidden = true;
+      document.body.classList.remove('resume-open');
+      document.querySelector('main').inert = false;
+      document.querySelector('.topbar').inert = false;
+      renderCandidateList();
+      renderDetail();
+      const target = $('candidateDetail').querySelector(`[data-resume="${readerTab}"]`);
+      (target || readerReturnFocus)?.focus();
+    }
+    function renderReaderDocument() {
+      const person = currentCandidates.find(candidate => candidate.id === currentCandidateId);
+      if (!person) return;
+      const extra = readerExtra === 'report' || readerExtra === 'criteria';
+      document.querySelectorAll('[data-reader-tab]').forEach(tab => {
+        const active = !extra && tab.dataset.readerTab === readerTab;
+        tab.classList.toggle('active',active);
+        tab.setAttribute('aria-selected',String(active));
+        tab.tabIndex = active ? 0 : -1;
+      });
+      $('readerDocument').setAttribute('aria-labelledby',readerExtra === 'criteria' ? 'readerCriteria' : readerExtra === 'report' ? 'readerReport' : readerTab === 'original' ? 'readerOriginalTab' : 'readerSummaryTab');
+      $('readerDocument').innerHTML = readerExtra === 'report' ? `<button class="btn" data-reader-back type="button">‹ 返回简历</button><h3>成绩报告</h3>${buildScoreReport(person)}` : readerExtra === 'criteria' ? `<button class="btn" data-reader-back type="button">‹ 返回简历</button><h3>面试评分细则</h3>${buildGradeCriteria()}` : buildResume(person,readerTab === 'original');
+      $('readerDocument').scrollTop = 0;
+    }
+    function syncReaderScore() {
+      const record = ratingFor(currentCandidateId);
+      $('readerStatus').textContent = ratingStatus(record);
+      $('readerStatus').classList.toggle('done', Boolean(record.grade && !record.draft));
+      $('readerSaveState').textContent = autoSaveFailed ? '自动保存失败，请勿刷新页面。' : '评分与评语自动保存';
+      $('readerGrades').innerHTML = gradeOptions.map(grade => `<button class="grade-btn ${record.grade === grade ? 'selected' : ''}" type="button" data-reader-grade="${grade}" aria-pressed="${record.grade === grade}">${grade}</button>`).join('');
+      if ($('readerComment').value !== (record.comment || '')) $('readerComment').value = record.comment || '';
+      $('readerLayout').classList.toggle('collapsed',readerCollapsed);
+      const portrait = matchMedia('(max-width:820px) and (orientation:portrait), (max-width:640px)').matches;
+      $('readerToggle').textContent = portrait ? '收起评分面板 ⌄' : '收起评分栏 ›';
+      $('readerExpand').textContent = portrait ? '⌃ 展开评分面板' : '‹ 展开评分栏';
+      $('readerToggle').setAttribute('aria-expanded',String(!readerCollapsed));
+      $('readerScore').inert = readerCollapsed;
+      requestAnimationFrame(()=>{
+        $('readerExam').classList.remove('separated');
+        const meta=$('readerMeta').getBoundingClientRect();
+        const exam=$('readerExam').getBoundingClientRect();
+        const context=$('readerExam').parentElement.getBoundingClientRect();
+        $('readerExam').classList.toggle('separated', !$('readerExam').hidden && Math.abs((meta.top+meta.height/2)-(exam.top+exam.height/2))<5 && exam.right+20<=context.right);
+      });
+    }
+    function renderResumeReader() {
+      const person = currentCandidates.find(candidate => candidate.id === currentCandidateId);
+      if (!person) return;
+      const index = currentCandidates.findIndex(candidate => candidate.id === currentCandidateId);
+      $('readerName').textContent = person.name;
+      $('readerMeta').textContent = `${person.scene} ｜ ${person.department} · ${person.position} ｜ ${person.genderAge}`;
+      $('readerCounter').textContent = `${index + 1} / ${currentCandidates.length}`;
+      $('readerPrevious').disabled = index === 0;
+      $('readerNext').disabled = index === currentCandidates.length - 1;
+      $('readerExam').hidden = !person.scene.includes('招聘面试');
+      $('readerExam').innerHTML = person.scene.includes('招聘面试') ? `<small>笔试/AI面试成绩</small><strong>${escapeHtml(person.examScore ?? '—')}<span style="font-size:14px"> 分</span></strong><button class="score-report-link" id="readerReport" type="button">查看报告 ›</button>` : '';
+      renderReaderDocument();
+      syncReaderScore();
+      $('readerScore').querySelector('.reader-score-scroll').scrollTop = 0;
+    }
+    function moveReaderCandidate(direction) {
+      const index = currentCandidates.findIndex(candidate => candidate.id === currentCandidateId);
+      const next = currentCandidates[index + direction];
+      if (!next) return;
+      currentCandidateId = next.id;
+      readerExtra = '';
+      renderCandidateList();
+      renderDetail();
+      renderResumeReader();
+    }
+    function persistRatings(){try{localStorage.setItem(scoreStoreKey,JSON.stringify(ratings));autoSaveFailed=false;return true}catch{autoSaveFailed=true;showToast('自动保存失败，请勿刷新页面');return false}}
     function assignedCandidates() {
       const interviewer = $('interviewerSelect').value;
       return candidatesForDate().filter(person => person.interviewers.includes(interviewer));
@@ -450,34 +651,17 @@
     function escapeHtml(value) {
       return String(value == null ? '' : value).replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
     }
-    function loadRotationEvaluation(person, record) {
-      const prefixes = person.scene.includes('转正')
-        ? [rotationEvaluationStorageKeys.probation, rotationEvaluationStorageKeys.newEmployee]
-        : [rotationEvaluationStorageKeys.newEmployee, rotationEvaluationStorageKeys.probation];
-      let saved = null;
-      for (const prefix of prefixes) {
-        try {
-          const value = JSON.parse(localStorage.getItem(`${prefix}:${record.department}`) || 'null');
-          if (value && typeof value === 'object') { saved = value; break; }
-        } catch {}
-      }
-      const source = saved || record.ratings || rotationEvaluationExamples[record.department] || {};
-      const normalize = list => Array.from({length:3},(_,index)=>{
-        const value=Number(list && list[index] || 0);
-        return Number.isFinite(value) && value >= 0 && value <= 5 ? Math.round(value * 2) / 2 : 0;
-      });
-      return {
-        mentor: normalize(source.mentor),
-        employee: normalize(source.employee),
-        mentorComment: String(source.mentorComment || ''),
-        employeeComment: String(source.employeeComment || '')
-      };
+    function loadRotationEvaluation(person,record,mentor=(record.mentors||[record.mentor])[0]){
+      const first=mentor===(record.mentors||[record.mentor])[0],evaluation=record.mentorEvaluations?.[mentor];
+      let saved=null;if(!record.sourceRecordId){const prefixes=person.scene.includes('转正')?[rotationEvaluationStorageKeys.probation,rotationEvaluationStorageKeys.newEmployee]:[rotationEvaluationStorageKeys.newEmployee,rotationEvaluationStorageKeys.probation];for(const prefix of prefixes){try{saved=JSON.parse(localStorage.getItem(prefix+':'+record.department+':'+mentor)||'null');if(!saved&&first)saved=JSON.parse(localStorage.getItem(prefix+':'+record.department)||'null');if(saved)break}catch{}}}
+      const source=saved||(evaluation?{mentor:evaluation.ratings?.mentor,employee:evaluation.ratings?.employee,mentorComment:evaluation.evaluationNotes?.mentor,employeeComment:evaluation.evaluationNotes?.employee}:first?(record.ratings||rotationEvaluationExamples[record.department]||{}):{});
+      const normalize=list=>Array.from({length:3},(_,index)=>{const value=Number(list?.[index]||0);return Number.isFinite(value)&&value>=0&&value<=5?Math.round(value*2)/2:0});return {mentor:normalize(source.mentor),employee:normalize(source.employee),mentorComment:String(source.mentorComment||''),employeeComment:String(source.employeeComment||'')};
     }
-    function renderRotationEvaluation(person, record) {
-      const evaluation = loadRotationEvaluation(person, record);
+    function renderRotationEvaluation(person,record){return (record.mentors||[record.mentor]).map((mentor,index)=>'<details class="rotation-teacher-group" '+(index===0?'open':'')+'><summary>'+escapeHtml(mentor)+'</summary><div class="rotation-teacher-body">'+renderRotationTeacherCards(loadRotationEvaluation(person,record,mentor))+'</div></details>').join('')}
+    function renderRotationTeacherCards(evaluation){
       const directions = [
-        {key:'mentor', title:'带教老师评价新员工', privacy:'此评价对新员工不可见', dimensions:['专业胜任力','工作积极性','文化认同感']},
-        {key:'employee', title:'新员工评价带教老师', privacy:'此评价对带教老师不可见', dimensions:['带教投入','带教方法','带教成效']}
+        {key:'mentor', title:'老师对员工的评价', dimensions:['专业胜任力','工作积极性','文化认同感']},
+        {key:'employee', title:'员工对老师的评价', dimensions:['带教投入','带教方法','带教成效']}
       ];
       return `<div class="rotation-rating-directions">${directions.map(direction=>{
         const scores=evaluation[direction.key]||[];
@@ -492,7 +676,7 @@
           return `<div class="rotation-rating-item"><strong>${dimension}</strong><span class="rotation-evaluation-stars" role="img" aria-label="${dimension}：${rating?`${rating}分`:'未评'}">${stars}</span><span class="rotation-rating-value">${rating?rating.toFixed(1):'未评'}</span></div>`;
         }).join('');
         const comment=evaluation[`${direction.key}Comment`].trim();
-        return `<section class="rotation-rating-card"><div class="rotation-rating-head"><div><strong class="rotation-rating-title">${direction.title}</strong><span class="rotation-rating-privacy">${direction.privacy}</span></div><div class="rotation-rating-average">评价均分 <strong>${average==null?'—':average.toFixed(1)}</strong> / 5 分</div></div><div class="rotation-rating-items">${dimensions}</div><label class="rotation-rating-comment">文字评价</label><div class="rotation-rating-note ${comment?'':'empty'}">${comment?escapeHtml(comment):'暂未填写文字评价'}</div></section>`;
+        return `<section class="rotation-rating-card"><div class="rotation-rating-head"><div><strong class="rotation-rating-title">${direction.title}</strong></div><div class="rotation-rating-average">评价均分 <strong>${average==null?'—':average.toFixed(1)}</strong> / 5 分</div></div><div class="rotation-rating-items">${dimensions}</div><label class="rotation-rating-comment">文字评价</label><div class="rotation-rating-note ${comment?'':'empty'}">${comment?escapeHtml(comment):'暂未填写文字评价'}</div></section>`;
       }).join('')}</div>`;
     }
     function renderCandidateList() {
@@ -505,18 +689,19 @@
       if (!currentCandidates.some(person => person.id === currentCandidateId)) currentCandidateId = currentCandidates[0].id;
       list.innerHTML = currentCandidates.map(person => {
         const record = ratingFor(person.id);
-        const done = Boolean(record.grade);
+        const score=candidateScoreInfo(person);const done=score.done;
         const type = interviewTypeInfo(person);
         return `<button class="candidate-card ${person.id === currentCandidateId ? 'active' : ''}" type="button" data-candidate-id="${person.id}" aria-pressed="${person.id === currentCandidateId}">
-          <span class="candidate-card-head"><span class="candidate-name"><span class="candidate-order">${person.order}.</span>${person.name}</span><span class="candidate-card-badges"><span class="type-pill ${type.className}">${type.label}</span><span class="score-status ${done ? 'done' : ''}">${done ? `已评分 ${record.grade}` : '未评分'}</span></span></span>
-          <span class="candidate-subtitle">${person.department}-${person.position}</span>
+          <span class="candidate-card-head"><span class="candidate-name"><span class="candidate-order">${person.order}.</span>${person.name}</span><span class="candidate-card-badges">${score.aggregate?'':`<span class="type-pill ${type.className}">${type.label}</span>`}<span class="score-status ${done ? 'done' : ''} ${score.aggregate?'summary-score':''}" title="${escapeHtml(score.title)}">${escapeHtml(score.text)}</span></span></span>
+          <span class="candidate-subtitle">${score.aggregate?`${type.label} · `:''}${person.department}-${person.position}</span>
         </button>`;
       }).join('');
     }
     function renderRotationHistory(person) {
+      syncCandidateRotations(person);
       const rotationRecords = person.rotationRecords || [];
       if (!person.scene.includes('转正') || !rotationRecords.length) return '';
-      const rows = rotationRecords.map((record,index) => `<tr><td>${escapeHtml(record.department)}</td><td>${escapeHtml(record.mentor)}</td><td>${escapeHtml(record.period.replaceAll('.', '-').replace('—',' 至 '))}</td><td><button class="rotation-detail-button" type="button" data-rotation-detail="${index}">详情</button></td></tr>`).join('');
+      const rows = rotationRecords.map((record,index) => `<tr><td>${escapeHtml(record.department)}</td><td>${escapeHtml((record.mentors||[record.mentor]).join('、'))}</td><td>${escapeHtml(record.period.replaceAll('.', '-').replace('—',' 至 '))}</td><td><button class="rotation-detail-button" type="button" data-rotation-detail="${index}">详情</button></td></tr>`).join('');
       return `<section class="rotation-history" aria-label="轮岗记录"><div class="rotation-history-head"><h2 class="rotation-history-title">轮岗记录</h2></div><div class="rotation-table-wrap"><table class="rotation-table"><thead><tr><th>轮岗部门</th><th>带教老师</th><th>轮岗周期</th><th>操作</th></tr></thead><tbody>${rows}</tbody></table></div></section>`;
     }
     function showRotationDetails(person, record, index) {
@@ -529,11 +714,11 @@
       const {person,record,logIndex,tab} = state;
       const logs = record.logs || [];
       const log = logs[logIndex] || {date:'暂无记录',title:'暂无轮岗记录',content:'该轮岗阶段还没有提交记录。'};
-      const fields = [['姓名',person.name],['岗位',person.position],['部门',person.department],['轮岗部门',record.department],['带教老师',record.mentor],['轮岗周期',record.period.replaceAll('.', '-').replace('—',' 至 ')]];
+      const fields = [['姓名',person.name],['岗位',person.position],['部门',person.department],['轮岗部门',record.department],['带教老师',(record.mentors||[record.mentor]).join('、')],['轮岗周期',record.period.replaceAll('.', '-').replace('—',' 至 ')]];
       const profile = `<div class="rotation-profile">${fields.map(([label,value])=>`<div><span>${label}</span><strong>${escapeHtml(value)}</strong></div>`).join('')}</div>`;
       const tabs = `<div class="rotation-detail-tabs"><button class="rotation-detail-tab ${tab==='logs'?'active':''}" data-rotation-tab="logs">轮岗记录</button><button class="rotation-detail-tab ${tab==='evaluation'?'active':''}" data-rotation-tab="evaluation">轮岗评价</button></div>`;
       if (tab === 'evaluation') return `<div class="rotation-detail-view">${profile}${tabs}${renderRotationEvaluation(person,record)}</div>`;
-      return `<div class="rotation-detail-view">${profile}${tabs}<div class="rotation-log-layout"><aside class="rotation-log-sidebar"><h3>日志列表</h3>${logs.length ? logs.map((item,i)=>`<button class="rotation-log-item ${i===logIndex?'active':''}" type="button" data-rotation-log-index="${i}"><strong>${escapeHtml(item.title)}</strong><time>记录日期：${escapeHtml(item.date)}</time></button>`).join('') : '<p>暂无日志</p>'}</aside><section class="rotation-log-main"><h3>${escapeHtml(log.title)}</h3><div class="rotation-log-date">记录日期：${escapeHtml(log.date)}　·　更新时间：2026-10-08</div><article class="rotation-log-copy"><h4>工作内容</h4><p>${escapeHtml(log.content)}</p><h4>学习收获</h4><p>${escapeHtml(record.summary)}</p><h4>问题困惑</h4><p>正在熟悉业务流程中的细节要求，后续会结合实际任务继续确认。</p><h4>后续计划</h4><p>整理本阶段学习要点，并在下一阶段结合具体工作持续实践。</p></article><section class="rotation-comments"><h4>评论与回复 <span class="save-hint">导师、部门负责人及相关人员均可留言</span></h4><div class="rotation-comment-sample"><small>带教老师 · 2026-10-05</small>本周的工作记录比较清晰，建议把关键流程节点和复核依据也补充进去。<div class="rotation-reply"><small>${escapeHtml(person.name)} · 2026-10-06</small>收到，我会在下一篇记录中补充流程节点和复核方式。</div></div>${state.comments.map(comment=>`<div class="rotation-comment-sample"><small>当前用户 · ${comment.date}</small>${escapeHtml(comment.text)}</div>`).join('')}<div class="rotation-comment-entry"><textarea placeholder="导师、部门负责人或相关人员可在此留言"></textarea><button class="btn primary" type="button" data-rotation-comment>发表评论</button></div></section></section></div></div>`;
+      return `<div class="rotation-detail-view">${profile}${tabs}<div class="rotation-log-layout"><aside class="rotation-log-sidebar"><h3>日志列表</h3>${logs.length ? logs.map((item,i)=>`<button class="rotation-log-item ${i===logIndex?'active':''}" type="button" data-rotation-log-index="${i}"><strong>${escapeHtml(item.title)}</strong><time>记录日期：${escapeHtml(item.date)}</time></button>`).join('') : '<p>暂无日志</p>'}</aside><section class="rotation-log-main"><h3>${escapeHtml(log.title)}</h3><div class="rotation-log-date">记录日期：${escapeHtml(log.date)}　·　更新时间：2026-10-08</div><div class="rotation-related-teachers"><span>相关带教老师</span><span>${escapeHtml((log.mentors||record.mentors||[record.mentor]).join('、'))}</span></div><article class="rotation-log-copy">${log.html?safeRotationHtml(log.html):`<h4>工作内容</h4><p>${escapeHtml(log.content)}</p><h4>学习收获</h4><p>${escapeHtml(record.summary)}</p><h4>问题困惑</h4><p>正在熟悉业务流程中的细节要求，后续会结合实际任务继续确认。</p><h4>后续计划</h4><p>整理本阶段学习要点，并在下一阶段结合具体工作持续实践。</p>`}</article><section class="rotation-comments"><h4>评论与回复 <span class="save-hint">导师、部门负责人及相关人员均可留言</span></h4><div class="rotation-comment-sample"><small>带教老师 · 2026-10-05</small>本周的工作记录比较清晰，建议把关键流程节点和复核依据也补充进去。<div class="rotation-reply"><small>${escapeHtml(person.name)} · 2026-10-06</small>收到，我会在下一篇记录中补充流程节点和复核方式。</div></div>${state.comments.map(comment=>`<div class="rotation-comment-sample"><small>当前用户 · ${comment.date}</small>${escapeHtml(comment.text)}</div>`).join('')}<div class="rotation-comment-entry"><textarea placeholder="导师、部门负责人或相关人员可在此留言"></textarea><button class="btn primary" type="button" data-rotation-comment>发表评论</button></div></section></section></div></div>`;
     }
     function buildGradeCriteria() {
       return `<div class="criteria-scroll"><table class="criteria-table"><thead><tr><th colspan="6">国君期货面试评分标准</th></tr><tr><th>梯度</th><th>等级</th><th>评判标准</th><th>折算百分制</th><th>频次</th><th>备注</th></tr></thead><tbody>
@@ -569,15 +754,16 @@
       const record = ratingFor(person.id);
       detail.innerHTML = `<div class="person-heading">
         <div class="avatar-large" aria-hidden="true">${person.name.slice(0,1)}</div>
-        <div class="person-summary"><div class="person-name-line"><h1>${person.name}</h1><span class="score-status ${record.grade ? 'done' : ''}">${record.grade ? `已评分 ${record.grade}` : '未评分'}</span></div><div class="person-meta">【${person.scene}】 ${person.department}-${person.position} ${person.genderAge}</div></div>
+        <div class="person-summary"><div class="person-name-line"><h1>${person.name}</h1><span class="score-status ${record.grade && !record.draft ? 'done' : ''}">${ratingStatus(record)}</span></div><div class="person-meta">【${person.scene}】 ${person.department}-${person.position} ${person.genderAge}</div></div>
       </div>
       <div class="resume-box">
-        <div class="resume-actions"><button class="resume-btn" type="button" data-resume="summary"><svg viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6zM14 3v5h5M9 13h7M9 17h5"/><circle cx="12" cy="10" r="1.5"/></svg><span>简历</span></button><button class="resume-btn" type="button" data-resume="original"><svg viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6zM14 3v5h5M9 13h7M9 17h7"/></svg><span>原简历</span></button></div>
-        <div class="resume-summary"><div class="resume-row"><span class="resume-label">教育背景</span><span class="resume-value">${(Array.isArray(person.education) ? person.education : [person.education]).map(item => `<span class="resume-entry">${escapeHtml(item)}</span>`).join('')}</span></div><div class="resume-row"><span class="resume-label">工作经历</span><span class="resume-value">${(Array.isArray(person.experience) ? person.experience : [person.experience]).map(item => `<span class="resume-entry">${escapeHtml(item)}</span>`).join('')}</span></div>${person.scene.includes('招聘面试') ? `<div class="resume-row"><span class="resume-label">笔试/AI面试成绩</span><span class="resume-value">${person.examScore}分　<button class="score-report-link" type="button" data-score-report>成绩报告</button></span></div>` : ''}</div>
+        <div class="resume-toolbar" aria-label="简历资料"><div class="resume-actions"><button class="resume-btn" type="button" data-resume="summary"><svg viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6zM14 3v5h5M9 13h7M9 17h5"/><circle cx="12" cy="10" r="1.5"/></svg><span>简历</span></button><button class="resume-btn" type="button" data-resume="original"><svg viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6zM14 3v5h5M9 13h7M9 17h7"/></svg><span>原简历</span></button></div></div>
+        <div class="resume-summary"><div class="resume-row"><span class="resume-label">教育背景</span><span class="resume-value">${(Array.isArray(person.education) ? person.education : [person.education]).map(item => `<span class="resume-entry">${escapeHtml(item)}</span>`).join('')}</span></div><div class="resume-row"><span class="resume-label">工作经历</span><span class="resume-value">${(Array.isArray(person.experience) ? person.experience : [person.experience]).map(item => `<span class="resume-entry">${escapeHtml(item)}</span>`).join('')}</span></div></div>
       </div>
+      ${person.scene.includes('招聘面试') ? `<section class="exam-summary" aria-label="笔试及AI面试成绩"><h2>笔试/AI面试成绩</h2><div class="exam-summary-value"><strong>${escapeHtml(person.examScore ?? '—')}<small>分</small></strong><button class="score-report-link" type="button" data-score-report>查看成绩报告 ›</button></div></section>` : ''}
       ${renderRotationHistory(person)}
       <section class="rating-section"><div class="section-title-row"><h2 class="section-title">面试评分</h2><button class="criteria-link" type="button" data-grade-criteria>评分细则</button></div><div class="grades">${gradeOptions.map(grade => `<button class="grade-btn ${record.grade === grade ? 'selected' : ''}" type="button" data-grade="${grade}" aria-pressed="${record.grade === grade}">${grade}</button>`).join('')}</div><p class="grade-help">1C-由面试评委会讨论是否淘汰，2C-/1D及以上淘汰（特殊情况可由评委会讨论条件性通过）</p></section>
-      <section class="comment-section"><h2 class="section-title">评语</h2><textarea class="comment-box" id="commentBox" placeholder="请输入面试评语"></textarea><div class="score-footer"><span class="save-hint">评分与评语按面试官分别保存</span><button class="btn primary" id="saveScore" type="button">保存评分</button></div></section>`;
+      <section class="comment-section"><h2 class="section-title">评语</h2><textarea class="comment-box" id="commentBox" placeholder="请输入面试评语"></textarea><div class="score-footer"><span class="save-hint">评分与评语自动保存</span></div></section>`;
       $('commentBox').value = record.comment || '';
     }
     function renderPage() {
@@ -587,24 +773,16 @@
     }
     function updateCandidateStatus() {
       const record = ratingFor(currentCandidateId);
-      const status = record.grade ? `已评分 ${record.grade}` : '未评分';
+      const status = ratingStatus(record);
       const card = $('candidateList').querySelector(`[data-candidate-id="${currentCandidateId}"] .score-status`);
-      if (card) {
-        card.textContent = status;
-        card.classList.toggle('done', Boolean(record.grade));
-      }
+      if(card){const person=currentCandidates.find(person=>person.id===currentCandidateId),info=candidateScoreInfo(person);card.textContent=info.text;card.title=info.title;card.classList.toggle('done',info.done);card.classList.toggle('summary-score',info.aggregate)}
       const detailStatus = $('candidateDetail').querySelector('.person-name-line .score-status');
       if (detailStatus) {
         detailStatus.textContent = status;
-        detailStatus.classList.toggle('done', Boolean(record.grade));
+        detailStatus.classList.toggle('done', Boolean(record.grade && !record.draft));
       }
     }
-    function updateCurrentRating(changes) {
-      const key = ratingKey(currentCandidateId);
-      ratings[key] = {...(ratings[key] || {grade:'',comment:''}), ...changes};
-      persistRatings();
-      updateCandidateStatus();
-    }
+    function updateCurrentRating(changes){const key=ratingKey(currentCandidateId),previous=ratings[key]||{grade:'',comment:''};ratings[key]={grade:previous.grade,comment:previous.comment,...changes};persistRatings();updateCandidateStatus();}
     function showToast(message) {
       $('toast').textContent = message;
       $('toast').classList.add('show');
@@ -618,21 +796,17 @@
       $('modalBackdrop').hidden = false;
     }
     function closeModal() { $('modalBackdrop').hidden = true; }
-    function viewResults() {
-      const people = assignedCandidates();
-      const interviewer = $('interviewerSelect').value;
-      const rows = people.map(person => {
-        const record = ratings[`${currentDateKey()}|${interviewer}|${person.id}`] || {};
-        return `<tr><td>${person.order}. ${person.name}</td><td>${person.department}-${person.position}</td><td>${record.grade || '未评分'}</td></tr>`;
-      }).join('');
-      showModal(`${interviewer} · ${currentDateKey()} 评分结果`, `<table class="results-table"><thead><tr><th>面试人员</th><th>应聘岗位</th><th>评分</th></tr></thead><tbody>${rows}</tbody></table>`, 'compact');
+    function viewResults(){
+      resultsMode=true;
+      const button=$('viewResults');button.textContent='查看结果';button.setAttribute('aria-pressed','true');renderCandidateList();
     }
+    function resetResultsMode(){resultsMode=false;$('viewResults').textContent='查看结果';$('viewResults').setAttribute('aria-pressed','false')}
     function toggleFullscreen() {
       if (document.fullscreenElement) document.exitFullscreen?.();
       else document.documentElement.requestFullscreen?.();
     }
     document.addEventListener('fullscreenchange', () => { $('fullscreenLabel').textContent = document.fullscreenElement ? '退出全屏' : '全屏'; });
-    $('interviewDate').addEventListener('change', () => { currentCandidateId = ''; renderPage(); });
+    $('interviewDate').addEventListener('change', () => { resetResultsMode();currentCandidateId = ''; renderPage(); });
     $('interviewerSelect').addEventListener('change', () => { currentCandidateId = ''; renderCandidateList(); renderDetail(); });
     $('candidateList').addEventListener('click', event => {
       const card = event.target.closest('[data-candidate-id]');
@@ -666,15 +840,10 @@
       const resumeButton = event.target.closest('[data-resume]');
       if (resumeButton) {
         const person = currentCandidates.find(candidate => candidate.id === currentCandidateId);
-        if (person) showModal(resumeButton.dataset.resume === 'original' ? `${person.name} · 原简历` : `${person.name} · 简历`, buildResume(person, resumeButton.dataset.resume === 'original'), 'large');
+        if (person) openResumeReader(resumeButton.dataset.resume,resumeButton);
         return;
       }
-      if (event.target.closest('#saveScore')) {
-        if (!ratingFor(currentCandidateId).grade) { showToast('请先选择面试评分'); return; }
-        const comment = $('commentBox').value.trim();
-        updateCurrentRating({comment});
-        showToast('评分已保存');
-      }
+
     });
     $('modalBody').addEventListener('click', event => {
       const logItem = event.target.closest('[data-rotation-log-index]');
@@ -705,7 +874,43 @@
     $('fullscreenBtn').addEventListener('click', toggleFullscreen);
     $('modalClose').addEventListener('click', closeModal);
     $('modalBackdrop').addEventListener('click', event => { if (event.target === $('modalBackdrop')) closeModal(); });
-    document.addEventListener('keydown', event => { if (event.key === 'Escape') closeModal(); });
+    $('readerPrevious').addEventListener('click',()=>moveReaderCandidate(-1));
+    $('readerNext').addEventListener('click',()=>moveReaderCandidate(1));
+    $('readerClose').addEventListener('click',closeResumeReader);
+    $('readerToggle').addEventListener('click',()=>{readerCollapsed=true;syncReaderScore();$('readerExpand').focus()});
+    $('readerExpand').addEventListener('click',()=>{readerCollapsed=false;syncReaderScore();$('readerToggle').focus()});
+    window.addEventListener('resize',()=>{if(!$('resumeReader').hidden)syncReaderScore()});
+    $('readerCriteria').addEventListener('click',()=>{readerExtra=readerExtra==='criteria'?'':'criteria';renderReaderDocument()});
+    $('readerComment').addEventListener('input',event=>{
+      updateCurrentRating({comment:event.target.value});
+      $('commentBox').value=event.target.value;
+      syncReaderScore();
+    });
+    $('resumeReader').addEventListener('click',event=>{
+      const tab=event.target.closest('[data-reader-tab]');
+      if(tab){readerTab=tab.dataset.readerTab;readerExtra='';renderReaderDocument();return}
+      const grade=event.target.closest('[data-reader-grade]');
+      if(grade){updateCurrentRating({grade:ratingFor(currentCandidateId).grade===grade.dataset.readerGrade?'':grade.dataset.readerGrade});renderDetail();syncReaderScore();$('readerGrades').querySelector(`[data-reader-grade="${grade.dataset.readerGrade}"]`).focus();return}
+      if(event.target.closest('#readerReport')){readerExtra=readerExtra==='report'?'':'report';renderReaderDocument();return}
+      if(event.target.closest('[data-reader-back]')){readerExtra='';renderReaderDocument();return}
+    });
+    document.addEventListener('keydown', event => {
+      if(event.key==='Escape'){
+        if(!$('modalBackdrop').hidden)closeModal();
+        else if(!$('resumeReader').hidden)closeResumeReader();
+        return;
+      }
+      if($('resumeReader').hidden || !$('modalBackdrop').hidden)return;
+      if(event.target.matches('[data-reader-tab]') && ['ArrowLeft','ArrowRight'].includes(event.key)){
+        event.preventDefault();readerTab=readerTab==='original'?'summary':'original';readerExtra='';renderReaderDocument();$(readerTab==='original'?'readerOriginalTab':'readerSummaryTab').focus();return;
+      }
+      if(event.key==='Tab'){
+        const controls=Array.from($('resumeReader').querySelectorAll('button:not(:disabled),textarea,[tabindex="0"]')).filter(node=>node.getClientRects().length && !node.closest('[inert]'));
+        const first=controls[0],last=controls[controls.length-1];
+        if(event.shiftKey && document.activeElement===first){event.preventDefault();last.focus()}
+        else if(!event.shiftKey && document.activeElement===last){event.preventDefault();first.focus()}
+      }
+    });
     renderPage();
   </script>
 </body>
