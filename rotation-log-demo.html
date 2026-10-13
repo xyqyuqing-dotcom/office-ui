@@ -94,6 +94,9 @@
     .period-cell { color: #657386; white-space: nowrap; }
     .detail-link,.text-button { padding: 0; border: 0; color: #2c83ed; background: transparent; font-size: 12px; }
     .detail-link:hover,.text-button:hover { color: #176fd5; text-decoration: underline; }
+    .record-actions { display: flex; align-items: center; gap: 14px; white-space: nowrap; }
+    .record-delete { color: #c55c5c; }
+    .record-delete:hover { color: #ad4242; }
     .record-backdrop { position: fixed; z-index: 50; inset: 0; display: grid; place-items: center; padding: 22px; background: rgba(24, 39, 57, .4); }
     .record-backdrop[hidden] { display: none; }
     .record-dialog { width: min(1440px, calc(100vw - 44px)); height: min(960px, calc(100vh - 44px)); display: flex; flex-direction: column; overflow: hidden; border: 1px solid rgba(233,238,244,.9); border-radius: 12px; background: #fff; box-shadow: 0 22px 70px rgba(20,36,55,.25); }
@@ -391,7 +394,7 @@
       record.mentors=recordMentors(record);record.mentor=record.mentors.join('、');
       (record.logs||[]).forEach(log=>{if(!Array.isArray(log.mentors))log.mentors=record.mentors.slice()});
     });
-    function persistRecords(){try{localStorage.setItem(rotationStoreKey,JSON.stringify(records))}catch{showToast('浏览器存储不可用，请勿刷新页面')}}
+    function persistRecords(){try{localStorage.setItem(rotationStoreKey,JSON.stringify(records));return true}catch{showToast('浏览器存储不可用，请勿刷新页面');return false}}
     let profileMentors=[];
     let activeRatingMentor='';
     let ratingDrafts={};
@@ -536,7 +539,7 @@
         '<td>' + escapeHtml(record.rotationDepartment) + '</td>' +
         '<td>' + escapeHtml(record.mentor) + '</td>' +
         '<td class="period-cell">' + escapeHtml(formatPeriod(record)) + '</td>' +
-        '<td><button class="detail-link" type="button" data-record-id="' + escapeHtml(record.id) + '">详情</button></td>' +
+        '<td><div class="record-actions"><button class="detail-link" type="button" data-record-id="' + escapeHtml(record.id) + '">详情</button><button class="text-button record-delete" type="button" data-delete-record-id="' + escapeHtml(record.id) + '">删除</button></div></td>' +
       '</tr>').join('');
     }
     function setTab(name) {
@@ -998,6 +1001,19 @@
       $('globalSearch').focus();
     });
     $('recordTableBody').addEventListener('click', event => {
+      const deleteButton = event.target.closest('[data-delete-record-id]');
+      if (deleteButton) {
+        const index = records.findIndex(item => String(item.id) === deleteButton.dataset.deleteRecordId);
+        if (index < 0) return;
+        const record = records[index];
+        if (!window.confirm('确定删除“' + record.name + ' · ' + record.rotationDepartment + '”的轮岗记录吗？该记录中的日志和评价也将一并删除。')) return;
+        records.splice(index, 1);
+        if (!persistRecords()) { records.splice(index, 0, record); return; }
+        if (currentRecord === record) { closeRecord(); currentRecord = null; currentLogId = null; ratingDraft = null; ratingDrafts = {}; }
+        renderRows();
+        showToast('轮岗记录已删除');
+        return;
+      }
       const button = event.target.closest('[data-record-id]');
       if (!button) return;
       const record = records.find(item => String(item.id) === String(button.dataset.recordId));
