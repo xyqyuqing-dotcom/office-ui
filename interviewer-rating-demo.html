@@ -377,8 +377,13 @@
       .reader-person { flex-basis:70%; }
       .reader-navigation { width:100%; justify-content:flex-end; }
       .reader-score .grades { grid-template-columns:repeat(5,minmax(0,1fr)); }
-      .reader-score-foot { grid-template-columns:1fr 1.5fr; }
+      /* In portrait the score sidebar narrows to ~280px. Force the footer to a horizontal grid so the prev/next buttons sit on the right of the bottom row instead of stacking below the page counter. */
+      .reader-score-foot { display:grid; grid-template-columns:1fr 1.5fr; }
+      .score-candidate-navigation .nav-label { display:none; }
       .reader-tabs { padding:6.4px; gap:0; }
+      /* Keep the expand-sidebar pill at the bottom-right in portrait once the user collapses the sidebar. */
+      .reader-layout.collapsed .reader-expand { top:auto; bottom:12.8px; right:12.8px; }
+      .reader-layout.collapsed .reader-document { padding-bottom:64px; }
       .reader-tab { padding:0 11.2px; }
       .reader-document { padding:9.6px; }
       .reader-document .resume-document,.reader-document .original-resume { padding:11.2px; }
