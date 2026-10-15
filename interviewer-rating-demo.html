@@ -377,19 +377,18 @@
       .reader-person { flex-basis:70%; }
       .reader-navigation { width:100%; justify-content:flex-end; }
       .reader-score .grades { grid-template-columns:repeat(5,minmax(0,1fr)); }
-      /* In portrait the score sidebar narrows to ~280px. Force the footer to a horizontal grid so the prev/next buttons sit on the right of the bottom row instead of stacking below the page counter. */
+      /* Horizontal footer (counter left, prev/next right) for the narrower portrait sidebar. */
       .reader-score-foot { display:grid; grid-template-columns:1fr 1.5fr; }
-      .score-candidate-navigation .nav-label { display:none; }
       .reader-tabs { padding:6.4px; gap:0; }
-      /* Keep the expand-sidebar pill at the bottom-right in portrait once the user collapses the sidebar. */
-      .reader-layout.collapsed .reader-expand { top:auto; bottom:12.8px; right:12.8px; }
-      .reader-layout.collapsed .reader-document { padding-bottom:64px; }
       .reader-tab { padding:0 11.2px; }
       .reader-document { padding:9.6px; }
       .reader-document .resume-document,.reader-document .original-resume { padding:11.2px; }
       .resume-toolbar { gap:6.4px; }
       .resume-btn { padding:0 8px; }
     }
+    /* Fullscreen density sync shrinks body via zoom (up to ~0.55). Make the reader layout span the full reader height so the footer and the absolute-positioned reader-expand pill stay anchored to the screen bottom regardless of how compressed the viewport gets. Non-fullscreen keeps the natural content-driven row height so the existing landscape/portrait layout is untouched. */
+    html.is-fullscreen .reader { display:flex; flex-direction:column; }
+    html.is-fullscreen .reader-layout { flex:1; min-height:0; grid-template-rows:minmax(0,1fr); }
     .rotation-detail-view{font-family:"PingFang SC","Microsoft YaHei","Noto Sans SC",Arial,sans-serif}.rotation-detail-view .rotation-rating-title{font-size:11.2px;font-weight:650;color:#3d5067;line-height:1.5}.rotation-detail-view .rotation-rating-item strong{font-size:9.6px;font-weight:600;color:#45566b;line-height:1.5}.rotation-detail-view .rotation-rating-comment{display:block;font-size:9.6px;font-weight:600;color:#5d6d80;line-height:1.6;margin:9.6px 0 4.8px}.rotation-detail-view .rotation-rating-note{font-size:10.4px;font-weight:400;line-height:1.8;color:#3e4f63;margin-top:0;padding:8.8px 10.4px}.rotation-detail-view .rotation-rating-average strong{font-size:16.8px;font-weight:700}
   .score-status.summary-score{color:#2878e5;background:#edf4ff;font-size:11.2px;line-height:1.5;white-space:normal;text-align:center}.candidate-card-badges{max-width:70%}.rotation-teacher-group{border:0.8px solid #e4eaf2;border-radius:6.4px;overflow:hidden;margin-bottom:9.6px}.rotation-teacher-group>summary{display:flex;align-items:center;min-height:40px;padding:9.6px 12.8px;font-size:12px;font-weight:600;color:#34465a;background:#fbfcfe;cursor:pointer;list-style:none}.rotation-teacher-group>summary::-webkit-details-marker{display:none}.rotation-teacher-group>summary:after{content:'⌄';margin-left:auto;color:#8996a7}.rotation-teacher-group[open]>summary:after{content:'⌃'}.rotation-teacher-body{display:flex;flex-direction:column;gap:9.6px;padding:11.2px;border-top:0.8px solid #e9edf3}.rotation-related-teachers{display:flex;align-items:baseline;gap:6.4px;margin:6.4px 0 12.8px;color:#63758b;font-size:10.4px}.rotation-related-teachers span:first-child{font-size:9.6px;color:#98a3b1;white-space:nowrap}
 .candidate-name{white-space:nowrap}.candidate-card-head:has(.summary-score){flex-wrap:wrap;row-gap:6.4px}.candidate-card-head:has(.summary-score) .candidate-name{flex-shrink:0}.candidate-card-head:has(.summary-score) .candidate-card-badges{margin-left:auto}.score-status.summary-score{font-size:10.4px;padding:5.6px 8px}
