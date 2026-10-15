@@ -54,7 +54,13 @@ function starScore(value){
  return '<span class="evaluation-star-score"><span class="evaluation-stars" role="img" aria-label="'+score.toFixed(1)+'分，满分5分">'+stars+'</span><span class="evaluation-star-number">'+score.toFixed(1)+' / 5</span></span>';
 }
 function dimensionHtml(values,direction){return '<div class="evaluation-dimension-list">'+dimensions[direction].map((name,index)=>'<div class="evaluation-dimension"><span>'+name+'</span>'+starScore(values[index])+'</div>').join('')+'</div>'}
-function entryHtml(edge){const p=edge.pair,avg=average(edge.values);return '<article class="evaluation-entry"><div class="evaluation-entry-head"><div><span class="evaluation-entry-name">评价人：'+escape(edge.evaluator)+'</span> <span class="evaluation-tag '+(p.teacherRole==='指导老师'?'guide':'')+'">'+p.teacherRole+'</span>'+'<div class="evaluation-entry-meta"><span>'+escape(p.department||'部门未提供')+'</span><span>'+escape(p.period)+'</span><span>'+escape(p.source)+'</span><span>'+escape(edge.date||'评价时间未提供')+'</span></div></div><div class="evaluation-entry-score">'+(avg?'<span>评价均分</span>'+starScore(avg):'暂无评分')+'</div></div><div class="evaluation-entry-body">'+dimensionHtml(edge.values,edge.direction)+'<p class="evaluation-comment">'+escape(edge.comment||'暂无文字评价')+'</p></div><div class="evaluation-entry-foot"><a href="'+escape(p.url)+'">查看来源 ↗</a></div></article>'}
+function entryHtml(edge){
+ const p=edge.pair,avg=average(edge.values);
+ const teacherTag='<span class="evaluation-tag '+(p.teacherRole==='指导老师'?'guide':'')+'">'+escape(p.teacherRole)+'</span>';
+ const evaluatorTag=edge.role==='employee'?' '+teacherTag:'';
+ const subjectRole=edge.role==='teacher'?'<div class="evaluation-subject-role"><span>被评价身份：</span>'+teacherTag+'</div>':'';
+ return '<article class="evaluation-entry"><div class="evaluation-entry-head"><div><span class="evaluation-entry-name">评价人：'+escape(edge.evaluator)+'</span>'+evaluatorTag+'<div class="evaluation-entry-meta"><span>'+escape(p.department||'部门未提供')+'</span><span>'+escape(p.period)+'</span><span>'+escape(p.source)+'</span><span>'+escape(edge.date||'评价时间未提供')+'</span></div></div><div class="evaluation-entry-aside">'+subjectRole+'<div class="evaluation-entry-score">'+(avg?'<span>评价均分</span>'+starScore(avg):'暂无评分')+'</div></div></div><div class="evaluation-entry-body">'+dimensionHtml(edge.values,edge.direction)+'<p class="evaluation-comment">'+escape(edge.comment||'暂无文字评价')+'</p></div><div class="evaluation-entry-foot"><a href="'+escape(p.url)+'">查看来源 ↗</a></div></article>';
+}
 function renderDetail(){
  const entry=people.get(currentPerson);if(!entry)return;const edges=matchingEdges(entry),f=filterState();
  $('personTitle').textContent=entry.name+' · 人员评价';$('personMeta').textContent=[Array.from(entry.departments).join('、')||'部门未提供',Array.from(entry.positions).join('、')].filter(Boolean).join(' ｜ ');

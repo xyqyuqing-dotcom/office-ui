@@ -529,17 +529,6 @@
           <div class="rating-directions" id="mentorRatingDirections"></div>
         </section>
 
-
-        <section class="report-section period-section" id="mentoringPlanSection" aria-labelledby="mentoringPlanTitle" hidden>
-          <h2 class="section-title" id="mentoringPlanTitle">新员工带教计划书</h2>
-          <div class="upload-box">
-            <p>可上传新员工带教计划书（非必填）</p>
-            <input class="upload-input" type="file" id="mentoringPlanInput" multiple aria-label="选择新员工带教计划书">
-            <button class="upload-button" id="chooseMentoringPlanFiles" type="button">上传材料</button>
-            <ul class="uploaded-files" id="mentoringPlanFileList" aria-live="polite"></ul>
-          </div>
-        </section>
-
         <section class="report-section" id="guideTeacherEvaluationSection" aria-labelledby="guideTeacherEvaluationTitle">
           <h2 class="section-title" id="guideTeacherEvaluationTitle">指导老师评价</h2>
           <div class="textarea-wrap"><textarea class="review" maxlength="1000" placeholder="建议评价人可从新员工的以下方面进行评价，包括但不限于学习能力、业务能力、协同能力、团队融入、责任心、工作态度等" data-counter aria-label="指导老师评价"></textarea><span class="counter">0 / 1000</span></div>
@@ -1204,7 +1193,6 @@
       const reportTitle = document.getElementById('reportHeadingTitle');
       reportTitle.textContent = `${getReviewEmployee().name}的2026-09新员工述职报告(第${period}/6期)`;
       quarterMaterialsSection.hidden = period !== '3';
-      document.getElementById('mentoringPlanSection').hidden=period!=='1';
       mentorEvaluationSection.hidden = period !== '6';
       rotationSection.hidden = period !== '6' || rotationAssignments.length === 0;
       departmentEvaluationSection.hidden = period !== '3' && period !== '6';
@@ -1342,10 +1330,6 @@
     if(evaluationQuery.get('period')==='6'){periodSelect.value='6';setPeriod('6')}
     window.personEvaluationSnapshot=()=>{let saved={};try{saved=JSON.parse(localStorage.getItem(mentorEvaluationStoreKey)||'{}')}catch{}return {kind:'review',saved:saved[mentorEvaluationRecordKey]||null,employee:getReviewEmployee(),date:'2026-09-02'}};
     if(evaluationQuery.get('focus')==='mentor')document.getElementById('mentorEvaluationSection').scrollIntoView({block:'start'});
-    const mentoringPlanFiles=new Map();
-    function renderMentoringPlanFiles(){const list=document.getElementById('mentoringPlanFileList');list.replaceChildren();mentoringPlanFiles.forEach((file,key)=>{const item=document.createElement('li');const name=document.createElement('span');name.className='uploaded-file-name';name.textContent=file.name;const remove=document.createElement('button');remove.className='remove-upload';remove.type='button';remove.textContent='移除';remove.setAttribute('aria-label','移除材料：'+file.name);remove.onclick=()=>{mentoringPlanFiles.delete(key);renderMentoringPlanFiles()};item.append(name,remove);list.append(item)})}
-    document.getElementById('chooseMentoringPlanFiles').onclick=()=>document.getElementById('mentoringPlanInput').click();
-    document.getElementById('mentoringPlanInput').onchange=event=>{Array.from(event.target.files).forEach(file=>mentoringPlanFiles.set(file.name+'|'+file.size+'|'+file.lastModified,file));renderMentoringPlanFiles();event.target.value=''};
   </script>
   <script src="person-evaluation-examples.js"></script>
   <script src="person-evaluation-bridge.js"></script>
