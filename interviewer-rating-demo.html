@@ -505,8 +505,6 @@ body{zoom:1;width:auto;height:100dvh}
 html{-webkit-text-size-adjust:100%;text-size-adjust:100%}body{zoom:1;height:100dvh}
 html.fullscreen-density-fit body{zoom:var(--fullscreen-density,1);height:var(--fullscreen-layout-height,100dvh)}
 html.fullscreen-density-fit.fullscreen-wide-layout .reader-layout:not(.collapsed){grid-template-columns:minmax(0,1fr) var(--fullscreen-score-width,300px)}
-/* Hide the top secondary navigation while in fullscreen so it does not collapse into a thin strip on tablet layouts. The wide-layout override below still surfaces it on landscape screens with the score sidebar expanded. */
-html.is-fullscreen .topbar .topnav{display:none}
 @media(min-width:700px){html.fullscreen-density-fit.fullscreen-wide-layout .topbar .topnav{display:flex}}
 .tools-settings #interviewerSelect,.tools-settings #interviewerSelect option{font-size:15px}
 @media(min-width:961px){.topbar .topnav{position:absolute;left:50%;top:0;transform:translateX(-50%);width:max-content;height:100%;margin:0;flex:none;justify-content:center;gap:20.8px}}
