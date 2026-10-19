@@ -299,7 +299,7 @@
       <section class="workflow-group" id="group-${group.key}" data-group="${group.name}">
         <h2 class="group-heading" tabindex="0" role="button" aria-expanded="true"><span>${group.name}</span><span class="chevron">⌄</span></h2>
         <div class="app-grid">${group.apps.map(name => {
-          const target = name === '空调加时申请' ? 'application.html' : '#';
+          const target = name === '空调加时申请' ? '多人会签演示流程.html' : '#';
           if (name === '空调加时申请') {
             const info = workflowInfo[name];
             return `<div class="app-link ${group.kind} app-link-info" data-name="${name}" data-group="${group.name}">
