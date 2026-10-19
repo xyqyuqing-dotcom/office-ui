@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>发起事务 · 事务中心</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
+</head>
+<body class="home-page">
+  <header class="portal-header">
+    <a class="brand" href="index.html" aria-label="国泰君安期货首页">
+      <svg class="brand-symbol" viewBox="0 0 40 40" aria-hidden="true"><path d="M4 13 17 5h18v8H17L4 21z" fill="#1483d5"/><path d="M4 18h21l11 7-11 7H4l12-7z" fill="#1262b4"/><path d="M4 13v13l8 6V18z" fill="#41a6e5"/></svg>
+      <span class="brand-copy"><strong>国泰君安期货</strong><small>GUOTAI JUNAN FUTURES</small></span>
+    </a>
+    <nav class="top-nav" aria-label="主导航">
+      <a href="#">首页</a><a class="selected" href="index.html">事务中心</a><a href="#">应用中心</a><a href="#">小君AI</a>
+    </nav>
+    <label class="global-search"><input type="search" placeholder="找不到?搜一下"><span aria-hidden="true">⌕</span></label>
+    <div class="header-tools">
+      <button class="header-icon" aria-label="首页"><svg viewBox="0 0 24 24"><path d="m3 11 9-8 9 8M5 10v10h14V10M9 20v-6h6v6"/></svg></button>
+      <button class="header-icon" aria-label="消息"><svg viewBox="0 0 24 24"><path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5 9 9 0 0 1-4-.9L3 21l1.8-5.4A8.5 8.5 0 1 1 21 11.5Z"/><path d="M8 12h.01M12 12h.01M16 12h.01"/></svg></button>
+      <button class="header-icon" aria-label="待办"><svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h4"/></svg></button>
+      <span class="header-divider"></span><button class="download-link">♧ 下载中心</button>
+      <button class="user-menu"><span class="user-photo">杨</span><span>杨艳英</span><span class="tiny-caret">⌄</span></button>
+    </div>
+  </header>
+
+  <div class="portal-body">
+    <nav class="mode-rail" aria-label="事务模式">
+      <button class="mode-item active"><span class="mode-icon">➤</span><span>发起</span></button>
+      <button class="mode-item"><span class="mode-icon grid-mode">▦</span><span>办理</span></button>
+    </nav>
+    <aside class="category-rail" aria-label="事务分类" id="categoryRail"></aside>
+
+    <main class="main-shell">
+      <div class="content-heading">
+        <h1>发起事务</h1>
+        <label class="permission-toggle"><span>显示无权限事务</span><input id="permissionToggle" type="checkbox"><i aria-hidden="true"></i></label>
+      </div>
+      <form class="workflow-search" id="workflowSearchForm">
+        <label class="search-input"><span aria-hidden="true">⌕</span><input id="workflowSearch" type="search" placeholder="请搜索流程名称/流程说明"></label>
+        <button type="submit">搜索</button>
+      </form>
+      <div class="workflow-groups" id="workflowGroups"></div>
+      <div class="empty-state" id="emptyState" hidden>没有找到匹配的流程</div>
+    </main>
+  </div>
+  <button class="quick-launch" aria-label="快捷入口" title="快捷入口"><span></span><span></span><span></span><span></span></button>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <div class="watermark-layer" aria-hidden="true"></div>
+</body>
+</html>
