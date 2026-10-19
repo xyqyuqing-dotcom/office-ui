@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>空调加时申请 · 事务中心</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
+</head>
+<body class="detail-page">
+  <header class="detail-header">
+    <a class="detail-title" href="index.html">空调加时申请</a>
+    <div class="detail-header-actions">
+      <a class="header-entry" href="index.html"><span class="apps-glyph">▦</span>事务中心</a>
+      <button class="header-entry"><span class="gear-glyph">⚙</span>设置</button>
+      <span class="header-divider"></span>
+      <a class="header-icon" href="index.html" aria-label="首页"><svg viewBox="0 0 24 24"><path d="m3 11 9-8 9 8M5 10v10h14V10M9 20v-6h6v6"/></svg></a>
+      <button class="header-icon" aria-label="消息"><svg viewBox="0 0 24 24"><path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5 9 9 0 0 1-4-.9L3 21l1.8-5.4A8.5 8.5 0 1 1 21 11.5Z"/><path d="M8 12h.01M12 12h.01M16 12h.01"/></svg></button>
+    </div>
+  </header>
+
+  <main class="detail-layout" id="detailLayout">
+    <section class="detail-main" aria-label="申请内容">
+      <div class="detail-scroll">
+        <article class="request-summary panel-card">
+          <div class="summary-heading">
+            <h1>谢雨晴发起的空调加时申请</h1>
+            <div class="summary-actions">
+              <button class="coord-button" data-toast="当前由协调员办理">协调员办理</button>
+              <button class="more-button" id="moreButton" aria-label="更多操作" aria-expanded="false"><span></span><span></span><span></span></button>
+              <div class="more-menu" id="moreMenu" hidden><button data-toast="已准备打印申请单">打印</button><button data-toast="已复制申请链接">复制链接</button><button data-toast="已提醒当前办理人">催办</button></div>
+            </div>
+          </div>
+          <div class="summary-meta">
+            <div class="avatar avatar-she">谢</div>
+            <span class="author">谢雨晴(信息技术部)</span><span class="meta-time">10-13 16:55</span><span class="origin-tag">发起</span><span class="level-tag">一般</span>
+            <button class="summary-expand" id="summaryToggle" aria-expanded="false">摘要 <span>⌄</span></button>
+          </div>
+          <p class="summary-text" id="summaryText" hidden>申请空调加时，为晚间会议提供空调保障。</p>
+        </article>
+
+        <article class="form-card panel-card">
+          <h2 class="card-heading">加时说明</h2>
+          <div class="card-content notice-content">
+            <ol>
+              <li>博华在正常营业时间内提供空调，时间为周一至周五：08点30-18点30，周六：09点-13点。其余时间如需空调，则要额外申请并支付超时空调费。</li>
+              <li>以一小时为最小申请单位。</li>
+              <li>26层、27层与29层面积计算。涉及2707会议室加时空调申请，流程走完后打印盖章件，需至2707东湖物业签字。</li>
+            </ol>
+          </div>
+        </article>
+
+        <article class="form-card panel-card">
+          <h2 class="card-heading">申请原因</h2>
+          <div class="card-content reason-content">
+            <label class="field-label" for="reason"><span>*</span>申请原因</label>
+            <div class="textarea-wrap"><textarea id="reason" maxlength="200">申请加时</textarea><span class="char-count" id="charCount">4</span></div>
+          </div>
+        </article>
+
+        <article class="form-card panel-card calculator-card">
+          <h2 class="card-heading">金额计算器</h2>
+          <div class="card-content calculator-content">
+            <button class="add-time-button" id="addTimeButton" disabled>添加加时时间</button>
+            <div class="time-entry" id="timeEntry" hidden>
+              <label>加时日期 <input type="date" value="2026-10-15"></label>
+              <label>加时时长 <select><option>1 小时</option><option>2 小时</option><option>3 小时</option></select></label>
+              <span>金额将按实际时长核算</span>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <aside class="flow-panel order-time" id="flowPanel" aria-label="流程记录">
+      <div class="flow-panel-header"><h2>流程记录</h2><button class="flow-map-button" data-modal="flowMap"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>流程图</button></div>
+      <div class="flow-toolbar">
+        <div class="order-tabs" role="tablist" aria-label="记录排序"><button class="active" role="tab" aria-selected="true" data-order="time">按时间</button><button role="tab" aria-selected="false" data-order="node">按节点</button></div>
+        <div class="record-filters"><label><input type="checkbox" checked data-filter="approval"><span></span>审批意见</label><label><input type="checkbox" checked data-filter="comment"><span></span>评论</label></div>
+      </div>
+      <div class="flow-scroll"><ol class="timeline" id="timeline"></ol><section class="standalone-comments" id="standaloneComments" aria-label="评论记录" hidden></section></div>
+      <button class="collapse-flow" id="collapseFlow" aria-label="折叠流程记录">›</button>
+    </aside>
+  </main>
+
+  <footer class="action-bar">
+    <div class="action-center">
+      <button class="bottom-action" data-modal="commentModal"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 9h8M8 13h5"/></svg>评论</button>
+      <button class="bottom-action submit-action" data-modal="submitModal"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/></svg>提交</button>
+      <div class="flow-intro-control" id="flowIntroControl">
+        <button class="bottom-action flow-intro-trigger" id="flowIntroTrigger" type="button" aria-controls="flowIntroPopover" aria-expanded="false">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="6" height="6" rx="1"/><rect x="15" y="14" width="6" height="6" rx="1"/><path d="M9 7h4a3 3 0 0 1 3 3v4"/></svg>流程介绍
+        </button>
+        <section class="flow-intro-popover" id="flowIntroPopover" role="dialog" aria-labelledby="flowIntroTitle" hidden>
+          <header class="flow-intro-heading">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="6" height="6" rx="1"/><rect x="15" y="14" width="6" height="6" rx="1"/><path d="M9 7h4a3 3 0 0 1 3 3v4"/></svg>
+            <h2 id="flowIntroTitle">流程介绍</h2>
+          </header>
+          <div class="flow-intro-content" id="flowIntroContent"></div>
+          <span class="flow-info-arrow" aria-hidden="true"></span>
+        </section>
+      </div>
+    </div>
+    <button class="report-action" data-toast="已记录错误报告"><svg viewBox="0 0 24 24"><path d="M5 3h11l3 3v15H5z"/><path d="M8 3v6h8V4M8 15h8M8 18h5"/></svg>错误报告</button>
+  </footer>
+  <button class="quick-launch detail-quick" aria-label="快捷入口" title="快捷入口"><span></span><span></span><span></span><span></span></button>
+
+  <div class="modal-backdrop" id="modalBackdrop" hidden>
+    <section class="dialog" id="flowMap" role="dialog" aria-modal="true" aria-labelledby="flowMapTitle" hidden><header><h2 id="flowMapTitle">流程图</h2><button class="dialog-close" aria-label="关闭">×</button></header><div class="flow-diagram"><span>起草</span><i>→</i><span>主管审批</span><i>→</i><span>综合部负责人审批</span><i>→</i><span>行政盖章</span></div></section>
+    <section class="dialog" id="commentModal" role="dialog" aria-modal="true" aria-labelledby="commentTitle" hidden><header><h2 id="commentTitle">添加评论</h2><button class="dialog-close" aria-label="关闭">×</button></header><textarea placeholder="请输入评论内容"></textarea><footer><button class="dialog-cancel">取消</button><button class="dialog-primary" data-toast="评论已添加">发表</button></footer></section>
+    <section class="dialog" id="submitModal" role="dialog" aria-modal="true" aria-labelledby="submitTitle" hidden><header><h2 id="submitTitle">提交申请</h2><button class="dialog-close" aria-label="关闭">×</button></header><p>确认提交这份空调加时申请吗？</p><footer><button class="dialog-cancel">取消</button><button class="dialog-primary" data-toast="申请已提交">确认提交</button></footer></section>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <div class="watermark-layer" aria-hidden="true"></div>
+</body>
+</html>
