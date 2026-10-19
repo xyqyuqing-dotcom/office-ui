@@ -44,7 +44,7 @@
     .rating-dimension{color:#45566b;font-size:14px;font-weight:600}.rating-help{margin-top:5px;color:#8995a3;font-size:12px;line-height:1.5}.rating-control{display:flex;flex:0 0 auto;align-items:center;gap:5px}.star-group{display:flex;align-items:center;gap:1px}
     .star-button{width:26px;height:34px;padding:0;border:0;color:#dfe4ea;background:transparent;font-size:25px;line-height:1;cursor:pointer}.star-button.filled{color:#f3b746}.star-button.half{color:transparent;background:linear-gradient(90deg,#f3b746 50%,#dfe4ea 50%);background-clip:text;-webkit-background-clip:text}.rating-value{min-width:35px;color:#d28b27;font-size:14px;font-weight:600;text-align:right}
     .mentor-rating-card .text-review{margin-top:15px}.mentor-rating-card .text-review label{display:block;margin-bottom:8px;color:#5d6d80;font-size:14px;font-weight:600}.mentor-rating-card .text-wrap textarea{height:96px;min-height:96px;padding:12px 15px 29px;font-size:14px}
-    .mentor-rating-actions{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:9px}.mentor-rating-actions span{color:#8795a6;font-size:13px}.mentor-rating-save{min-height:36px;padding:0 15px;border:1px solid #3478f6;border-radius:6px;color:#fff;background:#3478f6;cursor:pointer}.mentor-rating-save:hover{background:#1f78e8}
+    .mentor-rating-actions{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:9px}.mentor-rating-actions span{color:#8795a6;font-size:13px}.mentor-rating-actions[hidden]{display:none}
     .process-card{padding:34px 32px}.process-head h2{font-size:18px;font-weight:600}.flowmap{display:inline-flex;align-items:center;gap:7px;color:#424a52}.process-options{margin-top:34px}.tabs{border:1px solid #e4e6e9;background:#f7f8f9;padding:2px;border-radius:4px}.tabs button{padding:6px 11px;color:#7c848c;border-radius:3px}.tabs button.active{color:#414950;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.08)}.checks{gap:14px;color:#565f68}.checks label{gap:6px;color:#565f68}.checks input{width:14px;height:14px;margin:0;accent-color:#3982f6}
     .field input:focus,.text-wrap textarea:focus,.modal-body textarea:focus{outline:0;border-color:#72a7ff;box-shadow:0 0 0 2px rgba(52,120,246,.08)}
     .timeline{margin-top:43px}.event{grid-template-columns:14px 42px minmax(0,1fr) auto;gap:14px;margin-bottom:40px;min-height:42px}.event::before{left:6px;top:22px;bottom:-42px}.dot{width:7px;height:7px;margin:17px auto 0}.avatar{width:42px;height:42px;font-size:21px}.avatar.bot-avatar{border:3px solid #dce8ff;font-size:18px}.avatar.teacher{background:linear-gradient(135deg,#e6d4c4,#c4d6e3)}.avatar.party{background:linear-gradient(135deg,#d5ccd0,#bfc8d1)}.avatar.group{font-size:23px}.avatar.done::after,.avatar.returned::after{right:-3px;bottom:-3px;width:16px;height:16px;line-height:16px;font-size:10px}.event-title{line-height:20px;color:#272f36;font-size:14px}.event-person,.candidate-toggle{color:#767f88;margin-top:6px;font-size:14px}.event-right{min-width:78px}.badge{padding:3px 7px;font-size:13px}.date{font-size:12px;margin-top:8px;color:#a1a6ab}.opinion{margin-top:12px;min-height:50px;padding:13px 15px;color:#545b63}.collapse{left:-12px;width:25px;height:64px;border-color:#e0e3e7;border-radius:4px;box-shadow:0 1px 3px #0001}.workspace.hide-process{grid-template-columns:minmax(0,1fr) 0}.workspace.hide-process .collapse{left:-12px}
@@ -179,7 +179,7 @@
                 <label for="mentor">文字评价</label>
                 <div class="text-wrap"><textarea id="mentor" maxlength="950" required placeholder="请结合具体表现填写文字评价">1</textarea><button class="clear" aria-label="清空指导老师评价" data-clear="mentor">×</button><span class="count" data-count="mentor">1 / 950</span></div>
               </div>
-              <div class="mentor-rating-actions"><span id="mentorRatingStatus" role="status" aria-live="polite"></span><button class="mentor-rating-save" id="saveMentorRating" type="button">保存评价</button></div>
+              <div class="mentor-rating-actions" hidden><span id="mentorRatingStatus" role="status" aria-live="polite"></span></div>
             </section>
           </div>
           <div class="textarea-field"><label for="party"><span class="required">* </span>政委评价</label><div class="text-wrap"><textarea id="party" maxlength="950" required>111111</textarea><button class="clear" aria-label="清空政委评价" data-clear="party">×</button><span class="count" data-count="party">6 / 950</span></div></div></section>
@@ -254,26 +254,28 @@
       }).join('');
     }
     renderMentorRatingItems();
+    function persistMentorRating(){
+      let saved=true;
+      try{localStorage.setItem(mentorRatingStorageKey,JSON.stringify({ratings:mentorRatingDraft.ratings.slice(),comment:mentorRatingDraft.comment,meta:{id:'probation-zhang-anqi',employee:{name:$('name').value,department:$('department').value,position:$('position').value},teacher:{name:$('evaluationGuideTeacher').value},period:'转正评价',date:new Date().toLocaleDateString('sv-SE')}}))}catch{saved=false}
+      $('mentorRatingStatus').textContent=saved?'':'自动保存失败，请稍后修改重试';
+      $('mentorRatingStatus').parentElement.hidden=saved;
+      return saved;
+    }
     $('mentorRatingItems').addEventListener('click',event=>{
       const star=event.target.closest('[data-star-index]');
       if(!star)return;
       const rect=star.getBoundingClientRect();
       const isHalf=event.detail!==0&&event.clientX-rect.left<rect.width/2;
       mentorRatingDraft.ratings[Number(star.dataset.dimensionIndex)]=Number(star.dataset.starIndex)+(isHalf ? .5 : 1);
-      $('mentorRatingStatus').textContent='评分尚未保存';
       renderMentorRatingItems();
+      persistMentorRating();
     });
     $('mentor').addEventListener('input',event=>{
       mentorRatingDraft.comment=event.currentTarget.value;
-      $('mentorRatingStatus').textContent='评价尚未保存';
+      persistMentorRating();
     });
-    $('saveMentorRating').addEventListener('click',()=>{
-      mentorRatingDraft.comment=$('mentor').value.trim();
-      $('mentor').value=mentorRatingDraft.comment;
-      document.querySelector('[data-count="mentor"]').textContent=`${mentorRatingDraft.comment.length} / 950`;
-      try{localStorage.setItem(mentorRatingStorageKey,JSON.stringify({ratings:mentorRatingDraft.ratings.slice(),comment:mentorRatingDraft.comment,meta:{id:'probation-zhang-anqi',employee:{name:$('name').value,department:$('department').value,position:$('position').value},teacher:{name:$('evaluationGuideTeacher').value},period:'转正评价',date:new Date().toLocaleDateString('sv-SE')}}))}catch{}
-      $('mentorRatingStatus').textContent='评价已保存';
-      showToast('评价已保存');
+    $('evaluationGuideTeacher').addEventListener('change',()=>{
+      if(savedMentorRating||mentorRatingDraft.ratings.some(value=>value>0)||mentorRatingDraft.comment)persistMentorRating();
     });
     const transferRecords=[
       {department:'信息技术部',mentor:'罗景行',start:'2026-09-01',end:'2026-10-31',logs:[
