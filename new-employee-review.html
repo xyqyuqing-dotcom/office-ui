@@ -418,7 +418,14 @@
     }
   .basic-grid,.extra-info{grid-template-columns:repeat(2,minmax(0,1fr));column-gap:28px;row-gap:22px}.basic-grid .inline-field{grid-template-columns:96px minmax(0,1fr);gap:12px}.basic-grid .field-label{text-align:right}.collapse-rail::before{content:'▶'}.workspace.sidebar-hidden .collapse-rail::before{content:'◀'}.review-rotation-teachers{display:flex;align-items:baseline;gap:8px;margin:8px 0 16px;font-size:13px;color:#63758b}.review-rotation-teachers span:first-child{font-size:12px;color:#98a3b1;white-space:nowrap}.review-rotation-teachers span:last-child{line-height:1.6}.review-mentor-group{border:1px solid #e4eaf2;border-radius:8px;overflow:hidden;margin-bottom:12px}.review-mentor-group>summary{display:flex;align-items:center;gap:12px;min-height:50px;padding:12px 16px;background:#fbfcfe;cursor:pointer;list-style:none}.review-mentor-group>summary::-webkit-details-marker{display:none}.review-mentor-group>summary:after{content:'⌄';margin-left:auto;color:#8996a7}.review-mentor-group[open]>summary:after{content:'⌃'}.review-mentor-body{display:flex;flex-direction:column;gap:12px;padding:14px;border-top:1px solid #e9edf3}@media(max-width:640px){.basic-grid,.extra-info{grid-template-columns:1fr}.basic-grid .inline-field{grid-template-columns:96px minmax(0,1fr)}}
 .rotation-rating-stars span.rotation-star-half{color:transparent}
-.review-mentor-group{font-family:inherit}.review-mentor-group>summary>strong{font-size:15px;font-weight:600;color:#34465a}.review-mentor-group .rotation-rating-title{font-size:14px;font-weight:500;color:#45566b}.review-mentor-group .rotation-rating-item strong{font-size:13px;font-weight:400;color:#63758b}.review-mentor-group .rotation-rating-comment{font-size:13px;font-weight:400;color:#8795a6}.review-mentor-group .rotation-rating-note{font-size:13px;font-weight:400;line-height:1.8;color:#52647a}.review-mentor-group .rotation-rating-average strong{font-size:20px;font-weight:500}.review-mentor-group{font-family:"PingFang SC","Microsoft YaHei","Noto Sans SC",Arial,sans-serif}.review-mentor-group>summary>strong{font-size:15px;font-weight:600;color:#34465a;line-height:1.5}.review-mentor-group .rotation-rating-title{font-size:14px;font-weight:650;color:#3d5067;line-height:1.5}.review-mentor-group .rotation-rating-item strong{font-size:12px;font-weight:600;color:#45566b;line-height:1.5}.review-mentor-group .rotation-rating-comment{display:block;font-size:12px;font-weight:600;color:#5d6d80;line-height:1.6;margin:12px 0 6px}.review-mentor-group .rotation-rating-note{font-size:13px;font-weight:400;line-height:1.8;color:#3e4f63;margin-top:0;padding:11px 13px}.review-mentor-group .rotation-rating-average strong{font-size:21px;font-weight:700}</style>
+.review-mentor-group{font-family:inherit}.review-mentor-group>summary>strong{font-size:15px;font-weight:600;color:#34465a}.review-mentor-group .rotation-rating-title{font-size:14px;font-weight:500;color:#45566b}.review-mentor-group .rotation-rating-item strong{font-size:13px;font-weight:400;color:#63758b}.review-mentor-group .rotation-rating-comment{font-size:13px;font-weight:400;color:#8795a6}.review-mentor-group .rotation-rating-note{font-size:13px;font-weight:400;line-height:1.8;color:#52647a}.review-mentor-group .rotation-rating-average strong{font-size:20px;font-weight:500}.review-mentor-group{font-family:"PingFang SC","Microsoft YaHei","Noto Sans SC",Arial,sans-serif}.review-mentor-group>summary>strong{font-size:15px;font-weight:600;color:#34465a;line-height:1.5}.review-mentor-group .rotation-rating-title{font-size:14px;font-weight:650;color:#3d5067;line-height:1.5}.review-mentor-group .rotation-rating-item strong{font-size:12px;font-weight:600;color:#45566b;line-height:1.5}.review-mentor-group .rotation-rating-comment{display:block;font-size:12px;font-weight:600;color:#5d6d80;line-height:1.6;margin:12px 0 6px}.review-mentor-group .rotation-rating-note{font-size:13px;font-weight:400;line-height:1.8;color:#3e4f63;margin-top:0;padding:11px 13px}.review-mentor-group .rotation-rating-average strong{font-size:21px;font-weight:700}#guideTeacherRatingPanel[hidden],#guideRatingAverageBox[hidden],#guideTeacherTextOnly[hidden]{display:none!important}
+#guideRatingItems{grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr))}
+#guideRatingItems .rating-item{flex-direction:column;align-items:stretch;justify-content:flex-start;gap:10px;padding:12px}
+#guideRatingItems .rating-control{justify-content:flex-end;margin-top:auto}
+.guide-rating-text{position:relative}.guide-rating-text textarea{display:block;min-height:96px;padding:12px 36px 29px 14px}
+.guide-rating-clear{position:absolute;top:8px;right:10px;border:0;background:none;color:#9aa5b3;font-size:18px;padding:0 3px;cursor:pointer}
+#guideTeacherEvaluationSection.sixth-guide-rating .section-title{color:#26384d;font-weight:500}
+</style>
 </head>
 <body>
   <header class="topbar">
@@ -466,7 +473,7 @@
           </div>
           <div class="basic-grid">
             <label class="inline-field"><span class="field-label">姓名</span><input class="control readonly-look" value="杨艳英" aria-label="姓名" readonly></label>
-            <label class="inline-field"><span class="field-label">部门岗位</span><input class="control readonly-look" value="信息技术部 · 软件开发工程师" aria-label="部门岗位" readonly></label>
+            <label class="inline-field"><span class="field-label">部门岗位</span><input class="control readonly-look" value="信息技术部 - 软件开发工程师" aria-label="部门岗位" readonly></label>
             <label class="inline-field"><span class="field-label">入职时间</span><input class="control readonly-look" value="2026-04-01" type="date" aria-label="入职时间" readonly></label>
             <label class="inline-field"><span class="field-label">拟转正时间</span><input class="control readonly-look" type="date" aria-label="拟转正时间" readonly></label>
             <label class="inline-field"><span class="field-label required">指导老师</span><span class="select-wrap"><select class="control" aria-label="指导老师"><option value="">请选择</option><option>王老师</option><option>李老师</option><option>张老师</option></select></span></label>
@@ -530,8 +537,13 @@
         </section>
 
         <section class="report-section" id="guideTeacherEvaluationSection" aria-labelledby="guideTeacherEvaluationTitle">
-          <h2 class="section-title" id="guideTeacherEvaluationTitle">指导老师评价</h2>
-          <div class="textarea-wrap"><textarea class="review" maxlength="1000" placeholder="建议评价人可从新员工的以下方面进行评价，包括但不限于学习能力、业务能力、协同能力、团队融入、责任心、工作态度等" data-counter aria-label="指导老师评价"></textarea><span class="counter">0 / 1000</span></div>
+          <div class="rating-section-head"><h2 class="section-title" id="guideTeacherEvaluationTitle">指导老师评价</h2><div class="average-box" id="guideRatingAverageBox" aria-label="指导老师评价均分" hidden><span>评价均分</span><strong id="guideRatingAverage">—</strong><small>/ 5 分</small></div></div>
+          <div class="textarea-wrap" id="guideTeacherTextOnly"><textarea class="review" maxlength="1000" placeholder="建议评价人可从新员工的以下方面进行评价，包括但不限于学习能力、业务能力、协同能力、团队融入、责任心、工作态度等" data-counter aria-label="指导老师评价"></textarea><span class="counter">0 / 1000</span></div>
+          <div class="rating-directions" id="guideTeacherRatingPanel" hidden><section class="rating-direction-card" aria-label="第六期指导老师评价">
+            <div class="rating-items" id="guideRatingItems"></div>
+            <div class="text-review"><label for="guideRatingComment">文字评价</label><div class="textarea-wrap guide-rating-text"><textarea id="guideRatingComment" maxlength="950" required placeholder="请结合具体表现填写文字评价"></textarea><button class="guide-rating-clear" id="clearGuideRatingComment" type="button" aria-label="清空指导老师文字评价">×</button><span class="counter" id="guideRatingCount">0 / 950</span></div></div>
+            <div class="text-review-actions"><span class="evaluation-save-status" id="guideRatingStatus" role="status" aria-live="polite"></span><button class="btn primary" id="saveGuideRating" type="button">保存评价</button></div>
+          </section></div>
         </section>
 
         <section class="report-section period-section" id="departmentEvaluationSection" aria-labelledby="departmentEvaluationTitle" hidden>
@@ -610,7 +622,7 @@
   </div>
 
   <script>
-    function getReviewEmployee(){const parts=document.querySelector('[aria-label="部门岗位"]').value.split(' · ');return {name:document.querySelector('[aria-label="姓名"]').value,department:parts[0]||'',position:parts.slice(1).join(' · ')}}
+    function getReviewEmployee(){const parts=document.querySelector('[aria-label="部门岗位"]').value.split(' - ');return {name:document.querySelector('[aria-label="姓名"]').value,department:parts[0]||'',position:parts.slice(1).join(' - ')}}
     function updateProbationDate(){const value=document.querySelector('[aria-label="入职时间"]').value;if(!value)return;const [year,month,day]=value.split('-').map(Number);const targetMonth=month-1+6;const lastDay=new Date(year,targetMonth+1,0).getDate();const date=new Date(year,targetMonth,Math.min(day,lastDay));document.querySelector('[aria-label="拟转正时间"]').value=[date.getFullYear(),String(date.getMonth()+1).padStart(2,'0'),String(date.getDate()).padStart(2,'0')].join('-')}
     updateProbationDate();document.querySelector('[aria-label="入职时间"]').addEventListener('change',updateProbationDate);
     const workspace = document.getElementById('workspace');
@@ -684,16 +696,58 @@
       return { ratings, comment: String(comment) };
     }
 
-    function persistMentorEvaluation() {
-      if (!mentorEvaluationDraft) return;
-      mentorEvaluationDraft.comment = mentorEvaluationDraft.comment.trim();
-      mentorEvaluationStore[mentorEvaluationRecordKey] = {
-        ratings: { employee: mentorEvaluationDraft.ratings.slice() },
-        evaluationNotes: { employee: mentorEvaluationDraft.comment },
+    function saveReviewEvaluation(direction, draft) {
+      if (!draft) return false;
+      const previous=mentorEvaluationStore[mentorEvaluationRecordKey]||{};
+      const ratings=Array.isArray(previous.ratings)?{employee:previous.ratings}:previous.ratings||{};
+      const date=new Date().toLocaleDateString('sv-SE');
+      const next={...previous,
+        ratings: {...ratings,[direction]:draft.ratings.slice()},
+        evaluationNotes: {...previous.evaluationNotes,[direction]:draft.comment.trim()},
+        savedAt:{...previous.savedAt,[direction]:date},
         meta:{id:"review-yang-yanying-6",employee:{name:document.querySelector('[aria-label="姓名"]').value||"杨艳英",department:getReviewEmployee().department,position:getReviewEmployee().position},teacher:{name:document.querySelector('[aria-label="指导老师"]').value},period:"第6期述职",date:new Date().toLocaleDateString('sv-SE')}
       };
-      try { localStorage.setItem(mentorEvaluationStoreKey, JSON.stringify(mentorEvaluationStore)); } catch {}
+      const nextStore={...mentorEvaluationStore,[mentorEvaluationRecordKey]:next};
+      try { localStorage.setItem(mentorEvaluationStoreKey, JSON.stringify(nextStore)); } catch { return false; }
+      mentorEvaluationStore=nextStore;draft.comment=draft.comment.trim();return true;
     }
+    function persistMentorEvaluation() {
+      return saveReviewEvaluation('employee',mentorEvaluationDraft);
+    }
+
+    const guideRatingDimensions=[
+      {name:'专业胜任力',hint:'专业知识、岗位技能与解决问题的能力'},
+      {name:'工作积极性',hint:'工作主动性、责任意识与投入程度'},
+      {name:'文化认同感',hint:'对团队价值观、协作方式与组织文化的认同'}
+    ];
+    const guideSaved=mentorEvaluationStore[mentorEvaluationRecordKey]||{};
+    const guideRatingDraft={ratings:guideRatingDimensions.map((_,index)=>{const value=Number(guideSaved.ratings?.mentor?.[index]||0);return Number.isFinite(value)&&value>=0&&value<=5?value:0}),comment:String(guideSaved.evaluationNotes?.mentor||'')};
+    function renderGuideRating(){
+      const scored=guideRatingDraft.ratings.filter(value=>value>0);
+      document.getElementById('guideRatingAverage').textContent=scored.length?(scored.reduce((sum,value)=>sum+value,0)/scored.length).toFixed(1):'—';
+      document.getElementById('guideRatingItems').innerHTML=guideRatingDimensions.map((dimension,index)=>{
+        const value=guideRatingDraft.ratings[index];
+        const stars=Array.from({length:5},(_,starIndex)=>'<button class="star-button '+(value>=starIndex+1?'filled':value>=starIndex+.5?'half':'')+'" type="button" data-guide-dimension="'+index+'" data-guide-star="'+starIndex+'" aria-label="'+dimension.name+'打'+(starIndex+.5)+'分或'+(starIndex+1)+'分">★</button>').join('');
+        return '<article class="rating-item"><div><div class="rating-dimension">'+dimension.name+'</div><div class="rating-help">'+dimension.hint+'</div></div><div class="rating-control"><div class="star-group">'+stars+'</div><span class="rating-value">'+(value?value.toFixed(1):'未评')+'</span></div></article>';
+      }).join('');
+    }
+    const guideComment=document.getElementById('guideRatingComment');
+    guideComment.value=guideRatingDraft.comment;
+    function updateGuideComment(){guideRatingDraft.comment=guideComment.value;document.getElementById('guideRatingCount').textContent=guideComment.value.length+' / 950';document.getElementById('guideRatingStatus').textContent='评价尚未保存';}
+    document.getElementById('guideRatingCount').textContent=guideComment.value.length+' / 950';
+    guideComment.addEventListener('input',updateGuideComment);
+    document.getElementById('clearGuideRatingComment').addEventListener('click',()=>{guideComment.value='';updateGuideComment();guideComment.focus();});
+    document.getElementById('guideRatingItems').addEventListener('click',event=>{
+      const star=event.target.closest('[data-guide-star]');if(!star)return;
+      const half=event.detail!==0&&event.clientX-star.getBoundingClientRect().left<star.getBoundingClientRect().width/2;
+      guideRatingDraft.ratings[Number(star.dataset.guideDimension)]=Number(star.dataset.guideStar)+(half ? 0.5 : 1);
+      document.getElementById('guideRatingStatus').textContent='评分尚未保存';renderGuideRating();
+    });
+    document.getElementById('saveGuideRating').addEventListener('click',()=>{
+      const saved=saveReviewEvaluation('mentor',guideRatingDraft);
+      document.getElementById('guideRatingStatus').textContent=saved?'评价已保存':'保存失败，请重试';
+      if(saved){guideComment.value=guideRatingDraft.comment;document.getElementById('guideRatingCount').textContent=guideComment.value.length+' / 950';}
+    });
 
     function renderMentorEvaluation() {
       const container = document.getElementById('mentorRatingDirections');
@@ -1194,9 +1248,14 @@
       reportTitle.textContent = `${getReviewEmployee().name}的2026-09新员工述职报告(第${period}/6期)`;
       quarterMaterialsSection.hidden = period !== '3';
       mentorEvaluationSection.hidden = period !== '6';
+      document.getElementById('guideTeacherTextOnly').hidden=period==='6';
+      document.getElementById('guideTeacherRatingPanel').hidden=period!=='6';
+      document.getElementById('guideRatingAverageBox').hidden=period!=='6';
+      document.getElementById('guideTeacherEvaluationTitle').classList.toggle('required',period==='6');
+      document.getElementById('guideTeacherEvaluationSection').classList.toggle('sixth-guide-rating',period==='6');
       rotationSection.hidden = period !== '6' || rotationAssignments.length === 0;
       departmentEvaluationSection.hidden = period !== '3' && period !== '6';
-      if (period === '6') {syncRotationAssignments();renderRotationRows();renderMentorEvaluation();}
+      if (period === '6') {syncRotationAssignments();renderRotationRows();renderMentorEvaluation();renderGuideRating();}
     }
 
     periodSelect.addEventListener('change', () => setPeriod(periodSelect.value));
@@ -1249,7 +1308,7 @@
     mentorRatingDirections.addEventListener('click', (event) => {
       const saveButton = event.target.closest('[data-action="save-rating"]');
       if (saveButton) {
-        persistMentorEvaluation();
+        if(!persistMentorEvaluation()){mentorEvaluationStatusMessage='保存失败，请重试';document.getElementById('mentorEvaluationStatus').textContent=mentorEvaluationStatusMessage;return;}
         mentorEvaluationStatusMessage = '评价已保存';
         document.getElementById('mentorEvaluationStatus').textContent = mentorEvaluationStatusMessage;
         document.getElementById('evaluationText-employee').value = mentorEvaluationDraft.comment;
@@ -1325,7 +1384,7 @@
     });
 
     const guideMeta=mentorEvaluationStore[mentorEvaluationRecordKey]?.meta;
-    if(guideMeta){if(guideMeta.employee?.name)document.querySelector('[aria-label="姓名"]').value=guideMeta.employee.name;if(guideMeta.employee?.department)document.querySelector('[aria-label="部门岗位"]').value=[guideMeta.employee.department,guideMeta.employee.position].filter(Boolean).join(' · ');if(guideMeta.teacher?.name)document.querySelector('[aria-label="指导老师"]').value=guideMeta.teacher.name}
+    if(guideMeta){if(guideMeta.employee?.name)document.querySelector('[aria-label="姓名"]').value=guideMeta.employee.name;if(guideMeta.employee?.department)document.querySelector('[aria-label="部门岗位"]').value=[guideMeta.employee.department,guideMeta.employee.position].filter(Boolean).join(' - ');if(guideMeta.teacher?.name)document.querySelector('[aria-label="指导老师"]').value=guideMeta.teacher.name}
     const evaluationQuery=new URLSearchParams(location.search);
     if(evaluationQuery.get('period')==='6'){periodSelect.value='6';setPeriod('6')}
     window.personEvaluationSnapshot=()=>{let saved={};try{saved=JSON.parse(localStorage.getItem(mentorEvaluationStoreKey)||'{}')}catch{}return {kind:'review',saved:saved[mentorEvaluationRecordKey]||null,employee:getReviewEmployee(),date:'2026-09-02'}};

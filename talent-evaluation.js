@@ -18,8 +18,8 @@ function buildData(){
  }
  for(const kind of ['probation','review']){
   const snapshot=snapshots[kind];if(!snapshot)continue;const saved=snapshot.saved||{},meta=saved.meta||{},employee=meta.employee||snapshot.employee,teacher=meta.teacher||{};
-  const mentorValues=kind==='probation'?saved.ratings:[],employeeValues=kind==='review'?(Array.isArray(saved.ratings)?saved.ratings:saved.ratings?.employee):[];
-  const pair={id:meta.id||(kind==='probation'?'probation-zhang-anqi':'review-yang-yanying-6'),employee,teacher:person(teacher.name||'',teacher.department||''),teacherRole:'指导老师',source:kind==='probation'?'转正流程':'述职第六期',period:meta.period||(kind==='probation'?'转正评价':'第6期述职'),date:meta.date||'',department:employee.department||'',mentorScores:scores(mentorValues),employeeScores:scores(employeeValues),mentorComment:kind==='probation'?saved.comment||'':'',employeeComment:kind==='review'?saved.evaluationNotes?.employee||saved.comment||'':'',url:sourceFiles[kind]+'?from=evaluation&focus=mentor'+(kind==='review'?'&period=6':'')};
+  const mentorValues=kind==='probation'?saved.ratings:saved.ratings?.mentor,employeeValues=kind==='review'?(Array.isArray(saved.ratings)?saved.ratings:saved.ratings?.employee):[];
+  const pair={id:meta.id||(kind==='probation'?'probation-zhang-anqi':'review-yang-yanying-6'),employee,teacher:person(teacher.name||'',teacher.department||''),teacherRole:'指导老师',source:kind==='probation'?'转正流程':'述职第六期',period:meta.period||(kind==='probation'?'转正评价':'第6期述职'),date:meta.date||'',mentorDate:saved.savedAt?.mentor??meta.date??'',employeeDate:saved.savedAt?.employee??meta.date??'',department:employee.department||'',mentorScores:scores(mentorValues),employeeScores:scores(employeeValues),mentorComment:kind==='probation'?saved.comment||'':saved.evaluationNotes?.mentor||'',employeeComment:kind==='review'?saved.evaluationNotes?.employee||saved.comment||'':'',url:sourceFiles[kind]+'?from=evaluation&focus=mentor'+(kind==='review'?'&period=6':'')};
   if(!pair.teacher.name&&(average(pair.mentorScores)||average(pair.employeeScores)||pair.mentorComment||pair.employeeComment))missing++;
   pairs.push(pair);
  }

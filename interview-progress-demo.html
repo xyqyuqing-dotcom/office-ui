@@ -163,6 +163,10 @@
     .manage-backdrop[hidden] { display: none; }
     .manage-modal { width: min(1440px,calc(100vw - 48px)); height: min(92vh,980px); display: flex; flex-direction: column; overflow: hidden; border-radius: 9px; background: #fff; box-shadow: 0 18px 60px rgba(22,39,59,.28); }
     .manage-modal.compact { width: min(900px,calc(100vw - 48px)); }
+    .manage-modal.duration-settings { width: min(440px,calc(100vw - 48px)); height: auto; max-height: 90vh; }
+    .default-duration-field { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+    .default-duration-field .control { width: 120px; }
+    .duration-settings .table-hint { display: block; margin: 0 0 14px; line-height: 1.7; white-space: normal; }
     .manage-head { min-height: 48px; display: flex; align-items: center; justify-content: space-between; padding: 0 18px; color: #fff; background: #08629d; }
     .manage-head h2 { margin: 0; font-size: 17px; font-weight: 600; }
     .manage-close { width: 32px; height: 32px; border: 0; color: #fff; background: transparent; font-size: 24px; }
@@ -292,7 +296,7 @@
     </div>
 
     <section class="panel table-panel" aria-label="面试进度列表">
-      <div class="table-heading"><div><h2>人员面试安排</h2><p id="scheduleSummary"></p></div><div class="table-tools"><span class="selection-count" id="selectionCount">已选 0 人</span><button class="btn" id="generateScoresBtn" type="button" disabled>生成评分</button><button class="btn primary" id="addCandidateBtn" type="button">从名单新增</button><button class="tool-link" id="historyInterviewersBtn" type="button">查看历史面试官信息</button><button class="tool-link" id="manageTagsBtn" type="button">标签管理</button></div></div>
+      <div class="table-heading"><div><h2>人员面试安排</h2><p id="scheduleSummary"></p></div><div class="table-tools"><span class="selection-count" id="selectionCount">已选 0 人</span><button class="btn" id="generateScoresBtn" type="button" disabled>生成评分</button><button class="btn primary" id="addCandidateBtn" type="button">从名单新增</button><button class="tool-link" id="defaultDurationBtn" type="button">默认时长设置</button><button class="tool-link" id="historyInterviewersBtn" type="button">查看历史面试官信息</button><button class="tool-link" id="manageTagsBtn" type="button">标签管理</button></div></div>
       <div class="schedule-filters" aria-label="面试筛选"><div class="field"><label for="filterDateFrom">面试日期</label><input class="control" type="date" id="filterDateFrom" aria-label="开始日期"></div><span class="date-range-separator">至</span><div class="field"><label for="filterDateTo">&nbsp;</label><input class="control" type="date" id="filterDateTo" aria-label="结束日期"></div><div class="field type-filter"><label for="filterType">面试类型</label><select class="control" id="filterType"><option value="">全部类型</option><option value="招聘">招聘</option><option value="转岗">转岗</option><option value="持续考察">持续考察</option><option value="转正">转正</option></select></div><button class="btn" id="clearFiltersBtn" type="button">清空筛选</button><span class="table-hint">日期留空时显示全部日期</span></div>
       <div class="table-wrap">
         <table>
@@ -308,7 +312,7 @@
     <div class="time-popover-head"><strong id="timePopoverTitle">设置面试时间</strong><button class="time-popover-close" id="closeTimePopover" type="button" aria-label="关闭">×</button></div>
     <p id="timePopoverHelp">选择分钟后选择器会自动收起；确认开始时间后，点击“应用并重排”。</p>
     <input class="time-picker-input" id="timePicker" type="time" aria-label="面试时间">
-    <div class="time-popover-actions"><button class="btn" id="cancelTimeEdit" type="button">取消</button><button class="btn primary" id="applyTimeEdit" type="button">应用并重排</button></div>
+    <div class="time-popover-actions"><button class="btn" id="cancelTimeEdit" type="button">取消</button><button class="btn" id="finishAtTime" type="button" hidden>按此时间结束</button><button class="btn primary" id="applyTimeEdit" type="button">应用并重排</button></div>
   </div>
   <div class="manage-backdrop" id="manageBackdrop" hidden>
     <section class="manage-modal" id="manageModal" role="dialog" aria-modal="true" aria-labelledby="manageTitle">
@@ -330,6 +334,8 @@
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <script>
+    let defaultDurationMinutes = 30;
+    let defaultDurationConfigured = false;
     const sessions = [
       {id:'2026-09-29', date:'2026-09-29', start:'09:00', duration:30, roster:[{name:'林若宁',type:'招聘',interviewers:['邵景行','顾言川','秦书宁','沈亦舟','梁清禾']},{name:'陈书涵',type:'招聘',interviewers:['顾言川','秦书宁','程予安','许知远','唐星澜']},{name:'赵子墨',type:'转岗',interviewers:['邵景行','沈亦舟','梁清禾','方允之','江知夏']},{name:'周闻溪',type:'持续考察',interviewers:['秦书宁','程予安','许知远','方允之','江知夏']},{name:'孙予安',type:'招聘',interviewers:['邵景行','顾言川','梁清禾','唐星澜','江知夏']}]},
       {id:'2026-09-25', date:'2026-09-25', start:'13:30', duration:35, roster:[{name:'杨梓轩',type:'转岗',interviewers:['邵景行','顾言川','程予安','唐星澜','方允之']},{name:'胡思远',type:'持续考察',interviewers:['秦书宁','沈亦舟','许知远','梁清禾','江知夏']},{name:'于海涛',type:'转岗',interviewers:['顾言川','沈亦舟','梁清禾','许知远','方允之']},{name:'王浩然',type:'招聘',interviewers:['邵景行','秦书宁','程予安','唐星澜','江知夏']}]},
@@ -340,6 +346,8 @@
     const mockPositions = {'林若宁':'数据分析岗','陈书涵':'后端开发工程师','赵子墨':'系统开发岗','周闻溪':'业务分析岗','孙予安':'前端开发工程师','杨梓轩':'客户经理','胡思远':'风险分析岗','于海涛':'数据产品岗','王浩然':'产品运营岗','陈悦宁':'业务运营岗','赵安琪':'行业研究岗','林婉清':'招聘专员','顾清禾':'客户体验岗','何景明':'系统运维岗','沈知夏':'数据治理岗','叶承安':'合规管理岗','唐可心':'产品设计岗','方明远':'数据平台岗','季书瑶':'组织发展岗','陆子谦':'后端开发岗','高予辰':'平台开发岗'};
     sessions.forEach(session=>{
       session.type = '招聘/持续考察面试';
+      session.duration = defaultDurationMinutes;
+      session.defaultDurationConfigured = true;
       session.interviewers = [...new Set(session.roster.flatMap(person=>person.interviewers))];
       session.evaluationTags=[]; session.note='';
       session.people=session.roster.map((person,index)=>({...person,sourceId:`roster-${session.id}-${index}`,date:session.date,position:person.position||mockPositions[person.name]||'业务专员',status:'waiting',durationMinutes:session.duration,evaluationTags:[],note:''}));
@@ -401,6 +409,9 @@
       if (!person.setupSample) return;
       person.setupPending=!((person.interviewers||[]).length>0&&person.startConfigured&&person.endConfigured&&person.durationConfigured);
     }
+    function hasInterviewStart(person) {
+      return Boolean(person?.startTime && (!person.setupSample || person.startConfigured));
+    }
     function previousPersonOnSameDate(session, index) {
       const orderedRows = sessions.slice().sort((a,b)=>b.date.localeCompare(a.date)).flatMap(item=>item.people.map((person,personIndex)=>({session:item,index:personIndex})));
       const currentIndex = orderedRows.findIndex(item=>item.session.id===session.id&&item.index===index);
@@ -416,19 +427,32 @@
     }
     function recalculate(session = activeSession, shouldRender = true) {
       let cursor = toMinutes(session.start);
+      let cursorConfigured = false;
       session.people.forEach(person => {
         if (person.status === 'done') {
           person.startTime = person.actualStart;
           person.endTime = person.actualEnd;
           person.durationShown = timeDifference(person.actualStart, person.actualEnd);
           cursor = toMinutes(person.actualEnd);
+          cursorConfigured = true;
         } else {
+          const startConfigured = Boolean(person.manualStart || !person.setupSample || cursorConfigured);
           const start = person.manualStart ? toMinutes(person.manualStart) : cursor;
           const end = person.manualEnd ? toMinutes(person.manualEnd) : start + (Number(person.durationMinutes) || durationValue(session));
           person.startTime = toTime(start);
           person.endTime = toTime(end);
           person.durationShown = timeDifference(person.startTime, person.endTime);
+          if (person.setupSample) {
+            person.startConfigured = startConfigured;
+            person.endConfigured = startConfigured || Boolean(person.manualEnd);
+            if (startConfigured && !person.durationConfigured) {
+              person.durationMinutes = durationValue(session);
+              person.durationConfigured = true;
+            }
+            refreshSetupPending(person);
+          }
           cursor = end;
+          cursorConfigured = startConfigured || Boolean(person.manualEnd);
         }
       });
       if (shouldRender) renderTable();
@@ -513,9 +537,32 @@
       $('manageBody').scrollTop = 0;
       $('manageFoot').innerHTML = footer;
       $('manageModal').classList.toggle('compact', compact);
+      $('manageModal').classList.remove('duration-settings');
       $('manageBackdrop').hidden = false;
     }
     function closeManage() { $('manageBackdrop').hidden = true; personEditor=null; }
+    function openDefaultDurationSettings() {
+      showManage('默认时长设置',`<div class="default-duration-field"><label for="defaultDurationInput">默认时长(min)</label><input class="control" id="defaultDurationInput" type="number" min="5" max="180" step="1" value="${defaultDurationMinutes}"></div><p class="table-hint">所有场次共用。未结束且未单独调整时长的人员使用新默认值，后续时间自动重排；已结束记录保持不变。</p>`,`<button class="btn" type="button" data-manage-cancel>取消</button><button class="btn primary" type="button" data-save-durations>保存设置</button>`,true);
+      $('manageModal').classList.add('duration-settings');
+    }
+    function saveDefaultDurations() {
+      const input=$('defaultDurationInput');
+      const value=Number(input.value);
+      if(!Number.isInteger(value)||value<5||value>180){showToast('默认时长请输入 5 至 180 的整数分钟');input.focus();return;}
+      defaultDurationMinutes=value;defaultDurationConfigured=true;
+      sessions.forEach(session=>{
+        if(session.defaultDurationConfigured&&value===durationValue(session))return;
+        session.duration=value;session.defaultDurationConfigured=true;
+        session.people.forEach(person=>{
+          if(person.status==='done'||person.durationOverridden)return;
+          person.durationMinutes=value;
+          if(person.setupSample){person.durationConfigured=true;person.endConfigured=Boolean(person.startConfigured);refreshSetupPending(person);}
+        });
+        clearManualTimesAfter(currentPendingIndex(session),session);
+        recalculate(session,false);
+      });
+      closeManage();renderTable();showToast('默认时长已更新，未结束的面试时间已重排');
+    }
     function selectedTags(field) {
       try { return JSON.parse(field?.dataset.selectedTags||'[]'); } catch { return []; }
     }
@@ -644,10 +691,10 @@
       if (sessions.some(session=>session.people.some(person=>person.sourceId===id))) { showToast('该对象已在面试安排中');return; }
       let session=sessions.find(item=>item.date===candidate.date);
       if (!session) {
-        session={id:`date-${candidate.date}`,date:candidate.date,start:'09:00',duration:30,type:'招聘/持续考察面试',people:[],interviewers:[],evaluationTags:[],note:''};
+        session={id:`date-${candidate.date}`,date:candidate.date,start:'09:00',duration:defaultDurationMinutes,defaultDurationConfigured,type:'招聘/持续考察面试',people:[],interviewers:[],evaluationTags:[],note:''};
         sessions.push(session);
       }
-      session.people.push({sourceId:candidate.id,date:candidate.date,name:candidate.name,position:candidate.position,type:candidate.type,status:'waiting',durationMinutes:null,interviewers:[],interviewerDetails:[],evaluationTags:[],note:'',setupSample:true,setupPending:true,startConfigured:false,endConfigured:false,durationConfigured:false});
+      session.people.push({sourceId:candidate.id,date:candidate.date,name:candidate.name,position:candidate.position,type:candidate.type,status:'waiting',durationMinutes:session.defaultDurationConfigured?durationValue(session):null,interviewers:[],interviewerDetails:[],evaluationTags:[],note:'',setupSample:true,setupPending:true,startConfigured:false,endConfigured:false,durationConfigured:Boolean(session.defaultDurationConfigured)});
       activeSession=session;
       recalculate(session,false);
       $('filterDateFrom').value=candidate.date;$('filterDateTo').value=candidate.date;$('filterType').value='';
@@ -666,6 +713,7 @@
       target.evaluationTags=[];target.note='';
       const sourceDuration=Number(source.durationShown)||((source.startTime&&source.endTime)?timeDifference(source.startTime,source.endTime):Number(source.durationMinutes))||durationValue(sourceSession);
       target.durationMinutes=sourceDuration;
+      target.durationOverridden=true;
       const previous=previousPersonOnSameDate(targetSession,targetIndex);
       const previousPerson=previous?.session.people[previous.index];
       const previousHasTime=Boolean(previousPerson&&(previousPerson.status==='done'||previousPerson.manualStart||previousPerson.manualEnd||previousPerson.durationMinutes||previousPerson.startConfigured||previousPerson.endConfigured||previousPerson.durationConfigured));
@@ -790,9 +838,14 @@
       if (!person || person.status === 'done') return;
       editingTime = {index, role, original:role === 'start' ? person.startTime : person.endTime};
       $('timePopoverTitle').textContent = role === 'start' ? `设置${person.name}的开始时间` : `设置${person.name}的结束时间`;
+      const finishUnavailable = hasInterviewStart(person) ? '' : '请先设置开始时间，再按此时间结束。';
       $('timePopoverHelp').textContent = role === 'end'
-          ? '选择分钟后选择器会自动收起；确认新的预估结束时间后，点击“应用并重排”。'
+          ? (finishUnavailable || '“应用并重排”调整预计时间；“按此时间结束”记录实际结束时间，并重排后续面试。')
           : '选择分钟后选择器会自动收起；确认开始时间后，点击“应用并重排”。';
+      $('finishAtTime').hidden = role !== 'end';
+      $('finishAtTime').disabled = Boolean(finishUnavailable);
+      $('finishAtTime').title = finishUnavailable;
+      $('finishAtTime').setAttribute('aria-describedby', 'timePopoverHelp');
       $('timePicker').value = editingTime.original || '';
       $('timePicker').hidden = false;
       $('timePopover').hidden = false;
@@ -828,6 +881,20 @@
         : `${person.name}已按当前时刻结束，后续预估时间已自动重排`;
       showToast(message);
     }
+    function finishInterviewAtSelectedTime() {
+      if (!editingTime || editingTime.role !== 'end') return;
+      const {index} = editingTime;
+      const person = activeSession.people[index];
+      if (!person || person.status === 'done') return;
+      if (!hasInterviewStart(person)) { showToast('请先设置开始时间'); return; }
+      let actualEnd = $('timePicker').value;
+      if (!actualEnd) { showToast('请选择结束时间'); return; }
+      const adjusted = toMinutes(actualEnd) - toMinutes(person.startTime) < 5;
+      if (adjusted) actualEnd = toTime(toMinutes(person.startTime) + 5);
+      person.status = 'done';person.actualStart = person.startTime;person.actualEnd = actualEnd;
+      closeTimeEditor();clearManualTimesAfter(index);recalculate();
+      showToast(adjusted ? `结束时间至少晚于开始时间5分钟，已调整为 ${actualEnd}，后续面试已重排` : `${person.name}已按所选时间结束，后续预估时间已自动重排`);
+    }
     function applyTimeEditor() {
       if (!editingTime) return;
       const {index, role, original} = editingTime;
@@ -852,6 +919,7 @@
           message = '结束时间已按单人面试时长重算，后续面试已自动重排';
         } else if (person.manualEnd) {
           person.durationMinutes=timeDifference(value,person.manualEnd);
+          person.durationOverridden=true;
           if (person.setupSample) person.durationConfigured=true;
         }
       } else {
@@ -861,6 +929,7 @@
         }
         person.manualEnd = value;
         person.durationMinutes=timeDifference(person.startTime,value);
+        person.durationOverridden=true;
         if (person.setupSample) person.endConfigured=true;
         if (person.setupSample) person.durationConfigured=true;
       }
@@ -881,6 +950,7 @@
     $('timePicker').addEventListener('click', requestNativeTimePicker);
     $('timePicker').addEventListener('input', closeTimePickerAfterMinuteSelection);
     $('addCandidateBtn').addEventListener('click',openCandidatePicker);
+    $('defaultDurationBtn').addEventListener('click',openDefaultDurationSettings);
     $('historyInterviewersBtn').addEventListener('click', openHistoryInterviewers);
     $('manageTagsBtn').addEventListener('click', openTagManager);
     $('selectAllPeople').addEventListener('change', event => {
@@ -994,6 +1064,8 @@
         finishInterviewNow(index);
       } else if (button.dataset.action === 'delay') {
         person.manualEnd = toTime(toMinutes(person.endTime) + 10);
+        person.durationMinutes=timeDifference(person.startTime,person.manualEnd);
+        person.durationOverridden=true;
         clearManualTimesAfter(index,session);
         recalculate(session);
         showToast(`${person.name}的面试已延时10分钟，后续预估时间已自动重排`);
@@ -1010,6 +1082,7 @@
       const value=Math.round(Number(durationInput.value));
       if (!Number.isFinite(value)||value<5||value>180) { showToast('面试时长请输入 5 至 180 分钟');renderTable();return; }
       person.durationMinutes=value;
+      person.durationOverridden=true;
       if (person.setupSample) {
         person.durationConfigured=true;
         person.endConfigured=Boolean(person.startConfigured||person.manualStart);
@@ -1229,11 +1302,13 @@
     document.addEventListener('pointercancel',event=>{if(draggedInterviewerRow&&event.pointerId===interviewerDragPointerId)finishInterviewerReorder();});
     $('manageFoot').addEventListener('click',event=>{
       if (event.target.closest('[data-manage-cancel]')) { closeManage();return; }
+      if (event.target.closest('[data-save-durations]')) { saveDefaultDurations();return; }
       if (event.target.closest('[data-save-person]')) { savePersonEditor();return; }
     });
     $('manageClose').addEventListener('click', closeManage);
     $('manageBackdrop').addEventListener('click', event=>{ if(event.target===$('manageBackdrop')) closeManage(); });
     $('applyTimeEdit').addEventListener('click', applyTimeEditor);
+    $('finishAtTime').addEventListener('click', finishInterviewAtSelectedTime);
     $('cancelTimeEdit').addEventListener('click', closeTimeEditor);
     $('closeTimePopover').addEventListener('click', closeTimeEditor);
     document.addEventListener('click', event => {
