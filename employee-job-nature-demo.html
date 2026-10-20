@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>员工岗位性质维护 · 用户中心</title>
+<style>
+:root{font-family:"Microsoft YaHei","PingFang SC",Arial,sans-serif;color:#26384b;background:#f7f9fc;font-size:14px;--blue:#0078c8;--line:#e6ebf1;--muted:#8a97a5}
+*{box-sizing:border-box}[hidden]{display:none!important}body{margin:0}button,input,select{font:inherit}button{cursor:pointer}button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #a4d4fa;outline-offset:2px}
+.topbar{height:58px;display:flex;align-items:center;justify-content:space-between;gap:20px;padding:0 32px 0 24px;background:linear-gradient(105deg,#0087df,#0064aa);color:#fff}.brand{display:flex;align-items:center;gap:12px;font-size:23px;font-weight:600;white-space:nowrap}.brand-icon{font-size:29px;line-height:1;display:grid;place-items:center;width:42px;height:42px;border-radius:50%;background:#ffffff20}.topnav{display:flex;align-items:stretch;align-self:stretch;gap:34px}.topnav span{position:relative;display:flex;align-items:center;color:#b9def7;font-size:16px;font-weight:500;white-space:nowrap}.topnav .active{color:white}.topnav .active:after{content:"";height:4px;width:24px;border-radius:3px 3px 0 0;background:#a4d9ff;position:absolute;bottom:0;left:50%;transform:translateX(-50%)}
+.workspace{display:grid;grid-template-columns:244px minmax(0,1fr);min-height:calc(100vh - 58px)}.sidebar{border-right:1px solid #dde3ea;background:#fff;min-width:0}.menu-head{height:70px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;color:#8b98a7;border-bottom:1px solid #f0f2f5;font-size:13px}.collapse-button{border:1px solid #e0e7ed;border-radius:4px;background:#fff;color:#6e8394;min-width:30px;height:29px;padding:0 7px;display:flex;align-items:center;justify-content:center;gap:5px;font-size:12px}.collapse-symbol{font-size:18px;line-height:1}.menus{padding-top:10px}.menu-item{display:flex;align-items:center;gap:12px;min-height:54px;padding:14px 20px;white-space:nowrap;color:#294259;font-size:14px}.menu-icon{font-size:17px;display:inline-grid;place-items:center;width:20px;flex-shrink:0}.menu-item.active{background:#eaf4fc;color:#0076c5;box-shadow:inset 3px 0 #1684d2}.workspace.collapsed{grid-template-columns:64px minmax(0,1fr)}.collapsed .menu-head{padding:0;justify-content:center}.collapsed .menu-heading,.collapsed .collapse-label,.collapsed .menu-text{display:none}.collapsed .menu-item{padding-left:0;padding-right:0;justify-content:center}.collapsed .menu-icon{font-size:19px}
+.main{min-width:0;padding:22px 26px 28px}.breadcrumb{color:#99a3af;font-size:13px;margin-bottom:24px;display:flex;gap:9px;align-items:center}.breadcrumb .home{color:#2e98e4}.breadcrumb .chevron{color:#798c9f}.page-heading{margin:0 0 23px}h1{font-size:23px;font-weight:600;color:#26364a;margin:0 0 9px}.subtitle{font-size:13px;color:#8a96a5;margin:0;line-height:1.7}.panel{background:#fff;border:1px solid var(--line);border-radius:6px;overflow:hidden;box-shadow:0 2px 9px #25446903}.table-heading{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:19px 20px}.table-title{display:flex;align-items:center;gap:10px;font-size:15px;font-weight:600}.count{font-size:12px;font-weight:400;color:#7c8b9c;background:#f0f4f9;border-radius:11px;padding:3px 9px}.sync-time{font-size:12px;color:#98a3b0;white-space:nowrap}.table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;text-align:left;white-space:nowrap;font-size:13px}th{color:#718092;font-weight:500;font-size:12px;background:#f7f9fc;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:14px 11px;line-height:1.7}td{color:#4c5c6f;padding:18px 11px;border-bottom:1px solid #edf0f4;line-height:1.6}th:first-child,td:first-child{padding-left:20px}th:last-child,td:last-child{padding-right:20px}tbody tr:last-child td{border-bottom:0}tbody tr:hover{background:#fafcff}.employee{font-weight:500;color:#304255}.employee-id{font-variant-numeric:tabular-nums;color:#728396}.empty-value{color:#a4aebb}.tag{font-size:12px;border-radius:3px;background:#f2f5f8;color:#64778c;padding:3px 7px}.tag.edited{background:#edf5ff;color:#3379be}.effective{color:#36506b;font-weight:500}.effective.pending{color:#b08b43}.edit-link{border:0;background:transparent;color:#1885cf;padding:5px 0;line-height:1.5}.table-footer{display:flex;align-items:center;justify-content:space-between;gap:18px;border-top:1px solid var(--line);padding:15px 20px;font-size:12px;color:#8c99a8}.page-info{display:flex;align-items:center;gap:16px;white-space:nowrap}.page-number{display:grid;place-items:center;height:27px;width:27px;border:1px solid #cde5f8;background:#eff8ff;border-radius:3px;color:#1682ce}.global-search{display:flex;align-items:center;gap:12px}.global-search label{color:#738296;white-space:nowrap}.search-field{position:relative;width:290px;max-width:100%}.search-field:before{content:"";position:absolute;left:12px;top:10px;width:11px;height:11px;border:1.5px solid #91a1b2;border-radius:50%;pointer-events:none}.search-field:after{content:"";position:absolute;left:23px;top:21px;width:5px;height:1.5px;transform:rotate(45deg);background:#91a1b2;pointer-events:none}.global-search input{width:100%;height:35px;border:1px solid #dce4ed;border-radius:4px;padding:0 12px 0 35px;background:#fff;color:#41546a;min-width:0;font-size:13px}.global-search input::placeholder{color:#a1adba}.empty-state{text-align:center;padding:60px 20px!important;color:#95a1af}.empty-state strong{display:block;color:#6d7f92;font-size:14px;font-weight:500;margin-bottom:8px}
+dialog{width:550px;max-width:calc(100% - 32px);max-height:90vh;border:1px solid #e3e8ee;border-radius:8px;padding:0;box-shadow:0 15px 65px #20354c38;color:#33475b}dialog::backdrop{background:#1c31475e}dialog[open]{display:flex;flex-direction:column}dialog form{display:flex;flex-direction:column;max-height:calc(90vh - 2px);min-height:0}.modal-head{display:flex;align-items:center;justify-content:space-between;padding:20px 23px;border-bottom:1px solid var(--line);flex-shrink:0}h2{margin:0;font-size:18px;font-weight:600}.close{border:0;background:transparent;color:#94a1b0;font-size:25px;line-height:1;padding:0 3px}.modal-body{padding:23px;overflow-y:auto;min-height:0}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:19px 18px}.field{display:flex;flex-direction:column;gap:9px;font-size:13px}.field label{color:#718094}.field input,.field select{border:1px solid #dce4ed;background:#fff;border-radius:4px;height:36px;padding:0 10px;width:100%;min-width:0;color:#43576c}.field input[readonly]{background:#f6f8fb;border-color:#e9edf3;color:#7e8c9d}.field select{padding-right:25px}.preview{display:flex;justify-content:space-between;gap:14px;align-items:center;margin-top:22px;background:#f3f8fd;padding:13px 15px;font-size:13px;border-radius:4px;color:#71869c}.preview strong{font-weight:500;color:#267dbb}.modal-foot{display:flex;justify-content:flex-end;gap:10px;padding:16px 23px;border-top:1px solid var(--line);background:#fcfdff;flex-shrink:0}.button{background:#fff;color:#6a7b8e;border:1px solid #dce4ec;border-radius:4px;padding:8px 20px;line-height:1.3}.button.primary{color:#fff;background:#1382ce;border-color:#1382ce}.toast{position:fixed;left:50%;bottom:25px;transform:translateX(-50%);z-index:5;max-width:90%;background:#fff;border:1px solid #dbe7f0;border-radius:5px;box-shadow:0 6px 25px #233e5b20;color:#4b6a84;font-size:13px;padding:12px 20px}
+@media(max-width:1200px){.workspace{grid-template-columns:214px minmax(0,1fr)}.main{padding:22px 20px}.menu-item{padding-left:16px;padding-right:16px;gap:9px}table{min-width:975px}.table-footer{flex-wrap:wrap}.topnav{gap:25px}}@media(max-width:750px){.topbar{padding:0 15px;height:56px}.brand{font-size:18px;gap:8px}.brand-icon{width:32px;height:32px;font-size:23px}.topnav{gap:14px}.topnav span{font-size:13px}.topnav span:first-child,.topnav span:nth-child(2){display:none}.workspace{grid-template-columns:190px minmax(0,1fr);min-height:calc(100vh - 56px)}.main{padding:18px 14px}.breadcrumb{font-size:12px;gap:6px;flex-wrap:wrap;margin-bottom:20px}h1{font-size:20px}.table-heading{padding:16px;align-items:flex-start;flex-direction:column;gap:9px}.table-footer{padding:14px 16px;gap:16px}.global-search{width:100%;gap:9px}.search-field{width:auto;flex:1}.page-info{gap:12px}.form-grid{grid-template-columns:1fr}.modal-body{padding:20px}.modal-head{padding:18px 20px}.modal-foot{padding:14px 20px}}
+.topbar{position:relative}.topnav{position:absolute;top:0;left:50%;height:100%;transform:translateX(-50%)}
+.sidebar{position:relative}.collapse-button{position:absolute;right:-13px;top:50%;transform:translateY(-50%);z-index:2;width:26px;min-width:26px;height:46px;padding:0;border-radius:5px;box-shadow:0 2px 7px #3654710d}.collapse-symbol{font-size:23px}
+@media(max-width:750px){.topbar{height:104px;align-items:flex-start;padding-top:10px}.topnav{top:56px;height:48px;gap:20px}.topnav span:first-child,.topnav span:nth-child(2){display:flex}.workspace{min-height:calc(100vh - 104px)}}
+@media(prefers-reduced-motion:no-preference){.workspace{transition:grid-template-columns .18s ease}.edit-link:hover{color:#005e9e}.button:hover{filter:brightness(.97)}}
+</style>
+</head>
+<body>
+<header class="topbar">
+ <div class="brand"><span class="brand-icon" aria-hidden="true">👥</span>用户中心</div>
+ <nav class="topnav" aria-label="用户中心导航"><span>我的信息</span><span>业务小组</span><span>通讯录</span><span class="active" aria-current="true">信息管理</span></nav>
+</header>
+<div class="workspace" id="workspace">
+ <aside class="sidebar" aria-label="信息管理菜单">
+  <button type="button" class="collapse-button" id="toggle-menu" aria-label="收起菜单" aria-expanded="true" aria-controls="side-menus"><span class="collapse-symbol" aria-hidden="true">‹</span></button>
+  <div class="menu-head"><span class="menu-heading">信息管理</span></div>
+  <nav class="menus" id="side-menus" aria-label="业务菜单">
+   <div class="menu-item" aria-label="期货从业人员管理" title="期货从业人员管理"><span class="menu-icon" aria-hidden="true">▣</span><span class="menu-text">期货从业人员管理</span></div>
+   <div class="menu-item" aria-label="岗位工作组管理" title="岗位工作组管理"><span class="menu-icon" aria-hidden="true">▣</span><span class="menu-text">岗位工作组管理</span></div>
+   <div class="menu-item active" aria-current="page" aria-label="员工岗位性质维护" title="员工岗位性质维护"><span class="menu-icon" aria-hidden="true">▤</span><span class="menu-text">员工岗位性质维护</span></div>
+  </nav>
+ </aside>
+ <main class="main">
+  <div class="breadcrumb"><span class="home">用户中心首页</span><span class="chevron" aria-hidden="true">›</span><span>员工岗位性质维护</span></div>
+  <div class="page-heading"><h1>员工岗位性质维护</h1><p class="subtitle">总部业务部门及分支机构</p></div>
+  <section class="panel" aria-label="员工岗位性质列表">
+   <div class="table-heading"><div class="table-title">员工列表 <span class="count" id="total-count">8 人</span></div><span class="sync-time">最近同步 2026-10-20 12:00</span></div>
+   <div class="table-wrap"><table><thead><tr><th>姓名</th><th>工号</th><th>在职状态</th><th>员工范围</th><th>部门名称</th><th>岗位名称</th><th>岗位定位<br>（eHR）</th><th>岗位定位<br>（人力核准）</th><th>生效岗位性质</th><th>操作</th></tr></thead><tbody id="rows"></tbody></table></div>
+   <div class="table-footer"><div class="page-info"><span id="result-count" role="status" aria-live="polite">共 8 条</span><span>每页 20 条</span><span class="page-number" aria-label="当前第 1 页">1</span></div><div class="global-search" role="search"><label for="global-search">全局搜索</label><div class="search-field"><input id="global-search" type="search" placeholder="搜索姓名、工号、部门、岗位等" autocomplete="off"></div></div></div>
+  </section>
+ </main>
+</div>
+<dialog id="editor" aria-labelledby="editor-title">
+ <form id="edit-form">
+  <div class="modal-head"><h2 id="editor-title">编辑岗位定位</h2><button class="close" type="button" aria-label="关闭编辑" data-close>×</button></div>
+  <div class="modal-body">
+   <div class="form-grid">
+    <div class="field"><label for="edit-name">姓名</label><input id="edit-name" readonly></div>
+    <div class="field"><label for="edit-id">工号</label><input id="edit-id" readonly></div>
+    <div class="field"><label for="edit-dept">部门名称</label><input id="edit-dept" readonly></div>
+    <div class="field"><label for="edit-job">岗位名称</label><input id="edit-job" readonly></div>
+    <div class="field"><label for="edit-ehr">岗位定位（eHR）</label><input id="edit-ehr" readonly></div>
+    <div class="field"><label for="edit-value">岗位定位（人力核准）</label><select id="edit-value"><option value="">未设置</option><option>后台</option><option>中前台</option><option>管理层</option></select></div>
+   </div>
+   <div class="preview"><span>生效岗位性质</span><strong id="preview-value"></strong></div>
+  </div>
+  <div class="modal-foot"><button type="button" class="button" data-close>取消</button><button type="submit" class="button primary">保存</button></div>
+ </form>
+</dialog>
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+<script>
+(()=>{
+'use strict';
+const employees=[
+ {id:'100001',name:'陈一宁',status:'在职',scope:'总部业务部门',dept:'普惠金融部',job:'业务运营岗',ehr:'后台',manual:'中前台'},
+ {id:'100002',name:'林予安',status:'在职',scope:'总部业务部门',dept:'普惠金融部',job:'客户经理岗',ehr:'中前台',manual:''},
+ {id:'100003',name:'周景和',status:'退休',scope:'总部业务部门',dept:'战略客户部',job:'部门负责人',ehr:'管理层',manual:''},
+ {id:'100004',name:'许知远',status:'在职',scope:'总部业务部门',dept:'战略客户部',job:'业务支持岗',ehr:'中前台',manual:'后台'},
+ {id:'100005',name:'顾清禾',status:'在职',scope:'分支机构',dept:'华东分公司',job:'综合管理岗',ehr:'后台',manual:''},
+ {id:'100006',name:'沈亦舟',status:'在职',scope:'分支机构',dept:'华东分公司',job:'机构负责人',ehr:'中前台',manual:'管理层'},
+ {id:'100007',name:'苏念初',status:'在职',scope:'分支机构',dept:'华南分公司',job:'业务管理岗',ehr:'',manual:''},
+ {id:'100008',name:'陆时安',status:'离职',scope:'分支机构',dept:'华南分公司',job:'客户经理岗',ehr:'中前台',manual:''}
+];
+const $=id=>document.getElementById(id),key='gxj-job-nature-office-v2';
+const escape=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const effective=e=>e.manual||e.ehr||'';const values=['','后台','中前台','管理层'];
+let editingId=null,query='',collapsed=false,toastTimer;
+try{const saved=JSON.parse(localStorage.getItem(key));if(saved&&typeof saved==='object'){for(const e of employees){if(Object.prototype.hasOwnProperty.call(saved,e.id)&&values.includes(saved[e.id]))e.manual=saved[e.id]}}collapsed=localStorage.getItem(key+'-menu')==='collapsed'}catch{}
+function persist(){try{localStorage.setItem(key,JSON.stringify(Object.fromEntries(employees.map(e=>[e.id,e.manual]))))}catch{}}
+function render(){
+ const tokens=query.trim().toLowerCase().split(/\s+/).filter(Boolean);
+ const result=employees.filter(e=>{const text=[e.name,e.id,e.status,e.scope,e.dept,e.job,e.ehr,e.manual,effective(e)||'待补充'].join(' ').toLowerCase();return tokens.every(token=>text.includes(token))});
+ $('rows').innerHTML=result.length?result.map(e=>`<tr><td class="employee">${escape(e.name)}</td><td class="employee-id">${escape(e.id)}</td><td>${escape(e.status)}</td><td>${escape(e.scope)}</td><td>${escape(e.dept)}</td><td>${escape(e.job)}</td><td>${e.ehr?`<span class="tag">${escape(e.ehr)}</span>`:'<span class="empty-value">未提供</span>'}</td><td>${e.manual?`<span class="tag edited">${escape(e.manual)}</span>`:'<span class="empty-value">未设置</span>'}</td><td class="effective ${effective(e)?'':'pending'}">${escape(effective(e)||'待补充')}</td><td><button type="button" class="edit-link" data-id="${escape(e.id)}" aria-label="修改${escape(e.name)}">修改</button></td></tr>`).join(''):'<tr><td colspan="10" class="empty-state"><strong>暂无匹配员工</strong>请调整或清空搜索内容。</td></tr>';
+ $('result-count').textContent=tokens.length?`共 ${result.length} 条 / 全部 ${employees.length} 条`:`共 ${result.length} 条`;$('total-count').textContent=employees.length+' 人';
+}
+function renderMenu(){
+ $('workspace').classList.toggle('collapsed',collapsed);$('toggle-menu').setAttribute('aria-expanded',String(!collapsed));$('toggle-menu').setAttribute('aria-label',collapsed?'展开菜单':'收起菜单');$('toggle-menu').querySelector('.collapse-symbol').textContent=collapsed?'›':'‹';
+}
+function preview(){const e=employees.find(e=>e.id===editingId);$('preview-value').textContent=$('edit-value').value||e?.ehr||'待补充'}
+function openEditor(id){const e=employees.find(e=>e.id===id);if(!e)return;editingId=id;for(const [field,property] of [['edit-name','name'],['edit-id','id'],['edit-dept','dept'],['edit-job','job'],['edit-ehr','ehr']])$(field).value=e[property]||(field==='edit-ehr'?'未提供':'');$('edit-value').value=e.manual;preview();$('editor').showModal()}
+$('rows').addEventListener('click',event=>{const button=event.target.closest('button[data-id]');if(button)openEditor(button.dataset.id)});
+$('edit-value').addEventListener('change',preview);
+$('edit-form').addEventListener('submit',event=>{event.preventDefault();const e=employees.find(e=>e.id===editingId);const value=$('edit-value').value;if(!e||!values.includes(value))return;e.manual=value;persist();render();$('editor').close();$('toast').textContent='保存成功';$('toast').hidden=false;clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').hidden=true,2400)});
+document.querySelectorAll('[data-close]').forEach(button=>button.addEventListener('click',()=>$('editor').close()));
+$('global-search').addEventListener('input',()=>{query=$('global-search').value;render()});
+$('toggle-menu').addEventListener('click',()=>{collapsed=!collapsed;renderMenu();try{localStorage.setItem(key+'-menu',collapsed?'collapsed':'expanded')}catch{}});
+renderMenu();render();
+})();
+</script>
+</body>
+</html>
