@@ -7932,6 +7932,7 @@ body:has(#nvMain:not([hidden])) .content{padding-top:22px}
 .r3-summary-read{margin:0;padding:0;border:0;font-size:inherit;line-height:inherit;white-space:pre-wrap;overflow-wrap:anywhere}
 .r3-summary-read small{color:var(--ink-3)}.r3-error{color:var(--red);font-size:12px}
 .r3-field-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}.r3-coops{display:flex;gap:8px;flex-wrap:wrap}
+.r7-coop-row{display:grid;grid-template-columns:minmax(0,1fr) 32px;gap:8px;align-items:start;margin-bottom:10px}.r7-coop-row>.r3-field-row{min-width:0}.r7-coop-remove{margin-top:27px;width:32px;height:40px;padding:0;justify-content:center;color:var(--ink-3)}.r7-coop-add{margin:0 0 10px}
 .r3-notice-tools{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}.r3-notice-tools select{padding:7px;border:1px solid var(--line);border-radius:7px}
 .r3-notice-card{display:flex;gap:12px;padding:17px 20px;align-items:flex-start}.r3-notice-card>input{margin-top:5px}.r3-notice-main{flex:1;min-width:0}
 .r3-notice-main h3{font-size:15px;margin:0 0 9px;cursor:pointer}.r3-notice-main p{font-size:13px;line-height:1.7;margin:7px 0;color:var(--ink-2)}
@@ -9224,53 +9225,62 @@ const r3OldNvRead=nvRead;
 nvRead=function(){const d=r3OldNvRead();d.leadMode=$('#f_leadMode')?.value||'department';d.projectLead=$('#f_projectLead')?.value||'';
   d.firstExecutive=$('#f_firstExecutive')?.value||'';d.projectLeadEdited=R6_PROJECT_EDITED;d.supervisorEdited=R6_SUPERVISOR_EDITED;
   d.coopExecutives=[...document.querySelectorAll('[name="nv_coopExecutives"]:checked')].map(x=>x.value);
-  if($('#f_cooperators')){const selected=r4SelectedCooperators();d.assists=selected.filter(v=>v.startsWith('department|')).map(v=>v.slice(11));d.coopExecutives=selected.filter(v=>v.startsWith('executive|')).map(v=>v.slice(10));}
+  if($('#f_cooperators')){const selected=r4SelectedCooperators();d.assists=selected.filter(v=>v.startsWith('department|')).map(v=>v.slice(11));d.coopExecutives=selected.filter(v=>v.startsWith('executive|')).map(v=>v.slice(10));d.coopRows=R7_COOP_ROWS.map(({type,target})=>({type,target}));}
   d.coopMode=$('#f_coopMode')?.value||'department';
-  d.pickerInvalid=['leadMode','lead','firstExecutive','projectLead','leadMgr','coopMode','cooperators'].filter(k=>{
+  d.pickerInvalid=['leadMode','lead','firstExecutive','projectLead','leadMgr',...R7_COOP_ROWS.flatMap((r,i)=>[r7CoopKey('coopMode',i),r7CoopKey('cooperators',i)])].filter(k=>{
     if(k==='lead'&&d.leadMode!=='department'||k==='firstExecutive'&&d.leadMode!=='executive')return false;
     const input=$('#f_'+k+'Search');return input&&input.value.trim()&&!$('#f_'+k)?.value&&!r4FindOption(k,input.value);
   });
   d.exec='';d.mgrs=[];if(d.leadMode==='department')d.firstExecutive='';else d.lead='';return d;};
 nvOwners=function(){};
-/* Search text and committed IDs are independent; custom popup supports single and multiple selection. */
+/* Each cooperation row selects one mode and one receiver. Saved legacy lists expand into rows. */
+let R7_COOP_ROWS=[{type:'department',target:''}];
+function r7CoopKey(key,index){return index?key+'_'+index:key;}
+function r7CoopIndex(key){return /^(coopMode|cooperators)(?:_\d+)?$/.test(key)?Number(key.split('_')[1]||0):-1;}
+function r7CoopFields(){return R7_COOP_ROWS.map((row,index)=>{
+  const field=(key,label,placeholder)=>nvField(key,label,r4Picker(key,placeholder)).replace('for="f_'+key+'"','for="f_'+key+'Search"');
+  return '<div class="r7-coop-row"><div class="r3-field-row">'+field(r7CoopKey('coopMode',index),'配合方式','选择配合方式')+field(r7CoopKey('cooperators',index),'配合方',row.type==='executive'?'搜索并选择一位高管':'搜索并选择一个部门')+'</div><button type="button" class="btn sm ghost r7-coop-remove" aria-label="删除第'+(index+1)+'行配合方" onclick="r7RemoveCoopRow('+index+')"><i class="fas fa-trash-can"></i></button></div>';
+}).join('');}
+function r7RenderCoopRows(){const host=$('#r7CoopRows');if(!host)return;host.innerHTML=r7CoopFields();R7_COOP_ROWS.forEach((row,index)=>{const mode=r7CoopKey('coopMode',index),target=r7CoopKey('cooperators',index);$('#f_'+mode).value=row.type;$('#f_'+target).value=row.target?row.type+'|'+row.target:'';r4SyncPicker(mode);r4SyncPicker(target);});}
+function r7AddCoopRow(){r5ClosePicker();R7_COOP_ROWS.push({type:'department',target:''});r7RenderCoopRows();nvRefresh();nvSnapshot();$('#f_'+r7CoopKey('cooperators',R7_COOP_ROWS.length-1)+'Search')?.focus();}
+function r7RemoveCoopRow(index){r5ClosePicker();R7_COOP_ROWS.splice(index,1);if(!R7_COOP_ROWS.length)R7_COOP_ROWS.push({type:'department',target:''});r7RenderCoopRows();nvRefresh();nvSnapshot();}
+/* Search text and committed IDs are independent; all responsibility pickers are single-select. */
 function r4PickerOptions(key){
   const departments=Object.keys(DEPT_LEAD).map(dept=>[dept,dept+' · '+who(leadOf(dept))]);
   if(key==='leadMode')return [['department','部门负责人'],['executive','高管']];
-  if(key==='coopMode')return [['department','配合部门'],['executive','配合高管']];
+  if(/^coopMode(?:_\d+)?$/.test(key))return [['department','配合部门'],['executive','配合高管']];
   if(key==='lead')return Object.keys(DEPT_LEAD).map(dept=>[dept,who(leadOf(dept))+' · '+dept]);
-  if(key==='cooperators'){const type=$('#f_coopMode')?.value||'department';return (type==='executive'?r3LeaderOptions():departments).map(([v,l])=>[type+'|'+v,l]);}
+  if(/^cooperators(?:_\d+)?$/.test(key)){const type=R7_COOP_ROWS[r7CoopIndex(key)]?.type||'department';return (type==='executive'?r3LeaderOptions():departments).map(([v,l])=>[type+'|'+v,l]);}
   return r3LeaderOptions();
 }
-function r4Picker(key,placeholder,multiple=false){const clearable=['lead','firstExecutive','projectLead','leadMgr'].includes(key);return '<div class="r4-picker '+(clearable?'r5-can-clear':'')+'" id="r5Picker_'+key+'" onclick="r5OpenPicker(\''+key+'\');document.getElementById(\'f_'+key+'Search\').focus()"><input type="hidden" id="f_'+key+'" value="'+(multiple?'[]':'')+'">'+(multiple?'<div class="r4-chips" id="r4CoopChips"></div>':'')+'<input type="search" id="f_'+key+'Search" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="r5PickerPopup" placeholder="'+esc(placeholder)+'" aria-label="'+esc(placeholder)+'" autocomplete="off" onfocus="r5OpenPicker(\''+key+'\')" oninput="r4PickerInput(\''+key+'\',this.value)" onkeydown="r5PickerKey(\''+key+'\',event)" onblur="r5PickerBlur(\''+key+'\')">'+(clearable?'<button type="button" id="r5Clear_'+key+'" class="r5-picker-clear" hidden aria-label="清空选择" onmousedown="event.preventDefault()" onclick="event.stopPropagation();r5ClearPick(\''+key+'\')">×</button>':'')+'<button type="button" class="r5-picker-arrow" tabindex="-1" aria-label="展开选择" onmousedown="event.preventDefault()" onclick="event.stopPropagation();r5TogglePicker(\''+key+'\')"><i class="fas fa-chevron-down"></i></button></div>';}
-function r4SelectedCooperators(){try{const list=JSON.parse($('#f_cooperators')?.value||'[]');return Array.isArray(list)?[...new Set(list.filter(v=>typeof v==='string'))]:[];}catch(e){return [];}}
+function r4Picker(key,placeholder,multiple=false){const clearable=['lead','firstExecutive','projectLead','leadMgr'].includes(key)||/^cooperators(?:_\d+)?$/.test(key);return '<div class="r4-picker '+(clearable?'r5-can-clear':'')+'" id="r5Picker_'+key+'" onclick="r5OpenPicker(\''+key+'\');document.getElementById(\'f_'+key+'Search\').focus()"><input type="hidden" id="f_'+key+'" value=""><input type="search" id="f_'+key+'Search" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="r5PickerPopup" placeholder="'+esc(placeholder)+'" aria-label="'+esc(placeholder)+'" autocomplete="off" onfocus="r5OpenPicker(\''+key+'\')" oninput="r4PickerInput(\''+key+'\',this.value)" onkeydown="r5PickerKey(\''+key+'\',event)" onblur="r5PickerBlur(\''+key+'\')">'+(clearable?'<button type="button" id="r5Clear_'+key+'" class="r5-picker-clear" hidden aria-label="清空选择" onmousedown="event.preventDefault()" onclick="event.stopPropagation();r5ClearPick(\''+key+'\')">×</button>':'')+'<button type="button" class="r5-picker-arrow" tabindex="-1" aria-label="展开选择" onmousedown="event.preventDefault()" onclick="event.stopPropagation();r5TogglePicker(\''+key+'\')"><i class="fas fa-chevron-down"></i></button></div>';}
+function r4SelectedCooperators(){return [...new Set(R7_COOP_ROWS.filter(r=>r.target).map(r=>r.type+'|'+r.target))];}
 function r4SyncPicker(key){const el=$('#f_'+key),input=$('#f_'+key+'Search');if(!el||!input)return;
-  if(key!=='cooperators')input.value=r4PickerOptions(key).find(([v])=>v===el.value)?.[1]||'';if($('#r5Clear_'+key))$('#r5Clear_'+key).hidden=!el.value;
-  const selected=key==='cooperators'?r4SelectedCooperators():[];
-  if(key==='cooperators'&&$('#r4CoopChips'))$('#r4CoopChips').innerHTML=selected.map((value,index)=>{const divider=value.indexOf('|'),type=value.slice(0,divider),target=value.slice(divider+1),label=(type==='executive'?'高管 · '+who(target):'部门 · '+target);return '<span class="r4-chip">'+esc(label)+'<button type="button" aria-label="移除'+xQ(label)+'" onmousedown="event.preventDefault()" onclick="event.stopPropagation();r4RemoveCooperator('+index+')">×</button></span>';}).join('');
+  input.value=r4PickerOptions(key).find(([v])=>v===el.value)?.[1]||'';if($('#r5Clear_'+key))$('#r5Clear_'+key).hidden=!el.value;
 }
-function r4FindOption(key,text){const term=text.trim();return r4PickerOptions(key).find(([value,label])=>term===label||term===value||key==='cooperators'&&term===value.slice(value.indexOf('|')+1));}
+function r4FindOption(key,text){const term=text.trim();return r4PickerOptions(key).find(([value,label])=>term===label||term===value||/^cooperators(?:_\d+)?$/.test(key)&&term===value.slice(value.indexOf('|')+1));}
 function r4PickerInput(key,text){if(R5_PICKER.key!==key)r5OpenPicker(key);R5_PICKER.query=text;R5_PICKER.active=0;r5RenderPicker();}
 function r5CommitPick(key,value){const el=$('#f_'+key);if(!el||!r4PickerOptions(key).some(([id])=>id===value))return;
-  if(key==='cooperators'){const selected=r4SelectedCooperators();el.value=JSON.stringify(selected.includes(value)?selected.filter(v=>v!==value):[...selected,value]);$('#f_cooperatorsSearch').value='';r4SyncPicker(key);R5_PICKER.query='';r5RenderPicker();}
+  if(r7CoopIndex(key)>=0){const row=R7_COOP_ROWS[r7CoopIndex(key)];if(!row)return;r5ClosePicker();if(key.startsWith('coopMode')){if(row.type!==value){row.type=value;row.target='';}}else row.target=value.slice(value.indexOf('|')+1);r7RenderCoopRows();}
   else{el.value=value;if(key==='projectLead')R6_PROJECT_EDITED=true;if(key==='leadMgr')R6_SUPERVISOR_EDITED=true;r4SyncPicker(key);
     if(['lead','firstExecutive','leadMode'].includes(key))r6ApplyInitialDefaults(key);
     if(key==='leadMode')r3ChangeLeadMode();if(key==='coopMode'){if($('#f_cooperatorsSearch'))$('#f_cooperatorsSearch').value='';r4SyncPicker('cooperators');}r5ClosePicker();}
   nvRefresh();nvSnapshot();
 }
-function r5ClearPick(key){if(!['lead','firstExecutive','projectLead','leadMgr'].includes(key)||!$('#f_'+key))return;$('#f_'+key).value='';if(key==='projectLead')R6_PROJECT_EDITED=true;if(key==='leadMgr')R6_SUPERVISOR_EDITED=true;if(['lead','firstExecutive'].includes(key))r6ApplyInitialDefaults(key);r4SyncPicker(key);nvRefresh();nvSnapshot();r5ClosePicker();$('#f_'+key+'Search')?.focus();r5OpenPicker(key);}
+function r5ClearPick(key){if((!['lead','firstExecutive','projectLead','leadMgr'].includes(key)&&!/^cooperators(?:_\d+)?$/.test(key))||!$('#f_'+key))return;$('#f_'+key).value='';if(/^cooperators(?:_\d+)?$/.test(key))R7_COOP_ROWS[r7CoopIndex(key)].target='';if(key==='projectLead')R6_PROJECT_EDITED=true;if(key==='leadMgr')R6_SUPERVISOR_EDITED=true;if(['lead','firstExecutive'].includes(key))r6ApplyInitialDefaults(key);r4SyncPicker(key);nvRefresh();nvSnapshot();r5ClosePicker();$('#f_'+key+'Search')?.focus();r5OpenPicker(key);}
 function r6ApplyInitialDefaults(key){const executive=$('#f_leadMode')?.value==='executive';
-  if(!R6_PROJECT_EDITED&&$('#f_projectLead')){$('#f_projectLead').value=executive?$('#f_firstExecutive')?.value||'':'';r4SyncPicker('projectLead');}
+  if($('#f_projectLead')&&(!R6_PROJECT_EDITED||executive&&key==='firstExecutive'&&!$('#f_projectLead').value)){$('#f_projectLead').value=executive?$('#f_firstExecutive')?.value||'':'';if(executive&&$('#f_projectLead').value)R6_PROJECT_EDITED=false;r4SyncPicker('projectLead');}
   if(!R6_SUPERVISOR_EDITED&&['lead','leadMode'].includes(key)&&$('#f_leadMgr')){$('#f_leadMgr').value=executive?'':mgrOf($('#f_lead')?.value)||'';r4SyncPicker('leadMgr');}
 }
-function r4RemoveCooperator(index){const values=r4SelectedCooperators();values.splice(index,1);$('#f_cooperators').value=JSON.stringify(values);r4SyncPicker('cooperators');if(R5_PICKER.key==='cooperators')r5RenderPicker();nvRefresh();nvSnapshot();}
+function r4RemoveCooperator(index){r7RemoveCoopRow(index);}
 let R5_PICKER={key:'',query:'',active:0,options:[]};
 function r5PickerPopup(){let popup=$('#r5PickerPopup');if(!popup){popup=document.createElement('div');popup.id='r5PickerPopup';popup.className='r5-picker-popup';popup.setAttribute('role','listbox');popup.setAttribute('onmousedown','event.preventDefault()');popup.hidden=true;document.body.appendChild(popup);}return popup;}
-function r5OpenPicker(key){if(R5_PICKER.key===key)return;r5ClosePicker();const selected=key==='cooperators'?0:r4PickerOptions(key).findIndex(([id])=>id===$('#f_'+key)?.value);R5_PICKER={key,query:'',active:Math.max(0,selected),options:[]};const input=$('#f_'+key+'Search');input?.setAttribute('aria-expanded','true');input?.select?.();r5RenderPicker();}
+function r5OpenPicker(key){if(R5_PICKER.key===key)return;r5ClosePicker();const selected=r4PickerOptions(key).findIndex(([id])=>id===$('#f_'+key)?.value);R5_PICKER={key,query:'',active:Math.max(0,selected),options:[]};const input=$('#f_'+key+'Search');input?.setAttribute('aria-expanded','true');input?.select?.();r5RenderPicker();}
 function r5TogglePicker(key){if(R5_PICKER.key===key){r5ClosePicker();return;}$('#f_'+key+'Search')?.focus();r5OpenPicker(key);}
-function r5ClosePicker(){const key=R5_PICKER.key;if(key){const input=$('#f_'+key+'Search');input?.setAttribute('aria-expanded','false');input?.removeAttribute('aria-activedescendant');if(key==='cooperators'){if(input)input.value='';}else r4SyncPicker(key);}R5_PICKER={key:'',query:'',active:0,options:[]};const popup=$('#r5PickerPopup');if(popup)popup.hidden=true;}
+function r5ClosePicker(){const key=R5_PICKER.key;if(key){const input=$('#f_'+key+'Search');input?.setAttribute('aria-expanded','false');input?.removeAttribute('aria-activedescendant');r4SyncPicker(key);}R5_PICKER={key:'',query:'',active:0,options:[]};const popup=$('#r5PickerPopup');if(popup)popup.hidden=true;}
 function r5RenderPicker(){const key=R5_PICKER.key;if(!key)return;const popup=r5PickerPopup(),query=R5_PICKER.query.trim().toLocaleLowerCase();
   const options=r4PickerOptions(key).filter(([id,label])=>!query||(id+' '+label).toLocaleLowerCase().includes(query));R5_PICKER.options=options;R5_PICKER.active=Math.min(Math.max(0,R5_PICKER.active),Math.max(0,options.length-1));
-  const multiple=key==='cooperators',selected=multiple?r4SelectedCooperators():[$('#f_'+key)?.value];popup.setAttribute('aria-multiselectable',String(multiple));
+  const multiple=false,selected=[$('#f_'+key)?.value];popup.setAttribute('aria-multiselectable','false');
   popup.innerHTML=options.map(([id,label],i)=>'<button type="button" tabindex="-1" role="option" id="r5PickerOption_'+i+'" aria-selected="'+selected.includes(id)+'" class="r5-picker-option '+(multiple?'':'r5-picker-single ')+(selected.includes(id)?'is-selected ':'')+(i===R5_PICKER.active?'is-active':'')+'" onclick="r5PickOption('+i+')"><span class="r5-picker-check" aria-hidden="true">✓</span><span>'+esc(label)+'</span></button>').join('')||'<div class="r5-picker-empty">暂无匹配结果</div>';
   popup.hidden=false;const input=$('#f_'+key+'Search');if(options.length)input?.setAttribute('aria-activedescendant','r5PickerOption_'+R5_PICKER.active);else input?.removeAttribute('aria-activedescendant');r5PositionPicker();
 }
@@ -9279,7 +9289,6 @@ function r5PositionPicker(){const field=$('#r5Picker_'+R5_PICKER.key),popup=$('#
   const height=Math.min(260,Math.max(80,Math.max(spaceBelow,spaceAbove))),flip=spaceBelow<180&&spaceAbove>spaceBelow;popup.style.width=width+'px';popup.style.maxHeight=Math.min(260,Math.max(80,flip?spaceAbove:spaceBelow))+'px';popup.style.left=Math.max(8,Math.min(r.left,innerWidth-width-8))+'px';popup.style.top=(flip?Math.max(8,r.top-Math.min(height,popup.scrollHeight||260)-5):r.bottom+5)+'px';
 }
 function r5PickerKey(key,event){if(event.key==='Escape'){event.preventDefault();r5ClosePicker();return;}if(event.key==='Tab'){r5ClosePicker();return;}
-  if(event.key==='Backspace'&&key==='cooperators'&&!$('#f_cooperatorsSearch')?.value){const list=r4SelectedCooperators();if(list.length){event.preventDefault();r4RemoveCooperator(list.length-1);}return;}
   if(!['ArrowDown','ArrowUp','Enter','Home','End'].includes(event.key))return;event.preventDefault();if(R5_PICKER.key!==key){r5OpenPicker(key);if(event.key==='Enter')return;}
   const count=R5_PICKER.options.length;if(event.key==='Enter'){r5PickOption(R5_PICKER.active);return;}
   R5_PICKER.active=event.key==='Home'?0:event.key==='End'?Math.max(0,count-1):(R5_PICKER.active+(event.key==='ArrowDown'?1:-1)+Math.max(count,1))%Math.max(count,1);r5RenderPicker();$('#r5PickerOption_'+R5_PICKER.active)?.scrollIntoView({block:'nearest'});
@@ -9293,7 +9302,7 @@ function r3ResponsibilityFields(){
     '<div id="r3LeadDept">'+field('lead','部门负责人<em>*</em>','搜索并选择部门负责人')+'</div><div id="r3LeadExecutive" hidden>'+field('firstExecutive','高管<em>*</em>','搜索并选择首派高管')+'</div></div>'+
     '<div class="r3-field-row">'+field('projectLead','牵头高管','搜索牵头高管（选填）')+field('leadMgr','分管高管','搜索分管高管')+'</div>'+
     '<div class="ntv-path" id="nvOwnerPath"></div><details class="ntv-options"><summary>补充协作与派发要求（选填）</summary><div class="ntv-grid">'+
-    '<div class="r4-cooperation"><div class="r3-field-row">'+field('coopMode','配合方式','搜索配合方式')+field('cooperators','配合方','搜索并选择，可多选',true)+'</div></div>'+
+    '<div class="r4-cooperation"><div id="r7CoopRows">'+r7CoopFields()+'</div><button type="button" class="btn sm r7-coop-add" onclick="r7AddCoopRow()"><i class="fas fa-plus"></i> 增加配合方</button></div>'+
     nvField('launch','首次派发说明','<textarea id="f_launch" placeholder="补充工作要求与协作方式"></textarea>',true)+'</div></details>';
 }
 function r3ChangeLeadMode(){
@@ -9302,8 +9311,9 @@ function r3ChangeLeadMode(){
 const r3OldNvFill=nvFill;
 nvFill=function(d){r3OldNvFill(d);if($('#f_leadMode'))$('#f_leadMode').value=d.leadMode||'department';if($('#f_projectLead'))$('#f_projectLead').value=d.projectLead||'';
   if($('#f_firstExecutive'))$('#f_firstExecutive').value=r6FirstExecutive(d);R6_PROJECT_EDITED=Object.prototype.hasOwnProperty.call(d,'projectLeadEdited')?!!d.projectLeadEdited:!!d.projectLead&&d.projectLead!==r6FirstExecutive(d);R6_SUPERVISOR_EDITED=Object.prototype.hasOwnProperty.call(d,'supervisorEdited')?!!d.supervisorEdited:!!d.leadMgr;
+  if(d.leadMode==='executive'&&r6FirstExecutive(d)&&!$('#f_projectLead')?.value){$('#f_projectLead').value=r6FirstExecutive(d);R6_PROJECT_EDITED=false;}
   document.querySelectorAll('[name="nv_coopExecutives"]').forEach(el=>el.checked=(d.coopExecutives||[]).includes(el.value));
-  if($('#f_coopMode'))$('#f_coopMode').value=d.coopMode||'department';if($('#f_cooperators'))$('#f_cooperators').value=JSON.stringify([...(d.assists||[]).map(v=>'department|'+v),...(d.coopExecutives||[]).map(v=>'executive|'+v)]);
+  R7_COOP_ROWS=(Array.isArray(d.coopRows)?d.coopRows:[...(d.assists||[]).map(target=>({type:'department',target})),...(d.coopExecutives||[]).map(target=>({type:'executive',target}))]).map(r=>({type:r.type,target:r.target||''}));if(!R7_COOP_ROWS.length)R7_COOP_ROWS=[{type:'department',target:''}];r7RenderCoopRows();
   ['leadMode','lead','firstExecutive','projectLead','leadMgr','coopMode','cooperators'].forEach(r4SyncPicker);r3ChangeLeadMode();nvRefresh();};
 const r3OldRenderNew=renderNewTodo;
 renderNewTodo=function(){r3OldRenderNew();
@@ -9320,6 +9330,7 @@ nvErrors=function(d){
   if(d.leadMgr&&!r3LeaderOptions().some(([id])=>id===d.leadMgr))e.leadMgr='请选择有效的职务分管高管';
   if((d.assists||[]).some(dept=>!leadOf(dept)))e.cooperators='配合部门尚未配置有效负责人';
   if((d.coopExecutives||[]).some(code=>!r3LeaderOptions().some(([id])=>id===code)))e.cooperators='请选择有效配合高管';
+  if(d.coopRows){const rows=d.coopRows;if(rows.some(r=>!['department','executive'].includes(r.type)||rows.length>1&&!r.target))e.cooperators='请选择每行配合方式和配合方，或删除空行';const filled=rows.filter(r=>r.target),keys=filled.map(r=>r.type+'|'+r.target);if(new Set(keys).size!==keys.length)e.cooperators='同一配合方请勿重复添加';}
   (d.pickerInvalid||[]).forEach(key=>e[key]='请从搜索候选中选择有效对象，或清空搜索文字');
   if(d.deadline&&d.deadline!=='常态化推进'&&!aiValidDate(d.deadline))e.deadline='请选择有效日期';if(d.first&&!aiValidDate(d.first))e.first='请选择有效日期';if(aiValidDate(d.first)&&aiValidDate(d.deadline)&&d.first>d.deadline)e.first='首次反馈不能晚于完成期限';return e;
 };
@@ -9385,6 +9396,7 @@ function r3Initialize(){ITEMS.forEach(r3NormalizeItem);r4SeedReadExamples();r5In
 nbPeople=function(){return [];};
 nbEdit=function(id,k,v){const r=NV_BATCH.rows.find(r=>r.id===id);if(!r||r.itemId)return;
   r.d[k]=['assists','coopExecutives'].includes(k)?v.split(/[、,，]/).map(s=>s.trim()).filter(Boolean):v.trim();r.d.exec='';
+  if(['assists','coopExecutives'].includes(k))delete r.d.coopRows;
   if(k==='projectLead')r.d.projectLeadEdited=true;if(k==='leadMgr')r.d.supervisorEdited=true;
   if(k==='leadMode'){if(v==='executive')r.d.lead='';else r.d.firstExecutive='';if(!r.d.projectLeadEdited)r.d.projectLead=v==='executive'?r6FirstExecutive(r.d):'';nbSave();nbRender();return;}
   if(k==='lead'&&r.d.lead){r.d.leadMode='department';r.d.firstExecutive='';if(!r.d.projectLeadEdited)r.d.projectLead='';if(!r.d.supervisorEdited)r.d.leadMgr=mgrOf(v)||'';}
