@@ -2853,7 +2853,7 @@ function renderTodo(){
     return `
     <div class="card todo-card ${rdCls(it.id)}" data-task-item="${it.id}">
       <div class="t-body">
-         <div class="t-title ${rdCls(it.id)}" onclick="goDetail('${it.id}')">${rdDot(it.id)}【${esc(it.lead||who(it.projectLead)||'待派发')} · ${esc(who(actualExec(it))||'—')}】${esc(it.name)}</div>
+         <div class="t-title ${rdCls(it.id)}" onclick="goDetail('${it.id}')">${rdDot(it.id)}【${esc(it.lead||actualDept(it)||who(it.dispatchTo?.name)||'待派发')} · ${esc(who(actualExec(it))||'—')}】${esc(it.name)}</div>
         <div class="t-meta rv-task-meta">
           <span class="rv-task-statuses" aria-label="待办状态">
             ${wfTaskStatusPills(it,tab)}
@@ -3638,7 +3638,7 @@ function renderDetail(){
 
   /* 顶部要素条：默认仅展示核心 6 项，其余要素收进「▶ 更多要素」折叠区（讨论会第二场定） */
   const coreCells = [
-    [it.leadMode==='executive'?'项目牵头高管':'牵头部门',it.leadMode==='executive'?who(it.projectLead):it.lead,it.leadMode==='executive'?'':'lead'],
+    ['首派对象',r6FirstAssignmentLabel(it),''],
     ['承办部门',actualDept(it)||'待派发',''],
     ['部门负责人', deptHeadOf(it), 'deptHead'],
     ['当前落实人', actualExec(it)||'—', 'exec'],
@@ -7512,7 +7512,7 @@ renderNewTodo=function(){
  ${nvField('content','工作与交付要求<em>*</em>','<textarea id="f_content" placeholder="需要完成什么？交付哪些成果？以什么标准确认完成？"></textarea>',true)}
  ${nvField('importance','重要性',nvSelect('importance',['常规','重点']))}${nvField('source','事项来源',nvSelect('source',['其他','会议决议','领导批示','外部来文','年度重点工作','监管要求']))}
  </div>`)}
- ${nvSection('nvResponsibility','02','责任安排','牵头高管或牵头部门二选一',r3ResponsibilityFields())}
+ ${nvSection('nvResponsibility','02','责任安排','',r3ResponsibilityFields())}
  ${nvSection('nvTime','03','时间安排','完成期限与反馈日期分别设置',`<div class="ntv-grid">
  ${nvField('deadline','计划完成时间<em>*</em>',nvInput('deadline','选择完成日期','date')+'<label class="ntv-hint" style="font-weight:400;display:flex;gap:7px;align-items:center"><input id="nvOngoing" type="checkbox" onchange="nvDateMode(this.checked);nvRefresh();nvSnapshot()"> 常态化推进，无固定完成日期</label>')}
  ${nvField('cycle','反馈周期<em>*</em>','<input id="f_cycle" list="nvCycles" placeholder="选择或输入反馈周期"><datalist id="nvCycles"><option>每周一反馈</option><option>每双周一反馈</option><option>每月15日反馈</option><option>每季度反馈</option></datalist>')}
@@ -7590,14 +7590,14 @@ function nbRender(){
  if(has&&(!NV_BATCH.stage||!nbSelected().length))NV_BATCH.stage='items';
  const detail=NV_BATCH?.stage==='details',editing=nbSelected();
  $('#nvToolPage').innerHTML=`<div class="ntv ai nb nb-compact ${detail?'nb-details':'nb-items'}"><div class="nb-top"><button class="btn" onclick="nvBack()"><i class="fas fa-arrow-left"></i> 返回新增待办</button><span class="ntv-hint">当前表单与导入进度均保留</span></div>
- <div class="ai-top"><div><div class="ai-eyebrow">IMPORT & REVIEW</div><h1>${!has?'从文件中整理待办':detail?'完善待办字段':'确认待办事项'}</h1><p class="ai-sub">${!has?'上传材料，先确认识别出的事项，再补充责任与时间。':detail?'事项清单已确认。请补充落实人、计划完成时间和反馈周期。':'核对事项名称与工作内容，勾选本次需要生成的待办；时间、周期等信息下一步再填写。'}</p></div><div class="ai-actions"><button class="btn" onclick="nbHistory()">导入记录</button>${has?'<button class="btn" onclick="nbRestart()">导入另一份文件</button>':''}</div></div>
+ <div class="ai-top"><div><div class="ai-eyebrow">IMPORT & REVIEW</div><h1>${!has?'从文件中整理待办':detail?'完善待办字段':'确认待办事项'}</h1><p class="ai-sub">${!has?'上传材料，先确认识别出的事项，再补充责任与时间。':detail?'事项清单已确认。请补充首派对象、牵头高管、分管高管及时间安排。':'核对事项名称与工作内容，勾选本次需要生成的待办；时间、周期等信息下一步再填写。'}</p></div><div class="ai-actions"><button class="btn" onclick="nbHistory()">导入记录</button>${has?'<button class="btn" onclick="nbRestart()">导入另一份文件</button>':''}</div></div>
  <div class="nb-steps nb-foursteps"><span class="${has?'done':'active'}">① 上传识别</span><i class="fas fa-chevron-right"></i><span class="${has&&!detail?'active':detail?'done':''}">② 确认事项</span><i class="fas fa-chevron-right"></i><span class="${detail?'active':''}">③ 完善字段</span><i class="fas fa-chevron-right"></i><span>④ 确认生成</span></div>
  ${NB_REMOVED?`<div class="nb-file"><div>已移除「${esc(NB_REMOVED.row.d.name||'未命名事项')}」</div><button class="btn" onclick="nbUndo()">撤销移除</button></div>`:''}
  ${!has?`<section class="ntv-card"><div class="nb-upload"><i class="fas fa-file-import"></i><h2>上传包含督办内容的文件</h2><p>表格每行一条；文字材料按编号或分段拆分为多条事项</p><button class="btn primary" onclick="document.getElementById('nbFile').click()">选择文件并识别</button><input hidden id="nbFile" aria-label="选择导入文件" type="file" accept=".csv,.docx,.pptx,.txt,.md" onchange="nvReadFile(this)"><p class="ntv-hint">CSV / Word / PPT / TXT / Markdown · 单个文件不超过 8 MB<br>Excel 请另存为 CSV；PPT 使用表格，Word 支持表格或分条正文。</p><button class="btn" onclick="nbTemplate()">下载 CSV 模板</button><div id="nbFileStatus" role="status" class="ntv-hint">识别后先核对事项清单，不会直接生成督办。</div></div></section>`:''}
  ${has?`<div class="nb-file"><i class="fas fa-file-lines"></i><div><b>${esc(NV_BATCH.file)}</b><p>识别 ${NV_BATCH.recognizedCount??rows.length} 条 · 当前清单 ${rows.length} 条 · ${detail?'已确认 '+editing.length+' 条进入字段完善':'先确认事项范围，再填写具体安排'}</p></div><span class="nb-pill">${done.length?'已生成 '+done.length+' 条':detail?'完善字段':'确认事项'}</span></div>`:''}
  ${done.length?`<section class="ntv-card nb-success"><h2><i class="fas fa-circle-check"></i> 已生成 ${done.length} 条督办</h2><p>办理任务已在原型中创建，未发送真实通知。${pending.length?'剩余 '+pending.length+' 条已保留，可继续处理。':''}</p><div>${done.map(r=>`<button class="nb-result" onclick="goDetail('${r.itemId}')"><b>${esc(r.d.name)}</b><span>${r.itemId} · ${esc(who(r.d.exec))}</span><i class="fas fa-arrow-up-right-from-square"></i></button>`).join('')}</div></section>`:''}
  ${has&&!detail&&(pending.length||!done.length)?`<section class="ntv-card"><div class="nb-toolbar"><div><b>识别出的待办事项</b><p class="ntv-hint" id="nbItemsSummary"></p></div><div class="ai-actions"><label class="nb-all-label"><input id="nbItemsAll" type="checkbox" onchange="nbSelectAll(this.checked)"> 全选</label><button class="btn" onclick="nbAdd()">补充一条</button></div></div><div class="nb-tablewrap"><table class="nb-grid-table nb-pick-table"><colgroup><col style="width:58px"><col style="width:28%"><col><col style="width:92px"><col style="width:92px"></colgroup><thead><tr><th>选择</th><th>事项名称</th><th>工作内容与交付要求</th><th>本次范围</th><th>操作</th></tr></thead><tbody>${pending.map(r=>nbItemCard(r,rows.indexOf(r)+1)).join('')||'<tr><td colspan="5" class="nb-empty">暂无待办，可补充一条或导入另一份文件。</td></tr>'}</tbody></table></div></section><div class="ntv-footer"><div id="nbItemsFooter" role="status"></div><div class="ai-actions"><button class="btn" onclick="nbReturnAfterSave()">保存整批草稿</button><button class="btn primary" id="nbConfirmItems" onclick="nbConfirmItems()">确认事项，完善字段</button></div></div><p class="ntv-hint">未勾选事项暂不生成，仍保留在本批记录中；可以随时返回调整。</p>`:''}
- ${detail?`<div class="nb-counts" id="nbCounts"></div><section class="ntv-card"><div class="nb-toolbar"><div><b>本次确认的 ${editing.length} 条待办</b><p class="ntv-hint">识别出的字段已带入，缺失信息请在此补充。</p></div><button class="btn" onclick="nbSetStage('items')">返回调整事项</button></div><details class="nb-bulk"><summary>批量填写共同字段 <span>应用到本次确认的事项，默认只补充空白</span></summary><div class="nb-bulkgrid">${nbControl('bulkLead','牵头部门','select','',Object.keys(DEPT_LEAD),'nbBulkOwners()')}${nbControl('bulkProjectLead','牵头高管','select','',r3LeaderOptions())}${nbControl('bulkDeadline','计划完成时间','date')}${nbControl('bulkCycle','反馈周期','select','',NB_CYCLES)}${nbControl('bulkFirst','首次反馈日期','date')}</div><div class="nb-bulkfoot"><label><input id="nbFillEmpty" type="checkbox" checked> 仅补充空白字段，保留已有内容</label><button class="btn" onclick="nbBulkApply()">应用到所选事项</button></div></details><div class="nb-tablewrap"><table class="nb-grid-table nb-edit-table"><colgroup><col style="width:24%"><col style="width:13%"><col style="width:10%"><col style="width:15%"><col style="width:14%"><col style="width:15%"><col style="width:9%"></colgroup><thead><tr><th>事项名称</th><th>牵头部门 <em>*</em></th><th>落实人 <em>*</em></th><th>计划完成时间 <em>*</em></th><th>反馈周期 <em>*</em></th><th>首次反馈日期 <em>*</em></th><th>状态</th></tr></thead><tbody>${editing.map(r=>nbRow(r,rows.indexOf(r)+1)).join('')}</tbody></table></div></section><div class="ntv-footer"><div id="nbFooterStatus" role="status"></div><div class="ai-actions"><button class="btn" onclick="nbReturnAfterSave()">保存整批草稿</button><button class="btn primary" id="nbReview" onclick="nbReview()">核对并生成</button></div></div><p class="ntv-hint">所有必填信息通过检查后，再集中核对并生成。调整本次事项范围请返回上一步。</p>`:''}
+ ${detail?`<div class="nb-counts" id="nbCounts"></div><section class="ntv-card"><div class="nb-toolbar"><div><b>本次确认的 ${editing.length} 条待办</b><p class="ntv-hint">识别出的字段已带入，缺失信息请在此补充。</p></div><button class="btn" onclick="nbSetStage('items')">返回调整事项</button></div><details class="nb-bulk"><summary>批量填写共同字段 <span>应用到本次确认的事项，默认只补充空白</span></summary><div class="nb-bulkgrid">${nbControl('bulkLead','首派部门','select','',Object.keys(DEPT_LEAD),'nbBulkOwners()')}${nbControl('bulkFirstExecutive','首派高管','select','',r3LeaderOptions())}${nbControl('bulkDeadline','计划完成时间','date')}${nbControl('bulkCycle','反馈周期','select','',NB_CYCLES)}${nbControl('bulkFirst','首次反馈日期','date')}</div><div class="nb-bulkfoot"><label><input id="nbFillEmpty" type="checkbox" checked> 仅补充空白字段，保留已有内容</label><button class="btn" onclick="nbBulkApply()">应用到所选事项</button></div></details><div class="nb-tablewrap"><table class="nb-grid-table nb-edit-table"><colgroup><col style="width:24%"><col style="width:13%"><col style="width:10%"><col style="width:15%"><col style="width:14%"><col style="width:15%"><col style="width:9%"></colgroup><thead><tr><th>事项名称</th><th>首派部门 <em>*</em></th><th>落实人 <em>*</em></th><th>计划完成时间 <em>*</em></th><th>反馈周期 <em>*</em></th><th>首次反馈日期 <em>*</em></th><th>状态</th></tr></thead><tbody>${editing.map(r=>nbRow(r,rows.indexOf(r)+1)).join('')}</tbody></table></div></section><div class="ntv-footer"><div id="nbFooterStatus" role="status"></div><div class="ai-actions"><button class="btn" onclick="nbReturnAfterSave()">保存整批草稿</button><button class="btn primary" id="nbReview" onclick="nbReview()">核对并生成</button></div></div><p class="ntv-hint">所有必填信息通过检查后，再集中核对并生成。调整本次事项范围请返回上一步。</p>`:''}
  <p class="ntv-hint nb-prototype">交互原型 · 本地规则演示拆分与识别，识别结果需人工核对；数据仅保存在当前浏览器。</p></div>`;
  if(detail)nbRefresh();else if($('#nbItemsSummary'))nbRefreshItems();
 }
@@ -7606,11 +7606,11 @@ function nbOptions(opts,value){return '<option value="">请选择</option>'+opts
 function nbPeople(lead){return PEOPLE.filter(p=>p.dept===lead&&['person','exec'].includes(p.r)).map(p=>[p.c,who(p.c)]);}
 function nbControl(id,label,type='text',value='',opts=[],change=''){return `<div class="ntv-field"><label for="nb_${id}">${label}</label>${type==='textarea'?`<textarea id="nb_${id}" oninput="${change}">${esc(value)}</textarea>`:type==='select'?`<select id="nb_${id}" onchange="${change}">${nbOptions(opts,value)}</select>`:`<input id="nb_${id}" type="${type}" value="${nvQ(type==='date'&&!aiValidDate(value)?'':value)}" ${type==='date'&&value==='常态化推进'?'disabled':''} oninput="${change}">`}</div>`;}
 function nbField(r,k,label,type='text',opts=[]){const id=r.id+'_'+k,value=Array.isArray(r.d[k])?r.d[k].join('、'):r.d[k]||'',handler=`nbEdit('${r.id}','${k}',this.value)`;return `<div class="nb-field">${nbControl(id,label,type,value,opts,handler)}<div class="ntv-error" id="nbErr_${id}"></div></div>`;}
-function nbRow(r,n){return `<tr id="nbRow_${r.id}"><td><div class="nb-compact-name"><span>${String(n).padStart(2,'0')}</span>${nbField(r,'name','事项名称 *')}</div><details class="nb-more" ${!r.d.content?'open':''}><summary>工作内容与更多信息</summary>${nbField(r,'leadMode','牵头方式','select',[['department','牵头部门'],['executive','牵头高管']])}${nbField(r,'content','工作内容与交付要求 *','textarea')}<button class="nb-textbtn" onclick="nbShowSource('${r.id}')">查看文件原文</button>${nbField(r,'importance','重要性','select',['常规','重点'])}${nbField(r,'source','事项来源')}${nbField(r,'leadMgr','分管高管','select',PEOPLE.filter(p=>p.r==='mgr').map(p=>[p.c,who(p.c)]))}${nbField(r,'launch','首次派发说明')}${nbField(r,'raised','提出日期','date')}${nbField(r,'assists','配合部门（多个用顿号分隔）')}${nbField(r,'coopExecutives','配合高管（多个用顿号分隔）')}</details></td><td>${nbField(r,'lead','牵头部门','select',Object.keys(DEPT_LEAD))}<div class="nb-ownerhint" id="nbLead_${r.id}"></div></td><td>${nbField(r,'projectLead','牵头高管','select',r3LeaderOptions())}</td><td>${nbDeadlineField(r)}</td><td>${nbField(r,'cycle','反馈周期','select',nbCycleOptions(r.d.cycle))}</td><td>${nbField(r,'first','首次反馈日期','date')}</td><td><span id="nbState_${r.id}" class="nb-pill"></span><p class="ntv-hint" id="nbStateHint_${r.id}"></p></td></tr>`;}
+function nbRow(r,n){return `<tr id="nbRow_${r.id}"><td><div class="nb-compact-name"><span>${String(n).padStart(2,'0')}</span>${nbField(r,'name','事项名称 *')}</div><details class="nb-more" ${!r.d.content?'open':''}><summary>工作内容与更多信息</summary>${nbField(r,'leadMode','首派对象','select',[['department','部门负责人'],['executive','高管']])}${nbField(r,'projectLead','牵头高管','select',r3LeaderOptions())}${nbField(r,'content','工作内容与交付要求 *','textarea')}<button class="nb-textbtn" onclick="nbShowSource('${r.id}')">查看文件原文</button>${nbField(r,'importance','重要性','select',['常规','重点'])}${nbField(r,'source','事项来源')}${nbField(r,'leadMgr','分管高管','select',PEOPLE.filter(p=>p.r==='mgr').map(p=>[p.c,who(p.c)]))}${nbField(r,'launch','首次派发说明')}${nbField(r,'raised','提出日期','date')}${nbField(r,'assists','配合部门（多个用顿号分隔）')}${nbField(r,'coopExecutives','配合高管（多个用顿号分隔）')}</details></td><td>${nbField(r,'lead','首派部门','select',Object.keys(DEPT_LEAD))}<div class="nb-ownerhint" id="nbLead_${r.id}"></div></td><td>${nbField(r,'firstExecutive','首派高管','select',r3LeaderOptions())}</td><td>${nbDeadlineField(r)}</td><td>${nbField(r,'cycle','反馈周期','select',nbCycleOptions(r.d.cycle))}</td><td>${nbField(r,'first','首次反馈日期','date')}</td><td><span id="nbState_${r.id}" class="nb-pill"></span><p class="ntv-hint" id="nbStateHint_${r.id}"></p></td></tr>`;}
 function nbEdit(id,k,v){const r=NV_BATCH.rows.find(x=>x.id===id);if(!r||r.itemId)return;r.d[k]=k==='assists'?v.split(/[、,，]/).map(s=>s.trim()).filter(Boolean):v.trim();if(k==='lead'){if(!nbPeople(v).some(p=>p[0]===r.d.exec))r.d.exec='';$('#nb_'+id+'_exec').innerHTML=nbOptions(nbPeople(v),r.d.exec);}nbSave();nbRefresh();}
 function nbRefresh(){if(NV_BATCH?.stage!=='details'){nbRefreshItems();return;}const rows=nbSelected(),selected=nbSelected(),ready=rows.filter(r=>!Object.keys(nbErrors(r)).length),invalid=selected.filter(r=>Object.keys(nbErrors(r)).length);
  $('#nbCounts').innerHTML=`<div><b>${selected.length}</b><span>本次确认</span></div><div class="good"><b>${ready.length}</b><span>信息完整</span></div><div class="warn"><b>${rows.length-ready.length}</b><span>需要完善</span></div>`;
- rows.forEach(r=>{if(!$('#nbRow_'+r.id))return;const e=nbErrors(r),n=Object.keys(e).length;$('#nbState_'+r.id).textContent=n?n+' 项待完善':'信息完整';$('#nbState_'+r.id).className='nb-pill '+(n?'warn':'good');$('#nbStateHint_'+r.id).textContent=r.selected?'本次生成':'保留为草稿';$('#nbLead_'+r.id).textContent=r.d.lead?'部门负责人：'+who(leadOf(r.d.lead)):'';$('#nbRow_'+r.id).classList.toggle('nb-unselected',!r.selected);['name','content','lead','projectLead','deadline','cycle','first'].forEach(k=>{const el=$('#nb_'+r.id+'_'+k);el.setAttribute('aria-invalid',!!e[k]);$('#nbErr_'+r.id+'_'+k).textContent=e[k]||'';});});
+ rows.forEach(r=>{if(!$('#nbRow_'+r.id))return;const e=nbErrors(r),n=Object.keys(e).length;$('#nbState_'+r.id).textContent=n?n+' 项待完善':'信息完整';$('#nbState_'+r.id).className='nb-pill '+(n?'warn':'good');$('#nbStateHint_'+r.id).textContent=r.selected?'本次生成':'保留为草稿';$('#nbLead_'+r.id).textContent=r.d.lead?'部门负责人：'+who(leadOf(r.d.lead)):'';$('#nbRow_'+r.id).classList.toggle('nb-unselected',!r.selected);['name','content','lead','firstExecutive','projectLead','deadline','cycle','first'].forEach(k=>{const el=$('#nb_'+r.id+'_'+k);el.setAttribute('aria-invalid',!!e[k]);$('#nbErr_'+r.id+'_'+k).textContent=e[k]||'';});});
  $('#nbReview').disabled=!selected.length;$('#nbReview').textContent='核对并生成 '+selected.length+' 条';$('#nbFooterStatus').innerHTML=`<b>已选 ${selected.length} 条</b><p>${invalid.length?'其中 '+invalid.length+' 条需要完善，请补充标红信息':selected.length?'信息检查通过，请核对识别内容后生成':'请勾选本次需要生成的事项'}${rows.length-selected.length?' · '+(rows.length-selected.length)+' 条保留为草稿':''}</p>`;
 }
 function nbSelect(id,on){NV_BATCH.rows.find(r=>r.id===id).selected=on;nbSave();nbRefresh();}
@@ -7623,7 +7623,7 @@ function nbBulkApply(){const selected=nbSelected();if(!selected.length){toast('�
 function nbDraftRow(r){if(r.itemId)return;const id=r.draftId||(r.draftId=aiId('draft')),meta={origin:'文件导入 · '+NV_BATCH.file,quote:r.quote,meetingId:'',draftId:id};const old=AI.drafts.find(d=>d.id===id),d={...r.d,id,importBatchId:NV_BATCH.id,owner:r.d.exec,firstDue:r.d.first,meetingId:'',status:'pending',createdAt:old?.createdAt||new Date().toISOString(),origin:meta.origin,quote:r.quote,newtodoForm:{...r.d,meta}};if(old)Object.assign(old,d);else AI.drafts.push(d);}
 function nbDrafts(quiet=false){if(NV_BATCH)NV_BATCH.id=NV_BATCH.id||aiId('import');nbPending().forEach(nbDraftRow);const saved=aiSave(),batchSaved=nbSave();if(!quiet)toast(saved&&batchSaved?'已保存 '+nbPending().length+' 条草稿，可继续在本页集中修改':'本机保存失败，请保持页面打开');return saved&&batchSaved;}
 function nbRestart(){if(!nbPending().length){NV_BATCH=null;NB_REMOVED=null;nbSave();nbRender();return;}aiModal('导入另一份文件','<p>当前未生成的事项将先保存为草稿，再开始新的文件导入。</p>','<button class="btn" onclick="closeModal()">继续核对当前文件</button><button class="btn primary" onclick="if(nbDrafts(true)){NV_BATCH=null;NB_REMOVED=null;nbSave();closeModal();nbRender()}">保存草稿并重新导入</button>');}
-function nbReview(){const selected=nbSelected(),bad=selected.find(r=>Object.keys(nbErrors(r)).length);if(!selected.length)return;if(bad){const k=Object.keys(nbErrors(bad))[0];$('#nb_'+bad.id+'_'+k).focus();toast('所选事项仍有缺项，请完善后集中确认');return;}aiModal('集中确认 · 生成 '+selected.length+' 条督办',`<div class="ntv nb-review"><p>以下事项将分别生成督办，交由牵头高管或部门负责人安排。请核对工作内容与责任安排。</p><div class="nb-reviewlist">${selected.map((r,i)=>`<article><h3>${i+1}. ${esc(r.d.name)}</h3><p class="nb-reviewcontent">${esc(r.d.content)}</p><p><b>${esc(r.d.leadMode==='executive'?who(r.d.projectLead):r.d.lead+' · '+who(leadOf(r.d.lead)))}</b><br>完成：${esc(r.d.deadline)} · 首次反馈：${esc(r.d.first)}<br>反馈周期：${esc(r.d.cycle)}</p></article>`).join('')}</div><div class="ntv-path">本次生成 ${selected.length} 条；未勾选的 ${nbPending().length-selected.length} 条保存为草稿。</div><label class="nb-confirm"><input id="nbConfirm" type="checkbox" onchange="document.getElementById('nbPublish').disabled=!this.checked">我已核对所选事项的内容、责任人和时间安排</label></div>`,`<button class="btn" onclick="closeModal()">返回修改</button><button class="btn primary" id="nbPublish" disabled onclick="nbPublish()">确认生成 ${selected.length} 条督办</button>`);}
+function nbReview(){const selected=nbSelected(),bad=selected.find(r=>Object.keys(nbErrors(r)).length);if(!selected.length)return;if(bad){const k=Object.keys(nbErrors(bad))[0];$('#nb_'+bad.id+'_'+k).focus();toast('所选事项仍有缺项，请完善后集中确认');return;}aiModal('集中确认 · 生成 '+selected.length+' 条督办',`<div class="ntv nb-review"><p>以下事项将分别生成督办，交由首派对象安排落实。请核对工作内容与责任安排。</p><div class="nb-reviewlist">${selected.map((r,i)=>`<article><h3>${i+1}. ${esc(r.d.name)}</h3><p class="nb-reviewcontent">${esc(r.d.content)}</p><p><b>${esc(r.d.leadMode==='executive'?who(r6FirstExecutive(r.d)):r.d.lead+' · '+who(leadOf(r.d.lead)))}<br>牵头高管：${esc(r.d.projectLead?who(r.d.projectLead):'未设置')} · 分管高管：${esc(r.d.leadMgr?who(r.d.leadMgr):mgrOf(r.d.lead)?who(mgrOf(r.d.lead)):'待承办部门确定')}</b><br>完成：${esc(r.d.deadline)} · 首次反馈：${esc(r.d.first)}<br>反馈周期：${esc(r.d.cycle)}</p></article>`).join('')}</div><div class="ntv-path">本次生成 ${selected.length} 条；未勾选的 ${nbPending().length-selected.length} 条保存为草稿。</div><label class="nb-confirm"><input id="nbConfirm" type="checkbox" onchange="document.getElementById('nbPublish').disabled=!this.checked">我已核对所选事项的内容、责任人和时间安排</label></div>`,`<button class="btn" onclick="closeModal()">返回修改</button><button class="btn primary" id="nbPublish" disabled onclick="nbPublish()">确认生成 ${selected.length} 条督办</button>`);}
 function nbPublish(){if(ROLE!=='admin'||NB_BUSY||!$('#nbConfirm')?.checked)return;const selected=nbSelected();if(!selected.length||selected.some(r=>Object.keys(nbErrors(r)).length))return;NB_BUSY=true;$('#nbPublish').disabled=true;
  try{let seq=Math.max(0,...ITEMS.map(x=>Number(x.id.match(/DB-2026-(\d+)$/)?.[1])||0));const items=selected.map(r=>nvBuildItem(r.d,{origin:'文件导入 · '+NV_BATCH.file,quote:r.quote},'DB-2026-'+String(++seq).padStart(3,'0')));const next=JSON.parse(JSON.stringify(NV_BATCH));next.stage='items';selected.forEach((r,i)=>{const nr=next.rows.find(x=>x.id===r.id);nr.itemId=items[i].id;nr.selected=false;});const store=nvLoadStore();store.published=[...items,...ITEMS.filter(x=>x.newtodoCreated)];store.batches=store.batches||{};store.batches[CUR]=next;nbRemember(store,next);if(!nvPersist(store)){toast('生成未完成：无法保存到本机，请释放存储后重试');$('#nbPublish').disabled=false;return;}ITEMS.unshift(...items);NV_BATCH=next;selected.forEach((r,i)=>{const draft=AI.drafts.find(d=>d.id===r.draftId);if(draft)Object.assign(draft,{status:'published',itemId:items[i].id});});nbDrafts(true);closeModal();renderChrome();nbRender();window.scrollTo({top:0});toast('已生成 '+items.length+' 条督办');}finally{NB_BUSY=false;}}
 function nbCsv(text){const rows=[],row=[];let cell='',quoted=false;for(let i=0;i<text.length;i++){const c=text[i];if(c==='"'){if(quoted&&text[i+1]==='"'){cell+='"';i++;}else quoted=!quoted;}else if(c===','&&!quoted){row.push(cell);cell='';}else if((c==='\n'||c==='\r')&&!quoted){if(c==='\r'&&text[i+1]==='\n')i++;row.push(cell);if(row.some(x=>x.trim()))rows.push(row.splice(0));else row.length=0;cell='';}else cell+=c;}if(quoted)throw Error('CSV 引号未闭合，请检查文件');row.push(cell);if(row.some(x=>x.trim()))rows.push(row);return rows;}
@@ -9117,6 +9117,8 @@ function wfDetailOperations(it,entries){
 
 /* Responsibility schema 3: project lead, organizational supervisor and cooperation are independent. */
 function r3LeaderOptions(){return PEOPLE.filter(p=>['mgr','boss'].includes(p.r)).map(p=>[p.c,who(p.c)]);}
+function r6FirstExecutive(d){return Object.prototype.hasOwnProperty.call(d,'firstExecutive')?d.firstExecutive:(d.leadMode==='executive'?d.projectLead||'':'');}
+function r6FirstAssignmentLabel(it){const first=it.initialAssignment,log=it.dispatchLog?.[0],code=first?.person||log?.to||it.dispatchTo?.name,type=first?(first.mode==='executive'?'mgr':'dept'):log?.toType||it.dispatchTo?.type;return ({mgr:'高管',dept:'部门负责人',person:'落实人'}[type]||'承接人')+' · '+who(code);}
 function r3NormalizeItem(it){
   if(it.responsibilityVersion===3)return;
   // Existing assignments and submitted material are retained. Only a pending executive handoff gets a project route.
@@ -9153,18 +9155,18 @@ visibleItems=function(){
 canDispatch=function(it){
   if(!it||it.status==='已完成'||it.feedback==='已反馈'||it.fbStage||fbPickText(it.fbReport?.current,it.fbReport?.txt)||it.feedbackReturn||dispatchReassignBlocked(it))return false;
   if(ROLE==='admin')return !hasBeenDispatched(it);
-  if(it.projectLead===CUR&&it.dispatchTo?.type==='mgr'&&it.dispatchTo.name===CUR)return true;
+  if(it.dispatchTo?.type==='mgr'&&it.dispatchTo.name===CUR&&['mgr','boss'].includes(ROLE))return true;
   return ROLE==='exec'&&currentHandler(it)===CUR&&actualDept(it)===person(CUR)?.dept;
 };
 wfReassignScope=function(it,code=CUR){
   const me=person(code);if(!it||!me)return false;
-  return me.r==='admin'||it.projectLead===code||me.r==='exec'&&actualDept(it)===me.dept;
+  return me.r==='admin'||it.projectLead===code||it.dispatchTo?.type==='mgr'&&it.dispatchTo.name===code&&['mgr','boss'].includes(me.r)||me.r==='exec'&&actualDept(it)===me.dept;
 };
 function r3Targets(it,reassign=false){
   if(reassign&&!wfReassignScope(it)||!reassign&&!canDispatch(it))return [];
-  const current=currentHandler(it),groups=[],admin=ROLE==='admin',project=it.projectLead===CUR;
+  const current=currentHandler(it),groups=[],admin=ROLE==='admin',project=it.projectLead===CUR||it.dispatchTo?.type==='mgr'&&it.dispatchTo.name===CUR;
   const add=(g,people,type)=>{const list=people.filter(p=>!reassign||p.c!==current).map(p=>({v:type+'|'+p.c,label:who(p.c)+' · '+p.dept}));if(list.length)groups.push({g,list});};
-  if(admin)add('项目牵头高管',PEOPLE.filter(p=>['mgr','boss'].includes(p.r)),'mgr');
+  if(admin)add('高管',PEOPLE.filter(p=>['mgr','boss'].includes(p.r)),'mgr');
   if(admin||project)add('部门负责人',PEOPLE.filter(p=>p.r==='exec'),'dept');
   else if(ROLE==='exec'){
     if(reassign)add('负责人本人办理',PEOPLE.filter(p=>p.c===CUR),'dept');
@@ -9188,14 +9190,14 @@ function r3Assign(it,type,name,reason,reassign){
   }
   it.dispatchTo={type,name};it.chain=[...new Set([...(it.chain||[]),CUR,name])];
   if(type==='mgr'){
-    it.projectLead=name;it.leadMode='executive';it.exec='';it.currentExec='';
+    it.leadMode='executive';it.exec='';it.currentExec='';
   }else{
     it.workDept=target.dept;it.exec=name;it.currentExec=name;
     if(it.leadMode==='department')it.lead=target.dept;
     // Keep an explicit administrator override; otherwise resolve the supervisor for the receiving department.
     if(!it.supervisorOverride){it.supervisor=mgrOf(target.dept)||'';it.leadMgr=it.supervisor;}
   }
-  const label={mgr:'项目牵头高管',dept:'部门负责人',person:'落实人'}[type];
+  const label={mgr:'承接高管',dept:'部门负责人',person:'落实人'}[type];
   (it.dispatchLog||=[]).push({t:stamp,from:CUR,fromRole:ROLES[ROLE].label,toType:type,to:name,toRole:label,txt:reason});
   (it.logs||=[]).push({t:stamp,who:CUR,act:reassign?'撤回并重新派发':'继续派发',txt:'派发至'+label+'（'+who(name)+'）：'+reason});
   if(type==='dept')r3DepartmentNotice(it,target.dept,'main-dispatch-'+it.dispatchLog.length);
@@ -9212,32 +9214,34 @@ doReassign=function(id){return wfRunRecordedCommand('doReassign',function(){
   if(!reason){toast('请填写重新派发原因');return;}const [type,name]=value.split('|');r3Assign(it,type,name,reason,true);
 },this,[]);};
 const r3OldDispatchBrief=dispatchBrief;
-dispatchBrief=function(it){return r3OldDispatchBrief(it).replaceAll('分管高管','项目牵头高管').replace('待部门负责人继续派发至落实人','部门负责人可自行填报，也可派发给本部门落实人');};
+dispatchBrief=function(it){return r3OldDispatchBrief(it).replaceAll('分管高管','承接高管').replace('待部门负责人继续派发至落实人','部门负责人可自行填报，也可派发给本部门落实人');};
 
-/* New creation form: the administrative creator can select a project executive OR a department. */
+/* Creation: first allocation is independent from the optional project lead and organizational supervisor. */
 const r3OldDefaults=nvDefaults;
 nvDefaults=function(){return {...r3OldDefaults(),leadMode:'department',projectLead:'',coopExecutives:[],coopMode:'department'};};
+let R6_PROJECT_EDITED=false,R6_SUPERVISOR_EDITED=false;
 const r3OldNvRead=nvRead;
 nvRead=function(){const d=r3OldNvRead();d.leadMode=$('#f_leadMode')?.value||'department';d.projectLead=$('#f_projectLead')?.value||'';
+  d.firstExecutive=$('#f_firstExecutive')?.value||'';d.projectLeadEdited=R6_PROJECT_EDITED;d.supervisorEdited=R6_SUPERVISOR_EDITED;
   d.coopExecutives=[...document.querySelectorAll('[name="nv_coopExecutives"]:checked')].map(x=>x.value);
   if($('#f_cooperators')){const selected=r4SelectedCooperators();d.assists=selected.filter(v=>v.startsWith('department|')).map(v=>v.slice(11));d.coopExecutives=selected.filter(v=>v.startsWith('executive|')).map(v=>v.slice(10));}
   d.coopMode=$('#f_coopMode')?.value||'department';
-  d.pickerInvalid=['leadMode','lead','projectLead','leadMgr','coopMode','cooperators'].filter(k=>{
-    if(k==='lead'&&d.leadMode!=='department'||k==='projectLead'&&d.leadMode!=='executive')return false;
+  d.pickerInvalid=['leadMode','lead','firstExecutive','projectLead','leadMgr','coopMode','cooperators'].filter(k=>{
+    if(k==='lead'&&d.leadMode!=='department'||k==='firstExecutive'&&d.leadMode!=='executive')return false;
     const input=$('#f_'+k+'Search');return input&&input.value.trim()&&!$('#f_'+k)?.value&&!r4FindOption(k,input.value);
   });
-  d.exec='';d.mgrs=[];if(d.leadMode==='department')d.projectLead='';else d.lead='';return d;};
+  d.exec='';d.mgrs=[];if(d.leadMode==='department')d.firstExecutive='';else d.lead='';return d;};
 nvOwners=function(){};
 /* Search text and committed IDs are independent; custom popup supports single and multiple selection. */
 function r4PickerOptions(key){
   const departments=Object.keys(DEPT_LEAD).map(dept=>[dept,dept+' · '+who(leadOf(dept))]);
-  if(key==='leadMode')return [['department','牵头部门'],['executive','牵头高管']];
+  if(key==='leadMode')return [['department','部门负责人'],['executive','高管']];
   if(key==='coopMode')return [['department','配合部门'],['executive','配合高管']];
-  if(key==='lead')return departments;
+  if(key==='lead')return Object.keys(DEPT_LEAD).map(dept=>[dept,who(leadOf(dept))+' · '+dept]);
   if(key==='cooperators'){const type=$('#f_coopMode')?.value||'department';return (type==='executive'?r3LeaderOptions():departments).map(([v,l])=>[type+'|'+v,l]);}
   return r3LeaderOptions();
 }
-function r4Picker(key,placeholder,multiple=false){const clearable=['lead','projectLead','leadMgr'].includes(key);return '<div class="r4-picker '+(clearable?'r5-can-clear':'')+'" id="r5Picker_'+key+'" onclick="r5OpenPicker(\''+key+'\');document.getElementById(\'f_'+key+'Search\').focus()"><input type="hidden" id="f_'+key+'" value="'+(multiple?'[]':'')+'">'+(multiple?'<div class="r4-chips" id="r4CoopChips"></div>':'')+'<input type="search" id="f_'+key+'Search" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="r5PickerPopup" placeholder="'+esc(placeholder)+'" aria-label="'+esc(placeholder)+'" autocomplete="off" onfocus="r5OpenPicker(\''+key+'\')" oninput="r4PickerInput(\''+key+'\',this.value)" onkeydown="r5PickerKey(\''+key+'\',event)" onblur="r5PickerBlur(\''+key+'\')">'+(clearable?'<button type="button" id="r5Clear_'+key+'" class="r5-picker-clear" hidden aria-label="清空选择" onmousedown="event.preventDefault()" onclick="event.stopPropagation();r5ClearPick(\''+key+'\')">×</button>':'')+'<button type="button" class="r5-picker-arrow" tabindex="-1" aria-label="展开选择" onmousedown="event.preventDefault()" onclick="event.stopPropagation();r5TogglePicker(\''+key+'\')"><i class="fas fa-chevron-down"></i></button></div>';}
+function r4Picker(key,placeholder,multiple=false){const clearable=['lead','firstExecutive','projectLead','leadMgr'].includes(key);return '<div class="r4-picker '+(clearable?'r5-can-clear':'')+'" id="r5Picker_'+key+'" onclick="r5OpenPicker(\''+key+'\');document.getElementById(\'f_'+key+'Search\').focus()"><input type="hidden" id="f_'+key+'" value="'+(multiple?'[]':'')+'">'+(multiple?'<div class="r4-chips" id="r4CoopChips"></div>':'')+'<input type="search" id="f_'+key+'Search" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="r5PickerPopup" placeholder="'+esc(placeholder)+'" aria-label="'+esc(placeholder)+'" autocomplete="off" onfocus="r5OpenPicker(\''+key+'\')" oninput="r4PickerInput(\''+key+'\',this.value)" onkeydown="r5PickerKey(\''+key+'\',event)" onblur="r5PickerBlur(\''+key+'\')">'+(clearable?'<button type="button" id="r5Clear_'+key+'" class="r5-picker-clear" hidden aria-label="清空选择" onmousedown="event.preventDefault()" onclick="event.stopPropagation();r5ClearPick(\''+key+'\')">×</button>':'')+'<button type="button" class="r5-picker-arrow" tabindex="-1" aria-label="展开选择" onmousedown="event.preventDefault()" onclick="event.stopPropagation();r5TogglePicker(\''+key+'\')"><i class="fas fa-chevron-down"></i></button></div>';}
 function r4SelectedCooperators(){try{const list=JSON.parse($('#f_cooperators')?.value||'[]');return Array.isArray(list)?[...new Set(list.filter(v=>typeof v==='string'))]:[];}catch(e){return [];}}
 function r4SyncPicker(key){const el=$('#f_'+key),input=$('#f_'+key+'Search');if(!el||!input)return;
   if(key!=='cooperators')input.value=r4PickerOptions(key).find(([v])=>v===el.value)?.[1]||'';if($('#r5Clear_'+key))$('#r5Clear_'+key).hidden=!el.value;
@@ -9248,11 +9252,16 @@ function r4FindOption(key,text){const term=text.trim();return r4PickerOptions(ke
 function r4PickerInput(key,text){if(R5_PICKER.key!==key)r5OpenPicker(key);R5_PICKER.query=text;R5_PICKER.active=0;r5RenderPicker();}
 function r5CommitPick(key,value){const el=$('#f_'+key);if(!el||!r4PickerOptions(key).some(([id])=>id===value))return;
   if(key==='cooperators'){const selected=r4SelectedCooperators();el.value=JSON.stringify(selected.includes(value)?selected.filter(v=>v!==value):[...selected,value]);$('#f_cooperatorsSearch').value='';r4SyncPicker(key);R5_PICKER.query='';r5RenderPicker();}
-  else{el.value=value;r4SyncPicker(key);if(key==='lead'){$('#f_projectLead').value='';if($('#f_leadMgr'))$('#f_leadMgr').value=mgrOf(value)||'';r4SyncPicker('leadMgr');}
+  else{el.value=value;if(key==='projectLead')R6_PROJECT_EDITED=true;if(key==='leadMgr')R6_SUPERVISOR_EDITED=true;r4SyncPicker(key);
+    if(['lead','firstExecutive','leadMode'].includes(key))r6ApplyInitialDefaults(key);
     if(key==='leadMode')r3ChangeLeadMode();if(key==='coopMode'){if($('#f_cooperatorsSearch'))$('#f_cooperatorsSearch').value='';r4SyncPicker('cooperators');}r5ClosePicker();}
   nvRefresh();nvSnapshot();
 }
-function r5ClearPick(key){if(!['lead','projectLead','leadMgr'].includes(key)||!$('#f_'+key))return;$('#f_'+key).value='';r4SyncPicker(key);nvRefresh();nvSnapshot();r5ClosePicker();$('#f_'+key+'Search')?.focus();r5OpenPicker(key);}
+function r5ClearPick(key){if(!['lead','firstExecutive','projectLead','leadMgr'].includes(key)||!$('#f_'+key))return;$('#f_'+key).value='';if(key==='projectLead')R6_PROJECT_EDITED=true;if(key==='leadMgr')R6_SUPERVISOR_EDITED=true;if(['lead','firstExecutive'].includes(key))r6ApplyInitialDefaults(key);r4SyncPicker(key);nvRefresh();nvSnapshot();r5ClosePicker();$('#f_'+key+'Search')?.focus();r5OpenPicker(key);}
+function r6ApplyInitialDefaults(key){const executive=$('#f_leadMode')?.value==='executive';
+  if(!R6_PROJECT_EDITED&&$('#f_projectLead')){$('#f_projectLead').value=executive?$('#f_firstExecutive')?.value||'':'';r4SyncPicker('projectLead');}
+  if(!R6_SUPERVISOR_EDITED&&['lead','leadMode'].includes(key)&&$('#f_leadMgr')){$('#f_leadMgr').value=executive?'':mgrOf($('#f_lead')?.value)||'';r4SyncPicker('leadMgr');}
+}
 function r4RemoveCooperator(index){const values=r4SelectedCooperators();values.splice(index,1);$('#f_cooperators').value=JSON.stringify(values);r4SyncPicker('cooperators');if(R5_PICKER.key==='cooperators')r5RenderPicker();nvRefresh();nvSnapshot();}
 let R5_PICKER={key:'',query:'',active:0,options:[]};
 function r5PickerPopup(){let popup=$('#r5PickerPopup');if(!popup){popup=document.createElement('div');popup.id='r5PickerPopup';popup.className='r5-picker-popup';popup.setAttribute('role','listbox');popup.setAttribute('onmousedown','event.preventDefault()');popup.hidden=true;document.body.appendChild(popup);}return popup;}
@@ -9280,10 +9289,10 @@ document.addEventListener('mousedown',event=>{if(R5_PICKER.key&&!$('#r5Picker_'+
 window.addEventListener('resize',r5PositionPicker);window.addEventListener('scroll',r5PositionPicker,true);
 function r3ResponsibilityFields(){
   const field=(key,label,placeholder,multi=false)=>nvField(key,label,r4Picker(key,placeholder,multi)).replace('for="f_'+key+'"','for="f_'+key+'Search"');
-  return '<div class="r3-field-row">'+field('leadMode','牵头方式<em>*</em>','搜索牵头方式')+
-    '<div id="r3LeadDept">'+field('lead','牵头部门<em>*</em>','搜索并选择牵头部门')+'</div><div id="r3LeadExecutive" hidden>'+field('projectLead','牵头高管<em>*</em>','搜索并选择牵头高管')+'</div></div>'+
+  return '<div class="r3-field-row">'+field('leadMode','首派对象<em>*</em>','选择高管或部门负责人')+
+    '<div id="r3LeadDept">'+field('lead','部门负责人<em>*</em>','搜索并选择部门负责人')+'</div><div id="r3LeadExecutive" hidden>'+field('firstExecutive','高管<em>*</em>','搜索并选择首派高管')+'</div></div>'+
+    '<div class="r3-field-row">'+field('projectLead','牵头高管','搜索牵头高管（选填）')+field('leadMgr','分管高管','搜索分管高管')+'</div>'+
     '<div class="ntv-path" id="nvOwnerPath"></div><details class="ntv-options"><summary>补充协作与派发要求（选填）</summary><div class="ntv-grid">'+
-    field('leadMgr','职务分管高管','搜索职务分管高管')+
     '<div class="r4-cooperation"><div class="r3-field-row">'+field('coopMode','配合方式','搜索配合方式')+field('cooperators','配合方','搜索并选择，可多选',true)+'</div></div>'+
     nvField('launch','首次派发说明','<textarea id="f_launch" placeholder="补充工作要求与协作方式"></textarea>',true)+'</div></details>';
 }
@@ -9292,9 +9301,10 @@ function r3ChangeLeadMode(){
 }
 const r3OldNvFill=nvFill;
 nvFill=function(d){r3OldNvFill(d);if($('#f_leadMode'))$('#f_leadMode').value=d.leadMode||'department';if($('#f_projectLead'))$('#f_projectLead').value=d.projectLead||'';
+  if($('#f_firstExecutive'))$('#f_firstExecutive').value=r6FirstExecutive(d);R6_PROJECT_EDITED=Object.prototype.hasOwnProperty.call(d,'projectLeadEdited')?!!d.projectLeadEdited:!!d.projectLead&&d.projectLead!==r6FirstExecutive(d);R6_SUPERVISOR_EDITED=Object.prototype.hasOwnProperty.call(d,'supervisorEdited')?!!d.supervisorEdited:!!d.leadMgr;
   document.querySelectorAll('[name="nv_coopExecutives"]').forEach(el=>el.checked=(d.coopExecutives||[]).includes(el.value));
   if($('#f_coopMode'))$('#f_coopMode').value=d.coopMode||'department';if($('#f_cooperators'))$('#f_cooperators').value=JSON.stringify([...(d.assists||[]).map(v=>'department|'+v),...(d.coopExecutives||[]).map(v=>'executive|'+v)]);
-  ['leadMode','lead','projectLead','leadMgr','coopMode','cooperators'].forEach(r4SyncPicker);r3ChangeLeadMode();nvRefresh();};
+  ['leadMode','lead','firstExecutive','projectLead','leadMgr','coopMode','cooperators'].forEach(r4SyncPicker);r3ChangeLeadMode();nvRefresh();};
 const r3OldRenderNew=renderNewTodo;
 renderNewTodo=function(){r3OldRenderNew();
   $('#nvMain')?.addEventListener('change',e=>{if(e.target.id==='f_lead'&&!$('#f_leadMgr')?.value)$('#f_leadMgr').value=mgrOf(e.target.value)||'';r3ChangeLeadMode();nvRefresh();nvSnapshot();});
@@ -9302,10 +9312,11 @@ renderNewTodo=function(){r3OldRenderNew();
 renderCreate=renderNewTodo;
 nvErrors=function(d){
   const e={};[['name','请填写事项名称'],['content','请写明工作内容与交付要求'],['deadline','请选择计划完成日期'],['cycle','请填写反馈周期'],['first','请选择首次反馈日期']].forEach(([k,msg])=>{if(!d[k])e[k]=msg;});
-  const mode=d.leadMode||'department';if(mode==='executive'){if(!r3LeaderOptions().some(([id])=>id===d.projectLead))e.projectLead='请选择项目牵头高管';}
-  else if(!d.lead||!leadOf(d.lead))e.lead='请选择已配置负责人的牵头部门';
-  if(!['department','executive'].includes(mode))e.leadMode='请选择有效牵头方式';
-  if(d.lead&&d.projectLead)e.lead='牵头部门与牵头高管请二选一';
+  const mode=d.leadMode||'department',firstExecutive=r6FirstExecutive(d);if(mode==='executive'){if(!r3LeaderOptions().some(([id])=>id===firstExecutive))e.firstExecutive='请选择首派高管';}
+  else if(!d.lead||!leadOf(d.lead))e.lead='请选择已配置的部门负责人';
+  if(!['department','executive'].includes(mode))e.leadMode='请选择有效首派对象';
+  if(d.lead&&firstExecutive)e.lead='首派高管与部门负责人请二选一';
+  if(d.projectLead&&!r3LeaderOptions().some(([id])=>id===d.projectLead))e.projectLead='请选择有效的牵头高管';
   if(d.leadMgr&&!r3LeaderOptions().some(([id])=>id===d.leadMgr))e.leadMgr='请选择有效的职务分管高管';
   if((d.assists||[]).some(dept=>!leadOf(dept)))e.cooperators='配合部门尚未配置有效负责人';
   if((d.coopExecutives||[]).some(code=>!r3LeaderOptions().some(([id])=>id===code)))e.cooperators='请选择有效配合高管';
@@ -9313,28 +9324,28 @@ nvErrors=function(d){
   if(d.deadline&&d.deadline!=='常态化推进'&&!aiValidDate(d.deadline))e.deadline='请选择有效日期';if(d.first&&!aiValidDate(d.first))e.first='请选择有效日期';if(aiValidDate(d.first)&&aiValidDate(d.deadline)&&d.first>d.deadline)e.first='首次反馈不能晚于完成期限';return e;
 };
 const r3OldNvRefresh=nvRefresh;
-nvRefresh=function(){if(!$('#nvMain'))return;const d=nvRead(),err=nvErrors(d),ready=6-Object.keys(err).filter(k=>k!=='leadMgr').length;
+nvRefresh=function(){if(!$('#nvMain'))return;const d=nvRead(),err=nvErrors(d),ready=[!err.name,!err.content,!err.leadMode&&!err.lead&&!err.firstExecutive,!err.deadline,!err.cycle,!err.first].filter(Boolean).length;
   if($('#nvProgressBar')){$('#nvProgressBar').max=6;$('#nvProgressBar').value=ready;}if($('#nvProgressCount'))$('#nvProgressCount').textContent=ready+' / 6';
   if($('#nvMissing'))$('#nvMissing').textContent=Object.keys(err).length?'还有 '+Object.keys(err).length+' 项信息待完善':'必填信息已完善，可核对发布';
-  if($('#nvProgress'))$('#nvProgress').innerHTML=[['工作内容',!err.name&&!err.content],['责任安排',!err.lead&&!err.projectLead],['时间安排',!err.deadline&&!err.first&&!err.cycle]].map(([name,ok])=>'<div class="ntv-path">'+name+' · '+(ok?'已完善':'待完善')+'</div>').join('');
-  const owner=d.leadMode==='executive'?who(d.projectLead):who(leadOf(d.lead));if($('#nvOwnerPath'))$('#nvOwnerPath').textContent=owner?'发布后交由 '+owner+' 安排；部门负责人可自行办理或继续派发。':'选择牵头方式后确定责任安排。';
-  if($('#nvDispatch'))$('#nvDispatch').textContent='发布时不直接指定落实人，由牵头方安排。';if($('#nvTimeHint'))$('#nvTimeHint').textContent=d.first?'首次反馈 '+d.first+' · '+d.cycle:'请设置完成时间和首次反馈日期';
+  if($('#nvProgress'))$('#nvProgress').innerHTML=[['工作内容',!err.name&&!err.content],['责任安排',!err.leadMode&&!err.lead&&!err.firstExecutive&&!err.projectLead&&!err.leadMgr],['时间安排',!err.deadline&&!err.first&&!err.cycle]].map(([name,ok])=>'<div class="ntv-path">'+name+' · '+(ok?'已完善':'待完善')+'</div>').join('');
+  const owner=d.leadMode==='executive'?r6FirstExecutive(d):leadOf(d.lead);if($('#nvOwnerPath'))$('#nvOwnerPath').textContent=owner?'发布后交由 '+who(owner)+' 安排；部门负责人可自行办理或继续派发。':'请选择首派对象。';
+  if($('#nvDispatch'))$('#nvDispatch').textContent='发布时先交首派对象安排，不直接指定员工落实人。';if($('#nvTimeHint'))$('#nvTimeHint').textContent=d.first?'首次反馈 '+d.first+' · '+d.cycle:'请设置完成时间和首次反馈日期';
   if($('#nvDraftCount'))$('#nvDraftCount').textContent=AI.drafts.filter(x=>x.status==='pending').length||'';
 };
-nvValidate=function(){const e=nvErrors(nvRead());document.querySelectorAll('.ntv-error').forEach(el=>el.textContent='');for(const key of [...NV_FIELDS,'leadMode','projectLead','coopMode','cooperators'])($('#f_'+key+'Search')||$('#f_'+key))?.removeAttribute('aria-invalid');for(const [key,msg]of Object.entries(e)){if($('#nvErr_'+key))$('#nvErr_'+key).textContent=msg;($('#f_'+key+'Search')||$('#f_'+key))?.setAttribute('aria-invalid','true');}if(Object.keys(e).length){const key=Object.keys(e)[0];($('#f_'+key+'Search')||$('#f_'+key))?.focus();toast('请完善责任与时间安排');return false;}return true;};
-nvReview=function(){if(!nvValidate())return;nvSnapshot();const d=nvRead(),owner=d.leadMode==='executive'?'牵头高管：'+who(d.projectLead):'牵头部门：'+d.lead+' · '+who(leadOf(d.lead));aiModal('核对待办 · 确认后发布',
-  '<div class="ntv-review"><h3>'+esc(d.name)+'</h3><p>'+esc(d.content)+'</p><dl><dt>责任安排</dt><dd>'+esc(owner)+'</dd><dt>职务分管高管</dt><dd>'+esc(who(d.leadMgr||mgrOf(d.lead))||'待承办部门确定')+'</dd><dt>配合方</dt><dd>'+esc([...(d.assists||[]),...(d.coopExecutives||[]).map(who)].join('、')||'无')+'</dd><dt>时间安排</dt><dd>'+esc(d.first+' · '+d.cycle+' · 完成期限 '+d.deadline)+'</dd></dl><label class="ntv-check"><input id="nvConfirm" type="checkbox" onchange="document.getElementById(\'nvPublishBtn\').disabled=!this.checked">我已核对，确认发布。</label></div>',
+nvValidate=function(){const e=nvErrors(nvRead());document.querySelectorAll('.ntv-error').forEach(el=>el.textContent='');for(const key of [...NV_FIELDS,'leadMode','firstExecutive','projectLead','coopMode','cooperators'])($('#f_'+key+'Search')||$('#f_'+key))?.removeAttribute('aria-invalid');for(const [key,msg]of Object.entries(e)){if($('#nvErr_'+key))$('#nvErr_'+key).textContent=msg;($('#f_'+key+'Search')||$('#f_'+key))?.setAttribute('aria-invalid','true');}if(Object.keys(e).length){const key=Object.keys(e)[0];($('#f_'+key+'Search')||$('#f_'+key))?.focus();toast('请完善责任与时间安排');return false;}return true;};
+nvReview=function(){if(!nvValidate())return;nvSnapshot();const d=nvRead(),owner=d.leadMode==='executive'?'高管：'+who(r6FirstExecutive(d)):'部门负责人：'+who(leadOf(d.lead))+' · '+d.lead;aiModal('核对待办 · 确认后发布',
+  '<div class="ntv-review"><h3>'+esc(d.name)+'</h3><p>'+esc(d.content)+'</p><dl><dt>首派对象</dt><dd>'+esc(owner)+'</dd><dt>牵头高管</dt><dd>'+esc(d.projectLead?who(d.projectLead):'未设置，反馈交分管高管审核')+'</dd><dt>分管高管</dt><dd>'+esc(d.leadMgr?who(d.leadMgr):mgrOf(d.lead)?who(mgrOf(d.lead)):'待承办部门确定')+'</dd><dt>配合方</dt><dd>'+esc([...(d.assists||[]),...(d.coopExecutives||[]).map(who)].join('、')||'无')+'</dd><dt>时间安排</dt><dd>'+esc(d.first+' · '+d.cycle+' · 完成期限 '+d.deadline)+'</dd></dl><label class="ntv-check"><input id="nvConfirm" type="checkbox" onchange="document.getElementById(\'nvPublishBtn\').disabled=!this.checked">我已核对，确认发布。</label></div>',
   '<button class="btn" onclick="closeModal()">返回修改</button><button class="btn primary" id="nvPublishBtn" disabled onclick="nvPublish()">确认发布</button>');};
 const r3OldBuildItem=nvBuildItem;
 nvBuildItem=function(d,meta,id){
   const errors=nvErrors(d);if(Object.keys(errors).length)throw Error(Object.values(errors)[0]);
-  const mode=d.leadMode||'department',owner=mode==='executive'?d.projectLead:leadOf(d.lead),target=person(owner),dept=mode==='department'?d.lead:'',stamp=nowRecordTime();
+  const mode=d.leadMode||'department',owner=mode==='executive'?r6FirstExecutive(d):leadOf(d.lead),target=person(owner),dept=mode==='department'?d.lead:'',stamp=nowRecordTime();
   // The legacy constructor is used with the responsible head only, never with an imported employee.
   const it=r3OldBuildItem({...d,lead:dept||target.dept,exec:owner,mgrs:[],leadMgr:d.leadMgr||mgrOf(dept)||'',assists:d.assists||[]},meta,id);
-  Object.assign(it,{lead:dept,leadMode:mode,projectLead:mode==='executive'?owner:'',supervisor:d.leadMgr||mgrOf(dept)||'',supervisorOverride:!!d.leadMgr&&d.leadMgr!==mgrOf(dept),
+  Object.assign(it,{lead:dept,leadMode:mode,initialAssignment:{mode,person:owner,department:dept},projectLead:d.projectLead||'',supervisor:d.leadMgr||mgrOf(dept)||'',supervisorOverride:!!d.leadMgr&&(!!d.supervisorEdited||d.leadMgr!==mgrOf(dept)),
     exec:mode==='department'?owner:'',currentExec:mode==='department'?owner:'',workDept:dept,directExec:false,
     dispatchTo:{type:mode==='executive'?'mgr':'dept',name:owner},fbStage:'',fbReport:null,feedbackReturn:null,mgrs:[d.leadMgr||mgrOf(dept)].filter(Boolean),chain:[CUR,owner],cooperators:[],noticeEvents:[],responsibilityVersion:3});
-  it.dispatchLog[0].toType=it.dispatchTo.type;it.dispatchLog[0].toRole=mode==='executive'?'项目牵头高管':'部门负责人';it.logs[1].txt='交由'+who(owner)+'安排；未直接指定落实人。';
+  it.dispatchLog[0].toType=it.dispatchTo.type;it.dispatchLog[0].toRole=mode==='executive'?'首派高管':'部门负责人';it.logs[1].txt='交由'+who(owner)+'安排；未直接指定落实人。';
   (d.assists||[]).forEach((department,index)=>it.cooperators.push({id:'coop-dept-'+index,type:'department',target:department,recipients:[],dispatchLog:[]}));
   (d.coopExecutives||[]).forEach((code,index)=>it.cooperators.push({id:'coop-exec-'+index,type:'executive',target:code,recipients:[],dispatchLog:[]}));
   if(mode==='department')r3DepartmentNotice(it,dept,'creation');
@@ -9374,46 +9385,50 @@ function r3Initialize(){ITEMS.forEach(r3NormalizeItem);r4SeedReadExamples();r5In
 nbPeople=function(){return [];};
 nbEdit=function(id,k,v){const r=NV_BATCH.rows.find(r=>r.id===id);if(!r||r.itemId)return;
   r.d[k]=['assists','coopExecutives'].includes(k)?v.split(/[、,，]/).map(s=>s.trim()).filter(Boolean):v.trim();r.d.exec='';
-  if(k==='leadMode'){if(v==='executive')r.d.lead='';else r.d.projectLead='';nbSave();nbRender();return;}
-  if(k==='lead'&&r.d.lead){r.d.leadMode='department';r.d.projectLead='';if(!r.d.leadMgr)r.d.leadMgr=mgrOf(v)||'';}
-  if(k==='projectLead'&&v){r.d.leadMode='executive';r.d.lead='';}nbSave();nbRefresh();
+  if(k==='projectLead')r.d.projectLeadEdited=true;if(k==='leadMgr')r.d.supervisorEdited=true;
+  if(k==='leadMode'){if(v==='executive')r.d.lead='';else r.d.firstExecutive='';if(!r.d.projectLeadEdited)r.d.projectLead=v==='executive'?r6FirstExecutive(r.d):'';nbSave();nbRender();return;}
+  if(k==='lead'&&r.d.lead){r.d.leadMode='department';r.d.firstExecutive='';if(!r.d.projectLeadEdited)r.d.projectLead='';if(!r.d.supervisorEdited)r.d.leadMgr=mgrOf(v)||'';}
+  if(k==='firstExecutive'&&v){r.d.leadMode='executive';r.d.lead='';if(!r.d.projectLeadEdited)r.d.projectLead=v;}nbSave();nbRefresh();
 };
 nbBulkOwners=function(){};
 nbBulkApply=function(){const selected=nbSelected();if(!selected.length)return;
-  const values={lead:$('#nb_bulkLead')?.value||'',projectLead:$('#nb_bulkProjectLead')?.value||'',deadline:$('#nb_bulkDeadline')?.value||'',cycle:$('#nb_bulkCycle')?.value.trim()||'',first:$('#nb_bulkFirst')?.value||''};
-  if(values.lead&&values.projectLead){toast('牵头部门与牵头高管请二选一');return;}const empty=$('#nbFillEmpty')?.checked;
-  selected.forEach(row=>{for(const [key,value]of Object.entries(values)){if(value&&(!empty||!row.d[key])){if(['lead','projectLead'].includes(key)&&empty&&(row.d.lead||row.d.projectLead))continue;row.d[key]=value;if(key==='lead'){row.d.projectLead='';row.d.leadMode='department';}if(key==='projectLead'){row.d.lead='';row.d.leadMode='executive';}}}row.d.exec='';});nbSave();nbRender();toast('责任安排已更新');
+  const values={lead:$('#nb_bulkLead')?.value||'',firstExecutive:$('#nb_bulkFirstExecutive')?.value||'',deadline:$('#nb_bulkDeadline')?.value||'',cycle:$('#nb_bulkCycle')?.value.trim()||'',first:$('#nb_bulkFirst')?.value||''};
+  if(values.lead&&values.firstExecutive){toast('首派高管与部门负责人请二选一');return;}const empty=$('#nbFillEmpty')?.checked;
+  selected.forEach(row=>{for(const [key,value]of Object.entries(values)){if(value&&(!empty||!row.d[key])){if(['lead','firstExecutive'].includes(key)&&empty&&(row.d.lead||r6FirstExecutive(row.d)))continue;row.d[key]=value;if(key==='lead'){row.d.firstExecutive='';row.d.leadMode='department';if(!row.d.projectLeadEdited)row.d.projectLead='';}if(key==='firstExecutive'){row.d.lead='';row.d.leadMode='executive';if(!row.d.projectLeadEdited)row.d.projectLead=value;}}}row.d.exec='';});nbSave();nbRender();toast('责任安排已更新');
 };
 const r3OldFromTable=nbFromTable;
 nbFromTable=function(rows){return r3OldFromTable(rows).map(row=>{
   const cells=row.quote.split(' | '),p=PEOPLE.find(p=>['mgr','boss'].includes(p.r)&&(p.c===cells[3]||p.nm===cells[3]));
-  row.d.projectLead=p?.c||'';row.d.leadMode=p?'executive':'department';row.d.importedExecutor=row.d.exec||'';row.d.exec='';return row;
+  row.d.firstExecutive=p?.c||'';row.d.leadMode=p?'executive':'department';
+  const explicit=cells.length>13,project=explicit?PEOPLE.find(p=>['mgr','boss'].includes(p.r)&&(p.c===cells[13]||p.nm===cells[13]))?.c||cells[13]||'':p?.c||'';
+  row.d.projectLead=project;row.d.projectLeadEdited=explicit;row.d.leadMgr=PEOPLE.find(p=>['mgr','boss'].includes(p.r)&&(p.c===cells[7]||p.nm===cells[7]))?.c||cells[7]||'';row.d.supervisorEdited=!!row.d.leadMgr;
+  row.d.importedExecutor=row.d.exec||'';row.d.exec='';return row;
 });};
 const r3OldFromText=nbFromText;
 nbFromText=function(text){return r3OldFromText(text).map(row=>{row.d.importedExecutor=row.d.exec||'';row.d.exec='';return row;});};
 const r3OldNbPublish=nbPublish;
 nbPublish=function(){const result=r3OldNbPublish.apply(this,arguments);xSave();return result;};
-nbTemplate=function(){const head=['事项名称*','工作内容与交付要求*','牵头部门（与牵头高管二选一）','牵头高管（与牵头部门二选一）','反馈周期*','计划完成时间*','重要性','职务分管高管','配合部门','首次派发说明','来源','提出日期','首次反馈日期*'];
-  const demo=['重点客户走访计划','形成走访安排与交付清单','战略客户部','','每周一反馈','2026-12-31','常规','','','','年度重点工作','2026-10-21','2026-10-26'];
+nbTemplate=function(){const head=['事项名称*','工作内容与交付要求*','首派部门（与首派高管二选一）','首派高管（与部门负责人二选一）','反馈周期*','计划完成时间*','重要性','分管高管','配合部门','首次派发说明','来源','提出日期','首次反馈日期*','牵头高管（选填，留空按分管审核）'];
+  const demo=['重点客户走访计划','形成走访安排与交付清单','战略客户部','','每周一反馈','2026-12-31','常规','','','','年度重点工作','2026-10-21','2026-10-26',''];
   const blob=new Blob(['\ufeff'+[head,demo].map(r=>r.map(c=>'"'+c.replaceAll('"','""')+'"').join(',')).join('\r\n')],{type:'text/csv;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='督办批量导入模板-1021.csv';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
 };
 META_FIELD_SPEC.leadMgr={label:'职务分管高管',type:'person',get:it=>mgrReviewer(it)||'—',apply:(it,value)=>{if(!r3LeaderOptions().some(([id])=>id===value)){toast('请选择有效高管');return;}it.supervisor=value;it.leadMgr=value;it.supervisorOverride=true;}};
 const r3BaseStates=wfStates;
 wfStates=function(it){return r3BaseStates(it).filter(s=>!(it.dispatchTo?.type==='mgr'&&s.flow==='feedback'));};
 function r3OpenImportBatch(file,rows){
-  if(ROLE!=='admin')return;NV_BATCH={id:aiId('import'),stage:'details',file,recognizedCount:rows.length,createdAt:new Date().toISOString(),rows:rows.map(r=>({...r,id:aiId('batch'),selected:true}))};
+  if(ROLE!=='admin')return;NV_BATCH={id:aiId('import'),stage:'details',file,recognizedCount:rows.length,createdAt:new Date().toISOString(),rows:rows.map(r=>({...r,d:{...r.d,firstExecutive:r6FirstExecutive(r.d)},id:aiId('batch'),selected:true}))};
   renderNewTodo();nbSave();$('#nvMain').hidden=true;$('#nvToolPage').hidden=false;nbRender();
 }
 const r3OldIOMenu=openIOMenu;
 openIOMenu=function(tab){if(tab==='import'){closeModal();renderNewTodo();nvImport();return;}return r3OldIOMenu.apply(this,arguments);};
 ioImportPicked=function(){if(ROLE!=='admin'||!IO_PICK.size)return;const rows=nbFromTable([...IO_PICK].map(index=>IO_ROWS[index]).filter(Boolean));closeModal();r3OpenImportBatch('原导入中心待核对事项',rows);};
 aiPublish=function(){if(ROLE!=='admin')return;const drafts=aiPublishSelection().filter(d=>d.status==='pending');if(!drafts.length)return;closeModal();r3OpenImportBatch('会议草稿责任安排',drafts.map(d=>({draftId:d.id,quote:d.quote||'',d:{...nvDefaults(),...(d.newtodoForm||{}),name:d.name,content:d.content,lead:d.lead||'',exec:'',deadline:d.deadline||'',first:d.firstDue||'',cycle:d.cycle||'',meetingId:d.meetingId||''}})));};
-if(typeof IO_TPL_HEAD!=='undefined'){IO_TPL_HEAD[2]='牵头部门（与牵头高管二选一）';IO_TPL_HEAD[3]='牵头高管（与牵头部门二选一）';IO_TPL_HEAD[7]='职务分管高管';}
+if(typeof IO_TPL_HEAD!=='undefined'){IO_TPL_HEAD[2]='首派部门（与首派高管二选一）';IO_TPL_HEAD[3]='首派高管（与部门负责人二选一）';IO_TPL_HEAD[7]='分管高管';}
 if(typeof IO_TPL_DEMO!=='undefined')IO_TPL_DEMO[3]='';
 const r3OldOpenDispatch=openDispatch,r3OldOpenReassign=openReassign;
-openDispatch=function(){const result=r3OldOpenDispatch.apply(this,arguments),host=$('#modalMask');if(host)host.innerHTML=host.innerHTML.replaceAll('分管高管','项目牵头高管');return result;};
-openReassign=function(){const result=r3OldOpenReassign.apply(this,arguments),host=$('#modalMask');if(host)host.innerHTML=host.innerHTML.replaceAll('分管高管','项目牵头高管');return result;};
-function r3DraftResponsibility(d){const form=d.newtodoForm||d;return form.leadMode==='executive'&&form.projectLead?'项目牵头高管：'+who(form.projectLead):form.lead?'部门负责人：'+who(leadOf(form.lead)):'责任安排待完善';}
+openDispatch=function(){const result=r3OldOpenDispatch.apply(this,arguments),host=$('#modalMask');if(host)host.innerHTML=host.innerHTML.replaceAll('分管高管','承接高管');return result;};
+openReassign=function(){const result=r3OldOpenReassign.apply(this,arguments),host=$('#modalMask');if(host)host.innerHTML=host.innerHTML.replaceAll('分管高管','承接高管');return result;};
+function r3DraftResponsibility(d){const form=d.newtodoForm||d;return form.leadMode==='executive'&&r6FirstExecutive(form)?'首派高管：'+who(r6FirstExecutive(form)):form.lead?'部门负责人：'+who(leadOf(form.lead)):'首派对象待完善';}
 ROLES.mgr.hint='职务分管高管负责反馈审核与阅知；被指定为项目牵头高管时，可安排该项目承办部门。';
 ROLES.exec.hint='部门负责人可自行办理和填报，也可派发给本部门落实人。';
 ROLES.boss.hint='反馈完成审核后进入阅知事项；已阅仅记录个人阅读状态。';
