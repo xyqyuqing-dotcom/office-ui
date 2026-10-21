@@ -4085,7 +4085,7 @@ function fbDoSubmit(id, txt, np, progress){
   if(!progress||!Number.isInteger(progress.value)||progress.value<0||progress.value>100)return;
   if(!txt?.trim()||!np?.trim()){toast('请填写本期落实情况和下期计划');return;}
   if(xActualProgress(it)!==null&&progress.value<xActualProgress(it)&&!progress.reason?.trim()){toast('请说明进度调低原因');return;}
-  if(!person(mgrReviewer(it))){toast('尚未配置有效的职务分管高管，请联系管理人');return;}
+  if(!person(r5FeedbackReviewer(it))){toast('尚未配置有效的反馈审核高管，请联系管理人');return;}
   const summary=r3ValidateSummary(it,false,{txt,np,progress});if(!summary)return;
   const r = ROLES[ROLE];
   const stamp=nowRecordTime(), version=feedbackVersion(it);
@@ -4098,14 +4098,15 @@ function fbDoSubmit(id, txt, np, progress){
   it.nextPlan = np;
   it.fbReport = {txt:txt, np:np, actualReporter:r.name, submittedAt:stamp, version:version, attachments:FB_ATTACH.slice()};
   it.feedbackHistory.push({recordId:it.id+'-P'+it.periodNo+'-V'+version,periodNo:it.periodNo,dimension:it.cycle,periodStart:feedbackWindow(it).start,periodEnd:feedbackWindow(it).end,cutoff:feedbackWindow(it).cutoff,lastPlan:it.lastPlan||'—',current:txt,next:np,attachments:FB_ATTACH.slice(),actualReporter:r.name,submittedAt:stamp,version:version,approvalRecords:[],deptAudit:'待审核',mgrAudit:'待审核'});
-  const dl = deptReviewer(it), ml = mgrReviewer(it);
+  r5BindFeedbackRoute(it);
+  const dl = deptReviewer(it), ml = r5FeedbackReviewer(it);
   const skipDept = !dl || dl===ex;
   it.fbStage = skipDept ? 'mgr' : 'dept';
-  it.fbApprovalLog.push({t:stamp,from:r.name,fromRole:'落实人',toRole:skipDept?'分管高管':'部门负责人',to:skipDept?(ml||'—'):(dl||'—'),act:'提交反馈'});
+  it.fbApprovalLog.push({t:stamp,from:r.name,fromRole:'落实人',toRole:skipDept?r5FeedbackRole(it):'部门负责人',to:skipDept?(ml||'—'):(dl||'—'),act:'提交反馈'});
   const h=latestFeedback(it);
   if(h && skipDept) h.deptAudit='跳过（落实人兼任部门负责人）';
   it.logs.push({t:stamp, who:r.name+'（'+dept+'·落实人）', act:'提交反馈（第 '+it.periodNo+' 期）', txt:txt+'\n〔下期工作计划〕'+np});
-  it.logs.push({t:stamp, who:'系统', act:'流转', txt:'进展反馈进入审核链'+(skipDept?'（'+dept+'负责人为本人或暂缺，按管理链路跳过部门负责人环节）':'：部门负责人（'+(who(dl)||'—')+'）审核')+' → 分管领导（'+(who(ml)||'—')+'）审核 → 督办管理人（'+(who(adminOf())||'—')+'）审核 → 同步公司领导（'+(who(bossOf())||'—')+'）审阅（已阅 / 评论）；前三环节均可「同意 / 修改 / 退回」，督办管理人可退回至落实人、部门负责人或分管领导；所填「下期工作计划」将于下一反馈周期自动带入「上期工作计划」。'});
+  it.logs.push({t:stamp, who:'系统', act:'流转', txt:'进展反馈进入审核链'+(skipDept?'（'+dept+'负责人为本人或暂缺，按管理链路跳过部门负责人环节）':'：部门负责人（'+(who(dl)||'—')+'）审核')+' → '+r5FeedbackRole(it)+'（'+(who(ml)||'—')+'）审核 → 督办管理人（'+(who(adminOf())||'—')+'）审核 → 同步公司领导（'+(who(bossOf())||'—')+'）审阅（已阅 / 评论）；前三环节均可「同意 / 修改 / 退回」，督办管理人可退回至落实人、部门负责人或分管领导；所填「下期工作计划」将于下一反馈周期自动带入「上期工作计划」。'});
   r3CommitSummary(it,summary);
   xRecordProgress(it,progress);
   it.logs.push({t:stamp,who:r.name,act:'填报任务总进度',txt:progress.value+'%'+(progress.reason?'；调低原因：'+progress.reason:'')});
@@ -4113,7 +4114,7 @@ function fbDoSubmit(id, txt, np, progress){
   FB_D = {fb:'', np:''};
   FB_ATTACH = [];
   FB_PENDING = null;
-  toast(skipDept?'反馈已提交，待分管领导（'+(who(ml)||'—')+'）审核':'反馈已提交，待部门负责人（'+(who(dl)||'—')+'）审核');
+  toast(skipDept?'反馈已提交，待'+r5FeedbackRole(it)+'（'+(who(ml)||'—')+'）审核':'反馈已提交，待部门负责人（'+(who(dl)||'—')+'）审核');
   closeModal(); route();
 }
 /* 存草稿：把当前入口已填内容写入共享草稿桥，另一入口打开时自动带出 */
@@ -4243,8 +4244,8 @@ function fbAgree(id,lvl){
   if(!nextStage){ toast('当前环节不支持「同意」操作'); return; }
   it.fbStage = nextStage;
   if(lvl==='admin')r3FeedbackCompleted(it);
-  const roleName=fbStageRoleName(lvl), nextName=nextStage==='done'?'反馈审批完成':fbStageRoleName(nextStage);
-  const nextPerson= nextStage==='mgr'?mgrReviewer(it) : nextStage==='admin'?adminOf() : '';
+  const roleName=fbStageRoleName(lvl,it), nextName=nextStage==='done'?'反馈审批完成':fbStageRoleName(nextStage,it);
+  const nextPerson= nextStage==='mgr'?r5FeedbackReviewer(it) : nextStage==='admin'?adminOf() : '';
   if(h){
     if(lvl==='dept') h.deptAudit='已同意 · '+stamp;
     else if(lvl==='mgr') h.mgrAudit='已同意 · '+stamp;
@@ -4253,8 +4254,9 @@ function fbAgree(id,lvl){
   }
   it.fbApprovalLog.push({t:stamp,from:r.name,fromRole:roleName,toRole:nextName,to:who(nextPerson)||'—',act:'审核同意'});
   it.logs.push({t:stamp, who:r.name+'（'+roleName+'）', act:'审核同意', txt:lvl==='admin'?'同意进展反馈，审核已完成；公司领导阅知不影响反馈完成状态。':'同意进展反馈内容（本期落地执行情况、下期工作计划），流转'+nextName+'（'+(who(nextPerson)||'—')+'）'+(nextStage==='sync'?'审阅（已阅 / 评论）':'审核（同意 / 修改 / 退回）')+'。'});
+  if(lvl==='mgr')r5ProjectReviewNotice(it);
   if(lvl==='mgr'){
-    addItemSystemMessage(it,'进展反馈流转督办管理人','「'+it.name+'」第 '+(it.periodNo||'—')+' 期反馈已由分管领导审核通过，流转督办管理人（'+(who(adminOf())||'—')+'）审核。',messageAudience([adminOf()],CUR),'fa-share-nodes');
+    addItemSystemMessage(it,'进展反馈流转督办管理人','「'+it.name+'」第 '+(it.periodNo||'—')+' 期反馈已由'+r5FeedbackRole(it)+'审核通过，流转督办管理人（'+(who(adminOf())||'—')+'）审核。',messageAudience([adminOf()],CUR),'fa-share-nodes');
   }
   if(false){
     addItemSystemMessage(it,'进展反馈待公司领导审阅','「'+it.name+'」第 '+(it.periodNo||'—')+' 期反馈已由督办管理人审核通过，现同步公司领导（'+(who(bossOf())||'—')+'）审阅（已阅 / 评论）。',messageAudience([bossOf()],CUR),'fa-share-nodes');
@@ -4331,19 +4333,19 @@ function fbBack(id,lvl){
     if(lvl==='dept') h.deptAudit='退回 · '+stamp;
     else if(lvl==='mgr') h.mgrAudit='退回 · '+stamp;
     else h.adminAudit='退回 · '+stamp;
-    h.approvalRecords.push({t:stamp,by:r.name,role:fbStageRoleName(lvl),action:'退回',to:toName,reason:txt});
+    h.approvalRecords.push({t:stamp,by:r.name,role:fbStageRoleName(lvl,it),action:'退回',to:toName,reason:txt});
     h.rejectedCurrent=true; h.rejectedAt=stamp; h.rejectedBy=r.name; h.rejectedTo=toName; h.rejectionReason=txt;
   }
-  it.fbApprovalLog.push({t:stamp,from:r.name,fromRole:fbStageRoleName(lvl),toRole:toName, to:toName,act:'退回',reason:txt});
+  it.fbApprovalLog.push({t:stamp,from:r.name,fromRole:fbStageRoleName(lvl,it),toRole:toName, to:toName,act:'退回',reason:txt});
   const source=h||it.fbReport||{};
-  it.feedbackReturn={txt:source.current||source.txt||it.lastReport||'',np:source.next||source.np||it.nextPlan||'',actualReporter:source.actualReporter||actualExec(it)||'—',submittedAt:source.submittedAt||it.lastReportAt||stamp,version:source.version||1,returnedAt:stamp,returnedBy:r.name,returnedByRole:r.label,reason:txt,fromStage:lvl,to};
+  it.feedbackReturn={txt:source.current||source.txt||it.lastReport||'',np:source.next||source.np||it.nextPlan||'',actualReporter:source.actualReporter||actualExec(it)||'—',submittedAt:source.submittedAt||it.lastReportAt||stamp,version:source.version||1,returnedAt:stamp,returnedBy:r.name,returnedByRole:fbStageRoleName(lvl,it),reason:txt,fromStage:lvl,to};
   if(to==='person'){
     it.fbStage=''; it.feedback='未反馈'; it.lastReport=it.feedbackReturn.txt||'—'; it.lastReportAt=it.feedbackReturn.submittedAt||''; it.nextPlan=it.feedbackReturn.np||''; it.fbReport=null;
   }
   else if(to==='dept'){ it.fbStage='dept'; it.feedback='已反馈'; it.lastReport=it.feedbackReturn.txt||it.lastReport||'—'; it.nextPlan=it.feedbackReturn.np||it.nextPlan||''; }
   else if(to==='mgr'){ it.fbStage='mgr'; it.feedback='已反馈'; it.lastReport=it.feedbackReturn.txt||it.lastReport||'—'; it.nextPlan=it.feedbackReturn.np||it.nextPlan||''; }
   addItemSystemMessage(it,'进展反馈已退回','「'+it.name+'」的进展反馈已退回至'+toName+'，请按退回意见修改后重新提交。退回原因：'+txt,[fbBackTargetPerson(it,to)].filter(Boolean),'fa-rotate-left');
-  it.logs.push({t:stamp, who:r.name+'（'+r.label+'）', act:'退回反馈', txt:'进展反馈退回至'+toName+'。退回原因：'+txt});
+  it.logs.push({t:stamp, who:r.name+'（'+fbStageRoleName(lvl,it)+'）', act:'退回反馈', txt:'进展反馈退回至'+toName+'。退回原因：'+txt});
   toast('已退回至'+toName+'，退回原因已同步');
   closeModal(); route();
 }
@@ -4380,9 +4382,10 @@ function fbSaveEdit(id){
   it.lastReport = txt; it.lastReportAt = stamp; it.nextPlan = np; it.feedback='已反馈';
   it.feedbackReturn = null;
   it.reassignFeedbackReset = false;
-  it.feedbackHistory.push({recordId:it.id+'-P'+it.periodNo+'-V'+v,periodNo:it.periodNo,dimension:it.cycle,periodStart:feedbackWindow(it).start,periodEnd:feedbackWindow(it).end,cutoff:feedbackWindow(it).cutoff,lastPlan:it.lastPlan||'—',current:txt,next:np,actualReporter:old.actualReporter||actualExec(it),submittedAt:old.submittedAt||stamp,modifiedAt:stamp,modifiedBy:CUR,version:v,approvalRecords:[{t:stamp,by:r.name,role:r.label,action:'修改'}],deptAudit:it.fbStage==='dept'?'修改后待审核':'已同意（前版本）',mgrAudit:it.fbStage==='mgr'?'修改后待审核':'未到分管高管审核'});
-  it.fbApprovalLog.push({t:stamp,from:r.name,fromRole:r.label,toRole:'当前审批节点',to:fbStageRoleName(it.fbStage),act:'修改反馈内容'});
-  it.logs.push({t:stamp, who:r.name+'（'+r.label+'）', act:'修改反馈内容', txt:'直接修改「本期落实情况」「下期工作计划」并保存，修改已留痕，继续当前审核环节。'});
+  it.feedbackHistory.push({recordId:it.id+'-P'+it.periodNo+'-V'+v,periodNo:it.periodNo,dimension:it.cycle,periodStart:feedbackWindow(it).start,periodEnd:feedbackWindow(it).end,cutoff:feedbackWindow(it).cutoff,lastPlan:it.lastPlan||'—',current:txt,next:np,actualReporter:old.actualReporter||actualExec(it),submittedAt:old.submittedAt||stamp,modifiedAt:stamp,modifiedBy:CUR,version:v,approvalRecords:[{t:stamp,by:r.name,role:fbStageRoleName(it.fbStage,it),action:'修改'}],deptAudit:it.fbStage==='dept'?'修改后待审核':'已同意（前版本）',mgrAudit:it.fbStage==='mgr'?'修改后待审核':'未到'+r5FeedbackRole(it)+'审核'});
+  r5BindFeedbackRoute(it,true);
+  it.fbApprovalLog.push({t:stamp,from:r.name,fromRole:fbStageRoleName(it.fbStage,it),toRole:'当前审批节点',to:fbStageRoleName(it.fbStage,it),act:'修改反馈内容'});
+  it.logs.push({t:stamp, who:r.name+'（'+fbStageRoleName(it.fbStage,it)+'）', act:'修改反馈内容', txt:'直接修改「本期落实情况」「下期工作计划」并保存，修改已留痕，继续当前审核环节。'});
   r3CommitSummary(it,summary);
   xRecordProgress(it,progress);
   it.logs.push({t:stamp,who:r.name,act:'修改任务总进度',txt:progress.value+'%'+(progress.reason?'；调低原因：'+progress.reason:'')});
@@ -7917,11 +7920,16 @@ body:has(#nvMain:not([hidden])) .content{padding-top:22px}
 .r3-summary .x-report-progress>label{margin:0;white-space:nowrap}.r3-summary .x-report-progress .x-inline{display:flex;align-items:center;flex-wrap:wrap;gap:8px}.r3-summary .x-report-progress .x-progress-reason{grid-column:1/-1;white-space:normal}
 .r3-summary .x-report-progress label{font-size:13px}.r3-summary .x-report-progress input{height:34px;width:90px;font-size:13px}
 .r3-summary .x-report-progress label>span{display:none}.r3-summary .x-report-progress small{font-size:12px}
-.r4-picker{position:relative}.r4-picker>input[type=search]{width:100%;padding-right:30px}.r4-picker:after{content:'⌄';position:absolute;right:12px;top:12px;pointer-events:none;color:var(--ink-3)}
-.r4-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}.r4-chips:empty{display:none}.r4-chip{display:inline-flex;align-items:center;gap:6px;background:#edf2ff;border-radius:5px;padding:4px 7px;font-size:12px;color:var(--ink-2)}.r4-chip button{border:0;background:none;color:var(--ink-3);padding:0 2px;cursor:pointer;font-size:15px}
+.r4-picker{position:relative;display:flex;align-items:center;flex-wrap:wrap;gap:4px;min-height:40px;padding:4px 32px 4px 11px;border:1px solid #d9d9d9;border-radius:6px;background:#fff;transition:border-color .15s,box-shadow .15s;cursor:text;box-sizing:border-box}
+.r4-picker:hover{border-color:#4096ff}.r4-picker:focus-within{border-color:#1677ff;box-shadow:0 0 0 2px #1677ff1a}
+.r4-picker.r5-can-clear{padding-right:56px}.r5-picker-clear{position:absolute;right:31px;top:50%;transform:translateY(-50%);border:0;background:#eee;color:#888;border-radius:50%;width:16px;height:16px;padding:0;line-height:14px;font-size:14px;cursor:pointer}.r5-picker-clear[hidden]{display:none!important}
+.ntv-field .r4-picker>input[type=search]{flex:1 1 70px;min-width:50px;width:0;height:30px;padding:0;border:0;border-radius:0;background:transparent;box-shadow:none!important;outline:0;font-size:13px}.r4-picker>input[type=search]::-webkit-search-cancel-button{display:none}
+.r5-picker-arrow{position:absolute;right:7px;top:50%;transform:translateY(-50%);width:22px;height:24px;padding:0;border:0;background:none;color:#999;cursor:pointer;font-size:12px}.r4-chips{display:contents}.r4-chip{display:inline-flex;align-items:center;gap:5px;max-width:100%;background:#f5f5f5;border:1px solid #f0f0f0;border-radius:4px;padding:1px 5px;font-size:12px;line-height:22px;color:#333}.r4-chip button{border:0;background:none;color:#999;padding:0 1px;cursor:pointer;font-size:14px}
+.r5-picker-popup{position:fixed;z-index:30000;background:#fff;border-radius:8px;padding:4px;box-shadow:0 6px 16px #00000014,0 3px 6px -4px #0000001f,0 9px 28px 8px #0000000d;overflow:auto;box-sizing:border-box;font-size:13px}.r5-picker-popup[hidden]{display:none!important}
+.r5-picker-option{display:flex;align-items:center;gap:8px;width:100%;min-height:34px;padding:7px 10px;text-align:left;white-space:normal;border:0;border-radius:4px;background:#fff;color:#222;cursor:pointer;font-size:13px;line-height:20px}.r5-picker-option:hover,.r5-picker-option.is-active{background:#f5f5f5}.r5-picker-option.is-selected{background:#e6f4ff;font-weight:600}.r5-picker-option.is-selected.is-active{background:#bae0ff}.r5-picker-option>span:last-child{flex:1}
+.r5-picker-check{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;width:15px;height:15px;border:1px solid #d9d9d9;border-radius:3px;font-size:11px;line-height:1;color:transparent}.is-selected .r5-picker-check{border-color:#1677ff;background:#1677ff;color:#fff}.r5-picker-empty{padding:20px 10px;color:#999;text-align:center}.r5-picker-single .r5-picker-check{border:0;background:none;color:transparent;order:2}.r5-picker-single.is-selected .r5-picker-check{color:#1677ff;background:none}
 .r3-field-row>[hidden]{display:none!important}.r3-field-row{align-items:start}.r4-cooperation{grid-column:1/-1}.r4-picker-hint{font-size:12px;color:var(--ink-3);margin-top:5px}
-.r3-summary-read{margin-top:11px;padding-top:10px;border-top:1px solid var(--line);font-size:13px;line-height:1.75;white-space:normal}
-.r3-summary-read .r3-summary-head{margin-bottom:5px}.r3-summary-read p{margin:0;white-space:pre-wrap;overflow-wrap:anywhere}
+.r3-summary-read{margin:0;padding:0;border:0;font-size:inherit;line-height:inherit;white-space:pre-wrap;overflow-wrap:anywhere}
 .r3-summary-read small{color:var(--ink-3)}.r3-error{color:var(--red);font-size:12px}
 .r3-field-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}.r3-coops{display:flex;gap:8px;flex-wrap:wrap}
 .r3-notice-tools{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}.r3-notice-tools select{padding:7px;border:1px solid var(--line);border-radius:7px}
@@ -8033,8 +8041,8 @@ function rvNormalizeFeedbackReviewStages(){
       (it.logs||=[]).push({t:stamp,who:'系统',act:'退回反馈环节校正',txt:'落实人与部门负责人均为'+who(executor)+'，按原退回意见交落实人修改，避免退回到本人审核环节。'});
     }else{
       it.fbStage='mgr';if(record)record.mgrAudit='待审核';
-      (it.fbApprovalLog||=[]).push({t:stamp,from:'系统',fromRole:'部门负责人环节',toRole:'分管高管',to:mgrReviewer(it)||'—',act:'跳过本人审核'});
-      (it.logs||=[]).push({t:stamp,who:'系统',act:'反馈审核环节校正',txt:'落实人与部门负责人均为'+who(executor)+'，跳过本人审核，转分管高管'+who(mgrReviewer(it))+'审核。原填报内容和提交时间保留。'});
+      (it.fbApprovalLog||=[]).push({t:stamp,from:'系统',fromRole:'部门负责人环节',toRole:r5FeedbackRole(it),to:r5FeedbackReviewer(it)||'—',act:'跳过本人审核'});
+      (it.logs||=[]).push({t:stamp,who:'系统',act:'反馈审核环节校正',txt:'落实人与部门负责人均为'+who(executor)+'，跳过本人审核，转'+r5FeedbackRole(it)+who(r5FeedbackReviewer(it))+'审核。原填报内容和提交时间保留。'});
     }
     it.xFeedbackSaved=true;changed=true;
   });
@@ -8767,7 +8775,7 @@ feedbackRecordStatus=function(it,h){
   if(/已阅/.test(h.bossAudit||'')||actions.some(a=>/公司领导/.test(a.role||'')&&/已阅/.test(a.action||'')))return '进展反馈已审核';
   if(/退回/.test(last.action||'')||h.rejectedCurrent){
     const target=String(h.rejectedTo||last.to||'');
-    return /分管/.test(target)?wfReturnLabel('mgr'):/部门/.test(target)?wfReturnLabel('dept'):wfReturnLabel('person');
+    return /分管|牵头高管/.test(target)?wfReturnLabel('mgr'):/部门/.test(target)?wfReturnLabel('dept'):wfReturnLabel('person');
   }
   if(/^已同意/.test(h.adminAudit||'')||actions.some(a=>/督办管理人/.test(a.role||'')&&a.action==='同意'))return '管理人审核已通过';
   if(/^已同意/.test(h.mgrAudit||'')||actions.some(a=>/分管/.test(a.role||'')&&a.action==='同意'))return '分管审核已通过';
@@ -8799,7 +8807,7 @@ function wfReconcileAll(){
     const ret=it.feedbackReturn,h=wfCurrentRecord(it);
     if(ret&&ret.to!=='person'&&it.fbStage!==ret.to){
       const role={dept:'部门负责人',mgr:'分管',admin:'督办管理人'}[ret.to];
-      const resolved=role&&(h?.approvalRecords||[]).some(a=>a.action==='同意'&&String(a.role||'').includes(role)&&(!ret.returnedAt||recordTimeValue(a.t)>=recordTimeValue(ret.returnedAt)));
+      const resolved=role&&(h?.approvalRecords||[]).some(a=>a.action==='同意'&&(ret.to==='mgr'?/分管|牵头高管/.test(a.role||''):String(a.role||'').includes(role))&&(!ret.returnedAt||recordTimeValue(a.t)>=recordTimeValue(ret.returnedAt)));
       if(resolved){
         it.feedbackReturn=null;if(h){h.rejectedCurrent=false;h.returnResolvedAt=nowRecordTime();}
         (it.logs||=[]).push({t:nowRecordTime(),who:'系统',act:'反馈退回状态校正',txt:'根据已有重新审核通过记录清理过期退回提示，原退回意见保留在办理记录中。'});changed=true;
@@ -9216,11 +9224,11 @@ nvRead=function(){const d=r3OldNvRead();d.leadMode=$('#f_leadMode')?.value||'dep
   d.coopMode=$('#f_coopMode')?.value||'department';
   d.pickerInvalid=['leadMode','lead','projectLead','leadMgr','coopMode','cooperators'].filter(k=>{
     if(k==='lead'&&d.leadMode!=='department'||k==='projectLead'&&d.leadMode!=='executive')return false;
-    const input=$('#f_'+k+'Search');return input&&input.value.trim()&&!r4FindOption(k,input.value);
+    const input=$('#f_'+k+'Search');return input&&input.value.trim()&&!$('#f_'+k)?.value&&!r4FindOption(k,input.value);
   });
   d.exec='';d.mgrs=[];if(d.leadMode==='department')d.projectLead='';else d.lead='';return d;};
 nvOwners=function(){};
-/* Native searchable suggestions keep the selected domain ID separate from typed search text. */
+/* Search text and committed IDs are independent; custom popup supports single and multiple selection. */
 function r4PickerOptions(key){
   const departments=Object.keys(DEPT_LEAD).map(dept=>[dept,dept+' · '+who(leadOf(dept))]);
   if(key==='leadMode')return [['department','牵头部门'],['executive','牵头高管']];
@@ -9229,21 +9237,47 @@ function r4PickerOptions(key){
   if(key==='cooperators'){const type=$('#f_coopMode')?.value||'department';return (type==='executive'?r3LeaderOptions():departments).map(([v,l])=>[type+'|'+v,l]);}
   return r3LeaderOptions();
 }
-function r4Picker(key,placeholder,multiple=false){return '<div class="r4-picker"><input type="hidden" id="f_'+key+'" value="'+(multiple?'[]':'')+'"><input type="search" id="f_'+key+'Search" list="r4List_'+key+'" placeholder="'+esc(placeholder)+'" aria-label="'+esc(placeholder)+'" autocomplete="off" oninput="r4PickerInput(\''+key+'\',this.value)" onchange="r4PickerInput(\''+key+'\',this.value)"><datalist id="r4List_'+key+'">'+r4PickerOptions(key).map(([v,l])=>'<option value="'+xQ(l)+'"></option>').join('')+'</datalist></div>'+(multiple?'<div class="r4-chips" id="r4CoopChips"></div>':'');}
+function r4Picker(key,placeholder,multiple=false){const clearable=['lead','projectLead','leadMgr'].includes(key);return '<div class="r4-picker '+(clearable?'r5-can-clear':'')+'" id="r5Picker_'+key+'" onclick="r5OpenPicker(\''+key+'\');document.getElementById(\'f_'+key+'Search\').focus()"><input type="hidden" id="f_'+key+'" value="'+(multiple?'[]':'')+'">'+(multiple?'<div class="r4-chips" id="r4CoopChips"></div>':'')+'<input type="search" id="f_'+key+'Search" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="r5PickerPopup" placeholder="'+esc(placeholder)+'" aria-label="'+esc(placeholder)+'" autocomplete="off" onfocus="r5OpenPicker(\''+key+'\')" oninput="r4PickerInput(\''+key+'\',this.value)" onkeydown="r5PickerKey(\''+key+'\',event)" onblur="r5PickerBlur(\''+key+'\')">'+(clearable?'<button type="button" id="r5Clear_'+key+'" class="r5-picker-clear" hidden aria-label="清空选择" onmousedown="event.preventDefault()" onclick="event.stopPropagation();r5ClearPick(\''+key+'\')">×</button>':'')+'<button type="button" class="r5-picker-arrow" tabindex="-1" aria-label="展开选择" onmousedown="event.preventDefault()" onclick="event.stopPropagation();r5TogglePicker(\''+key+'\')"><i class="fas fa-chevron-down"></i></button></div>';}
 function r4SelectedCooperators(){try{const list=JSON.parse($('#f_cooperators')?.value||'[]');return Array.isArray(list)?[...new Set(list.filter(v=>typeof v==='string'))]:[];}catch(e){return [];}}
 function r4SyncPicker(key){const el=$('#f_'+key),input=$('#f_'+key+'Search');if(!el||!input)return;
-  if(key!=='cooperators')input.value=r4PickerOptions(key).find(([v])=>v===el.value)?.[1]||'';
-  const selected=key==='cooperators'?r4SelectedCooperators():[],list=$('#r4List_'+key);if(list)list.innerHTML=r4PickerOptions(key).filter(([v])=>!selected.includes(v)).map(([v,l])=>'<option value="'+xQ(l)+'"></option>').join('');
-  if(key==='cooperators'&&$('#r4CoopChips'))$('#r4CoopChips').innerHTML=selected.map((value,index)=>{const divider=value.indexOf('|'),type=value.slice(0,divider),target=value.slice(divider+1),label=(type==='executive'?'高管 · '+who(target):'部门 · '+target);return '<span class="r4-chip">'+esc(label)+'<button type="button" aria-label="移除'+xQ(label)+'" onclick="r4RemoveCooperator('+index+')">×</button></span>';}).join('');
+  if(key!=='cooperators')input.value=r4PickerOptions(key).find(([v])=>v===el.value)?.[1]||'';if($('#r5Clear_'+key))$('#r5Clear_'+key).hidden=!el.value;
+  const selected=key==='cooperators'?r4SelectedCooperators():[];
+  if(key==='cooperators'&&$('#r4CoopChips'))$('#r4CoopChips').innerHTML=selected.map((value,index)=>{const divider=value.indexOf('|'),type=value.slice(0,divider),target=value.slice(divider+1),label=(type==='executive'?'高管 · '+who(target):'部门 · '+target);return '<span class="r4-chip">'+esc(label)+'<button type="button" aria-label="移除'+xQ(label)+'" onmousedown="event.preventDefault()" onclick="event.stopPropagation();r4RemoveCooperator('+index+')">×</button></span>';}).join('');
 }
 function r4FindOption(key,text){const term=text.trim();return r4PickerOptions(key).find(([value,label])=>term===label||term===value||key==='cooperators'&&term===value.slice(value.indexOf('|')+1));}
-function r4PickerInput(key,text){const el=$('#f_'+key);if(!el)return;const match=r4FindOption(key,text);
-  if(key==='cooperators'){if(match){el.value=JSON.stringify([...new Set([...r4SelectedCooperators(),match[0]])]);$('#f_cooperatorsSearch').value='';r4SyncPicker(key);}}
-  else{el.value=match?match[0]:'';if(match){r4SyncPicker(key);if(key==='lead'){$('#f_projectLead').value='';if($('#f_leadMgr'))$('#f_leadMgr').value=mgrOf(match[0])||'';r4SyncPicker('leadMgr');}
-    if(key==='leadMode'){r3ChangeLeadMode();}if(key==='coopMode'){if($('#f_cooperatorsSearch'))$('#f_cooperatorsSearch').value='';r4SyncPicker('cooperators');}}}
+function r4PickerInput(key,text){if(R5_PICKER.key!==key)r5OpenPicker(key);R5_PICKER.query=text;R5_PICKER.active=0;r5RenderPicker();}
+function r5CommitPick(key,value){const el=$('#f_'+key);if(!el||!r4PickerOptions(key).some(([id])=>id===value))return;
+  if(key==='cooperators'){const selected=r4SelectedCooperators();el.value=JSON.stringify(selected.includes(value)?selected.filter(v=>v!==value):[...selected,value]);$('#f_cooperatorsSearch').value='';r4SyncPicker(key);R5_PICKER.query='';r5RenderPicker();}
+  else{el.value=value;r4SyncPicker(key);if(key==='lead'){$('#f_projectLead').value='';if($('#f_leadMgr'))$('#f_leadMgr').value=mgrOf(value)||'';r4SyncPicker('leadMgr');}
+    if(key==='leadMode')r3ChangeLeadMode();if(key==='coopMode'){if($('#f_cooperatorsSearch'))$('#f_cooperatorsSearch').value='';r4SyncPicker('cooperators');}r5ClosePicker();}
   nvRefresh();nvSnapshot();
 }
-function r4RemoveCooperator(index){const values=r4SelectedCooperators();values.splice(index,1);$('#f_cooperators').value=JSON.stringify(values);r4SyncPicker('cooperators');nvRefresh();nvSnapshot();}
+function r5ClearPick(key){if(!['lead','projectLead','leadMgr'].includes(key)||!$('#f_'+key))return;$('#f_'+key).value='';r4SyncPicker(key);nvRefresh();nvSnapshot();r5ClosePicker();$('#f_'+key+'Search')?.focus();r5OpenPicker(key);}
+function r4RemoveCooperator(index){const values=r4SelectedCooperators();values.splice(index,1);$('#f_cooperators').value=JSON.stringify(values);r4SyncPicker('cooperators');if(R5_PICKER.key==='cooperators')r5RenderPicker();nvRefresh();nvSnapshot();}
+let R5_PICKER={key:'',query:'',active:0,options:[]};
+function r5PickerPopup(){let popup=$('#r5PickerPopup');if(!popup){popup=document.createElement('div');popup.id='r5PickerPopup';popup.className='r5-picker-popup';popup.setAttribute('role','listbox');popup.setAttribute('onmousedown','event.preventDefault()');popup.hidden=true;document.body.appendChild(popup);}return popup;}
+function r5OpenPicker(key){if(R5_PICKER.key===key)return;r5ClosePicker();const selected=key==='cooperators'?0:r4PickerOptions(key).findIndex(([id])=>id===$('#f_'+key)?.value);R5_PICKER={key,query:'',active:Math.max(0,selected),options:[]};const input=$('#f_'+key+'Search');input?.setAttribute('aria-expanded','true');input?.select?.();r5RenderPicker();}
+function r5TogglePicker(key){if(R5_PICKER.key===key){r5ClosePicker();return;}$('#f_'+key+'Search')?.focus();r5OpenPicker(key);}
+function r5ClosePicker(){const key=R5_PICKER.key;if(key){const input=$('#f_'+key+'Search');input?.setAttribute('aria-expanded','false');input?.removeAttribute('aria-activedescendant');if(key==='cooperators'){if(input)input.value='';}else r4SyncPicker(key);}R5_PICKER={key:'',query:'',active:0,options:[]};const popup=$('#r5PickerPopup');if(popup)popup.hidden=true;}
+function r5RenderPicker(){const key=R5_PICKER.key;if(!key)return;const popup=r5PickerPopup(),query=R5_PICKER.query.trim().toLocaleLowerCase();
+  const options=r4PickerOptions(key).filter(([id,label])=>!query||(id+' '+label).toLocaleLowerCase().includes(query));R5_PICKER.options=options;R5_PICKER.active=Math.min(Math.max(0,R5_PICKER.active),Math.max(0,options.length-1));
+  const multiple=key==='cooperators',selected=multiple?r4SelectedCooperators():[$('#f_'+key)?.value];popup.setAttribute('aria-multiselectable',String(multiple));
+  popup.innerHTML=options.map(([id,label],i)=>'<button type="button" tabindex="-1" role="option" id="r5PickerOption_'+i+'" aria-selected="'+selected.includes(id)+'" class="r5-picker-option '+(multiple?'':'r5-picker-single ')+(selected.includes(id)?'is-selected ':'')+(i===R5_PICKER.active?'is-active':'')+'" onclick="r5PickOption('+i+')"><span class="r5-picker-check" aria-hidden="true">✓</span><span>'+esc(label)+'</span></button>').join('')||'<div class="r5-picker-empty">暂无匹配结果</div>';
+  popup.hidden=false;const input=$('#f_'+key+'Search');if(options.length)input?.setAttribute('aria-activedescendant','r5PickerOption_'+R5_PICKER.active);else input?.removeAttribute('aria-activedescendant');r5PositionPicker();
+}
+function r5PickOption(index){const option=R5_PICKER.options[index];if(option)r5CommitPick(R5_PICKER.key,option[0]);}
+function r5PositionPicker(){const field=$('#r5Picker_'+R5_PICKER.key),popup=$('#r5PickerPopup');if(!field||!popup||popup.hidden)return;const r=field.getBoundingClientRect(),width=Math.min(r.width,innerWidth-16),spaceBelow=innerHeight-r.bottom-12,spaceAbove=r.top-12;
+  const height=Math.min(260,Math.max(80,Math.max(spaceBelow,spaceAbove))),flip=spaceBelow<180&&spaceAbove>spaceBelow;popup.style.width=width+'px';popup.style.maxHeight=Math.min(260,Math.max(80,flip?spaceAbove:spaceBelow))+'px';popup.style.left=Math.max(8,Math.min(r.left,innerWidth-width-8))+'px';popup.style.top=(flip?Math.max(8,r.top-Math.min(height,popup.scrollHeight||260)-5):r.bottom+5)+'px';
+}
+function r5PickerKey(key,event){if(event.key==='Escape'){event.preventDefault();r5ClosePicker();return;}if(event.key==='Tab'){r5ClosePicker();return;}
+  if(event.key==='Backspace'&&key==='cooperators'&&!$('#f_cooperatorsSearch')?.value){const list=r4SelectedCooperators();if(list.length){event.preventDefault();r4RemoveCooperator(list.length-1);}return;}
+  if(!['ArrowDown','ArrowUp','Enter','Home','End'].includes(event.key))return;event.preventDefault();if(R5_PICKER.key!==key){r5OpenPicker(key);if(event.key==='Enter')return;}
+  const count=R5_PICKER.options.length;if(event.key==='Enter'){r5PickOption(R5_PICKER.active);return;}
+  R5_PICKER.active=event.key==='Home'?0:event.key==='End'?Math.max(0,count-1):(R5_PICKER.active+(event.key==='ArrowDown'?1:-1)+Math.max(count,1))%Math.max(count,1);r5RenderPicker();$('#r5PickerOption_'+R5_PICKER.active)?.scrollIntoView({block:'nearest'});
+}
+function r5PickerBlur(key){setTimeout(()=>{if(R5_PICKER.key===key&&document.activeElement!==$('#f_'+key+'Search'))r5ClosePicker();},0);}
+document.addEventListener('mousedown',event=>{if(R5_PICKER.key&&!$('#r5Picker_'+R5_PICKER.key)?.contains(event.target)&&!$('#r5PickerPopup')?.contains(event.target))r5ClosePicker();});
+window.addEventListener('resize',r5PositionPicker);window.addEventListener('scroll',r5PositionPicker,true);
 function r3ResponsibilityFields(){
   const field=(key,label,placeholder,multi=false)=>nvField(key,label,r4Picker(key,placeholder,multi)).replace('for="f_'+key+'"','for="f_'+key+'Search"');
   return '<div class="r3-field-row">'+field('leadMode','牵头方式<em>*</em>','搜索牵头方式')+
@@ -9334,7 +9368,7 @@ saveAssistDispatch=function(id){const it=xItem(id),c=(it?.cooperators||[]).find(
 renderAssist=function(){const list=ITEMS.filter(it=>r3CoopScope(it));$('#content').innerHTML=list.map(it=>'<div class="card" style="padding:18px;margin-bottom:14px"><h3 style="font-size:15px;cursor:pointer" onclick="goDetail(\''+it.id+'\')">'+esc(it.name)+'</h3>'+
   (it.cooperators||[]).filter(c=>r3CoopVisible(c)).map(c=>'<div class="r3-coop-header"><span>'+esc(c.type==='department'?c.target:who(c.target))+'</span><span class="tag">配合方</span>'+(r3CoopOptions(c).length?'<button class="btn sm" onclick="openAssistDispatch(\''+it.id+'\',\''+c.id+'\')">分配人员</button>':'')+'</div>').join('')+'<p style="font-size:13px">最新进展：'+esc(it.lastReport||'暂无反馈')+'</p><div class="process-pills">'+processPills(it)+'</div></div>').join('')||'<div class="card empty"><p>暂无配合事项</p></div>';};
 
-function r3Initialize(){ITEMS.forEach(r3NormalizeItem);r4SeedReadExamples();r3UpgradeDraftKeys();r3NormalizeReadStage();Object.assign(TITLES,{todo:['待办与阅知',''],assist:['配合事项','']});xSave();}
+function r3Initialize(){ITEMS.forEach(r3NormalizeItem);r4SeedReadExamples();r5InitializeFeedbackRoutes();r3UpgradeDraftKeys();r3NormalizeReadStage();Object.assign(TITLES,{todo:['待办与阅知',''],assist:['配合事项','']});xSave();}
 
 /* Imported rows use the same responsibility validation and constructor as manual creation. */
 nbPeople=function(){return [];};
@@ -9385,10 +9419,10 @@ ROLES.exec.hint='部门负责人可自行办理和填报，也可派发给本部
 ROLES.boss.hint='反馈完成审核后进入阅知事项；已阅仅记录个人阅读状态。';
 if(!ROLES.boss.nav.some(row=>row[0]==='assist'))ROLES.boss.nav.unshift(['assist','fa-handshake','配合事项']);
 
-/* Exactly three notice kinds. Read receipts never advance an approval or change feedback content. */
+/* Read receipts are separate from approvals; supervisor notices follow project-executive approval. */
 let R3_NOTICE_FILTER='unread';
 function r3Notice(it,kind,source,to,title,body,payload={}){
-  if(!it||!person(to)||!['department','meeting','feedback'].includes(kind))return null;
+  if(!it||!person(to)||!['department','meeting','feedback','supervisor'].includes(kind))return null;
   const id=kind+':'+source+':'+to,events=it.noticeEvents||(it.noticeEvents=[]);
   const old=events.find(event=>event.id===id);if(old)return old;
   const event={id,kind,source,to,title,body,payload:JSON.parse(JSON.stringify(payload)),createdAt:nowRecordTime(),readAt:'',readBy:''};events.push(event);return event;
@@ -9425,7 +9459,7 @@ function r3RenderReadNotices(){
   const all=r3Notices(),rows=all.filter(row=>R3_NOTICE_FILTER==='all'||(R3_NOTICE_FILTER==='read'?!!row.event.readAt:!row.event.readAt));
   $('#content').innerHTML='<div class="toolbar" style="margin-bottom:14px">'+['audit','dispatch','read'].map(key=>r3TaskTabButton(key,'read',myTaskAuditItems(),myTaskDispatchItems())).join('')+'</div>'+
     '<div class="r3-notice-tools"><select aria-label="阅知范围" onchange="R3_NOTICE_FILTER=this.value;r3RenderReadNotices()">'+[['unread','未阅'],['read','已阅'],['all','全部']].map(([value,label])=>'<option value="'+value+'" '+(R3_NOTICE_FILTER===value?'selected':'')+'>'+label+'</option>').join('')+'</select><button class="btn sm" onclick="r3MarkSelectedNotices()">选中标为已阅</button><button class="btn sm" onclick="r3MarkAllNotices()">全部标为已阅</button><span class="hint">共 '+rows.length+' 条</span></div>'+
-    rows.map(({it,event:n})=>'<div class="card r3-notice-card"><input type="checkbox" name="r3Notice" value="'+xQ(JSON.stringify([it.id,n.id]))+'" aria-label="选择阅知事项"><div class="r3-notice-main"><h3 onclick="goDetail(\''+it.id+'\')">'+esc(it.name)+'</h3><span class="tag '+(n.readAt?'':'yellow')+'">'+esc(n.title)+'</span><p>'+esc(n.body)+'</p>'+(n.kind==='feedback'?'<p><b>任务总进度：</b>'+esc(n.payload.taskProgress===null?'未填报':n.payload.taskProgress+'%')+'<br><b>进展总结：</b>'+esc(n.payload.summary||'暂无总结')+'</p>':'')+'<small>'+esc(n.createdAt)+(n.readAt?' · 已阅 '+esc(n.readAt):' · 未阅')+'</small></div>'+(n.readAt?'':'<button class="btn sm primary" onclick="r3MarkNotice(\''+it.id+'\',\''+n.id+'\')">标为已阅</button>')+'</div>').join('')+(rows.length?'':'<div class="card empty"><p>暂无'+(R3_NOTICE_FILTER==='unread'?'未阅':'符合条件的')+'事项</p></div>');
+    rows.map(({it,event:n})=>'<div class="card r3-notice-card"><input type="checkbox" name="r3Notice" value="'+xQ(JSON.stringify([it.id,n.id]))+'" aria-label="选择阅知事项"><div class="r3-notice-main"><h3 onclick="goDetail(\''+it.id+'\')">'+esc(it.name)+'</h3><span class="tag '+(n.readAt?'':'yellow')+'">'+esc(n.title)+'</span><p>'+esc(n.body)+'</p>'+(['feedback','supervisor'].includes(n.kind)?r3SummaryReadHtml(it,{taskProgress:n.payload.taskProgress,summary:{text:n.payload.summary}}):'')+'<small>'+esc(n.createdAt)+(n.readAt?' · 已阅 '+esc(n.readAt):' · 未阅')+'</small></div>'+(n.readAt?'':'<button class="btn sm primary" onclick="r3MarkNotice(\''+it.id+'\',\''+n.id+'\')">标为已阅</button>')+'</div>').join('')+(rows.length?'':'<div class="card empty"><p>暂无'+(R3_NOTICE_FILTER==='unread'?'未阅':'符合条件的')+'事项</p></div>');
 }
 function r3WriteReceipts(pairs){let count=0;for(const [itemId,id]of pairs){const event=(xItem(itemId)?.noticeEvents||[]).find(n=>n.id===id&&n.to===CUR&&!n.readAt);if(event){event.readAt=nowRecordTime();event.readBy=CUR;count++;}}if(count)xSave();return count;}
 function r3MarkNotice(itemId,id){const count=r3WriteReceipts([[itemId,id]]);if(count){route();toast('已标为已阅');}}
@@ -9522,7 +9556,7 @@ function r3CommitSummary(it,summary){const {draftKey,...snapshot}=summary;it.cur
   if(X_STORE.summaryDrafts)delete X_STORE.summaryDrafts[draftKey];if(X_STORE.textDrafts)delete X_STORE.textDrafts[r3TextKey(it)];
 }
 function r3SummaryReadHtml(it,record){const h=record||it.fbReport||wfCurrentRecord(it)||{},summary=h.summary||(!record?wfCurrentRecord(it)?.summary:null),value=h.taskProgress??(!record?wfCurrentRecord(it)?.taskProgress:null);
-  return '<div class="r3-summary-read"><div class="r3-summary-head"><b>进展总结</b><span>任务总进度：<b>'+esc(typeof value==='number'?value+'%':'未填报')+'</b></span></div><p>'+esc(summary?.text||'暂无总结')+'</p></div>';
+  return '<div class="r3-summary-read"><b>进展总结：</b>总进度'+esc(typeof value==='number'?value+'%':'未填报')+'，'+esc(summary?.text||'暂无总结')+'</div>';
 }
 const r3OldSyncProgress=xSyncProgress;
 xSyncProgress=function(id,k,v,edit=false){r3OldSyncProgress.apply(this,arguments);const it=xItem(id);if(it)r3UpdateSummaryStatus(it,edit);};
@@ -9566,6 +9600,69 @@ saveEditItem=function(id){if(ROLE!=='admin'){toast('仅督办管理人可修改�
   const report=it.fbReport||wfCurrentRecord(it),expected={edCur:wfRecordContent(report),edNxt:wfRecordPlan(report),edSum:report.summary?.text||wfCurrentRecord(it)?.summary?.text||''};
   if(Object.entries(expected).some(([key,value])=>$('#'+key)&&$('#'+key).value.trim()!==String(value).trim())){toast('反馈材料已有版本记录，请通过审核修改入口调整');return;}
 }return r3OldSaveItem.apply(this,arguments);};
+
+/* Feedback approval route is separate from the organizational supervisor and frozen per version. */
+function r5BuildFeedbackRoute(it){
+  const supervisor=mgrReviewer(it),projectLead=it?.projectLead||'',project=!!projectLead&&projectLead!==supervisor;
+  return {schema:1,periodNo:Number(it.periodNo||1),assignmentVersion:it.assignmentVersion||0,reviewer:project?projectLead:supervisor,
+    role:project?'牵头高管':'分管领导',projectLead,supervisor,notifySupervisor:project&&!!supervisor};
+}
+function r5FeedbackRoute(it,record){
+  if(record)return record.reviewRoute||null;
+  const saved=it?.fbReport?.reviewRoute||wfCurrentRecord(it)?.reviewRoute||it?.fbReviewRoute;
+  return saved&&saved.periodNo===Number(it.periodNo||1)&&saved.assignmentVersion===(it.assignmentVersion||0)?saved:r5BuildFeedbackRoute(it);
+}
+function r5FeedbackReviewer(it){return r5FeedbackRoute(it).reviewer;}
+function r5FeedbackRole(it){return r5FeedbackRoute(it).role;}
+function r5BindFeedbackRoute(it,retain=false){
+  const route=JSON.parse(JSON.stringify(retain?r5FeedbackRoute(it):r5BuildFeedbackRoute(it)));it.fbReviewRoute=route;
+  if(it.fbReport)it.fbReport.reviewRoute=JSON.parse(JSON.stringify(route));const h=wfCurrentRecord(it);if(h)h.reviewRoute=JSON.parse(JSON.stringify(route));return route;
+}
+function r5InitializeFeedbackRoutes(){
+  ITEMS.forEach(it=>{
+    if(it.status==='已完成'||it.feedback!=='已反馈'||!['dept','mgr','admin'].includes(it.fbStage)||it.fbReport?.reviewRoute||wfCurrentRecord(it)?.reviewRoute)return;
+    // Completed higher reviews are not retroactively reopened. Pending department/executive steps adopt the new route.
+    if(it.fbStage==='admin'){
+      const proved=(wfCurrentRecord(it)?.approvalRecords||[]).slice().reverse().find(a=>a.action==='同意'&&/牵头高管|分管/.test(a.role||''));
+      const actor=PEOPLE.find(p=>p.c===proved?.by||who(p.c)===proved?.by)?.c;
+      it.fbReviewRoute={...r5BuildFeedbackRoute(it),reviewer:actor||mgrReviewer(it),role:/牵头高管/.test(proved?.role||'')?'牵头高管':'分管领导',notifySupervisor:false};r5BindFeedbackRoute(it,true);return;
+    }
+    const route=r5BindFeedbackRoute(it);
+    if(route.notifySupervisor)(it.logs||=[]).push({t:nowRecordTime(),who:'系统',act:'反馈审核路径更新',txt:'本次尚未完成的高管审核交由牵头高管（'+who(route.reviewer)+'）处理；通过后发送职务分管高管（'+who(route.supervisor)+'）阅知。原提交及已完成审核记录保留。'});
+  });
+}
+fbMgrMe=function(it){return !!it&&it.status!=='已完成'&&it.fbStage==='mgr'&&r5FeedbackReviewer(it)===CUR&&['mgr','boss'].includes(ROLE);};
+const r5OldStageRole=fbStageRoleName;
+fbStageRoleName=function(stage,it){return stage==='mgr'&&it?r5FeedbackRole(it):r5OldStageRole(stage);};
+function r5ProjectWording(it,text,route){if(!it&&!route)return text;const r=route||r5FeedbackRoute(it);return r?.role==='牵头高管'?String(text).replace(/分管高管|分管领导/g,'牵头高管').replace(/待分管重审/g,'待牵头高管重审').replace(/归档时待分管审核/g,'归档时待牵头高管审核').replace(/分管审核已通过/g,'牵头高管审核已通过'):text;}
+const r5OldFeedbackLabel=feedbackStatusLabel,r5OldStageName=fbStageName,r5OldReviewBadge=rvFeedbackReviewBadge,r5OldTodoLabel=fbTodoLabel;
+feedbackStatusLabel=it=>r5ProjectWording(it,r5OldFeedbackLabel(it));
+fbStageName=it=>r5ProjectWording(it,r5OldStageName(it));fbStageShort=it=>fbStageName(it);
+rvFeedbackReviewBadge=it=>r5ProjectWording(it,r5OldReviewBadge(it));
+fbTodoLabel=it=>r5ProjectWording(it,r5OldTodoLabel(it));
+const r5OldFeedbackFlow=wfFeedbackFlow;
+wfFeedbackFlow=function(it){const state=r5OldFeedbackFlow(it);state.label=r5ProjectWording(it,state.label);state.globalLabel=r5ProjectWording(it,state.globalLabel);return state;};
+const r5OldFeedbackSnapshot=wfFeedbackSnapshot;
+wfFeedbackSnapshot=function(it){return {...r5OldFeedbackSnapshot(it),reviewRoute:JSON.parse(JSON.stringify(r5FeedbackRoute(it)))};};
+const r5OldSnapshotLabel=wfSnapshotLabel;
+wfSnapshotLabel=function(snapshot,historical=false){const text=r5OldSnapshotLabel(snapshot,historical);return snapshot.reviewRoute?r5ProjectWording(null,text,snapshot.reviewRoute):text;};
+const r5OldRecordStatus=feedbackRecordStatus;
+feedbackRecordStatus=function(it,h){const text=r5OldRecordStatus(it,h);const live=Number(h.periodNo)===Number(it.periodNo||1)&&wfCurrentRecord(it)===h&&it.status!=='已完成';return h.reviewRoute?r5ProjectWording(null,text,h.reviewRoute):live?r5ProjectWording(it,text):text;};
+fbBackTargets=function(it,lvl){const all=[{v:'person',t:'落实人（'+who(actualExec(it))+'）——退回后重新填写并提交'},
+  {v:'dept',t:'部门负责人（'+who(deptReviewer(it))+'）——退回后重新审核'},
+  {v:'mgr',t:r5FeedbackRole(it)+'（'+who(r5FeedbackReviewer(it))+'）——退回后重新审核'}];
+  return (lvl==='dept'?all.slice(0,1):lvl==='mgr'?all.slice(0,2):lvl==='admin'?all:[]).filter(target=>target.v!=='dept'||deptReviewer(it)!==actualExec(it));};
+fbBackTargetName=function(it,to){return to==='dept'?'部门负责人（'+who(deptReviewer(it))+'）':to==='mgr'?r5FeedbackRole(it)+'（'+who(r5FeedbackReviewer(it))+'）':'落实人（'+who(actualExec(it))+'）';};
+fbBackTargetPerson=function(it,to){return to==='dept'?deptReviewer(it):to==='mgr'?r5FeedbackReviewer(it):actualExec(it);};
+fbChainText=function(it){const parts=[];if(deptReviewer(it)&&deptReviewer(it)!==actualExec(it))parts.push('部门负责人（'+who(deptReviewer(it))+'）');const route=r5FeedbackRoute(it);parts.push(route.role+'（'+who(route.reviewer)+'）','督办管理人（'+who(adminOf())+'）');return parts.join(' → ')+(route.notifySupervisor?'；牵头高管通过后通知职务分管高管（'+who(route.supervisor)+'）阅知':'')+'；审核完成后发送公司领导阅知';};
+function r5ProjectReviewNotice(it){
+  const h=wfCurrentRecord(it),route=r5FeedbackRoute(it);if(!h||!route.notifySupervisor)return;
+  const approved=(h.approvalRecords||[]).filter(a=>a.role==='牵头高管'&&a.action==='同意').length;
+  if(!approved)return;
+  r3Notice(it,'supervisor',h.recordId+':project-approval-'+approved,route.supervisor,'牵头高管审核通过，请阅知',
+    '第 '+(it.periodNo||1)+' 期反馈已由牵头高管（'+who(route.reviewer)+'）审核通过，已流转督办管理人审核。阅知不影响审批流转。',
+    {periodNo:it.periodNo,version:h.version,projectLead:route.reviewer,supervisor:route.supervisor,txt:wfRecordContent(h),np:wfRecordPlan(h),summary:h.summary?.text||'',taskProgress:h.taskProgress??null});
+}
 
 r3Initialize();
 rvNormalizeCompletionData();
