@@ -303,8 +303,7 @@
           if (name === '空调加时申请') {
             const info = workflowInfo[name];
             return `<div class="app-link ${group.kind} app-link-info" data-name="${name}" data-group="${group.name}">
-              <a class="app-link-main" href="${target}"><span class="app-icon">${icon}</span><span class="app-label">${name}</span></a>
-              <button class="app-info-trigger" type="button" aria-label="查看${name}信息" aria-controls="airconInfo" aria-expanded="false">i</button>
+              <a class="app-link-main" href="${target}" aria-describedby="airconInfo"><span class="app-icon">${icon}</span><span class="app-label">${name}</span></a>
               <div class="app-info-popover" id="airconInfo" role="tooltip" hidden>${workflowInfoContent(info)}</div>
             </div>`;
           }
@@ -358,29 +357,21 @@
     });
 
     const infoCard = groupsRoot.querySelector('.app-link-info');
-    const infoTrigger = infoCard?.querySelector('.app-info-trigger');
     const infoPopover = infoCard?.querySelector('.app-info-popover');
     const openInfo = () => {
-      if (!infoCard || !infoTrigger || !infoPopover) return;
+      if (!infoCard || !infoPopover) return;
       infoCard.classList.add('info-open');
       infoPopover.hidden = false;
-      infoTrigger.setAttribute('aria-expanded', 'true');
     };
     const closeInfo = () => {
-      if (!infoCard || !infoTrigger || !infoPopover) return;
+      if (!infoCard || !infoPopover) return;
       infoCard.classList.remove('info-open');
       infoPopover.hidden = true;
-      infoTrigger.setAttribute('aria-expanded', 'false');
     };
-    infoTrigger?.addEventListener('pointerenter', openInfo);
-    infoTrigger?.addEventListener('focus', openInfo);
-    infoTrigger?.addEventListener('click', event => {
-      event.preventDefault();
-      event.stopPropagation();
-      openInfo();
-    });
+    infoCard?.addEventListener('pointerenter', openInfo);
     infoCard?.addEventListener('pointerleave', closeInfo);
-    infoTrigger?.addEventListener('blur', event => {
+    infoCard?.addEventListener('focusin', openInfo);
+    infoCard?.addEventListener('focusout', event => {
       if (!infoCard.contains(event.relatedTarget)) closeInfo();
     });
     document.addEventListener('click', event => {
@@ -389,7 +380,6 @@
     document.addEventListener('keydown', event => {
       if (event.key === 'Escape' && infoCard?.classList.contains('info-open')) {
         closeInfo();
-        infoTrigger?.focus();
       }
     });
 
