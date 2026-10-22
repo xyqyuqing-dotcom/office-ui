@@ -9451,6 +9451,7 @@ if(!ROLES.boss.nav.some(row=>row[0]==='assist'))ROLES.boss.nav.unshift(['assist'
 let R3_NOTICE_FILTER='unread';
 function r3Notice(it,kind,source,to,title,body,payload={}){
   if(!it||!person(to)||!['department','meeting','feedback','supervisor'].includes(kind))return null;
+  if(kind==='supervisor'&&to===bossOf())return null;
   const id=kind+':'+source+':'+to,events=it.noticeEvents||(it.noticeEvents=[]);
   const old=events.find(event=>event.id===id);if(old)return old;
   const event={id,kind,source,to,title,body,payload:JSON.parse(JSON.stringify(payload)),createdAt:nowRecordTime(),readAt:'',readBy:''};events.push(event);return event;
@@ -9480,7 +9481,7 @@ fbBossMe=function(){return false;};
 fbBossReview=function(id){const it=xItem(id),event=(it?.noticeEvents||[]).find(n=>n.kind==='feedback'&&n.to===CUR&&!n.readAt);if(event)r3MarkNotice(id,event.id);};
 openFbBossReview=function(id){if(r3Notices().some(row=>row.it.id===id)){TODO_TAB='read';RV_TASK_EXPLICIT_TAB=true;go('todo');}};
 fbChainText=function(it){const parts=[];if(deptReviewer(it)&&deptReviewer(it)!==actualExec(it))parts.push('部门负责人（'+who(deptReviewer(it))+'）');parts.push('职务分管高管（'+who(mgrReviewer(it))+'）','督办管理人（'+who(adminOf())+'）');return parts.join(' → ')+'；审核完成后发送公司领导阅知';};
-function r3Notices(){return ITEMS.flatMap(it=>(it.noticeEvents||[]).filter(n=>n.to===CUR).map(event=>({it,event}))).sort((a,b)=>recordTimeValue(b.event.createdAt)-recordTimeValue(a.event.createdAt));}
+function r3Notices(){return ITEMS.flatMap(it=>(it.noticeEvents||[]).filter(n=>n.to===CUR&&!n.withdrawnAt).map(event=>({it,event}))).sort((a,b)=>recordTimeValue(b.event.createdAt)-recordTimeValue(a.event.createdAt));}
 function r3UnreadCount(){return r3Notices().filter(row=>!row.event.readAt).length;}
 function r3TaskTabButton(key,tab,audit,dispatch){const info={audit:['审核待办','fa-user-check',audit.length],dispatch:['派发与办理','fa-share-nodes',dispatch.length],read:['阅知事项','fa-envelope-open-text',r3UnreadCount()]}[key];return '<button class="btn '+(tab===key?'primary':'')+'" onclick="TODO_TAB=\''+key+'\';RV_TASK_EXPLICIT_TAB=true;route()"><i class="fas '+info[1]+'"></i> '+info[0]+'（'+info[2]+'）</button>';}
 function r3RenderReadNotices(){
@@ -9489,7 +9490,7 @@ function r3RenderReadNotices(){
     '<div class="r3-notice-tools"><select aria-label="阅知范围" onchange="R3_NOTICE_FILTER=this.value;r3RenderReadNotices()">'+[['unread','未阅'],['read','已阅'],['all','全部']].map(([value,label])=>'<option value="'+value+'" '+(R3_NOTICE_FILTER===value?'selected':'')+'>'+label+'</option>').join('')+'</select><button class="btn sm" onclick="r3MarkSelectedNotices()">选中标为已阅</button><button class="btn sm" onclick="r3MarkAllNotices()">全部标为已阅</button><span class="hint">共 '+rows.length+' 条</span></div>'+
     rows.map(({it,event:n})=>'<div class="card r3-notice-card"><input type="checkbox" name="r3Notice" value="'+xQ(JSON.stringify([it.id,n.id]))+'" aria-label="选择阅知事项"><div class="r3-notice-main"><h3 onclick="goDetail(\''+it.id+'\')">'+esc(it.name)+'</h3><span class="tag '+(n.readAt?'':'yellow')+'">'+esc(n.title)+'</span><p>'+esc(n.body)+'</p>'+(['feedback','supervisor'].includes(n.kind)?r3SummaryReadHtml(it,{taskProgress:n.payload.taskProgress,summary:{text:n.payload.summary}}):'')+'<small>'+esc(n.createdAt)+(n.readAt?' · 已阅 '+esc(n.readAt):' · 未阅')+'</small></div>'+(n.readAt?'':'<button class="btn sm primary" onclick="r3MarkNotice(\''+it.id+'\',\''+n.id+'\')">标为已阅</button>')+'</div>').join('')+(rows.length?'':'<div class="card empty"><p>暂无'+(R3_NOTICE_FILTER==='unread'?'未阅':'符合条件的')+'事项</p></div>');
 }
-function r3WriteReceipts(pairs){let count=0;for(const [itemId,id]of pairs){const event=(xItem(itemId)?.noticeEvents||[]).find(n=>n.id===id&&n.to===CUR&&!n.readAt);if(event){event.readAt=nowRecordTime();event.readBy=CUR;count++;}}if(count)xSave();return count;}
+function r3WriteReceipts(pairs){let count=0;for(const [itemId,id]of pairs){const event=(xItem(itemId)?.noticeEvents||[]).find(n=>n.id===id&&n.to===CUR&&!n.readAt&&!n.withdrawnAt);if(event){event.readAt=nowRecordTime();event.readBy=CUR;count++;}}if(count)xSave();return count;}
 function r3MarkNotice(itemId,id){const count=r3WriteReceipts([[itemId,id]]);if(count){route();toast('已标为已阅');}}
 function r3MarkSelectedNotices(){const pairs=[];document.querySelectorAll('[name="r3Notice"]:checked').forEach(el=>{try{pairs.push(JSON.parse(el.value));}catch(e){}});const count=r3WriteReceipts(pairs);route();toast('已标为已阅 '+count+' 条');}
 function r3MarkAllNotices(){const count=r3WriteReceipts(r3Notices().filter(row=>!row.event.readAt).map(row=>[row.it.id,row.event.id]));route();toast('已标为已阅 '+count+' 条');}
@@ -9633,7 +9634,16 @@ saveEditItem=function(id){if(ROLE!=='admin'){toast('仅督办管理人可修改�
 function r5BuildFeedbackRoute(it){
   const supervisor=mgrReviewer(it),projectLead=it?.projectLead||'',project=!!projectLead&&projectLead!==supervisor;
   return {schema:1,periodNo:Number(it.periodNo||1),assignmentVersion:it.assignmentVersion||0,reviewer:project?projectLead:supervisor,
-    role:project?'牵头高管':'分管领导',projectLead,supervisor,notifySupervisor:project&&!!supervisor};
+    role:project?'牵头高管':'分管领导',projectLead,supervisor,notifySupervisor:project&&!!supervisor&&supervisor!==bossOf()};
+}
+function r5ShouldNotifySupervisor(route){return !!route?.notifySupervisor&&!!route.supervisor&&route.supervisor!==bossOf();}
+function r5WithdrawDuplicateLeaderNotices(){
+  // Keep previously read receipts and approval snapshots; withdraw only the redundant pending read task.
+  ITEMS.forEach(it=>(it.noticeEvents||[]).forEach(n=>{
+    if(n.kind==='supervisor'&&n.to===bossOf()&&n.payload?.projectLead&&n.payload.projectLead!==n.to&&!n.readAt&&!n.withdrawnAt){
+      n.withdrawnAt=nowRecordTime();n.withdrawnReason='公司领导兼任分管高管，统一在督办管理人审核通过后阅知反馈';
+    }
+  }));
 }
 function r5FeedbackRoute(it,record){
   if(record)return record.reviewRoute||null;
@@ -9647,6 +9657,7 @@ function r5BindFeedbackRoute(it,retain=false){
   if(it.fbReport)it.fbReport.reviewRoute=JSON.parse(JSON.stringify(route));const h=wfCurrentRecord(it);if(h)h.reviewRoute=JSON.parse(JSON.stringify(route));return route;
 }
 function r5InitializeFeedbackRoutes(){
+  r5WithdrawDuplicateLeaderNotices();
   ITEMS.forEach(it=>{
     if(it.status==='已完成'||it.feedback!=='已反馈'||!['dept','mgr','admin'].includes(it.fbStage)||it.fbReport?.reviewRoute||wfCurrentRecord(it)?.reviewRoute)return;
     // Completed higher reviews are not retroactively reopened. Pending department/executive steps adopt the new route.
@@ -9656,7 +9667,7 @@ function r5InitializeFeedbackRoutes(){
       it.fbReviewRoute={...r5BuildFeedbackRoute(it),reviewer:actor||mgrReviewer(it),role:/牵头高管/.test(proved?.role||'')?'牵头高管':'分管领导',notifySupervisor:false};r5BindFeedbackRoute(it,true);return;
     }
     const route=r5BindFeedbackRoute(it);
-    if(route.notifySupervisor)(it.logs||=[]).push({t:nowRecordTime(),who:'系统',act:'反馈审核路径更新',txt:'本次尚未完成的高管审核交由牵头高管（'+who(route.reviewer)+'）处理；通过后发送职务分管高管（'+who(route.supervisor)+'）阅知。原提交及已完成审核记录保留。'});
+    if(r5ShouldNotifySupervisor(route))(it.logs||=[]).push({t:nowRecordTime(),who:'系统',act:'反馈审核路径更新',txt:'本次尚未完成的高管审核交由牵头高管（'+who(route.reviewer)+'）处理；通过后发送职务分管高管（'+who(route.supervisor)+'）阅知。原提交及已完成审核记录保留。'});
   });
 }
 fbMgrMe=function(it){return !!it&&it.status!=='已完成'&&it.fbStage==='mgr'&&r5FeedbackReviewer(it)===CUR&&['mgr','boss'].includes(ROLE);};
@@ -9682,9 +9693,9 @@ fbBackTargets=function(it,lvl){const all=[{v:'person',t:'落实人（'+who(actua
   return (lvl==='dept'?all.slice(0,1):lvl==='mgr'?all.slice(0,2):lvl==='admin'?all:[]).filter(target=>target.v!=='dept'||deptReviewer(it)!==actualExec(it));};
 fbBackTargetName=function(it,to){return to==='dept'?'部门负责人（'+who(deptReviewer(it))+'）':to==='mgr'?r5FeedbackRole(it)+'（'+who(r5FeedbackReviewer(it))+'）':'落实人（'+who(actualExec(it))+'）';};
 fbBackTargetPerson=function(it,to){return to==='dept'?deptReviewer(it):to==='mgr'?r5FeedbackReviewer(it):actualExec(it);};
-fbChainText=function(it){const parts=[];if(deptReviewer(it)&&deptReviewer(it)!==actualExec(it))parts.push('部门负责人（'+who(deptReviewer(it))+'）');const route=r5FeedbackRoute(it);parts.push(route.role+'（'+who(route.reviewer)+'）','督办管理人（'+who(adminOf())+'）');return parts.join(' → ')+(route.notifySupervisor?'；牵头高管通过后通知职务分管高管（'+who(route.supervisor)+'）阅知':'')+'；审核完成后发送公司领导阅知';};
+fbChainText=function(it){const parts=[];if(deptReviewer(it)&&deptReviewer(it)!==actualExec(it))parts.push('部门负责人（'+who(deptReviewer(it))+'）');const route=r5FeedbackRoute(it);parts.push(route.role+'（'+who(route.reviewer)+'）','督办管理人（'+who(adminOf())+'）');return parts.join(' → ')+(r5ShouldNotifySupervisor(route)?'；牵头高管通过后通知职务分管高管（'+who(route.supervisor)+'）阅知':'')+'；审核完成后发送公司领导阅知';};
 function r5ProjectReviewNotice(it){
-  const h=wfCurrentRecord(it),route=r5FeedbackRoute(it);if(!h||!route.notifySupervisor)return;
+  const h=wfCurrentRecord(it),route=r5FeedbackRoute(it);if(!h||!r5ShouldNotifySupervisor(route))return;
   const approved=(h.approvalRecords||[]).filter(a=>a.role==='牵头高管'&&a.action==='同意').length;
   if(!approved)return;
   r3Notice(it,'supervisor',h.recordId+':project-approval-'+approved,route.supervisor,'牵头高管审核通过，请阅知',
