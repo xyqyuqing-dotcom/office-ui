@@ -10,6 +10,7 @@
 <body class="detail-page">
   <header class="detail-header">
     <a class="detail-title" href="index.html">空调加时申请</a>
+    <div class="miniapp-capsule mobile-only" aria-hidden="true"><span class="miniapp-dots">•••</span><span class="miniapp-circle"></span></div>
     <div class="detail-header-actions">
       <a class="header-entry" href="index.html"><span class="apps-glyph">▦</span>事务中心</a>
       <button class="header-entry"><span class="gear-glyph">⚙</span>设置</button>
@@ -20,7 +21,7 @@
   </header>
 
   <main class="detail-layout" id="detailLayout">
-    <section class="detail-main" aria-label="申请内容">
+    <section class="detail-main" id="mobileApplicationContent" aria-label="申请内容">
       <div class="detail-scroll">
         <article class="request-summary panel-card">
           <div class="summary-heading">
@@ -28,7 +29,7 @@
             <div class="summary-actions">
               <button class="coord-button" data-toast="当前由协调员办理">协调员办理</button>
               <button class="more-button" id="moreButton" aria-label="更多操作" aria-expanded="false"><span></span><span></span><span></span></button>
-              <div class="more-menu" id="moreMenu" hidden><button data-toast="已准备打印申请单">打印</button><button data-toast="已复制申请链接">复制链接</button><button data-toast="已提醒当前办理人">催办</button></div>
+              <div class="more-menu" id="moreMenu" hidden><button data-toast="已准备打印申请单">打印</button><button data-toast="已复制申请链接">复制链接</button><button data-toast="已提醒当前办理人">催办</button><button class="mobile-only" data-toast="已记录错误报告">错误报告</button></div>
             </div>
           </div>
           <div class="summary-meta">
@@ -83,9 +84,19 @@
     </aside>
   </main>
 
+  <aside class="mobile-side-tools mobile-only" id="mobileSideTools" aria-label="流程工具">
+    <div class="mobile-side-actions" id="mobileSideActions">
+      <button id="mobileIntroTrigger" type="button" aria-controls="flowIntroPopover" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7v.2"/></svg><span>查看<br>详情</span></button>
+      <button type="button" data-toast="已暂不办理，可稍后继续"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 6v6l4 3"/></svg><span>暂不<br>办理</span></button>
+      <button type="button" data-toast="已记录错误报告"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3h11l3 3v18H5Z M8 7h7M8 11h5"/><circle cx="16" cy="17" r="5"/><path d="M16 14v3M16 19v.1"/></svg><span>错误<br>报告</span></button>
+    </div>
+    <button class="mobile-side-toggle" id="mobileSideToggle" type="button" aria-expanded="true" aria-controls="mobileSideActions" aria-label="收起流程工具"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 5 7 7-7 7M12 5l7 7-7 7"/></svg></button>
+  </aside>
+
   <footer class="action-bar">
     <div class="action-center">
       <button class="bottom-action" data-modal="commentModal"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 9h8M8 13h5"/></svg>评论</button>
+      <button class="bottom-action mobile-save-action mobile-only" id="mobileSaveButton" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3h12l3 3v15H4V3ZM8 3v7h8V3M8 21v-7h8v7"/></svg>保存</button>
       <button class="bottom-action submit-action" data-modal="submitModal"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/></svg>提交</button>
       <div class="flow-intro-control" id="flowIntroControl">
         <button class="bottom-action flow-intro-trigger" id="flowIntroTrigger" type="button" aria-controls="flowIntroPopover" aria-expanded="false">

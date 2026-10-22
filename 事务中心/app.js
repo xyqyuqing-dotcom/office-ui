@@ -289,28 +289,39 @@
     const rail = document.getElementById('categoryRail');
     const groupsRoot = document.getElementById('workflowGroups');
     if (!rail || !groupsRoot) return;
+    const mobileHome = window.matchMedia('(max-width: 650px)');
+
+    const favoritesKey = 'office-workflow-favorites-v1';
+    const favoriteGroup = workflowGroups.find(group => group.key === 'favorites');
+    let favorites = new Set(favoriteGroup.apps);
+    try {
+      const saved = JSON.parse(localStorage.getItem(favoritesKey));
+      if (Array.isArray(saved) && saved.every(name => typeof name === 'string')) favorites = new Set(saved);
+    } catch { /* Keep the sample favorites when browser storage is unavailable. */ }
+    favoriteGroup.apps = [...favorites];
 
     rail.innerHTML = categories.map(([name, count], index) => `
-      <button class="category-row${index === 1 ? ' active' : ''}" data-category="${name}" type="button">
+      <button class="category-row${index === (mobileHome.matches ? 0 : 1) ? ' active' : ''}" data-category="${name}" type="button">
         <span class="category-icon" aria-hidden="true">▤</span><span class="category-name">${name}</span><span class="category-count">${count}</span>
       </button>`).join('');
 
+    const renderCard = (name, group) => {
+      const label = escapeHtml(name);
+      const infoButton = workflowInfo[name]
+        ? `<button class="app-info-trigger" type="button" aria-label="查看${label}详情" aria-expanded="false" aria-controls="homeWorkflowInfo"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7.2"/><path d="M10 9v5M10 6v.2"/></svg></button>`
+        : '';
+      const saved = favorites.has(name);
+      return `<div class="app-link ${group.kind}" data-name="${label}" data-group="${escapeHtml(group.name)}">
+        <span class="app-icon">${icon}</span>
+        <div class="app-copy app-card-content"><div class="app-name-row"><a class="app-link-main" href="${name === '空调加时申请' ? 'application.html' : '#'}"><span class="app-label" title="${label}">${label}</span></a>${infoButton}</div>${workflowInfo[name]?.description?.trim() ? `<span class="app-description">${escapeHtml(workflowInfo[name].description)}</span>` : ''}</div>
+        <button class="app-favorite${saved ? ' is-favorite' : ''}" type="button" aria-label="${saved ? '取消收藏' : '收藏'}${label}" aria-pressed="${saved}" title="${saved ? '取消收藏' : '收藏'}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 2.8 5.7 6.3.9-4.55 4.43 1.07 6.27L12 17.34l-5.62 2.96 1.07-6.27L2.9 9.6l6.3-.9Z"/></svg></button>
+      </div>`;
+    };
     groupsRoot.innerHTML = workflowGroups.map(group => `
       <section class="workflow-group" id="group-${group.key}" data-group="${group.name}">
-        <h2 class="group-heading" tabindex="0" role="button" aria-expanded="true"><span>${group.name}</span><span class="chevron">⌄</span></h2>
-        <div class="app-grid">${group.apps.map(name => {
-          const target = name === '空调加时申请' ? 'application.html' : '#';
-          if (name === '空调加时申请') {
-            const info = workflowInfo[name];
-            return `<div class="app-link ${group.kind} app-link-info" data-name="${name}" data-group="${group.name}">
-              <a class="app-link-main" href="${target}" aria-describedby="airconInfo"><span class="app-icon">${icon}</span><span class="app-label">${name}</span></a>
-              <div class="app-info-popover" id="airconInfo" role="tooltip" hidden>${workflowInfoContent(info)}</div>
-            </div>`;
-          }
-          return `<a class="app-link ${group.kind}" href="${target}" data-name="${name}" data-group="${group.name}">
-            <span class="app-icon">${icon}</span><span class="app-label">${name}</span>
-          </a>`;
-        }).join('')}</div>
+        <h2 class="group-heading" tabindex="0" role="button" aria-expanded="true"><span>${group.name}</span><span class="chevron">⌄</span><span class="group-count">${group.apps.length}</span></h2>
+        <div class="app-grid">${group.apps.map(name => renderCard(name, group)).join('')}</div>
+        ${group.key === 'favorites' ? '<p class="favorites-empty" hidden>点击流程右侧的星标，添加常用事务</p>' : ''}
       </section>`).join('');
 
     const search = document.getElementById('workflowSearch');
@@ -327,7 +338,15 @@
         const hasItems = [...group.querySelectorAll('.app-link')].some(card => !card.hidden);
         group.hidden = !hasItems;
       });
-      if (empty) empty.hidden = total > 0;
+      const favoritesSection = document.getElementById('group-favorites');
+      if (!query && favorites.size === 0) {
+        favoritesSection.hidden = false;
+        favoritesSection.querySelector('.favorites-empty').hidden = false;
+      } else {
+        favoritesSection.querySelector('.favorites-empty').hidden = true;
+      }
+      if (empty) empty.hidden = total > 0 || (!query && favorites.size === 0);
+      closeInfo();
     };
     search?.addEventListener('input', applyFilter);
     document.getElementById('workflowSearchForm')?.addEventListener('submit', event => {
@@ -336,17 +355,52 @@
     });
 
     groupsRoot.addEventListener('click', event => {
+      const favoriteButton = event.target.closest('.app-favorite');
+      if (favoriteButton) {
+        const name = favoriteButton.closest('.app-link').dataset.name;
+        const saved = !favorites.has(name);
+        if (saved) favorites.add(name); else favorites.delete(name);
+        try { localStorage.setItem(favoritesKey, JSON.stringify([...favorites])); } catch { /* Changes remain available for this visit. */ }
+        favoriteGroup.apps = [...favorites];
+        closeInfo();
+        // Update matching cards in place so keyboard focus stays on the control.
+        groupsRoot.querySelectorAll('.app-link').forEach(card => {
+          if (card.dataset.name !== name) return;
+          const button = card.querySelector('.app-favorite');
+          button.classList.toggle('is-favorite', saved);
+          button.setAttribute('aria-pressed', String(saved));
+          button.setAttribute('aria-label', `${saved ? '取消收藏' : '收藏'}${name}`);
+          button.title = saved ? '取消收藏' : '收藏';
+        });
+        const fromFavorites = favoriteButton.closest('#group-favorites');
+        document.querySelector('#group-favorites .app-grid').innerHTML = favoriteGroup.apps.map(item => renderCard(item, favoriteGroup)).join('');
+        rail.querySelector('[data-category="我的收藏"] .category-count').textContent = favorites.size;
+        document.querySelector('#group-favorites .group-count').textContent = favorites.size;
+        applyFilter();
+        if (fromFavorites) {
+          const replacement = [...groupsRoot.querySelectorAll('.app-link')].find(card => card.dataset.name === name)?.querySelector('.app-favorite');
+          (replacement || document.querySelector('#group-favorites .group-heading')).focus();
+        }
+        toast(saved ? '已加入我的收藏' : '已取消收藏');
+        return;
+      }
+      const infoButton = event.target.closest('.app-info-trigger');
+      if (infoButton) {
+        if (mobileHome.matches && activeInfoButton === infoButton) closeInfo(); else openInfo(infoButton);
+        return;
+      }
       const heading = event.target.closest('.group-heading');
       if (heading) {
+        closeInfo();
         const group = heading.closest('.workflow-group');
         const collapsed = group.classList.toggle('collapsed');
         heading.setAttribute('aria-expanded', String(!collapsed));
         return;
       }
-      const link = event.target.closest('.app-link');
+      const link = event.target.closest('.app-link-main');
       if (link && link.getAttribute('href') === '#') {
         event.preventDefault();
-        toast(`${link.dataset.name} · 页面演示入口`);
+        toast(`${link.closest('.app-link').dataset.name} · 页面演示入口`);
       }
     });
     groupsRoot.addEventListener('keydown', event => {
@@ -356,43 +410,177 @@
       }
     });
 
-    const infoCard = groupsRoot.querySelector('.app-link-info');
-    const infoPopover = infoCard?.querySelector('.app-info-popover');
+    const infoPopover = document.createElement('section');
+    infoPopover.id = 'homeWorkflowInfo';
+    infoPopover.className = 'app-info-popover';
+    infoPopover.setAttribute('aria-label', '流程详情');
+    infoPopover.hidden = true;
+    document.body.append(infoPopover);
+    const infoBackdrop = document.createElement('div');
+    infoBackdrop.className = 'mobile-sheet-backdrop';
+    infoBackdrop.hidden = true;
+    document.body.append(infoBackdrop);
+    let activeInfoButton = null;
+    let infoCloseTimer;
+    let restoringInfoFocus = false;
+    const cancelInfoClose = () => clearTimeout(infoCloseTimer);
+    const scheduleInfoClose = () => {
+      if (mobileHome.matches) return;
+      cancelInfoClose();
+      infoCloseTimer = setTimeout(closeInfo, 200);
+    };
     const infoViewport = groupsRoot.closest('.main-shell');
     const positionInfoPopover = () => {
-      if (!infoCard || !infoPopover || infoPopover.hidden) return;
-      const cardRect = infoCard.getBoundingClientRect();
-      const viewportRect = infoViewport?.getBoundingClientRect() || { top: 0, bottom: window.innerHeight };
-      const spaceBelow = viewportRect.bottom - cardRect.bottom;
-      const popoverHeight = infoPopover.getBoundingClientRect().height;
-      infoCard.classList.toggle('info-above', spaceBelow < popoverHeight + 12);
+      if (!activeInfoButton || infoPopover.hidden) return;
+      infoBackdrop.hidden = !mobileHome.matches;
+      document.body.classList.toggle('mobile-sheet-open', mobileHome.matches);
+      infoPopover.setAttribute('role', mobileHome.matches ? 'dialog' : 'region');
+      if (mobileHome.matches) {
+        infoPopover.setAttribute('aria-modal', 'true');
+        return;
+      }
+      infoPopover.removeAttribute('aria-modal');
+      const cardRect = activeInfoButton.closest('.app-link').getBoundingClientRect();
+      const viewportRect = infoViewport.getBoundingClientRect();
+      if (cardRect.bottom <= viewportRect.top || cardRect.top >= Math.min(viewportRect.bottom, window.innerHeight)) { closeInfo(); return; }
+      infoPopover.style.maxHeight = '';
+      const height = infoPopover.getBoundingClientRect().height;
+      const below = window.innerHeight - cardRect.bottom - 18;
+      const above = cardRect.top - 18;
+      const opensAbove = below < Math.min(height, 160) && above > below;
+      const available = Math.max(60, opensAbove ? above : below);
+      infoPopover.style.maxHeight = `${available}px`;
+      infoPopover.dataset.placement = opensAbove ? 'above' : 'below';
+      infoPopover.style.left = `${Math.max(12, Math.min(cardRect.left, window.innerWidth - infoPopover.offsetWidth - 12))}px`;
+      infoPopover.style.top = `${opensAbove ? cardRect.top - infoPopover.offsetHeight - 6 : cardRect.bottom + 6}px`;
     };
-    const openInfo = () => {
-      if (!infoCard || !infoPopover) return;
-      infoCard.classList.add('info-open');
+    const openInfo = button => {
+      cancelInfoClose();
+      if (activeInfoButton === button) return;
+      closeInfo();
+      activeInfoButton = button;
+      const card = button.closest('.app-link');
+      const name = card.dataset.name;
+      infoPopover.innerHTML = `<div class="app-info-heading"><strong>${escapeHtml(name)}</strong><button class="app-info-close" type="button" aria-label="关闭流程详情">×</button></div>${workflowInfoContent(workflowInfo[name])}`;
+      button.setAttribute('aria-expanded', 'true');
+      card.classList.add('info-open');
       infoPopover.hidden = false;
       positionInfoPopover();
+      if (mobileHome.matches) infoPopover.querySelector('.app-info-close').focus();
     };
     const closeInfo = () => {
-      if (!infoCard || !infoPopover) return;
-      infoCard.classList.remove('info-open');
-      infoCard.classList.remove('info-above');
+      cancelInfoClose();
+      activeInfoButton?.setAttribute('aria-expanded', 'false');
+      activeInfoButton?.closest('.app-link').classList.remove('info-open');
+      activeInfoButton = null;
       infoPopover.hidden = true;
+      infoBackdrop.hidden = true;
+      document.body.classList.remove('mobile-sheet-open');
     };
-    infoCard?.addEventListener('pointerenter', openInfo);
-    infoCard?.addEventListener('pointerleave', closeInfo);
-    infoCard?.addEventListener('focusin', openInfo);
-    infoCard?.addEventListener('focusout', event => {
-      if (!infoCard.contains(event.relatedTarget)) closeInfo();
+    infoBackdrop.addEventListener('click', () => {
+      const button = activeInfoButton;
+      closeInfo();
+      button?.focus();
+    });
+    groupsRoot.addEventListener('pointerover', event => {
+      const button = event.target.closest('.app-info-trigger');
+      if (button && !mobileHome.matches && event.pointerType !== 'touch' && !button.contains(event.relatedTarget)) openInfo(button);
+    });
+    groupsRoot.addEventListener('pointerout', event => {
+      const button = event.target.closest('.app-info-trigger');
+      if (button && button === activeInfoButton && !button.contains(event.relatedTarget) && !infoPopover.contains(event.relatedTarget)) scheduleInfoClose();
+    });
+    groupsRoot.addEventListener('focusin', event => {
+      const button = event.target.closest('.app-info-trigger');
+      if (button && !mobileHome.matches && !restoringInfoFocus) openInfo(button);
+    });
+    groupsRoot.addEventListener('focusout', event => {
+      if (event.target === activeInfoButton && !infoPopover.contains(event.relatedTarget)) scheduleInfoClose();
+    });
+    infoPopover.addEventListener('pointerenter', cancelInfoClose);
+    infoPopover.addEventListener('pointerleave', event => {
+      if (!activeInfoButton?.contains(event.relatedTarget)) scheduleInfoClose();
+    });
+    infoPopover.addEventListener('focusin', cancelInfoClose);
+    infoPopover.addEventListener('focusout', event => {
+      if (!infoPopover.contains(event.relatedTarget) && !activeInfoButton?.contains(event.relatedTarget)) scheduleInfoClose();
+    });
+    infoPopover.addEventListener('click', event => {
+      if (event.target.closest('.app-info-close')) {
+        const button = activeInfoButton;
+        closeInfo();
+        restoringInfoFocus = true;
+        button?.focus();
+        restoringInfoFocus = false;
+      }
     });
     infoViewport?.addEventListener('scroll', positionInfoPopover);
     window.addEventListener('resize', positionInfoPopover);
     document.addEventListener('click', event => {
-      if (infoCard && !infoCard.contains(event.target)) closeInfo();
+      if (!event.target.closest('.app-info-trigger') && !infoPopover.contains(event.target)) closeInfo();
     });
     document.addEventListener('keydown', event => {
-      if (event.key === 'Escape' && infoCard?.classList.contains('info-open')) {
+      if (event.key === 'Tab' && activeInfoButton && mobileHome.matches) {
+        event.preventDefault();
+        infoPopover.querySelector('.app-info-close').focus();
+      }
+      if (event.key === 'Escape' && activeInfoButton) {
+        const button = activeInfoButton;
         closeInfo();
+        restoringInfoFocus = true;
+        button.focus();
+        restoringInfoFocus = false;
+      }
+    });
+    rail.querySelector('[data-category="我的收藏"] .category-count').textContent = favorites.size;
+    document.querySelector('#group-favorites .group-count').textContent = favorites.size;
+    applyFilter();
+
+    const searchToggle = document.getElementById('mobileSearchToggle');
+    searchToggle?.addEventListener('click', () => {
+      const open = document.body.classList.toggle('mobile-search-open');
+      searchToggle.setAttribute('aria-expanded', String(open));
+      if (open) { infoViewport.scrollTop = 0; search?.focus(); }
+      else { search.value = ''; applyFilter(); }
+    });
+    const categorySheet = document.getElementById('mobileCategorySheet');
+    const categoryBackdrop = document.getElementById('mobileCategoryBackdrop');
+    const categoryToggle = document.getElementById('mobileCategoryToggle');
+    const closeCategories = () => {
+      categorySheet.hidden = true;
+      categoryBackdrop.hidden = true;
+      categoryToggle.setAttribute('aria-expanded', 'false');
+      document.body.classList.remove('mobile-sheet-open');
+    };
+    categoryToggle?.addEventListener('click', () => {
+      closeInfo();
+      document.getElementById('mobileCategoryOptions').innerHTML = [...rail.querySelectorAll('.category-row')].map(row => `<button type="button" data-category="${escapeHtml(row.dataset.category)}" class="${row.classList.contains('active') ? 'active' : ''}"><span>${escapeHtml(row.dataset.category)}</span><small>${row.querySelector('.category-count').textContent}</small></button>`).join('');
+      categorySheet.hidden = false;
+      categoryBackdrop.hidden = false;
+      document.body.classList.add('mobile-sheet-open');
+      categoryToggle.setAttribute('aria-expanded', 'true');
+      document.getElementById('mobileCategoryClose').focus();
+    });
+    categoryBackdrop?.addEventListener('click', closeCategories);
+    mobileHome.addEventListener('change', () => { closeInfo(); closeCategories(); });
+    document.getElementById('mobileCategoryClose')?.addEventListener('click', () => { closeCategories(); categoryToggle.focus(); });
+    categorySheet?.addEventListener('click', event => {
+      const button = event.target.closest('[data-category]');
+      if (!button) return;
+      closeCategories();
+      const row = [...rail.querySelectorAll('.category-row')].find(item => item.dataset.category === button.dataset.category);
+      row?.click();
+      row?.focus();
+      if (row) rail.scrollTo({left:row.offsetLeft - 16, behavior:'smooth'});
+    });
+    document.addEventListener('keydown', event => {
+      if (categorySheet.hidden) return;
+      if (event.key === 'Escape') { closeCategories(); categoryToggle.focus(); }
+      if (event.key === 'Tab') {
+        const controls = [...categorySheet.querySelectorAll('button')];
+        const first = controls[0], last = controls[controls.length - 1];
+        if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+        else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
       }
     });
 
@@ -429,26 +617,95 @@
     const introControl = document.getElementById('flowIntroControl');
     const introTrigger = document.getElementById('flowIntroTrigger');
     const introPopover = document.getElementById('flowIntroPopover');
+    const mobileIntroTrigger = document.getElementById('mobileIntroTrigger');
+    const mobileDetail = window.matchMedia('(max-width: 650px)');
+    const introBackdrop = document.createElement('div');
+    introBackdrop.className = 'mobile-sheet-backdrop';
+    introBackdrop.hidden = true;
+    if (introPopover) document.body.append(introBackdrop);
     const closeWorkflowIntro = () => {
       if (!introTrigger || !introPopover) return;
       introPopover.hidden = true;
       introTrigger.setAttribute('aria-expanded', 'false');
+      mobileIntroTrigger?.setAttribute('aria-expanded', 'false');
+      introBackdrop.hidden = true;
+      document.body.classList.remove('mobile-intro-open');
     };
-    introTrigger?.addEventListener('click', () => {
+    const toggleWorkflowIntro = () => {
       if (!introPopover) return;
       const open = introPopover.hidden;
       introPopover.hidden = !open;
       introTrigger.setAttribute('aria-expanded', String(open));
-    });
+      mobileIntroTrigger?.setAttribute('aria-expanded', String(open));
+      introBackdrop.hidden = !(open && mobileDetail.matches);
+      introPopover.setAttribute('aria-modal', String(open && mobileDetail.matches));
+      document.body.classList.toggle('mobile-intro-open', open && mobileDetail.matches);
+      if (open && mobileDetail.matches) document.getElementById('mobileIntroClose')?.focus();
+    };
+    introTrigger?.addEventListener('click', toggleWorkflowIntro);
+    mobileIntroTrigger?.addEventListener('click', toggleWorkflowIntro);
+    introBackdrop.addEventListener('click', closeWorkflowIntro);
+    if (introPopover) {
+      const introClose = document.createElement('button');
+      introClose.id = 'mobileIntroClose';
+      introClose.className = 'mobile-only mobile-intro-close';
+      introClose.type = 'button';
+      introClose.setAttribute('aria-label', '关闭流程介绍');
+      introClose.textContent = '×';
+      introPopover.querySelector('.flow-intro-heading').append(introClose);
+      introClose.addEventListener('click', () => { closeWorkflowIntro(); mobileIntroTrigger?.focus(); });
+      const placeIntro = () => {
+        closeWorkflowIntro();
+        (mobileDetail.matches ? document.body : introControl).append(introPopover);
+      };
+      placeIntro();
+      mobileDetail.addEventListener('change', placeIntro);
+    }
     document.addEventListener('click', event => {
-      if (introControl && !introControl.contains(event.target)) closeWorkflowIntro();
+      if (introControl && !introControl.contains(event.target) && !introPopover?.contains(event.target) && !mobileIntroTrigger?.contains(event.target)) closeWorkflowIntro();
     });
     document.addEventListener('keydown', event => {
       if (event.key === 'Escape' && introPopover && !introPopover.hidden) {
         closeWorkflowIntro();
-        introTrigger?.focus();
+        (mobileDetail.matches ? mobileIntroTrigger : introTrigger)?.focus();
       }
+      if (event.key === 'Tab' && mobileDetail.matches && introPopover && !introPopover.hidden) { event.preventDefault(); document.getElementById('mobileIntroClose')?.focus(); }
     });
+
+    const sideTools = document.getElementById('mobileSideTools');
+    const sideToggle = document.getElementById('mobileSideToggle');
+    sideToggle?.addEventListener('click', () => {
+      const collapsed = sideTools.classList.toggle('is-collapsed');
+      sideToggle.setAttribute('aria-expanded', String(!collapsed));
+      sideToggle.setAttribute('aria-label', collapsed ? '展开流程工具' : '收起流程工具');
+    });
+    const noticeCard = document.querySelector('.notice-content')?.closest('.form-card');
+    if (noticeCard) {
+      noticeCard.classList.add('mobile-notice-card');
+      const noticeToggle = document.createElement('button');
+      noticeToggle.type = 'button';
+      noticeToggle.className = 'mobile-only mobile-notice-toggle';
+      noticeToggle.setAttribute('aria-expanded', 'false');
+      noticeToggle.textContent = '展开加时说明 ⌄';
+      noticeCard.append(noticeToggle);
+      noticeToggle.addEventListener('click', () => {
+        const open = noticeCard.classList.toggle('notice-expanded');
+        noticeToggle.setAttribute('aria-expanded', String(open));
+        noticeToggle.textContent = open ? '收起加时说明 ⌃' : '展开加时说明 ⌄';
+      });
+    }
+    document.getElementById('mobileSaveButton')?.addEventListener('click', () => {
+      try {
+        localStorage.setItem('office-aircon-draft-v1', JSON.stringify({reason:document.getElementById('reason').value}));
+        toast('草稿已保存');
+      } catch { toast('当前浏览器无法保存草稿，请稍后重试'); }
+    });
+    if (workflowIntro) {
+      try {
+        const draft = JSON.parse(localStorage.getItem('office-aircon-draft-v1'));
+        if (typeof draft?.reason === 'string') document.getElementById('reason').value = draft.reason;
+      } catch { /* Start with the sample application if no saved draft is available. */ }
+    }
 
     const reason = document.getElementById('reason');
     const count = document.getElementById('charCount');
