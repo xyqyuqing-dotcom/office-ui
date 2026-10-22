@@ -261,10 +261,6 @@ button,input,textarea,select{font:inherit}button{color:inherit;cursor:pointer}a{
 .consensus-heading{display:flex;align-items:center;justify-content:space-between;gap:10px}
 .order-node .consensus-heading .step-name{margin:0;font-size:15px;font-weight:500}
 .compact-consensus .consensus-heading{margin-bottom:8px}
-.consensus-state{display:inline-flex;align-items:center;gap:5px;padding:3px 7px;border-radius:10px;font-size:11px;white-space:nowrap}
-.consensus-state i{width:6px;height:6px;border-radius:50%;background:currentColor}
-.consensus-state.in-progress{background:#fff7e8;color:#d98a17}
-.consensus-state.complete{background:#eef9f6;color:#199a83}
 .consensus-summary{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:8px}
 .consensus-progress{color:#69727e;font-size:12px;white-space:nowrap}
 .consensus-progress strong{color:#303a46;font-weight:600}

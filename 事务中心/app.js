@@ -61,18 +61,18 @@
 
   const approvalNodes = [
     {
-      id: 1, title: '起草', overallStatus: '已提交', processedCount: 1,
+      id: 1, title: '起草', processedCount: 1,
       reviewers: [reviewer('draft', '谢雨晴', 'submitted', '10-13 16:55', { avatarClass: 'avatar-she' })]
     },
     {
-      id: 2, title: '主管审批', overallStatus: '已通过', processedCount: 2,
+      id: 2, title: '主管审批', processedCount: 2,
       reviewers: [
         reviewer('supervisor-yang', '杨艳英', 'approved', '10-13 16:56', { avatarClass: 'avatar-yang', auditOpinion: '已核对申请时段。' }),
         reviewer('supervisor-02', '审批人02', 'approved', '10-13 16:57', { auditOpinion: '审批通过。' })
       ]
     },
     {
-      id: 3, title: '综合部负责人审批', overallStatus: '进行中', processedCount: 3,
+      id: 3, title: '综合部负责人审批', processedCount: 3,
       reviewers: [
         reviewer('admin-01', '会签人01', 'approved', '10-13 16:58', { auditOpinion: '已确认申请内容。' }),
         reviewer('admin-02', '会签人02', 'approved', '10-13 16:59'),
@@ -82,7 +82,7 @@
       ]
     },
     {
-      id: 5, title: '行政盖章', overallStatus: '进行中', processedCount: 20,
+      id: 5, title: '行政盖章', processedCount: 20,
       reviewers: Array.from({ length: 24 }, (_, index) => {
         const number = String(index + 1).padStart(2, '0');
         const status = index < 19 ? 'approved' : index === 19 ? 'returned' : 'pending';
@@ -172,19 +172,20 @@
     return `<div class="reviewer-audit-opinion"><strong>审核意见</strong><span>${escapeHtml(person.auditOpinion)}</span></div>`;
   }
 
-  function renderReviewerRow(person, index, autoExpand = false) {
+  function renderReviewerRow(person, index) {
     const state = approvalStatus[person.status] || approvalStatus.pending;
     const canExpand = Boolean(person.auditOpinion) && person.status !== 'pending';
-    const defaultOpen = canExpand && (person.status === 'returned' || autoExpand);
-    const canToggle = canExpand && !autoExpand;
+    const defaultOpen = canExpand;
+    const canToggle = canExpand;
+    const detailId = `reviewer-opinion-${person.id}`;
     const rowTime = person.time ? `<time>${escapeHtml(person.time)}</time>` : '<span class="reviewer-no-time"></span>';
     const rowContent = `${reviewerAvatar(person, 'reviewer-avatar')}<span class="reviewer-name">${escapeHtml(person.name)}</span>
       <span class="reviewer-status ${statusClass(person.status)}"><i>${state.icon}</i>${state.label}</span>${rowTime}<span class="reviewer-chevron ${canToggle ? 'is-toggle' : ''}" ${canToggle ? '' : 'aria-hidden="true"'}>${canToggle ? '⌄' : ''}</span>`;
     return `<li class="reviewer-item ${defaultOpen ? 'detail-open' : ''}" ${index >= 10 ? 'data-overflow="true" hidden' : ''}>
       ${canToggle
-        ? `<button class="reviewer-toggle ${defaultOpen ? 'is-open' : ''}" type="button" data-action="toggle-reviewer" data-default-open="${defaultOpen}" aria-expanded="${defaultOpen}">${rowContent}</button>`
+        ? `<button class="reviewer-toggle ${defaultOpen ? 'is-open' : ''}" type="button" data-action="toggle-reviewer" aria-expanded="${defaultOpen}" aria-controls="${detailId}">${rowContent}</button>`
         : `<div class="reviewer-line">${rowContent}</div>`}
-      ${canExpand && (defaultOpen || canToggle) ? `<div class="reviewer-detail-wrap" ${defaultOpen ? '' : 'hidden'}>${renderReviewerDetail(person)}</div>` : ''}
+      ${canExpand ? `<div class="reviewer-detail-wrap" id="${detailId}">${renderReviewerDetail(person)}</div>` : ''}
     </li>`;
   }
 
@@ -193,19 +194,18 @@
     const compact = reviewers.length < 4;
     const processed = node.processedCount ?? reviewers.filter(person => person.status !== 'pending').length;
     const exceptions = reviewers.filter(person => ['returned', 'rejected'].includes(person.status));
-    const stateClass = node.overallStatus === '进行中' ? 'in-progress' : 'complete';
     const avatarList = reviewers.slice(0, 5).map(person => `<span class="consensus-avatar ${person.avatarClass}">${escapeHtml(person.avatarText)}</span>`).join('');
     const overflow = reviewers.length > 5 ? `<span class="consensus-avatar-overflow">+${reviewers.length - 5}</span>` : '';
     const alert = exceptions.length
       ? `<div class="consensus-alert"><span aria-hidden="true">!</span>${exceptions.length}人${exceptions.some(person => person.status === 'rejected') ? '拒绝' : '退回'}，请关注</div>`
       : '';
-    const rows = reviewers.map((person, index) => renderReviewerRow(person, index, compact)).join('');
+    const rows = reviewers.map((person, index) => renderReviewerRow(person, index)).join('');
     const more = reviewers.length > 10
       ? `<button class="reviewer-more" type="button" data-action="toggle-all-reviewers" aria-expanded="false">查看全部（共${reviewers.length}人）</button>`
       : '';
     return `<li class="timeline-item consensus-item" data-kind="approval" data-node="${node.id}">
       <span class="timeline-dot"></span><div class="timeline-copy"><section class="consensus-node ${compact ? 'compact-consensus' : ''}">
-        <div class="consensus-heading"><span class="step-name">${escapeHtml(node.title)}</span><span class="consensus-state ${stateClass}"><i></i>${escapeHtml(node.overallStatus)}</span></div>
+        <div class="consensus-heading"><span class="step-name">${escapeHtml(node.title)}</span></div>
         ${compact
           ? `<div class="consensus-details compact-details"><ul class="reviewer-list">${rows}</ul></div>`
           : `<div class="consensus-summary"><span class="consensus-progress">已处理 <strong>${processed}</strong>/${reviewers.length} 人</span><div class="consensus-avatars" aria-label="审批人头像摘要">${avatarList}${overflow}</div></div>
@@ -770,19 +770,11 @@
       if (reviewerToggle) {
         const reviewerRow = reviewerToggle.closest('.reviewer-item');
         const shouldOpen = reviewerToggle.getAttribute('aria-expanded') !== 'true';
-        timeline.querySelectorAll('.reviewer-item').forEach(item => {
-          item.classList.remove('detail-open');
-          const toggle = item.querySelector('.reviewer-toggle');
-          toggle?.setAttribute('aria-expanded', 'false');
-          toggle?.classList.remove('is-open');
-          const detail = item.querySelector('.reviewer-detail-wrap');
-          if (detail) detail.hidden = true;
-        });
-        if (shouldOpen && reviewerRow) {
-          reviewerRow.classList.add('detail-open');
-          reviewerToggle.setAttribute('aria-expanded', 'true');
-          reviewerToggle.classList.add('is-open');
-          reviewerRow.querySelector('.reviewer-detail-wrap').hidden = false;
+        if (reviewerRow) {
+          reviewerRow.classList.toggle('detail-open', shouldOpen);
+          reviewerToggle.setAttribute('aria-expanded', String(shouldOpen));
+          reviewerToggle.classList.toggle('is-open', shouldOpen);
+          reviewerRow.querySelector('.reviewer-detail-wrap').hidden = !shouldOpen;
         }
         return;
       }
@@ -815,15 +807,6 @@
             moreButton.textContent = '查看全部（共' + group.querySelectorAll('.reviewer-item').length + '人）';
           }
           group.querySelectorAll('[data-overflow]').forEach(item => { item.hidden = true; });
-          group.querySelectorAll('.reviewer-item').forEach(item => {
-            const toggle = item.querySelector('.reviewer-toggle');
-            const defaultOpen = toggle?.dataset.defaultOpen === 'true';
-            item.classList.toggle('detail-open', defaultOpen);
-            if (toggle) toggle.setAttribute('aria-expanded', String(defaultOpen));
-            toggle?.classList.toggle('is-open', defaultOpen);
-            const detail = item.querySelector('.reviewer-detail-wrap');
-            if (detail) detail.hidden = !defaultOpen;
-          });
         }
       }
     });
