@@ -2860,7 +2860,7 @@ function renderTodo(){
           </span>
           <span class="rv-task-time"><i class="far fa-clock"></i> ${wfTaskTime(it,tab)}</span>
         </div>
-        ${body}
+        ${p22TaskBody(it,tab,body)}
       </div>
       ${ops}
     </div>`;
@@ -7515,8 +7515,8 @@ renderNewTodo=function(){
  ${nvSection('nvResponsibility','02','责任安排','',r3ResponsibilityFields())}
  ${nvSection('nvTime','03','时间安排','完成期限与反馈日期分别设置',`<div class="ntv-grid">
  ${nvField('deadline','计划完成时间<em>*</em>',nvInput('deadline','选择完成日期','date')+'<label class="ntv-hint" style="font-weight:400;display:flex;gap:7px;align-items:center"><input id="nvOngoing" type="checkbox" onchange="nvDateMode(this.checked);nvRefresh();nvSnapshot()"> 常态化推进，无固定完成日期</label>')}
- ${nvField('cycle','反馈周期<em>*</em>','<input id="f_cycle" list="nvCycles" placeholder="选择或输入反馈周期"><datalist id="nvCycles"><option>每周一反馈</option><option>每双周一反馈</option><option>每月15日反馈</option><option>每季度反馈</option></datalist>')}
- ${nvField('first','首次反馈日期<em>*</em>',nvInput('first','','date'))}
+ ${nvField('cycle','反馈周期<em>*</em>','<select id="f_cycle" onchange="p22FirstDateChanged()"><option value="">选择反馈周期</option><option>每周五反馈</option><option>每双周五反馈</option><option>每月最后一个周五反馈</option></select>')}
+ ${nvField('first','首次反馈日期<em>*</em>',nvInput('first','','date').replace('<input ','<input onchange="p22FirstDateChanged()" '))}
  <div class="ntv-full ntv-path" id="nvTimeHint" style="margin-top:0">请先确定计划完成时间和首次反馈日期。</div></div>
  <details class="ntv-options"><summary>提出日期与性质标签（选填）</summary><div class="ntv-grid nv-home-extra">${nvField('raised','提出日期',nvInput('raised','','date'))}${nvField('tags','性质标签',nvChecks('tags',SUPERVISION_TAGS))}</div></details>`)}
  </div><aside class="ntv-aside"><section class="ntv-card"><div class="ntv-head"><div><h2>辅助填写</h2><p>已有材料？减少重复录入</p></div></div><div class="ntv-body" style="padding-top:2px;padding-bottom:2px">
@@ -7569,7 +7569,7 @@ function nbPending(){return (NV_BATCH?.rows||[]).filter(r=>!r.itemId);}
 function nbSelected(){return nbPending().filter(r=>r.selected);}
 function nbErrors(r){const e=nvErrors(r.d);if(r.d.deadline&&r.d.deadline!=='常态化推进'&&!aiValidDate(r.d.deadline))e.deadline='请选择有效日期，或填写常态化推进';return e;}
 function nvImport(batchId){if(ROLE!=='admin')return;nvSnapshot();const store=nvLoadStore();let batch=batchId?nbSavedBatches().find(b=>b.id===batchId):store.batches?.[CUR];if(batchId&&!batch){toast('未找到这批导入记录');return;}NV_BATCH=nbReconcile(batch||null);NB_REMOVED=null;if(NV_BATCH)nbSave();if(!$('#nvMain'))renderNewTodo();$('#nvMain').hidden=true;$('#nvToolPage').hidden=false;nbRender();window.scrollTo({top:0});}
-const NB_CYCLES=[...new Set([...IO_CYCLES,'每月15日反馈','半年度反馈','每年反馈'])];
+const NB_CYCLES=['每周五反馈','每双周五反馈','每月最后一个周五反馈'];
 function nbCycleOptions(value=''){return NB_CYCLES.includes(value)||!value?NB_CYCLES:[...NB_CYCLES,[value,value+'（文件识别）']];}
 function nbDeadlineField(r){const ongoing=r.d.deadline==='常态化推进';return nbField(r,'deadline','计划完成时间','date')+`<label class="nb-ongoing"><input type="checkbox" aria-label="第 ${NV_BATCH.rows.indexOf(r)+1} 条常态化推进" ${ongoing?'checked':''} onchange="nbSetOngoing('${r.id}',this.checked)">常态化推进，无固定日期</label>`;}
 function nbSetOngoing(id,on){const r=NV_BATCH.rows.find(r=>r.id===id);if(!r)return;r.d.deadline=on?'常态化推进':'';nbSave();nbRender();}
@@ -7950,6 +7950,8 @@ body:has(#nvMain:not([hidden])) .content{padding-top:22px}
 .r3-comment-card .cmt .who,.r3-comment-card .reply-hd b{font-size:12px}.r3-comment-card .cmt .ft{font-size:11px}
 .r3-comment-card .cmt-main,.r3-comment-card .cmt.dsp-cmt .cmt-main{background:transparent;border:0;padding:0;box-shadow:none;border-radius:0}
 @media(max-width:650px){.r3-field-row{grid-template-columns:1fr}.r3-notice-card{flex-wrap:wrap}.r3-notice-card>.btn{margin-left:25px}}
+
+.p22-detail-periods{padding:14px 18px;margin-bottom:14px}.p22-period-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}.p22-period-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:6px}.p22-period-head>.btn{margin-left:auto}.p22-period-box{margin-top:10px;padding:10px 13px;border:1px solid var(--line);background:var(--bg);border-radius:8px;font-size:13px;line-height:1.8}.p22-overdue{color:var(--red)}.p22-manager{font-size:13px}.p22-manager label{display:flex;flex-direction:column;gap:7px;margin-bottom:12px}.p22-manager input:not([type=checkbox]),.p22-manager select{padding:9px 11px;border:1px solid var(--line);border-radius:7px;font-size:13px}.p22-manager-tools{display:flex;gap:10px;align-items:center;margin-bottom:14px}.p22-manager-tools>select{flex:1;min-width:0}.p22-table-wrap{max-height:350px;overflow:auto}.p22-table{width:100%;border-collapse:collapse;font-size:12px}.p22-table th,.p22-table td{padding:9px 8px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}.p22-table th{position:sticky;top:0;background:#fff}.p22-manager-edit{display:grid;grid-template-columns:1fr 2fr;gap:12px;margin-top:16px}.p22-new-scope{max-height:280px;overflow:auto}.p22-new-scope>label{display:flex;flex-direction:row;align-items:center;padding:5px 0}.wf-task-action-label{white-space:nowrap}@media(max-width:650px){.p22-manager-edit{grid-template-columns:1fr}.p22-manager-tools{flex-wrap:wrap}}
 
 </style>
 <script>
@@ -9702,6 +9704,168 @@ function r5ProjectReviewNotice(it){
     '第 '+(it.periodNo||1)+' 期反馈已由牵头高管（'+who(route.reviewer)+'）审核通过，已流转督办管理人审核。阅知不影响审批流转。',
     {periodNo:it.periodNo,version:h.version,projectLead:route.reviewer,supervisor:route.supervisor,txt:wfRecordContent(h),np:wfRecordPlan(h),summary:h.summary?.text||'',taskProgress:h.taskProgress??null});
 }
+
+/* Independent feedback periods. Legacy item fields are the latest-period projection. */
+const P22_FIELDS=['periodNo','nextDue','lastPlan','nextPlan','firstRound','feedback','fbStage','fbReport','feedbackReturn','reassignFeedbackReset','fbReviewRoute','fbSummary','currentSummary','lastReport','lastReportAt','feedbackArchive'];
+const P22_CYCLES=['每周五反馈','每双周五反馈','每月最后一个周五反馈'];
+let P22_ACTIVE=null,P22_UI=null,P22_SWEEP=false,P22_PENDING=null;
+const p22Copy=v=>v===undefined?undefined:JSON.parse(JSON.stringify(v));
+function p22Kind(c){return /季度|半年|每年|年度/.test(c||'')?'':/月/.test(c||'')?'month':/双周|两周/.test(c||'')?'fortnight':/周/.test(c||'')?'week':'';}
+function p22Label(c){return ({week:P22_CYCLES[0],fortnight:P22_CYCLES[1],month:P22_CYCLES[2]})[p22Kind(c)]||c;}
+function p22Friday(value){const d=rvDate(value);if(!d)return '';d.setDate(d.getDate()+(5-d.getDay()+7)%7);return rvDateText(d);}
+function p22MonthFriday(year,month){const d=new Date(year,month+1,0);d.setDate(d.getDate()-(d.getDay()-5+7)%7);return rvDateText(d);}
+function p22Next(kind,due){const d=rvDate(due);if(!d)return '';if(kind==='month')return p22MonthFriday(d.getFullYear(),d.getMonth()+1);d.setDate(d.getDate()+(kind==='fortnight'?14:7));return p22Friday(rvDateText(d));}
+function p22OpenDate(kind,due){const d=rvDate(due);if(!d)return '';if(kind==='month')d.setDate(1);else d.setDate(d.getDate()-(kind==='fortnight'?11:4));return rvDateText(d);}
+function p22Capture(it){return Object.fromEntries(P22_FIELDS.map(k=>[k,p22Copy(it[k])]));}
+function p22Apply(it,data){P22_FIELDS.forEach(k=>{if(data[k]===undefined)delete it[k];else it[k]=p22Copy(data[k]);});}
+function p22Latest(it){return (it.feedbackPeriods||[]).slice().sort((a,b)=>b.no-a.no)[0];}
+function p22CurrentSlot(it){return (it.feedbackPeriods||[]).find(p=>p.no===Number(it.periodNo||1));}
+function p22CaptureActive(it){const p=p22CurrentSlot(it);if(p&&(!P22_ACTIVE||P22_ACTIVE.id===it.id&&P22_ACTIVE.no===p.no))p.data=p22Capture(it);}
+function p22Ensure(it,fresh=false){
+  if(!it||it.feedbackPeriods?.length)return;
+  const no=Number(it.periodNo||1),due=rvDate(it.nextDue)?it.nextDue:'';
+  it.feedbackPeriods=[{no,originalDue:due,kind:'regular',createdAt:nowRecordTime(),cancelledAt:'',data:p22Capture(it)}];
+  const kind=p22Kind(it.cycle);let next=due&&kind?p22Next(kind,due):'';
+  // Start legacy schedules prospectively; existing due dates, reports and in-flight reviews stay intact.
+  if(!fresh){let guard=0;while(next&&p22OpenDate(kind,next)<=todayDateOnly()&&guard++<500)next=p22Next(kind,next);}
+  it.feedbackSchedule={schema:1,kind,nextRegularDue:next,activatedAt:todayDateOnly(),baselineProgress:typeof it.taskProgress==='number'&&!it.taskProgressDemo?it.taskProgress:null};
+}
+function p22Aggregate(it){
+  const records=(it.feedbackHistory||[]).filter(h=>!h.reassignStatus&&typeof h.taskProgress==='number').sort((a,b)=>Number(b.periodNo)-Number(a.periodNo)||Number(b.version)-Number(a.version));
+  if(records.length){const h=records[0];it.taskProgress=h.taskProgress;it.taskProgressDemo=false;it.taskProgressAt=h.modifiedAt||h.submittedAt||'';it.taskProgressReason=h.progressReason||'';}
+}
+function p22RefreshPlans(it){(it.feedbackPeriods||[]).forEach(p=>{if(p.cancelledAt||(it.feedbackHistory||[]).some(h=>Number(h.periodNo)===p.no&&!h.reassignStatus))return;const prior=(it.feedbackHistory||[]).filter(h=>Number(h.periodNo)<p.no&&!h.reassignStatus&&wfRecordPlan(h)).sort((a,b)=>Number(b.periodNo)-Number(a.periodNo)||Number(b.version)-Number(a.version))[0];if(prior){p.data.lastPlan=wfRecordPlan(prior);if(Number(it.periodNo)===p.no)it.lastPlan=p.data.lastPlan;}});}
+function p22With(it,no,action){
+  p22Ensure(it);const p=it.feedbackPeriods.find(p=>p.no===Number(no));if(!p)return;
+  if(P22_ACTIVE?.id===it.id&&P22_ACTIVE.no===p.no)return action(it,p);
+  if(!P22_ACTIVE)p22CaptureActive(it);
+  const old=P22_ACTIVE,projection=p22Capture(it);p22Apply(it,p.data);P22_ACTIVE={id:it.id,no:p.no};
+  try{return action(it,p);}finally{p.data=p22Capture(it);P22_ACTIVE=old;if(old?.id===it.id)p22Apply(it,projection);else p22Apply(it,p22Latest(it).data);p22Aggregate(it);}
+}
+function p22Cancelled(it){return !!p22CurrentSlot(it)?.cancelledAt;}
+function p22Remember(){if(P22_UI?.owner===CUR){const it=xItem(P22_UI.id);if(it)p22With(it,P22_UI.no,()=>r3StoreTextDraft());}}
+function p22Select(id,no){if(P22_UI?.id!==id||P22_UI?.no!==Number(no)||P22_UI?.owner!==CUR)p22Remember();P22_UI={id,no:Number(no),owner:CUR};}
+function p22ContextNo(it){return P22_UI?.id===it.id&&P22_UI.owner===CUR?P22_UI.no:Number(it.periodNo||1);}
+function p22NewPeriod(it,due,kind='regular',reason=''){
+  p22Ensure(it);if(!rvDate(due))return null;
+  if(!P22_ACTIVE)p22CaptureActive(it);
+  const no=Math.max(...it.feedbackPeriods.map(p=>p.no))+1;
+  const prior=(it.feedbackHistory||[]).filter(h=>!h.reassignStatus&&wfRecordPlan(h)).sort((a,b)=>Number(b.periodNo)-Number(a.periodNo)||Number(b.version)-Number(a.version))[0];
+  const data={periodNo:no,nextDue:due,lastPlan:prior?wfRecordPlan(prior):'',nextPlan:'',firstRound:false,feedback:'未反馈',fbStage:'',fbReport:null,feedbackReturn:null,reassignFeedbackReset:false,fbReviewRoute:null,fbSummary:'',currentSummary:null,lastReport:'—',lastReportAt:'',feedbackArchive:null};
+  const p={no,originalDue:due,kind,reason,createdAt:nowRecordTime(),cancelledAt:'',data};it.feedbackPeriods.push(p);p22Apply(it,data);it.xFeedbackSaved=true;
+  (it.logs||=[]).push({t:nowRecordTime(),who:kind==='regular'?'系统':CUR,act:kind==='regular'?'周期轮动':'新增反馈期次',txt:'新增第'+no+'期反馈，截止 '+due+' 12:00。'+(reason?'说明：'+reason:'')+'其他期次的填报与审批继续保留。'});return p;
+}
+function p22Sweep(){
+  if(P22_SWEEP||P22_ACTIVE)return false;P22_SWEEP=true;let changed=false;
+  try{ITEMS.forEach(it=>{p22Ensure(it);if(it.status==='已完成')return;const s=it.feedbackSchedule;let guard=0;
+    while(s.kind&&s.nextRegularDue&&p22OpenDate(s.kind,s.nextRegularDue)<=todayDateOnly()&&guard++<500){const due=s.nextRegularDue;
+      if(!it.feedbackPeriods.some(p=>p.kind==='regular'&&p.originalDue===due))p22NewPeriod(it,due);
+      s.nextRegularDue=p22Next(s.kind,due);changed=true;
+    }
+  });}finally{P22_SWEEP=false;}return changed;
+}
+const p22OldSnapshot=xWorkflowSnapshot;
+xWorkflowSnapshot=function(it){if(P22_ACTIVE?.id===it.id)p22CaptureActive(it);const snapshot=p22OldSnapshot(it),p=p22Latest(it);if(p){P22_FIELDS.forEach(k=>{if(p.data[k]===undefined)delete snapshot[k];else snapshot[k]=p22Copy(p.data[k]);});}return snapshot;};
+const p22OldSave=xSave;
+xSave=function(){ITEMS.forEach(it=>{if(P22_ACTIVE?.id===it.id)p22CaptureActive(it);else if(it.feedbackPeriods)p22CaptureActive(it);p22RefreshPlans(it);p22Aggregate(it);});return p22OldSave();};
+const p22OldBuild=nvBuildItem;
+nvBuildItem=function(d,meta,id){const it=p22OldBuild(d,meta,id);p22Ensure(it,true);return it;};
+const p22OldInit=r3Initialize;
+r3Initialize=function(){p22OldInit();ITEMS.forEach(it=>p22Ensure(it));if(p22Sweep())xSave();};
+const p22OldRoute=route;
+route=function(){if(!P22_ACTIVE){if(p22Sweep())xSave();if(location.hash.replace('#','').split('?')[0]!=='detail')P22_UI=null;}return p22OldRoute.apply(this,arguments);};
+rollPeriod=function(id){const it=xItem(id);if(!it||it.status==='已完成'||ROLE!=='admin'&&!canCurrentExecutorAct(it))return;return wfRunRecordedCommand('rollPeriod',function(){p22Remember();p22Ensure(it);const s=it.feedbackSchedule;if(!p22Kind(it.cycle)||!s.kind||!s.nextRegularDue){toast('请先设置每周、每双周或每月反馈周期');return;}const due=s.nextRegularDue;p22NewPeriod(it,due);s.nextRegularDue=p22Next(s.kind,due);P22_UI=null;xSave();closeModal();route();toast('已新增下一期，原期任务继续保留');},this,[]);};
+const p22OldLatest=latestFeedback;
+latestFeedback=function(it){return p22CurrentSlot(it)?(it.feedbackHistory||[]).filter(h=>Number(h.periodNo)===Number(it.periodNo)).at(-1)||null:p22OldLatest(it);};
+const p22OldWindow=feedbackWindow;
+feedbackWindow=function(it){const p=p22CurrentSlot(it);if(!p)return p22OldWindow(it);const w=p22OldWindow({...it,nextDue:p.originalDue});return {...w,cutoff:(it.nextDue||p.data.nextDue)+' 12:00:00',label:w.start+' 至 '+w.end+' · 截止 '+(it.nextDue||p.data.nextDue)+' 12:00:00'};};
+['feedbackClosed','feedbackNeedsAudit'].forEach(name=>{const fn=window[name];window[name]=function(it){return !p22Cancelled(it)&&fn.apply(this,arguments);};});
+const p22OldFeedbackFlow=wfFeedbackFlow;
+wfFeedbackFlow=function(it){return p22Cancelled(it)?{key:'fb-cancelled',flow:'feedback',stage:'cancelled',label:'该期已取消',globalLabel:'该期已取消',action:false,overdue:false,cls:'gray'}:p22OldFeedbackFlow(it);};
+const p22OldFilter=feedbackFilterMatch;
+feedbackFilterMatch=function(it,filter){if(!it?.feedbackPeriods||filter==='全部')return p22OldFilter(it,filter);if(P22_ACTIVE?.id===it.id)return !p22Cancelled(it)&&p22OldFilter(it,filter);return it.feedbackPeriods.some(p=>!p.cancelledAt&&p22With(it,p.no,()=>p22OldFilter(it,filter)));};
+const p22OldProgress=xActualProgress;
+xActualProgress=function(it){if(P22_ACTIVE?.id===it?.id){const h=(it.feedbackHistory||[]).filter(h=>!h.reassignStatus&&Number(h.periodNo)<=Number(it.periodNo)&&typeof h.taskProgress==='number').sort((a,b)=>Number(b.periodNo)-Number(a.periodNo)||Number(b.version)-Number(a.version))[0];if(h)return h.taskProgress;if((it.feedbackHistory||[]).some(h=>Number(h.periodNo)>Number(it.periodNo)))return it.feedbackSchedule?.baselineProgress??null;}return p22OldProgress(it);};
+['canSubmitFeedback','fbTodoMe','fbDeptMe','fbMgrMe','fbAdminMe','fbCanEdit','fbCanAct'].forEach(name=>{const fn=window[name];window[name]=function(it){return !!it&&!p22Cancelled(it)&&!it.feedbackArchive&&fn.apply(this,arguments);};});
+const p22OldDispatchTodo=dispatchTodoMe;
+dispatchTodoMe=function(it){return !!it&&!p22Cancelled(it)&&p22OldDispatchTodo(it);};
+function p22Wrap(name,idFrom){const fn=window[name];if(typeof fn!=='function')return;window[name]=function(){const args=arguments,id=idFrom?idFrom(args):args[0],it=xItem(id);if(!it)return fn.apply(this,args);if(it.status==='已完成'){toast('事项已结项，不能继续办理反馈');return;}const no=P22_ACTIVE?.id===id?P22_ACTIVE.no:p22ContextNo(it);return p22With(it,no,()=>{
+    if(p22Cancelled(it)&&!['openFeedback','r3TextContext'].includes(name)){toast('该期已取消，不能继续办理');return;}
+    return fn.apply(this,args);
+  });};}
+['openFeedback','goDetailFeedback','submitFeedback','fbDoSubmit','openFbEdit','fbSaveEdit','fbAgree','openFbBack','fbBack','saveFbDraft','r3EditSummary','r3GenerateSummary','xSyncProgress'].forEach(name=>p22Wrap(name));
+p22Wrap('fbSubmitConfirmed',()=>FB_PENDING?.id);
+const p22OldDetail=renderDetail;
+renderDetail=function(){const it=xItem(DETAIL_ID);if(!it)return p22OldDetail.apply(this,arguments);return p22With(it,p22ContextNo(it),()=>{
+  const result=p22OldDetail.apply(this,arguments);const p=p22CurrentSlot(it);
+  $('#content')?.insertAdjacentHTML('afterbegin','<div class="card p22-detail-periods"><div class="p22-period-head"><b>反馈期次</b>'+(ROLE==='admin'?'<button class="btn sm" onclick="p22Manage(\''+it.id+'\')">管理期次</button>':'')+'</div><div class="p22-period-tabs">'+it.feedbackPeriods.map(slot=>'<button class="btn sm '+(slot.no===p.no?'primary':'')+'" onclick="p22OpenDetail(\''+it.id+'\','+slot.no+')">第'+slot.no+'期'+(slot.cancelledAt?' · 已取消':'')+'</button>').join('')+'</div><span class="hint">第'+p.no+'期反馈截止：'+esc(p.data.nextDue||'—')+' 12:00'+(p.cancelledAt?' · 已取消：'+esc(p.cancelReason||''):'')+'</span></div>');return result;
+});};
+function p22OpenDetail(id,no){p22Select(id,no);DETAIL_ID=id;const target='#detail?id='+id;if(location.hash===target)renderDetail();else go('detail?id='+id);}
+function p22TaskPeriods(it,tab){p22Ensure(it);return it.feedbackPeriods.filter(p=>!p.cancelledAt&&p22With(it,p.no,()=>tab==='audit'?fbTodoMe(it):canSubmitFeedback(it)));}
+const p22OldAudit=myTaskAuditItems,p22OldHandling=myTaskDispatchItems;
+myTaskAuditItems=function(){const base=new Set(p22OldAudit());return visibleItems().filter(it=>it.status!=='已完成'&&(base.has(it)||p22TaskPeriods(it,'audit').length));};
+myTaskDispatchItems=function(){const base=new Set(p22OldHandling());return visibleItems().filter(it=>it.status!=='已完成'&&(base.has(it)||p22TaskPeriods(it,'dispatch').length));};
+const p22OldVisible=visibleItems;
+visibleItems=function(){const base=p22OldVisible();if(['admin','boss'].includes(ROLE))return base;return [...new Set([...base,...ITEMS.filter(it=>(it.feedbackPeriods||[]).some(p=>!p.cancelledAt&&p.data.fbReviewRoute?.reviewer===CUR))])];};
+function p22ScopeButtons(html,it,no){return html.replace(/onclick="([^"]*)"/g,(_,handler)=>'onclick="p22Select(\''+it.id+'\','+no+');'+handler+'"');}
+const p22OldActions=wfTaskActions,p22OldPills=wfTaskStatusPills,p22OldTime=wfTaskTime;
+wfTaskActions=function(it,tab){
+  if(!it.feedbackPeriods||it.feedbackPeriods.length===1)return p22ScopeButtons(p22OldActions(it,tab),it,it.periodNo);
+  const base=p22OldActions(it,tab).replace(/<div class="wf-task-action-group"[^>]*aria-label="反馈操作"[\s\S]*?<\/div>/g,'');
+  const groups=p22TaskPeriods(it,tab).map(p=>p22With(it,p.no,()=>{const source=tab==='audit'?fbAuditOps(it):fbDispatchOps(it),buttons=[...source.matchAll(/<button\b[\s\S]*?<\/button>/g)].map(m=>m[0]).filter(b=>/\b(fbAgree|openFbEdit|openFbBack|goDetailFeedback|openFeedback)\(/.test(b));return '<div class="wf-task-action-group" role="group" aria-label="第'+p.no+'期反馈操作"><span class="wf-task-action-label">第'+p.no+'期</span>'+p22ScopeButtons(buttons.join(''),it,p.no)+'</div>';})).join('');
+  return base.replace('<div class="wf-task-action-groups">','<div class="wf-task-action-groups">'+groups);
+};
+wfTaskStatusPills=function(it,tab){if(!it.feedbackPeriods||it.feedbackPeriods.length===1)return p22OldPills(it,tab);const periods=p22TaskPeriods(it,tab),other=p22OldPills(it,tab).replace(/<span class="pill[^>]*data-flow="feedback"[^>]*><span class="dot"><\/span>[\s\S]*?<\/span>/g,'');return (periods.length?'<span class="pill amber"><span class="dot"></span>'+periods.length+'期待'+(tab==='audit'?'审核':'反馈')+'</span>':'')+other;};
+wfTaskTime=function(it,tab){const periods=p22TaskPeriods(it,tab);if(tab==='audit')return p22OldTime(it,tab);return '<span class="wf-time-entry">计划完成：'+esc(it.deadline||'—')+'</span>'+(periods.length===1?'<span class="wf-time-entry '+(feedbackClosed({...it,nextDue:periods[0].data.nextDue})?'wf-feedback-due':'')+'">第'+periods[0].no+'期反馈截止：'+esc(periods[0].data.nextDue||'—')+' 12:00</span>':'');};
+function p22TaskBody(it,tab,fallback){if(!it.feedbackPeriods||it.feedbackPeriods.length===1)return fallback;
+  let body=tab==='audit'?'':dispatchBrief(it)+rvTaskMeetingBrief(it);
+  if(tab==='audit'&&(closeTodoMe(it)||closeAdminTodoMe(it)))body+='<div class="p22-period-box"><b>结项说明：</b>'+esc(it.closeRequest?.reason||'—')+'</div>';
+  if(tab==='audit'&&meetingReviewTodoMe(it))body+='<div class="p22-period-box"><b>专题会申请：</b>'+esc(meetingLatest(it)?.reason||'—')+'</div>';
+  body+=p22TaskPeriods(it,tab).map(p=>p22With(it,p.no,()=>{const s=wfFeedbackFlow(it),h=it.fbReport||wfCurrentRecord(it)||{};return '<div class="p22-period-box"><div class="p22-period-head"><b>第'+p.no+'期</b><span class="'+(s.overdue?'p22-overdue':'hint')+'">反馈截止：'+esc(it.nextDue||'—')+' 12:00</span><span class="pill '+s.cls+'">'+esc(s.label)+'</span></div>'+(tab==='audit'?'<div><b>本期落实情况：</b>'+esc(wfRecordContent(h)||'—')+'</div><div><b>下期工作计划：</b>'+esc(wfRecordPlan(h)||'—')+'</div>'+r3SummaryReadHtml(it):'')+(it.feedbackReturn?'<div class="p22-overdue"><b>退回意见：</b>'+esc(it.feedbackReturn.reason||'—')+'</div>':'')+'</div>';})).join('');return body;
+}
+const p22OldRecordStatus=feedbackRecordStatus;
+feedbackRecordStatus=function(it,h){const p=it.feedbackPeriods?.find(p=>p.no===Number(h.periodNo));if(p?.cancelledAt)return '该期已取消';if(p&&p22CurrentSlot(it)&&p.no!==Number(it.periodNo)&&!h.reassignStatus)return p22With(it,p.no,()=>p22OldRecordStatus(it,h));return p22OldRecordStatus(it,h);};
+const p22OldFeedbackLabel=feedbackStatusLabel,p22OldFeedbackSnapshot=wfFeedbackSnapshot;
+feedbackStatusLabel=function(it){return p22Cancelled(it)?'该期已取消':p22OldFeedbackLabel(it);};
+wfFeedbackSnapshot=function(it){const snapshot=p22OldFeedbackSnapshot(it),p=p22CurrentSlot(it);return p?.cancelledAt?{...snapshot,outcome:'cancelled',cancelledAt:p.cancelledAt}:snapshot;};
+const p22OldArchive=wfArchiveConcurrent;
+wfArchiveConcurrent=function(it){const result=p22OldArchive(it);if(it?.status==='已完成'&&it.feedbackPeriods){it.feedbackPeriods.forEach(p=>{if(p.cancelledAt)return;p22With(it,p.no,()=>{if(it.fbStage==='done')return;const snapshot=it.feedbackArchive?.outcome==='archived'?it.feedbackArchive:{...wfFeedbackSnapshot(it),outcome:'archived',archivedAt:it.workflowClosedAt||nowRecordTime()};it.feedbackArchive=snapshot;const h=wfCurrentRecord(it);if(h){h.reviewSnapshot=snapshot;h.reviewFrozen=true;}it.fbStage='';it.feedbackReturn=null;});});}return result;};
+const p22OldAssign=r3Assign;
+r3Assign=function(it,type,name,reason,reassign){const before=it.assignmentVersion||0,result=p22OldAssign.apply(this,arguments);if(reassign&&(it.assignmentVersion||0)!==before){const latest=p22Latest(it);(it.feedbackPeriods||[]).forEach(p=>{if(p.no===latest.no||p.cancelledAt||p.data.fbStage==='done')return;(it.feedbackHistory||[]).filter(h=>Number(h.periodNo)===p.no&&!h.reassignStatus).forEach(h=>{h.reassignStatus='改派前版本';});Object.assign(p.data,{feedback:'未反馈',fbStage:'',fbReport:null,feedbackReturn:null,fbReviewRoute:null,nextPlan:'',currentSummary:null,fbSummary:'',lastReport:'—',lastReportAt:'',reassignFeedbackReset:true});});xSave();route();}return result;};
+
+/* Manager operations apply to explicit period IDs, never erase another period. */
+let P22_MANAGE_ITEM='all';
+function p22Manage(id){if(ROLE!=='admin')return;p22Remember();P22_UI=null;P22_MANAGE_ITEM=id||'all';const items=ITEMS.filter(it=>it.status!=='已完成'&&(P22_MANAGE_ITEM==='all'||it.id===P22_MANAGE_ITEM));items.forEach(it=>p22Ensure(it));
+  openModal('<div class="hd"><b>反馈期次</b><button class="x" onclick="closeModal()">✕</button></div><div class="bd p22-manager"><div class="p22-manager-tools"><select id="p22ManageItem" aria-label="管理事项" onchange="p22Manage(this.value)"><option value="all">全部未结项事项</option>'+ITEMS.filter(it=>it.status!=='已完成').map(it=>'<option value="'+it.id+'" '+(it.id===P22_MANAGE_ITEM?'selected':'')+'>'+esc(it.name)+'</option>').join('')+'</select><button class="btn sm primary" onclick="p22AddForm()">新增一期</button></div>'+(P22_MANAGE_ITEM!=='all'?'<button class="btn sm" style="margin-bottom:12px" onclick="rollPeriod(\''+P22_MANAGE_ITEM+'\')">模拟进入下一常规期</button>':'')+'<div class="p22-table-wrap"><table class="p22-table"><thead><tr><th><input type="checkbox" aria-label="选择全部期次" onchange="p22ToggleAll(this.checked)"></th><th>事项／期次</th><th>原定日期</th><th>反馈截止</th><th>状态</th></tr></thead><tbody>'+items.flatMap(it=>it.feedbackPeriods.map(p=>'<tr><td><input type="checkbox" name="p22Period" value="'+xQ(JSON.stringify([it.id,p.no]))+'" '+(p.cancelledAt?'disabled':'')+'></td><td>'+esc(it.name)+'<br><b>第'+p.no+'期</b>'+(p.kind==='extra'?' · 临时新增':'')+'</td><td>'+esc(p.originalDue||'—')+'</td><td>'+esc(p.data.nextDue||'—')+' 12:00</td><td>'+esc(p.cancelledAt?'已取消':p22With(it,p.no,()=>feedbackStatusLabel(it)))+'</td></tr>')).join('')+'</tbody></table></div><div class="p22-manager-edit"><label>调整截止日期<input type="date" id="p22Due"></label><label>调整／取消原因<input id="p22Reason" placeholder="填写本次调整原因"></label></div><p class="hint">调整或取消仅作用于选中期次；后续常规排期保持不变。</p></div><div class="ft"><button class="btn" onclick="closeModal()">关闭</button><button class="btn danger" onclick="p22RequestChange(\'cancel\')">取消所选期次</button><button class="btn primary" onclick="p22RequestChange(\'date\')">调整截止日期</button></div>');
+}
+function p22ToggleAll(checked){document.querySelectorAll('[name="p22Period"]').forEach(el=>{if(!el.disabled)el.checked=checked;});}
+function p22Selected(){return [...document.querySelectorAll('[name="p22Period"]:checked')].filter(el=>!el.disabled).flatMap(el=>{try{return [JSON.parse(el.value)];}catch(e){return [];}});}
+function p22RequestChange(action){if(ROLE!=='admin')return;const pairs=p22Selected(),reason=$('#p22Reason')?.value.trim()||'',due=$('#p22Due')?.value||'';if(!pairs.length){toast('请选择需要处理的期次');return;}if(!reason){toast('请填写调整原因');return;}if(action==='date'&&!rvDate(due)){toast('请选择有效截止日期');return;}
+  const inReview=pairs.filter(([id,no])=>{const p=xItem(id)?.feedbackPeriods?.find(p=>p.no===no);return p&&(p.data.fbReport||p.data.fbStage||p.data.feedbackReturn);});
+  P22_PENDING={action,pairs,reason,due,owner:CUR};
+  if(action==='cancel'&&inReview.length){openModal('<div class="hd"><b>确认取消反馈期次</b></div><div class="bd"><p>所选期次中有'+inReview.length+'期已提交或进入审核。取消后将终止这些期次的未完成任务，已有材料及审批记录保留。</p><label><input type="checkbox" id="p22ConfirmCancel">确认终止所选期次相关流程</label></div><div class="ft"><button class="btn" onclick="p22Manage(P22_MANAGE_ITEM)">返回</button><button class="btn danger" onclick="p22ApplyChange(true)">确认取消</button></div>');return;}p22ApplyChange(false);
+}
+function p22ApplyChange(confirmTermination=false){const op=P22_PENDING;if(ROLE!=='admin'||!op||op.owner!==CUR)return;if(confirmTermination&&!$('#p22ConfirmCancel')?.checked){toast('请确认终止相关流程');return;}
+  return wfRunRecordedCommand('feedbackPeriodChange',function(){let count=0;op.pairs.forEach(([id,no])=>{const it=xItem(id);if(!it||it.status==='已完成')return;p22Ensure(it);const p=it.feedbackPeriods.find(p=>p.no===no);if(!p||p.cancelledAt)return;
+    if(op.action==='cancel'&&(p.data.fbReport||p.data.fbStage||p.data.feedbackReturn)&&!confirmTermination)return;
+    const stamp=nowRecordTime();if(op.action==='date'){p.data.nextDue=op.due;p.adjustedAt=stamp;p.adjustedBy=CUR;p.adjustReason=op.reason;}else{p.cancelledAt=stamp;p.cancelledBy=CUR;p.cancelReason=op.reason;(it.feedbackHistory||[]).filter(h=>Number(h.periodNo)===p.no).forEach(h=>{h.reviewSnapshot={...(h.reviewSnapshot||{}),outcome:'cancelled',cancelledAt:stamp};h.reviewFrozen=true;});(it.noticeEvents||[]).filter(n=>Number(n.payload?.periodNo)===p.no&&['feedback','supervisor'].includes(n.kind)&&!n.readAt).forEach(n=>{n.withdrawnAt=stamp;n.withdrawnReason='反馈期次已取消';});}
+    (p.changes||=[]).push({at:stamp,by:CUR,action:op.action,due:op.due,reason:op.reason});(it.logs||=[]).push({t:stamp,who:CUR,act:op.action==='cancel'?'取消反馈期次':'调整反馈截止日期',txt:'第'+p.no+'期：'+(op.action==='date'?op.due+' 12:00；':'')+op.reason});if(Number(it.periodNo)===p.no)p22Apply(it,p.data);count++;
+  });P22_PENDING=null;xSave();closeModal();route();toast('已处理'+count+'期反馈');},this,[]);
+}
+function p22AddForm(){if(ROLE!=='admin')return;const items=ITEMS.filter(it=>it.status!=='已完成'&&(P22_MANAGE_ITEM==='all'||it.id===P22_MANAGE_ITEM));openModal('<div class="hd"><b>新增一期反馈</b></div><div class="bd p22-manager"><label>反馈截止日期<input type="date" id="p22NewDue"></label><label>说明<input id="p22NewReason" placeholder="例如：节后补充反馈"></label><div class="p22-new-scope">'+items.map(it=>'<label><input type="checkbox" name="p22NewItem" value="'+it.id+'" checked>'+esc(it.name)+'</label>').join('')+'</div><p class="hint">截止时间为12:00；新增独立期次，不恢复已取消期次，不移动后续常规排期。</p></div><div class="ft"><button class="btn" onclick="p22Manage(P22_MANAGE_ITEM)">返回</button><button class="btn primary" onclick="p22AddSelected()">新增一期</button></div>');}
+function p22AddSelected(){if(ROLE!=='admin')return;const due=$('#p22NewDue')?.value||'',reason=$('#p22NewReason')?.value.trim()||'',ids=[...new Set([...document.querySelectorAll('[name="p22NewItem"]:checked')].map(el=>el.value))];if(!rvDate(due)||!reason||!ids.length){toast('请填写截止日期、说明并选择事项');return;}return wfRunRecordedCommand('addFeedbackPeriod',function(){let count=0;ids.forEach(id=>{const it=xItem(id);if(!it||it.status==='已完成')return;p22Ensure(it);if(it.feedbackPeriods.some(p=>!p.cancelledAt&&p.data.nextDue===due)){toast('事项已有相同截止日期的期次：'+it.name);return;}p22NewPeriod(it,due,'extra',reason);count++;});xSave();closeModal();route();toast('已新增'+count+'条反馈期次');},this,[]);}
+const p22OldBoardTools=xBoardTools;
+xBoardTools=function(){const html=p22OldBoardTools();return ROLE==='admin'?html.replace('<button class="btn sm" onclick="xManageGroups()">','<button class="btn sm" onclick="p22Manage()">反馈期次</button><button class="btn sm" onclick="xManageGroups()">'):html;};
+
+/* Friday-only regular cycles in creation and import; exceptional period dates remain manual. */
+function p22FirstDateChanged(){const cycle=$('#f_cycle')?.value||'',value=$('#f_first')?.value||'';if(!rvDate(value))return;const kind=p22Kind(cycle),d=rvDate(value),next=kind==='month'?p22MonthFriday(d.getFullYear(),d.getMonth()):p22Friday(value);if(kind&&$('#f_first'))$('#f_first').value=next;nvRefresh();nvSnapshot();}
+const p22OldFormFill=nvFill;
+nvFill=function(d){const cycle=p22Label(d.cycle||''),kind=p22Kind(cycle),date=rvDate(d.first);return p22OldFormFill({...d,cycle,first:date&&P22_CYCLES.includes(cycle)?kind==='month'?p22MonthFriday(date.getFullYear(),date.getMonth()):p22Friday(d.first):d.first});};
+['nbFromTable','nbFromText'].forEach(name=>{const fn=window[name];window[name]=function(){return fn.apply(this,arguments).map(row=>{row.d.cycle=p22Label(row.d.cycle);const kind=p22Kind(row.d.cycle),date=rvDate(row.d.first);if(date&&P22_CYCLES.includes(row.d.cycle))row.d.first=kind==='month'?p22MonthFriday(date.getFullYear(),date.getMonth()):p22Friday(row.d.first);return row;});};});
+const p22OldErrors=nvErrors;
+nvErrors=function(d){const errors=p22OldErrors(d);if(d.cycle&&!p22Kind(d.cycle))errors.cycle='请选择每周、每双周或每月反馈';if(P22_CYCLES.includes(d.cycle)&&rvDate(d.first)){const date=rvDate(d.first);if(date.getDay()!==5||p22Kind(d.cycle)==='month'&&d.first!==p22MonthFriday(date.getFullYear(),date.getMonth()))errors.first='请选择对应的周五反馈日期（月度为最后一个周五）';}return errors;};
+nbCycleOptions=function(){return P22_CYCLES;};
+setInterval(()=>{if(!P22_ACTIVE&&p22Sweep()){xSave();route();}},60000);
 
 r3Initialize();
 rvNormalizeCompletionData();
