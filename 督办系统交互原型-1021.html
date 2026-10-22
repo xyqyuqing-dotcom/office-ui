@@ -1965,7 +1965,7 @@ function renderChrome(){
       }
       if(k==='assist'){
         const ud = userDepts();
-        const nA = ITEMS.filter(it=>r3CoopScope(it) && !isItemRead(it.id)).length;
+        const nA = r3AssistUnreadCount();
         if(nA) badge = '<span class="badge">'+nA+'</span>';
       }
        nav += '<a class="'+(PAGE===k?'active':'')+'" onclick="go(\''+k+'\')"><i class="fas '+icons[k]+'"></i><span class="nav-label">'+lb+'</span>'+badge+'</a>';
@@ -7938,6 +7938,7 @@ body:has(#nvMain:not([hidden])) .content{padding-top:22px}
 .r3-notice-main h3{font-size:15px;margin:0 0 9px;cursor:pointer}.r3-notice-main p{font-size:13px;line-height:1.7;margin:7px 0;color:var(--ink-2)}
 .r3-notice-main small{font-size:12px;color:var(--ink-3)}.r3-notice-card .btn{flex-shrink:0}
 .r3-coop-header{display:flex;align-items:center;gap:9px;flex-wrap:wrap;font-size:13px;margin-bottom:9px}
+.r3-assist-card{padding:18px;margin-bottom:14px}.r3-assist-card.has-actions{display:grid;grid-template-columns:minmax(0,1fr) 280px;align-items:center;gap:20px}.r3-assist-card>.t-body{width:100%;min-width:0}.r3-assist-title{display:inline;padding:0;border:0;background:transparent;font:inherit;font-weight:700;color:var(--ink);text-align:left;cursor:pointer}.r3-assist-title:hover{color:var(--accent)}.r3-assist-latest{font-size:13px;line-height:1.8;margin:12px 0 8px}.r3-assist-actions .wf-task-action-label{max-width:100%;white-space:normal}@media(max-width:1100px){.r3-assist-card.has-actions{grid-template-columns:minmax(0,1fr);gap:12px}}
 .r3-coop-note{font-size:12px;color:var(--ink-3);margin-top:8px;line-height:1.7}.r3-comment-card .card-hd{padding:13px 16px}
 .r3-comment-card .card-hd h3{font-size:14px}.r3-comment-card .card-bd{padding:12px 16px}
 .r3-comment-card .comment,.r3-comment-card .comment-item,.r3-comment-card .ct-item{box-shadow:none;background:transparent;border-radius:0;font-size:13px}
@@ -9393,8 +9394,15 @@ function r3SaveCoop(id,coopId){return wfRunRecordedCommand('cooperationDistribut
   xSave();closeModal();route();toast('配合事项分配已保存');
 },this,[]);}
 saveAssistDispatch=function(id){const it=xItem(id),c=(it?.cooperators||[]).find(c=>r3CoopOptions(c).length);if(c)r3SaveCoop(id,c.id);};
-renderAssist=function(){const list=ITEMS.filter(it=>r3CoopScope(it));$('#content').innerHTML=list.map(it=>'<div class="card" style="padding:18px;margin-bottom:14px"><h3 style="font-size:15px;cursor:pointer" onclick="goDetail(\''+it.id+'\')">'+esc(it.name)+'</h3>'+
-  (it.cooperators||[]).filter(c=>r3CoopVisible(c)).map(c=>'<div class="r3-coop-header"><span>'+esc(c.type==='department'?c.target:who(c.target))+'</span><span class="tag">配合方</span>'+(r3CoopOptions(c).length?'<button class="btn sm" onclick="openAssistDispatch(\''+it.id+'\',\''+c.id+'\')">分配人员</button>':'')+'</div>').join('')+'<p style="font-size:13px">最新进展：'+esc(it.lastReport||'暂无反馈')+'</p><div class="process-pills">'+processPills(it)+'</div></div>').join('')||'<div class="card empty"><p>暂无配合事项</p></div>';};
+// Menu visits acknowledge cooperation updates without accepting a primary dispatch or a formal read notice.
+const R3_ASSIST_SEEN_KEY='db-assist-seen-v1';
+function r3AssistSeenStore(){try{const data=JSON.parse(localStorage.getItem(R3_ASSIST_SEEN_KEY)||'null');if(data?.schema===1&&data.users&&typeof data.users==='object')return data;}catch(e){}return {schema:1,users:{}};}
+function r3AssistVersion(it){const latest=typeof p22Latest==='function'?p22Latest(it):null;return rrDigest({material:rrMaterialVersion(latest?{...it,...latest.data}:it),name:it.name,status:it.status,cooperators:(it.cooperators||[]).filter(c=>r3CoopVisible(c)).map(c=>({id:c.id,type:c.type,target:c.target,recipients:c.recipients||[],dispatchLog:c.dispatchLog||[]}))});}
+function r3AssistUnreadCount(){if(!CUR)return 0;const seen=r3AssistSeenStore().users[CUR]||{};return ITEMS.filter(it=>r3CoopScope(it)&&seen[it.id]?.version!==r3AssistVersion(it)).length;}
+function r3MarkAssistSeen(list){if(!CUR)return;const store=r3AssistSeenStore(),seen=store.users[CUR]||(store.users[CUR]={});let changed=false;list.forEach(it=>{const version=r3AssistVersion(it);if(seen[it.id]?.version!==version){seen[it.id]={version,seenAt:nowRecordTime()};changed=true;}});if(changed)try{localStorage.setItem(R3_ASSIST_SEEN_KEY,JSON.stringify(store));}catch(e){toast('配合事项阅读状态保存失败');}}
+renderAssist=function(){const list=ITEMS.filter(it=>r3CoopScope(it));$('#content').innerHTML=list.map(it=>{const cooperators=(it.cooperators||[]).filter(c=>r3CoopVisible(c)),assignable=cooperators.filter(c=>r3CoopOptions(c).length);
+  const actions=assignable.map(c=>'<div class="wf-task-action-group" role="group" aria-label="配合分配操作"><span class="wf-task-action-label">'+esc(assignable.length>1?(c.type==='department'?c.target:who(c.target)):'配合')+'</span><button class="btn sm primary" onclick="openAssistDispatch(\''+it.id+'\',\''+c.id+'\')"><i class="fas fa-share-nodes" aria-hidden="true"></i> 分配人员</button></div>').join('');
+  return '<div class="card todo-card r3-assist-card '+(actions?'has-actions':'')+'" data-coop-item="'+it.id+'"><div class="t-body"><div class="t-title"><button class="r3-assist-title" onclick="goDetail(\''+it.id+'\')">'+esc(it.name)+'</button></div>'+cooperators.map(c=>'<div class="r3-coop-header"><span>'+esc(c.type==='department'?c.target:who(c.target))+'</span><span class="tag">配合方</span></div>').join('')+'<div class="r3-assist-latest"><b>最新进展：</b>'+esc(it.lastReport||'暂无反馈')+'</div><div class="process-pills">'+processPills(it)+'</div></div>'+(actions?'<div class="wf-task-actions r3-assist-actions"><div class="wf-task-action-groups">'+actions+'</div></div>':'')+'</div>';}).join('')||'<div class="card empty"><p>暂无配合事项</p></div>';r3MarkAssistSeen(list);renderChrome();};
 
 function r3Initialize(){ITEMS.forEach(r3NormalizeItem);r4SeedReadExamples();r5InitializeFeedbackRoutes();r3UpgradeDraftKeys();r3NormalizeReadStage();Object.assign(TITLES,{todo:['待办与阅知',''],assist:['配合事项','']});xSave();}
 
