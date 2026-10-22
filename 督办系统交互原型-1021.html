@@ -4785,7 +4785,7 @@ function toggleFav(id){
 }
 
 /* ---------- 初始化 ---------- */
-window.addEventListener('hashchange', route);
+window.addEventListener('hashchange', function(){ route(); });
 $('#roleSwitch')?.addEventListener('click', e=>{
   const b = e.target.closest('button[data-person]'); if(!b) return;
   switchPerson(b.dataset.person);
