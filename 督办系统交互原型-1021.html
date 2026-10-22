@@ -9423,7 +9423,19 @@ renderAssist=function(){const list=ITEMS.filter(it=>r3CoopScope(it));$('#content
   const actions=assignable.map(c=>'<div class="wf-task-action-group" role="group" aria-label="配合分配操作"><span class="wf-task-action-label">'+esc(assignable.length>1?(c.type==='department'?c.target:who(c.target)):'配合')+'</span><button class="btn sm primary" onclick="openAssistDispatch(\''+it.id+'\',\''+c.id+'\')"><i class="fas fa-share-nodes" aria-hidden="true"></i> '+((c.recipients||[]).some(r=>r.by===CUR)?'调整分配':'分配人员')+'</button></div>').join('');
   return '<div class="card todo-card r3-assist-card '+(actions?'has-actions':'')+'" data-coop-item="'+it.id+'"><div class="t-body"><div class="t-title"><button class="r3-assist-title" onclick="goDetail(\''+it.id+'\')">'+esc(it.name)+'</button></div>'+cooperators.map(r3CoopMetaHtml).join('')+'<div class="r3-assist-latest"><b>最新进展：</b>'+esc(it.lastReport||'暂无反馈')+'</div><div class="process-pills">'+processPills(it)+'</div></div>'+(actions?'<div class="wf-task-actions r3-assist-actions"><div class="wf-task-action-groups">'+actions+'</div></div>':'')+'</div>';}).join('')||'<div class="card empty"><p>暂无配合事项</p></div>';r3MarkAssistSeen(list);renderChrome();};
 
-function r3Initialize(){ITEMS.forEach(r3NormalizeItem);r4SeedReadExamples();r5InitializeFeedbackRoutes();r3UpgradeDraftKeys();r3NormalizeReadStage();Object.assign(TITLES,{todo:['待办与阅知',''],assist:['配合事项','']});xSave();}
+function r3SeedUnassignedCooperation(){
+  const key='coop-unassigned-20261022',marks=X_STORE.seededExamples||(X_STORE.seededExamples={}),existing=ITEMS.find(it=>it.sampleKey===key);
+  if(existing){marks[key]=existing.id;return;}
+  const saved=Object.values(X_STORE.items||{}).find(m=>m.workflow?.sampleKey===key)?.workflow;
+  if(saved){if(!ITEMS.some(it=>it.id===saved.id))ITEMS.push(JSON.parse(JSON.stringify(saved)));marks[key]=saved.id;return;}
+  if(marks[key])return;
+  const seq=Math.max(0,...[...ITEMS.map(it=>it.id),...Object.keys(X_STORE.items||{})].map(id=>Number(String(id).match(/^DB-2026-(\d+)$/)?.[1])||0))+1,id='DB-2026-'+String(seq).padStart(3,'0');
+  const d=rvDate(todayDateOnly());d.setMonth(d.getMonth()+2);
+  const it=nvBuildItem({...nvDefaults(),name:'培训课程客户案例协同',content:'人力资源部统筹课程内容，战略客户部配合提供客户服务案例与业务材料。',leadMode:'department',lead:'人力资源部',assists:['战略客户部'],coopExecutives:[],deadline:rvDateText(d),cycle:'每周五反馈',first:p22Friday(todayDateOnly()),raised:todayDateOnly(),launch:'请统筹培训课程客户案例，战略客户部可按需安排配合人员。'}, {origin:'手动填写',quote:''},id);
+  it.sampleKey=key;it.newtodoCreated=false;it.lastReport='';it.chain=['TY',leadOf('人力资源部')];it.logs.forEach(log=>log.who='TY');it.dispatchLog[0].from='TY';it.dispatchLog[0].fromRole='督办管理人';
+  ITEMS.push(it);marks[key]=id;
+}
+function r3Initialize(){ITEMS.forEach(r3NormalizeItem);r4SeedReadExamples();r3SeedUnassignedCooperation();r5InitializeFeedbackRoutes();r3UpgradeDraftKeys();r3NormalizeReadStage();Object.assign(TITLES,{todo:['待办与阅知',''],assist:['配合事项','']});xSave();}
 
 /* Imported rows use the same responsibility validation and constructor as manual creation. */
 nbPeople=function(){return [];};
