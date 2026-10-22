@@ -70,10 +70,10 @@ button,input,textarea,select{font:inherit}button{color:inherit;cursor:pointer}a{
 .app-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));column-gap:4px;row-gap:5px}
 .app-link{min-width:0;height:49px;display:flex;align-items:center;gap:10px;padding:4px 8px;border-radius:5px;color:#3c424a;font-size:11px}
 .app-link:hover{background:#f7f9fc;color:#267beb}
-.app-link-info{position:relative;padding-right:30px}
+.app-link-info{position:relative;gap:5px;padding-right:8px}
 .app-link-info.info-open{z-index:30}
-.app-link-main{min-width:0;flex:1;height:100%;display:flex;align-items:center;gap:10px;color:inherit}
-.app-info-trigger{position:absolute;right:5px;top:50%;transform:translateY(-50%);width:19px;height:19px;padding:0;border:1px solid #b8c2d0;border-radius:50%;background:#fff;color:#778596;font-family:Georgia,serif;font-size:13px;font-weight:700;line-height:17px;opacity:0;visibility:hidden;transition:opacity .14s,color .14s,border-color .14s}
+.app-link-main{min-width:0;flex:0 1 auto;height:100%;display:flex;align-items:center;gap:10px;color:inherit}
+.app-info-trigger{position:static;flex:none;transform:none;width:19px;height:19px;margin-left:-3px;padding:0;border:1px solid #b8c2d0;border-radius:50%;background:#fff;color:#778596;font-family:Georgia,serif;font-size:13px;font-weight:700;line-height:17px;opacity:0;visibility:hidden;transition:opacity .14s,color .14s,border-color .14s}
 .app-link-info:hover .app-info-trigger,.app-link-info:focus-within .app-info-trigger{opacity:1;visibility:visible}
 .app-info-trigger:hover,.app-info-trigger:focus-visible{color:#3687ff;border-color:#3687ff;outline:none}
 .app-info-popover{position:absolute;left:0;bottom:calc(100% - 2px);z-index:40;width:min(310px,calc(100vw - 28px));padding:13px 15px 12px;border:1px solid #e9edf2;border-radius:8px;background:#fff;box-shadow:0 4px 14px #1724341c;color:#404852;font-size:12px;white-space:normal}
