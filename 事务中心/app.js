@@ -358,14 +358,25 @@
 
     const infoCard = groupsRoot.querySelector('.app-link-info');
     const infoPopover = infoCard?.querySelector('.app-info-popover');
+    const infoViewport = groupsRoot.closest('.main-shell');
+    const positionInfoPopover = () => {
+      if (!infoCard || !infoPopover || infoPopover.hidden) return;
+      const cardRect = infoCard.getBoundingClientRect();
+      const viewportRect = infoViewport?.getBoundingClientRect() || { top: 0, bottom: window.innerHeight };
+      const spaceBelow = viewportRect.bottom - cardRect.bottom;
+      const popoverHeight = infoPopover.getBoundingClientRect().height;
+      infoCard.classList.toggle('info-above', spaceBelow < popoverHeight + 12);
+    };
     const openInfo = () => {
       if (!infoCard || !infoPopover) return;
       infoCard.classList.add('info-open');
       infoPopover.hidden = false;
+      positionInfoPopover();
     };
     const closeInfo = () => {
       if (!infoCard || !infoPopover) return;
       infoCard.classList.remove('info-open');
+      infoCard.classList.remove('info-above');
       infoPopover.hidden = true;
     };
     infoCard?.addEventListener('pointerenter', openInfo);
@@ -374,6 +385,8 @@
     infoCard?.addEventListener('focusout', event => {
       if (!infoCard.contains(event.relatedTarget)) closeInfo();
     });
+    infoViewport?.addEventListener('scroll', positionInfoPopover);
+    window.addEventListener('resize', positionInfoPopover);
     document.addEventListener('click', event => {
       if (infoCard && !infoCard.contains(event.target)) closeInfo();
     });

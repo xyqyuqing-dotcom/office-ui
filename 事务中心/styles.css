@@ -73,7 +73,8 @@ button,input,textarea,select{font:inherit}button{color:inherit;cursor:pointer}a{
 .app-link-info{position:relative;padding-right:8px}
 .app-link-info.info-open{z-index:30}
 .app-link-main{min-width:0;flex:1;height:100%;display:flex;align-items:center;gap:10px;color:inherit}
-.app-info-popover{position:absolute;left:0;bottom:calc(100% - 2px);z-index:40;width:min(310px,calc(100vw - 28px));padding:13px 15px 12px;border:1px solid #e9edf2;border-radius:8px;background:#fff;box-shadow:0 4px 14px #1724341c;color:#404852;font-size:12px;white-space:normal}
+.app-info-popover{position:absolute;left:0;top:calc(100% - 2px);z-index:40;width:min(310px,calc(100vw - 28px));padding:13px 15px 12px;border:1px solid #e9edf2;border-radius:8px;background:#fff;box-shadow:0 4px 14px #1724341c;color:#404852;font-size:12px;white-space:normal}
+.app-link-info.info-above .app-info-popover{top:auto;bottom:calc(100% - 2px)}
 .app-info-row{display:grid;grid-template-columns:76px minmax(0,1fr);align-items:start;gap:8px;min-height:25px;line-height:20px}
 .app-info-row>span{color:#8a929d}
 .app-info-row strong{font-weight:500;color:#424b56}
