@@ -776,6 +776,15 @@
   .path-list .path-item.selected { background: var(--oa-blue-soft); border-color: var(--oa-blue); }
   .toast { top: 28px; border-radius: 8px; box-shadow: 0 8px 24px rgba(23, 44, 73, .18); }
   .readonly-view .seal-panel { display: none !important; }
+  .license-control { position: relative; width: 100%; }
+  .license-trigger { font: inherit; text-align: left; color: var(--oa-ink); }
+  .license-summary { overflow-wrap: anywhere; }
+  .license-summary.empty { color: #a4adbd; }
+  .license-panel input { width: 17px; height: 17px; }
+  #mailRow > [hidden] { display: none; }
+  #mailRow .mail-choice { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+  #mailRow .mail-choice select { min-width: 0; }
+  #mailInfo { min-height: 88px; }
   @media (max-width: 900px) {
     .page-header h1 { font-size: 23px; }
     .row-2 { grid-template-columns: 150px minmax(0, 1fr) 150px minmax(0, 1fr); }
@@ -997,33 +1006,6 @@
       </div>
     </div>
 
-    <!-- 用印材料（放在下面） -->
-    <div class="row-1">
-      <div class="label"><span class="req">*</span>用印材料：</div>
-      <div class="value">
-        <div class="radio-group" id="materialGroup">
-          <label><input type="radio" name="material" value="原件送印">原件送印</label>
-          <label><input type="radio" name="material" value="打印用印">打印用印（限50页以内材料）</label>
-          <label id="eMaterialLabel" style="display:none;">
-            <input type="radio" name="material" value="电子版用印">电子版用印
-            <span class="auto-tag">电子印章自动勾选</span>
-          </label>
-        </div>
-      </div>
-    </div>
-
-    <!-- 印章份数 -->
-    <div class="row-1">
-      <div class="label"><span class="req">*</span>印章份数：</div>
-      <div class="value" style="max-width:400px;"><input type="text" id="copies"></div>
-    </div>
-
-    <!-- 会签分类 -->
-    <div class="row-1">
-      <div class="label"><span class="q-icon">?</span><span class="req">*</span>会签分类：</div>
-      <div class="value"><select id="signType"><option value=""></option><option>人工流转</option><option>系统流转</option></select></div>
-    </div>
-
     <!-- 文件名称 -->
     <div class="row-1">
       <div class="label"><span class="req">*</span><strong>文件名称：</strong></div>
@@ -1036,6 +1018,50 @@
       <div class="value"><input type="text" id="counterparty"></div>
     </div>
 
+    <!-- 用印材料 / 印章份数 -->
+    <div class="row-2">
+      <div class="label"><span class="req">*</span>用印材料：</div>
+      <div class="value">
+        <div class="radio-group" id="materialGroup">
+          <label><input type="radio" name="material" value="原件送印">原件送印</label>
+          <label><input type="radio" name="material" value="打印用印">打印用印（限50页以内材料）</label>
+          <label id="eMaterialLabel" style="display:none;">
+            <input type="radio" name="material" value="电子版用印">电子版用印
+            <span class="auto-tag">电子印章自动勾选</span>
+          </label>
+        </div>
+      </div>
+      <div class="label"><span class="req">*</span>印章份数：</div>
+      <div class="value"><input type="text" id="copies" aria-label="印章份数"></div>
+    </div>
+
+    <!-- 公司证照：适用于全部会签分类 -->
+    <div class="row-1">
+      <div class="label" id="companyLicenseLabel">公司证照：</div>
+      <div class="value">
+        <div class="license-control" id="companyLicenseControl">
+          <button type="button" class="seal-select license-trigger" id="companyLicenseTrigger" aria-label="公司证照" aria-expanded="false" aria-controls="companyLicenseGroup">
+            <span class="license-summary empty" id="companyLicenseSummary">请选择公司证照（可多选）</span>
+            <span class="caret" aria-hidden="true">▾</span>
+          </button>
+          <div class="seal-panel license-panel" id="companyLicenseGroup" role="group" aria-labelledby="companyLicenseLabel">
+            <label class="seal-item"><input type="checkbox" name="companyLicense" value="不需要">不需要</label>
+            <label class="seal-item"><input type="checkbox" name="companyLicense" value="营业执照">营业执照</label>
+            <label class="seal-item"><input type="checkbox" name="companyLicense" value="经营许可证">经营许可证</label>
+            <label class="seal-item"><input type="checkbox" name="companyLicense" value="法人身份证复印件">法人身份证复印件</label>
+            <label class="seal-item"><input type="checkbox" name="companyLicense" value="基本存款账户信息">基本存款账户信息</label>
+            <label class="seal-item"><input type="checkbox" name="companyLicense" value="登记通知书">登记通知书</label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 会签分类 -->
+    <div class="row-1">
+      <div class="label"><span class="q-icon">?</span><span class="req">*</span>会签分类：</div>
+      <div class="value"><select id="signType" aria-label="会签分类"><option value=""></option><option>人工流转</option><option>系统流转</option></select></div>
+    </div>
+
     <!-- 事由 -->
     <div class="row-1">
       <div class="label"><span class="req">*</span>事由：</div>
@@ -1043,16 +1069,20 @@
     </div>
 
     <!-- 是否需要邮寄 -->
-    <div class="row-1">
+    <div class="row-1" id="mailRow">
       <div class="label"><span class="q-icon">?</span><span class="req">*</span>是否需要邮寄：</div>
-      <div class="value">
-        <select id="mail">
+      <div class="value mail-choice">
+        <select id="mail" aria-label="是否需要邮寄" aria-controls="mailInfoLabel mailInfoValue">
           <option value=""></option>
-          <option>协助邮寄（原则上非博华利园职场可选）</option>
+          <option value="assist">协助邮寄（原则上非博华利园职场可选）</option>
           <option>自取（请完成用印后2个工作日内至综合部取回）</option>
           <option value="e-self">自行下载（电子印章）</option>
         </select>
         <span class="auto-tag" id="mailAutoTag" style="display:none;margin-left:8px;">电子印章自动带出</span>
+      </div>
+      <div class="label" id="mailInfoLabel" hidden><label for="mailInfo">邮寄信息：</label></div>
+      <div class="value" id="mailInfoValue" hidden>
+        <textarea id="mailInfo" placeholder="请填写完整邮寄信息，包括收件人、收件电话和收件地址" disabled></textarea>
       </div>
     </div>
 
@@ -1287,6 +1317,61 @@
     }
   });
 
+  /* ============ 公司证照多选 ============ */
+  const $licenseControl = document.getElementById("companyLicenseControl");
+  const $licenseTrigger = document.getElementById("companyLicenseTrigger");
+  const $licensePanel = document.getElementById("companyLicenseGroup");
+  const $licenseSummary = document.getElementById("companyLicenseSummary");
+  function setCompanyLicenseOpen(open) {
+    $licensePanel.classList.toggle("show", open);
+    $licenseTrigger.setAttribute("aria-expanded", String(open));
+  }
+  $licenseTrigger.addEventListener("click", () => {
+    setCompanyLicenseOpen(!$licensePanel.classList.contains("show"));
+  });
+  $licenseControl.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      setCompanyLicenseOpen(false);
+      $licenseTrigger.focus();
+    } else if (e.key === "ArrowDown" && e.target === $licenseTrigger) {
+      e.preventDefault();
+      setCompanyLicenseOpen(true);
+      $licensePanel.querySelector("input").focus();
+    }
+  });
+  $licenseControl.addEventListener("focusout", (e) => {
+    if (!$licenseControl.contains(e.relatedTarget)) setCompanyLicenseOpen(false);
+  });
+  document.addEventListener("click", (e) => {
+    if (!$licenseControl.contains(e.target)) setCompanyLicenseOpen(false);
+  });
+  $licensePanel.addEventListener("change", (e) => {
+    const checkbox = e.target;
+    if (!checkbox.matches('input[name="companyLicense"]')) return;
+    if (checkbox.checked) {
+      $licensePanel.querySelectorAll('input[name="companyLicense"]').forEach(item => {
+        if (item !== checkbox && (checkbox.value === "不需要" || item.value === "不需要")) {
+          item.checked = false;
+        }
+      });
+    }
+    const selected = Array.from($licensePanel.querySelectorAll("input:checked"), item => item.value);
+    $licenseSummary.textContent = selected.length ? selected.join("、") : "请选择公司证照（可多选）";
+    $licenseSummary.classList.toggle("empty", !selected.length);
+  });
+
+  /* ============ 邮寄信息联动 ============ */
+  function onMailChange() {
+    const needsMailInfo = $mail.value === "assist";
+    const row = document.getElementById("mailRow");
+    row.classList.toggle("row-2", needsMailInfo);
+    row.classList.toggle("row-1", !needsMailInfo);
+    document.getElementById("mailInfoLabel").hidden = !needsMailInfo;
+    document.getElementById("mailInfoValue").hidden = !needsMailInfo;
+    document.getElementById("mailInfo").disabled = !needsMailInfo;
+  }
+  $mail.addEventListener("change", onMailChange);
+
   /* ============ 用印类型联动 ============ */
   function onSealTypeChange() {
     const checked = document.querySelector('input[name="sealType"]:checked');
@@ -1308,6 +1393,7 @@
       if ($mail.value === "e-self") $mail.value = "";
       $mailAutoTag.style.display = "none";
     }
+    onMailChange();
   }
   document.querySelectorAll('input[name="sealType"]').forEach(r => {
     r.addEventListener("change", onSealTypeChange);
@@ -1316,6 +1402,7 @@
   /* ============ 节点切换 ============ */
   function switchNode(node) {
     currentNode = node;
+    setCompanyLicenseOpen(false);
     $nodeSeg.querySelectorAll("button").forEach(b => {
       b.classList.toggle("active", b.dataset.node === node);
     });
