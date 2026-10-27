@@ -9929,6 +9929,36 @@ function p22AddToggleAll(checked){const valid=new Set(p22AddItems().map(it=>it.i
 function p22AddSelected(){if(ROLE!=='admin')return;const due=$('#p22NewDue')?.value||'',reason=$('#p22NewReason')?.value.trim()||'',valid=new Set(p22AddItems().map(it=>it.id)),ids=[...new Set([...document.querySelectorAll('[name="p22NewItem"]:checked')].map(el=>el.value).filter(id=>valid.has(id)))];if(!rvDate(due)||!ids.length){toast('请选择截止日期和事项');return;}return wfRunRecordedCommand('addFeedbackPeriod',function(){let count=0;ids.forEach(id=>{const it=xItem(id);if(!it||it.status==='已完成')return;p22Ensure(it);if(p22Rows(it,due).some(row=>!row.cancelledAt&&row.due===due)){toast('事项已有相同截止日期的期次：'+it.name);return;}p22NewPeriod(it,due,'extra',reason);count++;});xSave();closeModal();if(count){P22_FILTER.dueFrom=due;P22_FILTER.dueTo=due;}route();toast('已新增 '+count+' 条反馈期次');},this,[]);}
 
 
+/* Final manual closure previews unfinished work; automatic closure keeps its existing timing. */
+let C27_CLOSE_PENDING=null;
+const C27_CLOSE_ACTIONS={adminClose,fbConfirmClose,auditPass};
+function c27CloseImpact(it){
+  const periods=it.feedbackPeriods?.length?it.feedbackPeriods:[{no:Number(it.periodNo||1),data:it}];
+  const feedback=periods.filter(p=>!p.cancelledAt&&!p.data.feedbackArchive&&p.data.fbStage!=='done').map(p=>({no:p.no,due:p.data.nextDue||'',state:p.data.feedbackReturn?'待修改':p.data.fbStage?'审核中':'待填报'}));
+  const meetings=(it.meetingRequests||[]).filter(m=>m.status&&!['已完成','已退回','随事项结项归档'].includes(m.status)).map(m=>({id:m.id,status:m.status}));
+  return {feedback,meetings};
+}
+function c27CloseStamp(it,impact){return rrDigest({request:it.closeRequest,impact});}
+function c27AskClose(id,command='adminClose'){
+  const it=xItem(id);if(!it||ROLE!=='admin'||it.status==='已完成'||it.closeStage!=='admin'||!closeAdminTodoMe(it)){toast('该事项当前不在您的结项审核环节');return;}
+  const impact=c27CloseImpact(it);C27_CLOSE_PENDING={id,command,owner:CUR,stamp:c27CloseStamp(it,impact)};
+  const pending=[impact.feedback.length?'<b>'+impact.feedback.length+' 期反馈</b>':'',impact.meetings.length?'<b>'+impact.meetings.length+' 个专题会</b>':''].filter(Boolean);const count=pending.length?'尚有 '+pending.join('、')+'未结束。':'当前没有未结束的反馈或专题会。';
+  const details=[...impact.feedback.map(p=>'第'+p.no+'期反馈'+(p.due?' · 截止 '+p.due:'')+' · '+p.state),...impact.meetings.map(m=>'专题会 · '+m.status)];
+  openModal('<div class="hd"><b>确认办结</b><button class="x" aria-label="关闭" onclick="closeModal()">✕</button></div><div class="bd" data-close-impact="'+xQ(id)+'"><p style="margin:0 0 12px;font-weight:600">'+esc(it.name)+'</p><p>'+count+'</p>'+(details.length?'<ul style="margin:12px 0;padding-left:20px;line-height:1.9;max-height:220px;overflow:auto">'+details.map(text=>'<li>'+esc(text)+'</li>').join('')+'</ul>':'')+'<p>确认办结后，未结束的反馈和专题会将停止办理，按当前状态归档；后续不再生成反馈任务。已有材料与处理记录保留。</p></div><div class="ft"><button class="btn" onclick="closeModal()">暂不办结</button><button class="btn primary" onclick="c27ConfirmClose()">确认办结</button></div>');
+}
+function c27ConfirmClose(){
+  const op=C27_CLOSE_PENDING,it=op&&xItem(op.id);if(!op||op.owner!==CUR||ROLE!=='admin'||!$('#modalMask')?.innerHTML.includes('data-close-impact="'+op.id+'"'))return;
+  if(!it||it.status==='已完成'||it.closeStage!=='admin'||!closeAdminTodoMe(it)){closeModal();toast('办理状态已变化，请重新查看事项');return;}
+  const impact=c27CloseImpact(it);if(op.stamp!==c27CloseStamp(it,impact)){c27AskClose(it.id,op.command);toast('办理情况已变化，请核对最新影响后确认');return;}
+  const index=op.command==='auditPass'?AUDITS.findIndex(a=>(a.itemId||a.id)===it.id):-1;if(op.command==='auditPass'&&index<0){closeModal();toast('结项申请已变化，请重新查看事项');return;}
+  closeModal();return C27_CLOSE_ACTIONS[op.command](op.command==='auditPass'?index:it.id);
+}
+adminClose=function(id){return c27AskClose(id,'adminClose');};
+fbConfirmClose=function(id){return c27AskClose(id,'fbConfirmClose');};
+auditPass=function(index){const audit=AUDITS[index];if(audit)return c27AskClose(audit.itemId||audit.id,'auditPass');};
+const c27OldCloseModal=closeModal;
+closeModal=function(){C27_CLOSE_PENDING=null;return c27OldCloseModal.apply(this,arguments);};
+
 r3Initialize();
 rvNormalizeCompletionData();
 rvNormalizeFeedbackReviewStages();
