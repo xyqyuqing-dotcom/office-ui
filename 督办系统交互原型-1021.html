@@ -9435,7 +9435,7 @@ function r3SeedUnassignedCooperation(){
   it.sampleKey=key;it.newtodoCreated=false;it.lastReport='';it.chain=['TY',leadOf('人力资源部')];it.logs.forEach(log=>log.who='TY');it.dispatchLog[0].from='TY';it.dispatchLog[0].fromRole='督办管理人';
   ITEMS.push(it);marks[key]=id;
 }
-function r3Initialize(){ITEMS.forEach(r3NormalizeItem);r4SeedReadExamples();r3SeedUnassignedCooperation();r5InitializeFeedbackRoutes();r3UpgradeDraftKeys();r3NormalizeReadStage();Object.assign(TITLES,{todo:['待办与阅知',''],assist:['配合事项','']});xSave();}
+function r3Initialize(){ITEMS.forEach(r3NormalizeItem);r4SeedReadExamples();r3SeedUnassignedCooperation();r27SeedPlanCarryover();r5InitializeFeedbackRoutes();r3UpgradeDraftKeys();r3NormalizeReadStage();Object.assign(TITLES,{todo:['待办与阅知',''],assist:['配合事项','']});xSave();}
 
 /* Imported rows use the same responsibility validation and constructor as manual creation. */
 nbPeople=function(){return [];};
@@ -9928,6 +9928,32 @@ function p22AddForm(keep=false){if(ROLE!=='admin')return;p22FilterInit();let due
 function p22AddToggleAll(checked){const valid=new Set(p22AddItems().map(it=>it.id));document.querySelectorAll('[name="p22NewItem"]').forEach(el=>{if(valid.has(el.value))el.checked=checked;});}
 function p22AddSelected(){if(ROLE!=='admin')return;const due=$('#p22NewDue')?.value||'',reason=$('#p22NewReason')?.value.trim()||'',valid=new Set(p22AddItems().map(it=>it.id)),ids=[...new Set([...document.querySelectorAll('[name="p22NewItem"]:checked')].map(el=>el.value).filter(id=>valid.has(id)))];if(!rvDate(due)||!ids.length){toast('请选择截止日期和事项');return;}return wfRunRecordedCommand('addFeedbackPeriod',function(){let count=0;ids.forEach(id=>{const it=xItem(id);if(!it||it.status==='已完成')return;p22Ensure(it);if(p22Rows(it,due).some(row=>!row.cancelledAt&&row.due===due)){toast('事项已有相同截止日期的期次：'+it.name);return;}p22NewPeriod(it,due,'extra',reason);count++;});xSave();closeModal();if(count){P22_FILTER.dueFrom=due;P22_FILTER.dueTo=due;}route();toast('已新增 '+count+' 条反馈期次');},this,[]);}
 
+
+/* A complete prior report supplies the next period's read-only previous plan. Seed once. */
+function r27SeedPlanCarryover(){
+  const key='plan-carryover-20261027',marks=X_STORE.seededExamples||(X_STORE.seededExamples={}),existing=ITEMS.find(it=>it.sampleKey===key);
+  if(existing){marks[key]=existing.id;return;}
+  const saved=Object.values(X_STORE.items||{}).find(m=>m.workflow?.sampleKey===key)?.workflow;
+  if(saved){if(!ITEMS.some(it=>it.id===saved.id))ITEMS.push(JSON.parse(JSON.stringify(saved)));marks[key]=saved.id;return;}
+  if(marks[key])return;
+  const seq=Math.max(0,...[...ITEMS.map(it=>it.id),...Object.keys(X_STORE.items||{})].map(id=>Number(String(id).match(/^DB-2026-(\d+)$/)?.[1])||0))+1,id='DB-2026-'+String(seq).padStart(3,'0');
+  const due=p22Friday(todayDateOnly()),prior=rvDate(due);prior.setDate(prior.getDate()-7);const first=rvDateText(prior),start=new Date(prior);start.setDate(start.getDate()-4);const raised=rvDateText(start),deadline=rvDate(due);deadline.setMonth(deadline.getMonth()+2);
+  const current='已完成5家重点客户需求摸排，确认3家客户的走访时间、对接人及沟通重点，形成首批走访安排。';
+  const next='完成3家重点客户走访，整理客户需求清单，'+due+'前提交跟进方案并明确各项责任人。';
+  const summary={text:'已完成重点客户需求摸排与走访准备，形成首批走访安排，下一步完成现场走访并提交跟进方案。',source:'manual',confirmedBy:'张三',confirmedAt:first+' 10:00:00',sourceRecordIds:[]};
+  const it=nvBuildItem({...nvDefaults(),name:'重点客户走访与需求跟进',content:'按周推进重点客户走访、需求梳理与服务跟进，形成可执行的客户服务安排。',leadMode:'department',lead:'战略客户部',assists:[],coopExecutives:[],deadline:rvDateText(deadline),cycle:'每周五反馈',first,raised,launch:'请张三按期落实客户走访与需求跟进，逐期对照计划反馈成果。'},{origin:'手动填写',quote:''},id);
+  Object.assign(it,{sampleKey:key,newtodoCreated:false,exec:'张三',currentExec:'张三',dispatchTo:{type:'person',name:'张三'},chain:['TY','任总','张三'],feedback:'已反馈',fbStage:'done',lastReport:current,lastReportAt:first+' 10:00:00',nextPlan:next,taskProgress:30,taskProgressDemo:false,taskProgressAt:first+' 10:00:00',fbSummary:summary.text,currentSummary:{...summary,periodNo:1,version:1},feedbackReturn:null});
+  it.dispatchLog[0].from='TY';it.dispatchLog[0].fromRole='督办管理人';it.dispatchLog[0].t=raised+' 09:00:00';
+  it.logs.forEach(log=>{log.who='TY';log.t=raised+' 09:00:00';});it.noticeEvents.forEach(n=>n.createdAt=raised+' 09:00:00');
+  it.dispatchLog.push({t:raised+' 09:30:00',from:'任总',fromRole:'部门负责人',toType:'person',to:'张三',toRole:'落实人',txt:it.launch});
+  it.logs.push({t:raised+' 09:30:00',who:'任总',act:'继续派发',txt:it.launch});
+  const approvals=[{t:first+' 10:30:00',by:'任总',role:'部门负责人',action:'同意'},{t:first+' 11:00:00',by:mgrReviewer(it),role:'职务分管高管',action:'同意'},{t:first+' 11:30:00',by:'TY',role:'督办管理人',action:'同意'}],periodWindow=feedbackWindow(it);
+  const record={recordId:id+'-P1-V1',periodNo:1,version:1,dimension:it.cycle,periodStart:periodWindow.start,periodEnd:periodWindow.end,cutoff:periodWindow.cutoff,lastPlan:'',current,next,actualReporter:'张三',submittedAt:first+' 10:00:00',taskProgress:30,summary:p22Copy(summary),approvalRecords:approvals,deptAudit:'已同意',mgrAudit:'已同意',adminAudit:'已同意',reviewSnapshot:{schema:1,periodNo:1,stage:'done',outcome:'reviewed',returnedTo:'',reason:''}};
+  it.fbReport={txt:current,np:next,periodNo:1,version:1,actualReporter:'张三',submittedAt:record.submittedAt,taskProgress:30,summary:p22Copy(summary)};it.feedbackHistory=[record];r5BindFeedbackRoute(it);record.reviewSnapshot.reviewRoute=p22Copy(it.fbReviewRoute);
+  it.fbApprovalLog=[{t:record.submittedAt,from:'张三',fromRole:'落实人',toRole:'部门负责人',to:'任总',act:'提交反馈'},...approvals.map(a=>({t:a.t,from:a.by,fromRole:a.role,toRole:a.by==='TY'?'审核完成':'下一审核节点',to:a.by==='TY'?'—':a.by==='任总'?mgrReviewer(it):'TY',act:'审核同意'}))];
+  it.logs.push({t:record.submittedAt,who:'张三',act:'提交反馈（第 1 期）',txt:current+'\n〔下期工作计划〕'+next},...approvals.map(a=>({t:a.t,who:a.by,act:'审核同意',txt:a.role+'审核通过。'})));
+  ITEMS.push(it);r3FeedbackCompleted(it);it.noticeEvents.filter(n=>n.kind==='feedback').forEach(n=>n.createdAt=first+' 11:30:00');p22CaptureActive(it);p22NewPeriod(it,due);it.feedbackSchedule.nextRegularDue=p22Next('week',due);marks[key]=id;
+}
 
 /* Final manual closure previews unfinished work; automatic closure keeps its existing timing. */
 let C27_CLOSE_PENDING=null;
