@@ -2646,8 +2646,6 @@ function renderList(){
   if(F.status==='在途') list = list.filter(i=>i.status==='在途'||i.status==='待办');
   if(F.status==='已完成') list = list.filter(i=>i.status==='已完成');
   if(F.status==='已延期') list = list.filter(i=>i.status==='已延期');
-  if(F.rd==='未读') list = list.filter(i=>!isItemRead(i.id));
-  if(F.rd==='已读') list = list.filter(i=>isItemRead(i.id));
   if(F.watch==='我的关注') list = list.filter(i=>myFav(i));
   if(F.watch==='领导关注') list = list.filter(i=>watchTagInfo(i));
   if(F.imp!=='全部') list = list.filter(i=>i.importance===F.imp);
@@ -2674,7 +2672,7 @@ function renderList(){
       ops.push('<button class="btn sm" title="任务派发（自上而下）：按角色权限派发至下级" onclick="event.stopPropagation();openDispatch(\''+it.id+'\')"><i class="fas fa-share-nodes"></i> '+(hasBeenDispatched(it)?'继续派发':'首次派发')+'</button>');
     const reassignEntry=wfReassignButton(it,'list');if(reassignEntry)ops.push(reassignEntry);
     if(it.status!=='已完成'){
-      if(canRequestClose(it)) ops.push('<button class="btn sm" title="申请提前结项（走结项审核链路）" onclick="event.stopPropagation();openClose(\''+it.id+'\')"><i class="fas fa-flag-checkered"></i> 申请结项</button>');
+      if(canRequestClose(it)) ops.push('<button class="btn sm" title="申请结项（走结项审核链路）" onclick="event.stopPropagation();openClose(\''+it.id+'\')"><i class="fas fa-flag-checkered"></i> 申请结项</button>');
       if(meetingCanApply(it)) ops.push('<button class="btn sm ghost" title="申请专题会汇报" onclick="event.stopPropagation();openMeeting(\''+it.id+'\')"><i class="fas fa-calendar-plus"></i> 申请专题会</button>');
     }
     if(ROLE==='admin'){
@@ -2683,10 +2681,10 @@ function renderList(){
     const marks = ''+(dispatchedToMe(it)?'<span class="tag purple" style="margin-left:4px">上级派发</span>':'');
     const exp = F.expanded[it.id];
     return `
-     <div class="card todo-card ${rdCls(it.id)}" onclick="${SEL_MODE?`toggleSel('${it.id}',${SEL.has(it.id)?'false':'true'})`:`toggleExpand('${it.id}')`}">
+     <div class="card todo-card " onclick="${SEL_MODE?`toggleSel('${it.id}',${SEL.has(it.id)?'false':'true'})`:`toggleExpand('${it.id}')`}">
       <div class="t-body">
         ${SEL_MODE?`<label class="sel-box" title="勾选 / 取消" onclick="event.stopPropagation()"><input type="checkbox" ${SEL.has(it.id)?'checked':''} onchange="toggleSel('${it.id}',this.checked)"></label>`:''}
-        <div class="t-title ${rdCls(it.id)}" title="点击查看详情；最新进展（${formatRecordTime(it.lastReportAt||'—')} · ${esc(who(actualExec(it))||'—')}）：${esc(it.lastReport)}" onclick="event.stopPropagation();${SEL_MODE?`toggleSel('${it.id}',${SEL.has(it.id)?'false':'true'})`:`goDetail('${it.id}')`}">${rdDot(it.id)}${esc(it.name)}<span class="due-inline"><i class="far fa-calendar-xmark"></i> ${dueTxt}</span></div>
+        <div class="t-title " title="点击查看详情；最新进展（${formatRecordTime(it.lastReportAt||'—')} · ${esc(who(actualExec(it))||'—')}）：${esc(it.lastReport)}" onclick="event.stopPropagation();${SEL_MODE?`toggleSel('${it.id}',${SEL.has(it.id)?'false':'true'})`:`goDetail('${it.id}')`}">${esc(it.name)}<span class="due-inline"><i class="far fa-calendar-xmark"></i> ${dueTxt}</span></div>
         <div class="t-meta">
           <span><i class="fas fa-user-tie"></i> 责任人：${esc(deptHeadOf(it))}</span>
           <span><i class="fas fa-users"></i> 配合：${it.assists.length?esc(it.assists.join('、')):'—'}</span>
@@ -2713,13 +2711,12 @@ function renderList(){
       <label class="tb-item"><span>部门</span><select onchange="F.dept=this.value;route()">${['全部'].concat(Object.keys(DEPT_LEAD)).map(d=>'<option value="'+d+'"'+(F.dept===d?' selected':'')+'>'+(d==='全部'?'全部':d)+'</option>').join('')}</select></label>
       ${ROLE==='admin'?`<label class="tb-item"><span>重要性</span><select onchange="F.imp=this.value;route()">${[['全部','全部'],['重点','重点'],['常规','常规']].map(o=>'<option value="'+o[0]+'"'+(F.imp===o[0]?' selected':'')+'>'+o[1]+'</option>').join('')}</select></label>
       <label class="tb-item"><span>反馈状态</span><select onchange="F.fb=this.value;route()">${[['全部','全部'],['待审核','待审核'],['已审核','已审核'],['未反馈','未反馈'],['已退回','已退回']].map(o=>'<option value="'+o[0]+'"'+(F.fb===o[0]?' selected':'')+'>'+o[1]+'</option>').join('')}</select></label>`:''}
-      <label class="tb-item"><span>阅读状态</span><select onchange="F.rd=this.value;route()">${[['全部','全部'],['未读','未读'],['已读','已读']].map(o=>'<option value="'+o[0]+'"'+((F.rd||'全部')===o[0]?' selected':'')+'>'+o[1]+'</option>').join('')}</select></label>
       <label class="tb-item" title="${watchHintTxt()}"><span>关注</span><select onchange="F.watch=this.value;route()">${watchOptsHtml()}</select></label>
       <div class="fsearch"><i class="fas fa-magnifying-glass"></i><input value="${xQ(F.kw)}" placeholder="关键词搜索…" id="rvListSearch" oninput="if(!event.isComposing)rvSearchList(this)" oncompositionend="rvSearchList(this)"></div>
       <button class="btn ${SEL_MODE?'primary':''}" onclick="toggleSelMode()"><i class="fas fa-tasks"></i> ${SEL_MODE?'退出多选':'多选'}</button>
     </div>
     ${(SEL_MODE||ROLE==='admin')?`<div class="tb-row tb-sub">
-      ${SEL_MODE?(selN?`<span class="legend sel-legend">已选 <b>${selN}</b> 项</span><button class="btn sm primary" onclick="selMarkRead()"><i class="fas fa-check-double"></i> 标为已读</button><button class="btn sm" onclick="selMarkUnread()"><i class="fas fa-envelope"></i> 标为未读</button><button class="btn sm" onclick="selWatch()" title="收藏选中事项"><i class="fas fa-star" style="color:#F59E0B"></i> 关注</button><button class="btn sm" onclick="selUnwatch()" title="取消收藏选中事项"><i class="far fa-star"></i> 取消关注</button><button class="btn sm" onclick="selExportCsv()"><i class="fas fa-file-export"></i> 导出选中</button>${ROLE==='admin'?`<button class="btn sm danger" onclick="selDelete()"><i class="fas fa-trash-can"></i> 删除</button>`:''}<button class="btn sm ghost" onclick="clearSel()"><i class="fas fa-xmark"></i> 取消</button>`:`<span style="font-size:12px;color:var(--ink-3)">请选择要批量处理的事项</span>`):''}
+      ${SEL_MODE?(selN?`<span class="legend sel-legend">已选 <b>${selN}</b> 项</span><button class="btn sm" onclick="selWatch()" title="收藏选中事项"><i class="fas fa-star" style="color:#F59E0B"></i> 关注</button><button class="btn sm" onclick="selUnwatch()" title="取消收藏选中事项"><i class="far fa-star"></i> 取消关注</button><button class="btn sm" onclick="selExportCsv()"><i class="fas fa-file-export"></i> 导出选中</button>${ROLE==='admin'?`<button class="btn sm danger" onclick="selDelete()"><i class="fas fa-trash-can"></i> 删除</button>`:''}<button class="btn sm ghost" onclick="clearSel()"><i class="fas fa-xmark"></i> 取消</button>`:`<span style="font-size:12px;color:var(--ink-3)">请选择要批量处理的事项</span>`):''}
       <div class="spacer"></div>
       ${ROLE==='admin'?`<button class="btn primary" onclick="go('create')"><i class="fas fa-plus"></i> 新增督办</button><button class="btn" onclick="openIOMenu('export')"><i class="fas fa-arrow-right-arrow-left"></i> 导入 / 导出</button><button class="btn" onclick="selDelete()"${selN?'':' disabled style="opacity:.45;cursor:not-allowed"'}><i class="fas fa-trash-can"></i> 删除${selN?'（'+selN+'）':''}</button><button class="btn" onclick="openRecycleBin()"><i class="fas fa-trash-can-arrow-up"></i> 回收站${DELETED_ITEMS.length?'（'+DELETED_ITEMS.length+'）':''}</button>`:''}
     </div>`:''}
@@ -2851,9 +2848,9 @@ function renderTodo(){
     if(meetingLatest(it)?.status==='已退回') body+='<div style="margin-top:8px;background:#FFF1F1;border:1px solid #F2C5C5;border-left:3px solid var(--red);border-radius:9px;padding:9px 12px;font-size:12.5px;line-height:1.8;color:#8F2D2D"><b>专题会退回意见：</b>'+esc(meetingLatest(it).rejectedReason||'—')+'</div>';
   }
     return `
-    <div class="card todo-card ${rdCls(it.id)}" data-task-item="${it.id}">
+    <div class="card todo-card " data-task-item="${it.id}">
       <div class="t-body">
-         <div class="t-title ${rdCls(it.id)}" onclick="goDetail('${it.id}')">${rdDot(it.id)}【${esc(it.lead||actualDept(it)||who(it.dispatchTo?.name)||'待派发')} · ${esc(who(actualExec(it))||'—')}】${esc(it.name)}</div>
+         <div class="t-title " onclick="goDetail('${it.id}')">【${esc(it.lead||actualDept(it)||who(it.dispatchTo?.name)||'待派发')} · ${esc(who(actualExec(it))||'—')}】${esc(it.name)}</div>
         <div class="t-meta rv-task-meta">
           <span class="rv-task-statuses" aria-label="待办状态">
             ${wfTaskStatusPills(it,tab)}
@@ -4084,7 +4081,7 @@ function fbDoSubmit(id, txt, np, progress){
   if(!progress||!Number.isInteger(progress.value)||progress.value<0||progress.value>100)return;
   if(!txt?.trim()||!np?.trim()){toast('请填写本期落实情况和下期计划');return;}
   if(xActualProgress(it)!==null&&progress.value<xActualProgress(it)&&!progress.reason?.trim()){toast('请说明进度调低原因');return;}
-  if(!person(r5FeedbackReviewer(it))){toast('尚未配置有效的反馈审核高管，请联系管理人');return;}
+  if(!r5FeedbackRoute(it).skipExecutive&&!person(r5FeedbackReviewer(it))){toast('尚未配置有效的反馈审核高管，请联系管理人');return;}
   const summary=r3ValidateSummary(it,false,{txt,np,progress});if(!summary)return;
   const r = ROLES[ROLE];
   const stamp=nowRecordTime(), version=feedbackVersion(it);
@@ -4100,12 +4097,13 @@ function fbDoSubmit(id, txt, np, progress){
   r5BindFeedbackRoute(it);
   const dl = deptReviewer(it), ml = r5FeedbackReviewer(it);
   const skipDept = !dl || dl===ex;
-  it.fbStage = skipDept ? 'mgr' : 'dept';
-  it.fbApprovalLog.push({t:stamp,from:r.name,fromRole:'落实人',toRole:skipDept?r5FeedbackRole(it):'部门负责人',to:skipDept?(ml||'—'):(dl||'—'),act:'提交反馈'});
+  it.fbStage = skipDept ? (ml?'mgr':'admin') : 'dept';
+  it.fbApprovalLog.push({t:stamp,from:r.name,fromRole:'落实人',toRole:skipDept?(ml?r5FeedbackRole(it):'督办管理人'):'部门负责人',to:skipDept?(ml||adminOf()):(dl||'—'),act:'提交反馈'});
   const h=latestFeedback(it);
   if(h && skipDept) h.deptAudit='跳过（落实人兼任部门负责人）';
+  if(h&&!ml)h.mgrAudit='无需审核（公司领导仅阅知）';
   it.logs.push({t:stamp, who:r.name+'（'+dept+'·落实人）', act:'提交反馈（第 '+it.periodNo+' 期）', txt:txt+'\n〔下期工作计划〕'+np});
-  it.logs.push({t:stamp, who:'系统', act:'流转', txt:'进展反馈进入审核链'+(skipDept?'（'+dept+'负责人为本人或暂缺，按管理链路跳过部门负责人环节）':'：部门负责人（'+(who(dl)||'—')+'）审核')+' → '+r5FeedbackRole(it)+'（'+(who(ml)||'—')+'）审核 → 督办管理人（'+(who(adminOf())||'—')+'）审核 → 同步公司领导（'+(who(bossOf())||'—')+'）审阅（已阅 / 评论）；前三环节均可「同意 / 修改 / 退回」，督办管理人可退回至落实人、部门负责人或分管领导；所填「下期工作计划」将于下一反馈周期自动带入「上期工作计划」。'});
+  it.logs.push({t:stamp,who:'系统',act:'流转',txt:'进展反馈进入审核链：'+fbChainText(it)+'。各审核节点可同意、修改或退回；下期工作计划在下一反馈期自动带入上期工作计划。'});
   r3CommitSummary(it,summary);
   xRecordProgress(it,progress);
   it.logs.push({t:stamp,who:r.name,act:'填报任务总进度',txt:progress.value+'%'+(progress.reason?'；调低原因：'+progress.reason:'')});
@@ -4113,7 +4111,7 @@ function fbDoSubmit(id, txt, np, progress){
   FB_D = {fb:'', np:''};
   FB_ATTACH = [];
   FB_PENDING = null;
-  toast(skipDept?'反馈已提交，待'+r5FeedbackRole(it)+'（'+(who(ml)||'—')+'）审核':'反馈已提交，待部门负责人（'+(who(dl)||'—')+'）审核');
+  toast('反馈已提交，待'+(skipDept?(ml?r5FeedbackRole(it)+'（'+who(ml)+'）':'督办管理人（'+who(adminOf())+'）'):'部门负责人（'+who(dl)+'）')+'审核');
   closeModal(); route();
 }
 /* 存草稿：把当前入口已填内容写入共享草稿桥，另一入口打开时自动带出 */
@@ -4239,7 +4237,7 @@ function fbAgree(id,lvl){
   if(h && !Array.isArray(h.approvalRecords)) h.approvalRecords=[];
   it.feedbackReturn=null;
   if(h){h.rejectedCurrent=false;h.returnResolvedAt=stamp;}
-  const nextStage = {dept:'mgr', mgr:'admin', admin:'done'}[lvl];
+  const nextStage = {dept:r5FeedbackReviewer(it)?'mgr':'admin', mgr:'admin', admin:'done'}[lvl];
   if(!nextStage){ toast('当前环节不支持「同意」操作'); return; }
   it.fbStage = nextStage;
   if(lvl==='admin')r3FeedbackCompleted(it);
@@ -4326,7 +4324,8 @@ function fbBack(id,lvl){
   const txt = $('#fbBackTxt') ? $('#fbBackTxt').value.trim() : '';
   if(!txt){ toast('请填写退回原因'); return; }
   const toSel = $('#fbBackTo'), targets = fbBackTargets(it,lvl);
-  const to = targets.length>1 ? (toSel?toSel.value:'person') : (targets[0]?targets[0].v:'person');
+  const to = toSel?toSel.value:(targets[0]?targets[0].v:'person');
+  if(!targets.some(target=>target.v===to)){toast('请选择有效退回对象');return;}
   const toName = fbBackTargetName(it,to);
   if(h){
     if(lvl==='dept') h.deptAudit='退回 · '+stamp;
@@ -4580,9 +4579,9 @@ function openClose(id){
   const workDraft = returned ? (rq.work || rawClose.replace(/^做法说明：/,'').split('\n')[0]) : '';
   const conclusionDraft = returned ? (rq.conclusion || ((rawClose.split('\n').find(x=>x.indexOf('结项结论：')===0)||'').replace(/^结项结论：/,''))) : '';
   openModal(`
-    <div class="hd"><b><i class="fas fa-flag-checkered" style="color:var(--accent)"></i> ${returned?'修改结项申请':'申请提前结项'} · ${esc(it.name)}</b><button class="x" onclick="closeModal()">✕</button></div>
+    <div class="hd"><b><i class="fas fa-flag-checkered" style="color:var(--accent)"></i> ${returned?'修改结项申请':'申请结项'} · ${esc(it.name)}</b><button class="x" onclick="closeModal()">✕</button></div>
     <div class="bd">
-      <div class="role-note" style="margin-bottom:10px">结项须走审核链路：<b>落实人填写做法说明与结项结论 → 部门负责人确认/退回 → 督办管理人审核</b>，不能自行结束流程。</div>
+      <div class="role-note" style="margin-bottom:10px">结项审核链路：<b>当前办理人提交申请${deptReviewer(it)&&deptReviewer(it)!==CUR?' → 部门负责人确认':''} → 督办管理人审核 → 办结</b>。</div>
       ${returned?'<div style="background:#FFF1F1;border:1px solid #F2C5C5;border-left:3px solid var(--red);border-radius:8px;padding:9px 12px;font-size:12px;color:#9E2F2F;margin-bottom:10px;line-height:1.7"><b>结项申请已退回，请修改后重新提交。</b><br>退回人：'+esc(rq.returnedBy||'—')+' · 退回时间：'+esc(formatRecordTime(rq.returnedAt||'—'))+'<br>退回意见：'+esc(rq.returnedReason||'—')+'</div>':''}
       <div class="fill-note"><b>填写要求（工作规范七 · 结项反馈内容须完整）</b>：不得仅写"已完结""已落实"等简略表述，须包含两项信息——①<b>做法说明</b>：项目的思路和做法简要回顾；②<b>结项结论</b>：达成了哪些结论、取得了什么结果、大致成效如何。</div>
       <div style="font-size:13px;margin-bottom:8px;font-weight:600">做法说明 <span style="color:var(--red)">*</span></div>
@@ -4607,7 +4606,7 @@ function submitClose(id){
   const stamp=nowRecordTime();
   const revised = it.closeRequest?.status==='已退回';
   it.closeRequest = {reason:txt,work,conclusion,by:CUR,dept:dept,time:stamp,status:'待审核',revisedFrom:revised?(it.closeRequest.time||''):''};
-  it.logs.push({t:stamp, who:CUR+'（'+dept+'·落实人）', act:revised?'修改后重新申请结项':'申请提前结项', txt:txt+(revised?'（已根据退回意见修改后重新提交）':'')});
+  it.logs.push({t:stamp, who:CUR+'（'+dept+'·落实人）', act:revised?'修改后重新申请结项':'申请结项', txt:txt+(revised?'（已根据退回意见修改后重新提交）':'')});
   if(dl && dl!==CUR){
     it.closeStage = 'dept'; it.flowStep = 1;
     toast('结项申请已提交：待部门负责人（'+dl+'）确认 → 督办管理人审核');
@@ -4651,13 +4650,14 @@ function openMeeting(id){
   openModal(`
     <div class="hd"><b><i class="fas fa-calendar-plus" style="color:var(--accent)"></i> ${returned?'修改专题会申请':'申请专题会'} · ${esc(it.name)}</b><button class="x" onclick="closeModal()">✕</button></div>
     <div class="bd">
+      <div class="role-note" style="margin-bottom:12px">专题会审核链路：<b>当前办理人提交申请 → 督办管理人审核</b>。提交时同步部门负责人阅知；通过后召开会议，由当前办理人补填会议结论。</div>
       <div class="info-strip" style="grid-template-columns:repeat(3,1fr);margin-bottom:12px"><div class="cell"><div class="k">申请人</div><div class="v">${esc(CUR)}</div></div><div class="cell"><div class="k">关联事项</div><div class="v">${esc(it.id)}</div></div><div class="cell"><div class="k">当前周期</div><div class="v">第 ${esc(it.periodNo||'—')} 期</div></div></div>
       ${returned?'<div style="background:#FFF1F1;border:1px solid #F2C5C5;border-left:3px solid var(--red);border-radius:8px;padding:9px 12px;font-size:12px;color:#9E2F2F;margin-bottom:10px;line-height:1.7"><b>专题会申请已退回，请修改后重新提交。</b><br>退回人：'+esc(latest.rejectedBy||'—')+' · 退回时间：'+esc(formatRecordTime(latest.rejectedAt||'—'))+'<br>退回意见：'+esc(latest.rejectedReason||'专题会申请退回落实人补充完善后重新提交。')+'</div>':''}
       <div style="font-size:13px;font-weight:600;margin-bottom:6px">申请原因 <span style="color:var(--red)">*</span></div>
       <textarea id="mtReason" placeholder="请说明为什么需要专题会、需要解决的关键问题……" style="width:100%;min-height:90px;border:1px solid var(--line);border-radius:9px;padding:10px 12px;font-size:13px;outline:none;line-height:1.7;box-sizing:border-box">${esc(returned?latest.reason||'':'')}</textarea>
       <div style="font-size:13px;font-weight:600;margin:12px 0 6px">会议话术 / 需汇报内容 <span style="color:var(--red)">*</span></div>
       <textarea id="mtScript" placeholder="请填写拟在专题会上说明的事实、数据、结论和希望会议决策的事项……" style="width:100%;min-height:110px;border:1px solid var(--line);border-radius:9px;padding:10px 12px;font-size:13px;outline:none;line-height:1.7;box-sizing:border-box">${esc(returned?latest.script||'':'')}</textarea>
-      <div class="role-note" style="margin-top:10px">专题会通过后，会议结束或形成结论时，仍需由当前落实人在本事项中补填「会议结论」。</div>
+
     </div>
     <div class="ft"><button class="btn" onclick="closeModal()">取消</button><button class="btn primary" onclick="submitMeeting('${it.id}')"><i class="fas fa-paper-plane"></i> ${returned?'修改后重新提交':'提交专题会申请'}</button></div>`);
 }
@@ -7909,6 +7909,20 @@ body:has(#nvMain:not([hidden])) .content{padding-top:22px}
 .wf-detail-operation-row+.wf-detail-operation-row{margin-top:16px;padding-top:16px;border-top:1px solid var(--line,#e5e9f1)}
 .wf-detail-operation-label{font-size:12px;color:var(--ink-3);margin-bottom:9px;font-weight:600}
 .wf-detail-operation-notes{margin-top:8px;font-size:12px;color:var(--ink-3);line-height:1.7}
+.x-group-label{display:block;font-size:13px;font-weight:500;margin-bottom:6px}
+.x-group-picker{margin-bottom:18px}
+.x-group-selectbox{display:flex;align-items:center;flex-wrap:wrap;gap:6px;min-height:42px;padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:#fff;transition:border-color .15s,box-shadow .15s}
+.x-group-selectbox:focus-within{border-color:var(--accent);box-shadow:0 0 0 2px #2f5af31a}
+.x-group-chosen{display:contents}
+.x-group-form .x-group-selectbox input[type=search]{flex:1;width:auto;min-width:140px;margin:0;padding:4px 0;border:0;border-radius:0;outline:none;box-shadow:none;background:transparent;font-size:13px}
+.x-group-toggle{flex:none;margin-left:auto;padding:3px 5px;border:0;background:transparent;color:var(--ink-3);cursor:pointer}
+.x-group-chip{display:inline-flex;align-items:center;gap:6px;max-width:100%;padding:3px 7px;background:#f3f5f8;border:1px solid #e7eaf0;border-radius:4px;font-size:12px;line-height:18px;color:var(--ink-2)}
+.x-group-chip>span{overflow-wrap:anywhere}.x-group-chip button{flex:none;border:0;background:transparent;padding:0;line-height:18px;color:var(--ink-3);cursor:pointer;font-size:15px}
+.x-group-options{margin-top:5px;padding:4px;max-height:220px;overflow:auto;border:1px solid var(--line);border-radius:8px;box-shadow:0 4px 14px #182b4b10;background:#fff}
+.x-group-options[hidden],.x-group-option[hidden],.x-group-create[hidden],.x-group-empty[hidden]{display:none}
+.x-group-option{border-radius:5px;font-size:13px}.x-group-option label{display:flex;align-items:center;gap:9px;margin:0;padding:9px 10px;cursor:pointer}.x-group-option label>span{overflow-wrap:anywhere}.x-group-option input{margin:0;accent-color:var(--accent);flex:none}.x-group-option small{margin-left:auto;white-space:nowrap;color:var(--ink-3);font-size:11px}
+.x-group-option:hover,.x-group-option.is-focused,.x-group-create:hover,.x-group-create.is-focused{background:#f3f6ff}.x-group-option[aria-selected=true]{background:#eef3ff}
+.x-group-create{display:block;width:100%;border:0;border-radius:5px;background:transparent;text-align:left;padding:10px;color:var(--accent);font-size:13px;cursor:pointer;overflow-wrap:anywhere}.x-group-empty{padding:12px 10px;color:var(--ink-3);font-size:12px}
 
 .r3-summary{margin-top:14px;padding:12px 14px;border:1px solid var(--line);border-radius:9px;background:#fff;font-size:13px}
 .r3-summary-head{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-bottom:8px}
@@ -8658,15 +8672,25 @@ goPendingMeetingCard=function(){
 function xSelection(){const visible=new Set(visibleItems().map(i=>i.id));return [...SEL].filter(id=>visible.has(id)&&xItem(id));}
 function xOpenAssign(ids){
   if(ROLE!=='admin')return;X_GROUP_IDS=ids||xSelection();if(!X_GROUP_IDS.length){toast('请先勾选事项');return;}
-  openModal(`<div class="hd"><b>设置分组 · ${X_GROUP_IDS.length} 项</b><button class="x" onclick="closeModal()">✕</button></div><div class="bd x-group-form"><label>分组维度<select id="xAssignDim" onchange="xAssignValues()">${X_DIMS.map(d=>`<option value="${d.id}">${esc(d.name)}</option>`).join('')}</select></label><div id="xAssignValues"></div><div class="x-inline"><input id="xNewValue" aria-label="新分组名称" placeholder="输入新分组名称"><button class="btn sm" onclick="xAddAssignValue()">新建分组</button></div><label>设置方式<select id="xAssignMode"><option value="add">加入所选分组，保留已有归属</option><option value="replace">替换此维度的全部归属</option><option value="remove">移出所选分组</option><option value="clear">清除此维度的全部归属</option></select></label><p class="x-footnote">分组仅用于展示，不改变牵头部门或责任人。</p></div><div class="ft"><button class="btn" onclick="closeModal()">取消</button><button class="btn primary" onclick="xApplyAssign()">保存分组</button></div>`);xAssignValues();
+  openModal(`<div class="hd"><b>设置分组 · ${X_GROUP_IDS.length} 项</b><button class="x" onclick="closeModal()">✕</button></div><div class="bd x-group-form"><label>分组维度<select id="xAssignDim" onchange="xAssignValues()">${X_DIMS.map(d=>`<option value="${d.id}">${esc(d.name)}</option>`).join('')}</select></label><div id="xAssignValues"></div><label>设置方式<select id="xAssignMode"><option value="add">加入所选分组，保留已有归属</option><option value="replace">替换此维度的全部归属</option><option value="remove">移出所选分组</option><option value="clear">清除此维度的全部归属</option></select></label><p class="x-footnote">分组仅用于展示，不改变牵头部门或责任人。</p></div><div class="ft"><button class="btn" onclick="closeModal()">取消</button><button class="btn primary" onclick="xApplyAssign()">保存分组</button></div>`);xAssignValues();
 }
-function xAssignValues(){
+let X_GROUP_FOCUS=-1;
+function xGroupChecks(){const d=xDim($('#xAssignDim')?.value);return d?d.values.map((v,i)=>$('#xGroupCheck'+i)).filter(Boolean):[];}
+function xAssignValues(preserved){
   const d=xDim($('#xAssignDim').value);if(!d)return;
-  const selected=X_GROUP_IDS.map(xItem).filter(Boolean);
-  $('#xAssignValues').innerHTML=`<div class="x-checks">${d.values.map((v,i)=>{const n=selected.filter(it=>xValues(it,d.id).includes(v)).length;return `<label><input type="checkbox" name="xGroupValue" value="${i}" ${n===selected.length?'checked':''} ${n&&n<selected.length?'data-mixed="1"':''}>${esc(v)}${n?`<small>${n}/${selected.length}</small>`:''}</label>`;}).join('')||'<p class="x-footnote">暂无分组，可直接新建。</p>'}</div>`;
-  document.querySelectorAll('[name=xGroupValue][data-mixed]').forEach(el=>el.indeterminate=true);
+  const selected=X_GROUP_IDS.map(xItem).filter(Boolean);X_GROUP_FOCUS=-1;
+  $('#xAssignValues').innerHTML='<label class="x-group-label" for="xGroupSearch">选择分组</label><div class="x-group-picker" id="xGroupPicker"><div class="x-group-selectbox"><div id="xGroupChosen" class="x-group-chosen"></div><input type="search" id="xGroupSearch" autocomplete="off" placeholder="搜索或新建分组，可多选" aria-label="搜索或新建分组" role="combobox" aria-autocomplete="list" aria-haspopup="listbox" aria-controls="xGroupOptions" aria-expanded="false" onfocus="xSetGroupPickerOpen(true)" oninput="if(!event.isComposing)xFilterGroupOptions()" oncompositionend="xFilterGroupOptions()" onkeydown="xGroupPickerKey(event)"><button type="button" class="x-group-toggle" aria-label="展开或收起分组" onclick="xSetGroupPickerOpen(document.getElementById(\'xGroupOptions\').hidden)"><i class="fas fa-angle-down"></i></button></div><div id="xGroupOptions" class="x-group-options" role="listbox" aria-label="可选分组" aria-multiselectable="true" hidden>'+d.values.map((v,i)=>{const n=selected.filter(it=>xValues(it,d.id).includes(v)).length,old=preserved instanceof Map?preserved.get(v):null,checked=old?old.checked:n===selected.length,mixed=old?old.mixed:n>0&&n<selected.length;return '<div id="xGroupOption'+i+'" class="x-group-option" role="option" aria-selected="'+checked+'"><label><input type="checkbox" name="xGroupValue" id="xGroupCheck'+i+'" value="'+i+'" '+(checked?'checked':'')+' '+(mixed?'data-mixed="1"':'')+' onchange="xUpdateGroupPicker()"><span>'+esc(v)+'</span>'+(n?'<small>'+(n<selected.length?'部分已归组 ':'已归组 ')+n+'/'+selected.length+'</small>':'')+'</label></div>';}).join('')+'<div id="xGroupEmpty" class="x-group-empty" hidden>未找到分组</div><button type="button" id="xGroupCreate" class="x-group-create" onclick="xAddAssignValue()" hidden></button></div></div>';
+  xGroupChecks().forEach(el=>{el.indeterminate=el.getAttribute('data-mixed')==='1';});xUpdateGroupPicker();
 }
-function xAddAssignValue(){const d=xDim($('#xAssignDim').value),v=$('#xNewValue').value.trim();if(!v)return;if(d.values.includes(v)){toast('分组已存在');return;}if(v==='未分组'){toast('请使用其他分组名称');return;}const checked=[...document.querySelectorAll('[name=xGroupValue]:checked')].map(el=>el.value);d.values.push(v);xSave();xAssignValues();$('#xNewValue').value='';const checks=document.querySelectorAll('[name=xGroupValue]');checks.forEach(el=>{el.checked=checked.includes(el.value)||Number(el.value)===d.values.length-1;el.indeterminate=false;});}
+function xSetGroupPickerOpen(open){const box=$('#xGroupOptions'),input=$('#xGroupSearch');if(!box||!input)return;box.hidden=!open;input.setAttribute('aria-expanded',String(!!open));if(!open){X_GROUP_FOCUS=-1;input.removeAttribute('aria-activedescendant');}else xFilterGroupOptions(false);}
+function xGroupMatches(){const d=xDim($('#xAssignDim')?.value),q=($('#xGroupSearch')?.value||'').trim().toLocaleLowerCase();return d?d.values.map((v,i)=>({v,i})).filter(o=>o.v.toLocaleLowerCase().includes(q)):[];}
+function xFilterGroupOptions(open=true){const d=xDim($('#xAssignDim')?.value),input=$('#xGroupSearch');if(!d||!input)return;const q=input.value.trim(),match=xGroupMatches(),show=new Set(match.map(o=>o.i));d.values.forEach((v,i)=>{const row=$('#xGroupOption'+i);if(row)row.hidden=!show.has(i);});const create=$('#xGroupCreate'),empty=$('#xGroupEmpty');create.hidden=!q||q==='未分组'||d.values.some(v=>v.toLocaleLowerCase()===q.toLocaleLowerCase());create.textContent='＋ 新建“'+q+'”';empty.hidden=match.length>0||!create.hidden;X_GROUP_FOCUS=-1;input.removeAttribute('aria-activedescendant');d.values.forEach((v,i)=>$('#xGroupOption'+i)?.classList.remove('is-focused'));create.classList.remove('is-focused');if(open){$('#xGroupOptions').hidden=false;input.setAttribute('aria-expanded','true');}}
+function xUpdateGroupPicker(){const d=xDim($('#xAssignDim')?.value);if(!d)return;const chips=[];xGroupChecks().forEach(el=>{const i=Number(el.value),row=$('#xGroupOption'+i);row?.setAttribute('aria-selected',String(el.checked));if(el.checked)chips.push('<span class="x-group-chip"><span>'+esc(d.values[i])+'</span><button type="button" aria-label="取消选择'+xQ(d.values[i])+'" onclick="xUnselectGroup('+i+')">×</button></span>');});$('#xGroupChosen').innerHTML=chips.join('');}
+function xUnselectGroup(index){const el=$('#xGroupCheck'+index);if(!el)return;el.checked=false;el.indeterminate=false;xUpdateGroupPicker();}
+function xChooseGroup(index){const el=$('#xGroupCheck'+index);if(!el)return;el.checked=!el.checked;el.indeterminate=false;xUpdateGroupPicker();$('#xGroupSearch').value='';xFilterGroupOptions();}
+function xGroupPickerKey(event){if(event.isComposing)return;if(event.key==='Escape'){event.preventDefault();xSetGroupPickerOpen(false);return;}if(!['ArrowDown','ArrowUp','Enter'].includes(event.key))return;event.preventDefault();const input=$('#xGroupSearch'),matches=xGroupMatches().map(o=>o.i),create=$('#xGroupCreate');if(!create.hidden)matches.push('new');if(event.key==='Enter'){const choice=matches[X_GROUP_FOCUS];if(choice==='new')return xAddAssignValue();if(typeof choice==='number')return xChooseGroup(choice);const q=input.value.trim().toLocaleLowerCase(),exact=xDim($('#xAssignDim').value).values.findIndex(v=>v.toLocaleLowerCase()===q);if(exact>=0)return xChooseGroup(exact);if(q&&!create.hidden)return xAddAssignValue();return;}$('#xGroupOptions').hidden=false;input.setAttribute('aria-expanded','true');if(!matches.length)return;X_GROUP_FOCUS=(X_GROUP_FOCUS+(event.key==='ArrowDown'?1:X_GROUP_FOCUS<0?0:-1)+matches.length)%matches.length;const d=xDim($('#xAssignDim').value);d.values.forEach((v,i)=>$('#xGroupOption'+i)?.classList.toggle('is-focused',matches[X_GROUP_FOCUS]===i));create.classList.toggle('is-focused',matches[X_GROUP_FOCUS]==='new');const id=matches[X_GROUP_FOCUS]==='new'?'xGroupCreate':'xGroupOption'+matches[X_GROUP_FOCUS];input.setAttribute('aria-activedescendant',id);$('#'+id)?.scrollIntoView({block:'nearest'});}
+function xAddAssignValue(){if(ROLE!=='admin')return;const d=xDim($('#xAssignDim')?.value),input=$('#xGroupSearch'),v=input?.value.trim();if(!d||!v)return;if(v==='未分组'){toast('请使用其他分组名称');return;}const existing=d.values.findIndex(name=>name.toLocaleLowerCase()===v.toLocaleLowerCase());if(existing>=0){const check=$('#xGroupCheck'+existing);check.checked=true;check.indeterminate=false;input.value='';xUpdateGroupPicker();xFilterGroupOptions();return;}const choices=new Map(d.values.map((name,i)=>{const el=$('#xGroupCheck'+i);return [name,{checked:!!el?.checked,mixed:!!el?.indeterminate}];}));d.values.push(v);choices.set(v,{checked:true,mixed:false});xSave();xAssignValues(choices);xSetGroupPickerOpen(true);$('#xGroupSearch').focus();}
+document.addEventListener('pointerdown',function(event){const picker=$('#xGroupPicker');if(picker&&!picker.contains(event.target))xSetGroupPickerOpen(false);});
 function xApplyAssign(){
   if(ROLE!=='admin')return;const d=xDim($('#xAssignDim').value),mode=$('#xAssignMode').value;
   const vs=[...document.querySelectorAll('[name=xGroupValue]:checked')].map(c=>d.values[Number(c.value)]).filter(Boolean);
@@ -9110,12 +9134,13 @@ function wfDetailOperations(it,entries){
     const buttons=[...entry.matchAll(/<button\b[\s\S]*?<\/button>/g)].map(m=>m[0]);
     buttons.forEach(button=>{
       const handler=button.match(/onclick="([^"]*)"/)?.[1]||'';
-      const proactive=/\b(?:copyRemind|openReassign|openClose|openMeeting|rollPeriod)\(/.test(handler)||/重新派发/.test(button);
+      const resubmission=/\bopenClose\(/.test(handler)&&it.closeRequest?.status==='已退回'||/\bopenMeeting\(/.test(handler)&&meetingLatest(it)?.status==='已退回';
+      const proactive=!resubmission&&(/\b(?:copyRemind|openReassign|openClose|openMeeting|rollPeriod)\(/.test(handler)||/重新派发/.test(button));
       (proactive?active:review).push(button);
       if(!/\sdisabled(?:\s|=|>)/.test(button))count++;
     });
     const rest=entry.replace(/<button\b[\s\S]*?<\/button>/g,'').trim();
-    if(rest)notes[/重新派发|结项退回意见|专题会退回意见/.test(entry)?'active':'review'].push(rest);
+    if(rest)notes[/重新派发/.test(entry)?'active':'review'].push(rest);
   });
   const row=(kind,label,buttons)=>buttons.length||notes[kind].length?`<div class="wf-detail-operation-row" data-operation-section="${kind}"><div class="wf-detail-operation-label">${label}</div><div class="flow-ops">${buttons.join('')}</div>${notes[kind].length?'<div class="wf-detail-operation-notes">'+notes[kind].join('')+'</div>':''}</div>`:'';
   return {count,html:row('review','审核与办理',review)+row('active','主动操作',active)};
@@ -9674,10 +9699,12 @@ saveEditItem=function(id){if(ROLE!=='admin'){toast('仅督办管理人可修改�
 }return r3OldSaveItem.apply(this,arguments);};
 
 /* Feedback approval route is separate from the organizational supervisor and frozen per version. */
+function r5ReadOnlyLeader(code){return !!code&&(code===bossOf()||person(code)?.r==='boss');}
+function r5WithoutLeaderApproval(route){return route&&r5ReadOnlyLeader(route.reviewer)?{...route,configuredReviewer:route.reviewer,reviewer:'',skipExecutive:true,notifySupervisor:false}:route;}
 function r5BuildFeedbackRoute(it){
   const supervisor=mgrReviewer(it),projectLead=it?.projectLead||'',project=!!projectLead&&projectLead!==supervisor;
-  return {schema:1,periodNo:Number(it.periodNo||1),assignmentVersion:it.assignmentVersion||0,reviewer:project?projectLead:supervisor,
-    role:project?'牵头高管':'分管领导',projectLead,supervisor,notifySupervisor:project&&!!supervisor&&supervisor!==bossOf()};
+  return r5WithoutLeaderApproval({schema:1,periodNo:Number(it.periodNo||1),assignmentVersion:it.assignmentVersion||0,reviewer:project?projectLead:supervisor,
+    role:project?'牵头高管':'分管领导',projectLead,supervisor,notifySupervisor:project&&!!supervisor&&supervisor!==bossOf()});
 }
 function r5ShouldNotifySupervisor(route){return !!route?.notifySupervisor&&!!route.supervisor&&route.supervisor!==bossOf();}
 function r5WithdrawDuplicateLeaderNotices(){
@@ -9691,7 +9718,7 @@ function r5WithdrawDuplicateLeaderNotices(){
 function r5FeedbackRoute(it,record){
   if(record)return record.reviewRoute||null;
   const saved=it?.fbReport?.reviewRoute||wfCurrentRecord(it)?.reviewRoute||it?.fbReviewRoute;
-  return saved&&saved.periodNo===Number(it.periodNo||1)&&saved.assignmentVersion===(it.assignmentVersion||0)?saved:r5BuildFeedbackRoute(it);
+  return saved&&saved.periodNo===Number(it.periodNo||1)&&saved.assignmentVersion===(it.assignmentVersion||0)?r5WithoutLeaderApproval(saved):r5BuildFeedbackRoute(it);
 }
 function r5FeedbackReviewer(it){return r5FeedbackRoute(it).reviewer;}
 function r5FeedbackRole(it){return r5FeedbackRoute(it).role;}
@@ -9701,7 +9728,8 @@ function r5BindFeedbackRoute(it,retain=false){
 }
 function r5InitializeFeedbackRoutes(){
   r5WithdrawDuplicateLeaderNotices();
-  ITEMS.forEach(it=>{
+  const initialize=it=>{
+    if(r5NormalizeLeaderApproval(it))return;
     if(it.status==='已完成'||it.feedback!=='已反馈'||!['dept','mgr','admin'].includes(it.fbStage)||it.fbReport?.reviewRoute||wfCurrentRecord(it)?.reviewRoute)return;
     // Completed higher reviews are not retroactively reopened. Pending department/executive steps adopt the new route.
     if(it.fbStage==='admin'){
@@ -9711,9 +9739,21 @@ function r5InitializeFeedbackRoutes(){
     }
     const route=r5BindFeedbackRoute(it);
     if(r5ShouldNotifySupervisor(route))(it.logs||=[]).push({t:nowRecordTime(),who:'系统',act:'反馈审核路径更新',txt:'本次尚未完成的高管审核交由牵头高管（'+who(route.reviewer)+'）处理；通过后发送职务分管高管（'+who(route.supervisor)+'）阅知。原提交及已完成审核记录保留。'});
-  });
+  };
+  ITEMS.forEach(it=>{if(it.feedbackPeriods?.length&&typeof p22With==='function')it.feedbackPeriods.forEach(p=>p22With(it,p.no,()=>initialize(it)));else initialize(it);});
 }
-fbMgrMe=function(it){return !!it&&it.status!=='已完成'&&it.fbStage==='mgr'&&r5FeedbackReviewer(it)===CUR&&['mgr','boss'].includes(ROLE);};
+function r5NormalizeLeaderApproval(it){
+  if(!it||it.status==='已完成'||it.feedbackArchive||typeof p22Cancelled==='function'&&p22Cancelled(it)||!['dept','mgr','admin'].includes(it.fbStage))return false;
+  const route=r5FeedbackRoute(it);if(!route?.skipExecutive)return false;
+  const h=wfCurrentRecord(it),saved=[it.fbReport?.reviewRoute,h?.reviewRoute,it.fbReviewRoute].filter(Boolean),move=it.fbStage==='mgr';
+  if(!move&&saved.length&&saved.every(r=>r.skipExecutive&&!r.reviewer))return false;
+  r5BindFeedbackRoute(it,true);if(h&&!/^已同意/.test(h.mgrAudit||''))h.mgrAudit='无需审核（公司领导仅阅知）';
+  if(move){it.fbStage='admin';it.feedback='已反馈';if(it.feedbackReturn?.to==='mgr')it.feedbackReturn={...it.feedbackReturn,to:'admin',originalTo:'mgr',reroutedAt:nowRecordTime()};}
+  if(h)h.reviewSnapshot=wfFeedbackSnapshot(it);
+  (it.logs||=[]).push({t:nowRecordTime(),who:'系统',act:'公司领导审核节点调整',txt:'第'+(it.periodNo||1)+'期反馈：公司领导仅阅知，不参与审核；'+(move?'原高管审核节点跳过，交督办管理人审核。':'本期审批路径移除公司领导审核节点。')+'原提交材料和已完成的处理记录保留。'});
+  return true;
+}
+fbMgrMe=function(it){return !!it&&it.status!=='已完成'&&it.fbStage==='mgr'&&!r5ReadOnlyLeader(CUR)&&r5FeedbackReviewer(it)===CUR&&ROLE==='mgr';};
 const r5OldStageRole=fbStageRoleName;
 fbStageRoleName=function(stage,it){return stage==='mgr'&&it?r5FeedbackRole(it):r5OldStageRole(stage);};
 function r5ProjectWording(it,text,route){if(!it&&!route)return text;const r=route||r5FeedbackRoute(it);return r?.role==='牵头高管'?String(text).replace(/分管高管|分管领导/g,'牵头高管').replace(/待分管重审/g,'待牵头高管重审').replace(/归档时待分管审核/g,'归档时待牵头高管审核').replace(/分管审核已通过/g,'牵头高管审核已通过'):text;}
@@ -9733,10 +9773,10 @@ feedbackRecordStatus=function(it,h){const text=r5OldRecordStatus(it,h);const liv
 fbBackTargets=function(it,lvl){const all=[{v:'person',t:'落实人（'+who(actualExec(it))+'）——退回后重新填写并提交'},
   {v:'dept',t:'部门负责人（'+who(deptReviewer(it))+'）——退回后重新审核'},
   {v:'mgr',t:r5FeedbackRole(it)+'（'+who(r5FeedbackReviewer(it))+'）——退回后重新审核'}];
-  return (lvl==='dept'?all.slice(0,1):lvl==='mgr'?all.slice(0,2):lvl==='admin'?all:[]).filter(target=>target.v!=='dept'||deptReviewer(it)!==actualExec(it));};
+  return (lvl==='dept'?all.slice(0,1):lvl==='mgr'?all.slice(0,2):lvl==='admin'?all:[]).filter(target=>(target.v!=='dept'||deptReviewer(it)!==actualExec(it))&&(target.v!=='mgr'||!!r5FeedbackReviewer(it)));};
 fbBackTargetName=function(it,to){return to==='dept'?'部门负责人（'+who(deptReviewer(it))+'）':to==='mgr'?r5FeedbackRole(it)+'（'+who(r5FeedbackReviewer(it))+'）':'落实人（'+who(actualExec(it))+'）';};
 fbBackTargetPerson=function(it,to){return to==='dept'?deptReviewer(it):to==='mgr'?r5FeedbackReviewer(it):actualExec(it);};
-fbChainText=function(it){const parts=[];if(deptReviewer(it)&&deptReviewer(it)!==actualExec(it))parts.push('部门负责人（'+who(deptReviewer(it))+'）');const route=r5FeedbackRoute(it);parts.push(route.role+'（'+who(route.reviewer)+'）','督办管理人（'+who(adminOf())+'）');return parts.join(' → ')+(r5ShouldNotifySupervisor(route)?'；牵头高管通过后通知职务分管高管（'+who(route.supervisor)+'）阅知':'')+'；审核完成后发送公司领导阅知';};
+fbChainText=function(it){const parts=[];if(deptReviewer(it)&&deptReviewer(it)!==actualExec(it))parts.push('部门负责人（'+who(deptReviewer(it))+'）');const route=r5FeedbackRoute(it);if(route.reviewer)parts.push(route.role+'（'+who(route.reviewer)+'）');parts.push('督办管理人（'+who(adminOf())+'）');return parts.join(' → ')+(r5ShouldNotifySupervisor(route)?'；牵头高管通过后通知职务分管高管（'+who(route.supervisor)+'）阅知':'')+'；审核完成后发送公司领导阅知';};
 function r5ProjectReviewNotice(it){
   const h=wfCurrentRecord(it),route=r5FeedbackRoute(it);if(!h||!r5ShouldNotifySupervisor(route))return;
   const approved=(h.approvalRecords||[]).filter(a=>a.role==='牵头高管'&&a.action==='同意').length;
@@ -9900,7 +9940,7 @@ nbCycleOptions=function(){return P22_CYCLES;};
 setInterval(()=>{if(!P22_ACTIVE&&p22Sweep()){xSave();route();}},60000);
 
 /* Manager view: filter effective feedback deadlines, then select item/period pairs. */
-let P22_MANAGE_ITEM='all',P22_FILTER=null,P22_VISIBLE_KEYS=new Set();
+let P22_MANAGE_ITEM='all',P22_FILTER=null,P22_VISIBLE_KEYS=new Set(),P22_NEW_PENDING=null;
 TITLES.periods=['反馈期次',''];
 if(!ROLES.admin.nav.some(row=>row[0]==='periods'))ROLES.admin.nav.splice(ROLES.admin.nav.findIndex(row=>row[0]==='newtodo')+1,0,['periods','fa-calendar-alt','反馈期次']);
 function p22Completion(it){const actual=(it.closeRequest?.completedAt||it.closeRequest?.autoDoneAt||it.workflowClosedAt||'').slice(0,10);return {date:actual||it.deadline||'',actual:!!actual};}
@@ -9932,11 +9972,10 @@ function p22ApplyChange(confirmed=false){const op=P22_PENDING;if(ROLE!=='admin'|
     if(op.action==='date'){p.data.nextDue=op.due;p.adjustedAt=stamp;p.adjustedBy=CUR;p.adjustReason=op.reason;}else{p.cancelledAt=stamp;p.cancelledBy=CUR;p.cancelReason=op.reason;(it.feedbackHistory||[]).filter(h=>Number(h.periodNo)===p.no).forEach(h=>{h.reviewSnapshot={...(h.reviewSnapshot||{}),outcome:'cancelled',cancelledAt:stamp};h.reviewFrozen=true;});(it.noticeEvents||[]).filter(n=>Number(n.payload?.periodNo)===p.no&&['feedback','supervisor'].includes(n.kind)&&!n.readAt).forEach(n=>{n.withdrawnAt=stamp;n.withdrawnReason='反馈期次已取消';});}(p.changes||=[]).push({at:stamp,by:CUR,action:op.action,due:op.due,reason:op.reason});if(Number(it.periodNo)===p.no)p22Apply(it,p.data);
     }(it.logs||=[]).push({t:stamp,who:CUR,act:op.action==='cancel'?'取消反馈期次':'调整反馈截止日期',txt:(p?'第'+p.no+'期':'原定 '+r.originalDue+' 排期')+'：'+(op.action==='date'?op.due+' 12:00':'已取消')+(op.reason?'；'+op.reason:'')});count++;});if(count&&op.action==='date'){P22_FILTER.dueFrom=op.due;P22_FILTER.dueTo=op.due;}P22_PENDING=null;xSave();closeModal();route();toast('已处理 '+count+' 条反馈期次');},this,[]);
 }
-function p22AddItems(){return ITEMS.filter(it=>it.status!=='已完成');}
-function p22AddForm(){if(ROLE!=='admin')return;p22FilterInit();const items=p22AddItems();openModal('<div class="hd"><b>新增一期反馈</b></div><div class="bd p22-manager"><label><span>选择督办事项 <span class="p22-required">*</span></span></label><label class="p22-confirm-check"><input type="checkbox" aria-label="全选可新增事项" onchange="p22AddToggleAll(this.checked)">全选（'+items.length+' 项）</label><div class="p22-new-scope">'+items.map(it=>'<label><input type="checkbox" name="p22NewItem" value="'+it.id+'">'+esc(it.name)+'</label>').join('')+'</div><label><span>反馈截止日期 <span class="p22-required">*</span></span><input type="date" id="p22NewDue" required></label><label>说明（选填）<input id="p22NewReason" placeholder="例如：节后补充反馈"></label><p class="hint">为所选督办事项各新增一期反馈，统一按上述日期截止，不改变后续常规排期。</p></div><div class="ft"><button class="btn" onclick="closeModal()">取消</button><button class="btn primary" onclick="p22AddSelected()">新增一期</button></div>');}
-function p22AddToggleAll(checked){const valid=new Set(p22AddItems().map(it=>it.id));document.querySelectorAll('[name="p22NewItem"]').forEach(el=>{if(valid.has(el.value))el.checked=checked;});}
-function p22AddSelected(){if(ROLE!=='admin')return;const due=$('#p22NewDue')?.value||'',reason=$('#p22NewReason')?.value.trim()||'',valid=new Set(p22AddItems().map(it=>it.id)),ids=[...new Set([...document.querySelectorAll('[name="p22NewItem"]:checked')].map(el=>el.value).filter(id=>valid.has(id)))];if(!rvDate(due)||!ids.length){toast('请选择截止日期和事项');return;}return wfRunRecordedCommand('addFeedbackPeriod',function(){let count=0;ids.forEach(id=>{const it=xItem(id);if(!it||it.status==='已完成')return;p22Ensure(it);if(p22Rows(it,due).some(row=>!row.cancelledAt&&row.due===due)){toast('事项已有相同截止日期的期次：'+it.name);return;}p22NewPeriod(it,due,'extra',reason);count++;});xSave();closeModal();if(count){P22_FILTER.dueFrom=due;P22_FILTER.dueTo=due;}route();toast('已新增 '+count+' 条反馈期次');},this,[]);}
-
+function p22AddItems(){if(!P22_NEW_PENDING||P22_NEW_PENDING.owner!==CUR)return [];return P22_NEW_PENDING.ids.map(xItem).filter(it=>it&&it.status!=='已完成');}
+function p22DismissAdd(){P22_NEW_PENDING=null;closeModal();}
+function p22AddForm(){if(ROLE!=='admin')return;p22FilterInit();const ids=[...new Set(p22Selected().map(([id,key])=>p22Resolve(id,key)).filter(r=>r&&!r.cancelledAt&&r.it.status!=='已完成').map(r=>r.it.id))];if(!ids.length){P22_NEW_PENDING=null;toast('请先在列表勾选督办事项');return;}P22_NEW_PENDING={owner:CUR,ids};const items=p22AddItems();openModal('<div class="hd"><b>新增一期反馈</b></div><div class="bd p22-manager"><p>为已选 <b>'+items.length+' 个</b>督办事项各新增一期反馈。</p><p class="hint">'+items.map(it=>esc(it.name)).join('、')+'</p><label><span>反馈截止日期 <span class="p22-required">*</span></span><input type="date" id="p22NewDue" required></label><label>说明（选填）<input id="p22NewReason" placeholder="例如：节后补充反馈"></label><p class="hint">统一按上述日期截止，同一督办事项只新增一期，不改变后续常规排期。</p></div><div class="ft"><button class="btn" onclick="p22DismissAdd()">取消</button><button class="btn primary" onclick="p22AddSelected()">新增一期</button></div>');}
+function p22AddSelected(){if(ROLE!=='admin'||!P22_NEW_PENDING||P22_NEW_PENDING.owner!==CUR)return;const due=$('#p22NewDue')?.value||'',reason=$('#p22NewReason')?.value.trim()||'',ids=p22AddItems().map(it=>it.id);if(!rvDate(due)){toast('请选择反馈截止日期');return;}if(!ids.length){toast('所选督办事项已发生变化，请重新选择');p22DismissAdd();return;}return wfRunRecordedCommand('addFeedbackPeriod',function(){let count=0;ids.forEach(id=>{const it=xItem(id);if(!it||it.status==='已完成')return;p22Ensure(it);if(p22Rows(it,due).some(row=>!row.cancelledAt&&row.due===due)){toast('事项已有相同截止日期的期次：'+it.name);return;}p22NewPeriod(it,due,'extra',reason);count++;});P22_NEW_PENDING=null;xSave();closeModal();if(count){P22_FILTER.dueFrom=due;P22_FILTER.dueTo=due;}route();toast('已新增 '+count+' 条反馈期次');},this,[]);}
 
 /* A complete prior report supplies the next period's read-only previous plan. Seed once. */
 function r27SeedPlanCarryover(){
