@@ -9828,6 +9828,16 @@ feedbackWindow=function(it){const p=p22CurrentSlot(it);if(!p)return p22OldWindow
 ['feedbackClosed','feedbackNeedsAudit'].forEach(name=>{const fn=window[name];window[name]=function(it){return !p22Cancelled(it)&&fn.apply(this,arguments);};});
 const p22OldFeedbackFlow=wfFeedbackFlow;
 wfFeedbackFlow=function(it){return p22Cancelled(it)?{key:'fb-cancelled',flow:'feedback',stage:'cancelled',label:'该期已取消',globalLabel:'该期已取消',action:false,overdue:false,cls:'gray'}:p22OldFeedbackFlow(it);};
+// Item-level views summarize every live period; period detail and commands keep their selected context.
+function p22FeedbackStates(it){return (it.feedbackPeriods||[]).filter(p=>!p.cancelledAt&&!p.data.feedbackArchive).map(p=>p22With(it,p.no,()=>({...wfFeedbackFlow(it),periodNo:p.no,due:it.nextDue||''})));}
+const p22OldStates=wfStates;
+wfStates=function(it){
+  const states=p22OldStates(it);
+  if(!it?.feedbackPeriods||P22_ACTIVE?.id===it.id||it.status==='已完成'||!states.some(s=>s.flow==='feedback'))return states;
+  const periods=p22FeedbackStates(it),pending=periods.filter(s=>s.stage!=='done'),shown=pending.length?pending:periods.slice(-1);
+  const feedback=shown.map(s=>({...s,label:(it.feedbackPeriods.length>1?'第'+s.periodNo+'期 · ':'')+s.label,globalLabel:(it.feedbackPeriods.length>1?'第'+s.periodNo+'期 · ':'')+s.globalLabel}));
+  return states.flatMap(s=>s.flow==='feedback'?feedback:[s]);
+};
 const p22OldFilter=feedbackFilterMatch;
 feedbackFilterMatch=function(it,filter){if(!it?.feedbackPeriods||filter==='全部')return p22OldFilter(it,filter);if(P22_ACTIVE?.id===it.id)return !p22Cancelled(it)&&p22OldFilter(it,filter);return it.feedbackPeriods.some(p=>!p.cancelledAt&&p22With(it,p.no,()=>p22OldFilter(it,filter)));};
 const p22OldProgress=xActualProgress;
@@ -9860,8 +9870,8 @@ wfTaskActions=function(it,tab){
   const groups=p22TaskPeriods(it,tab).map(p=>p22With(it,p.no,()=>{const source=tab==='audit'?fbAuditOps(it):fbDispatchOps(it),buttons=[...source.matchAll(/<button\b[\s\S]*?<\/button>/g)].map(m=>m[0]).filter(b=>/\b(fbAgree|openFbEdit|openFbBack|goDetailFeedback|openFeedback)\(/.test(b));return '<div class="wf-task-action-group" role="group" aria-label="第'+p.no+'期反馈操作"><span class="wf-task-action-label">第'+p.no+'期</span>'+p22ScopeButtons(buttons.join(''),it,p.no)+'</div>';})).join('');
   return base.replace('<div class="wf-task-action-groups">','<div class="wf-task-action-groups">'+groups);
 };
-wfTaskStatusPills=function(it,tab){if(!it.feedbackPeriods||it.feedbackPeriods.length===1)return p22OldPills(it,tab);const periods=p22TaskPeriods(it,tab),other=p22OldPills(it,tab).replace(/<span class="pill[^>]*data-flow="feedback"[^>]*><span class="dot"><\/span>[\s\S]*?<\/span>/g,'');return (periods.length?'<span class="pill amber"><span class="dot"></span>'+periods.length+'期待'+(tab==='audit'?'审核':'反馈')+'</span>':'')+other;};
-wfTaskTime=function(it,tab){const periods=p22TaskPeriods(it,tab);return '<span class="wf-time-entry">计划完成：'+esc(it.deadline||'—')+'</span>'+(periods.length===1?'<span class="wf-time-entry '+(feedbackClosed({...it,nextDue:periods[0].data.nextDue})?'wf-feedback-due':'')+'">第'+periods[0].no+'期反馈截止：'+esc(periods[0].data.nextDue||'—')+'</span>':'');};
+wfTaskStatusPills=function(it,tab){if(!it.feedbackPeriods||it.feedbackPeriods.length===1)return p22OldPills(it,tab);const periods=p22TaskPeriods(it,tab),overdue=periods.filter(p=>p22With(it,p.no,()=>wfFeedbackFlow(it).overdue)).length,other=p22OldPills(it,tab).replace(/<span class="pill[^>]*data-flow="feedback"[^>]*><span class="dot"><\/span>[\s\S]*?<\/span>/g,'');return (periods.length?'<span class="pill '+(overdue?'red is-overdue':'amber')+'" data-flow="feedback"><span class="dot"></span>'+periods.length+'期待'+(tab==='audit'?'审核':'反馈')+(overdue?' · '+overdue+'期已逾期':'')+'</span>':'')+other;};
+wfTaskTime=function(it,tab){const periods=p22TaskPeriods(it,tab);return '<span class="wf-time-entry">计划完成：'+esc(it.deadline||'—')+'</span>'+(periods.length===1?p22With(it,periods[0].no,()=>'<span class="wf-time-entry '+(wfFeedbackFlow(it).overdue?'wf-feedback-due':'')+'">第'+periods[0].no+'期反馈截止：'+esc(it.nextDue||'—')+'</span>'):'');};
 function p22TaskBody(it,tab,fallback){if(!it.feedbackPeriods||it.feedbackPeriods.length===1)return fallback;
   let body=tab==='audit'?'':dispatchBrief(it)+rvTaskMeetingBrief(it);
   if(tab==='audit'&&(closeTodoMe(it)||closeAdminTodoMe(it)))body+='<div class="p22-period-box"><b>结项说明：</b>'+esc(it.closeRequest?.reason||'—')+'</div>';
