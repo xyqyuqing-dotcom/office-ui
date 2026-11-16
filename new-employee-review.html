@@ -113,6 +113,13 @@
     .select-wrap::after { content: ""; position: absolute; right: 14px; top: 16px; width: 8px; height: 8px; border-right: 1px solid #aeb4ba; border-bottom: 1px solid #aeb4ba; transform: rotate(45deg); pointer-events: none; }
 
     .report-section { margin-top: 38px; }
+    .report-reminder { margin: 0 0 18px; line-height: 1.7; }
+    #sixthPeriodReport textarea { padding-right: 36px; }
+    .report-clear {
+      position: absolute; top: 8px; right: 8px; width: 24px; height: 24px; padding: 0;
+      border: 0; border-radius: 50%; background: transparent; color: #737c85; cursor: pointer;
+    }
+    .report-clear:hover { background: #eef1f5; color: #303941; }
     .long-field { margin-top: 25px; }
     .long-field:first-of-type { margin-top: 0; }
     .long-label { display: block; margin-bottom: 10px; color: #303941; }
@@ -488,21 +495,69 @@
 
         <section class="report-section" aria-labelledby="reportTitle">
           <h2 class="section-title" id="reportTitle">述职员工报告</h2>
-          <div class="long-field">
-            <label class="long-label required" for="mainWork">主要工作</label>
-            <div class="textarea-wrap focused"><textarea id="mainWork" maxlength="2000" placeholder="请描述本阶段承担的主要工作、完成情况及工作成果" data-counter></textarea><span class="counter">0 / 2000</span></div>
+          <div id="regularPeriodReport" class="period-section">
+            <div class="long-field">
+              <label class="long-label required" for="mainWork">主要工作</label>
+              <div class="textarea-wrap focused"><textarea id="mainWork" maxlength="2000" placeholder="请描述本阶段承担的主要工作、完成情况及工作成果" data-counter></textarea><span class="counter">0 / 2000</span></div>
+            </div>
+            <div class="long-field">
+              <label class="long-label required" for="reflection">心得与感悟</label>
+              <div class="textarea-wrap"><textarea class="short" id="reflection" maxlength="2000" placeholder="在工作中的收获、思考、感悟和体会等" data-counter></textarea><span class="counter">0 / 2000</span></div>
+            </div>
+            <div class="long-field">
+              <label class="long-label required" for="nextPlan">下月计划</label>
+              <div class="textarea-wrap"><textarea class="short" id="nextPlan" maxlength="2000" placeholder="请填写下月重点工作计划及具体安排" data-counter></textarea><span class="counter">0 / 2000</span></div>
+            </div>
+            <div class="long-field">
+              <label class="long-label" for="suggestions">意见、建议、需求</label>
+              <div class="textarea-wrap"><textarea class="short" id="suggestions" maxlength="2000" placeholder="针对工作中相关事项的意见和建议，以及自己是否有进一步的需求等，推荐使用“涉及部门”+“具体事项”的形式描述" data-counter></textarea><span class="counter">0 / 2000</span></div>
+            </div>
           </div>
-          <div class="long-field">
-            <label class="long-label required" for="reflection">心得与感悟</label>
-            <div class="textarea-wrap"><textarea class="short" id="reflection" maxlength="2000" placeholder="在工作中的收获、思考、感悟和体会等" data-counter></textarea><span class="counter">0 / 2000</span></div>
-          </div>
-          <div class="long-field">
-            <label class="long-label required" for="nextPlan">下月计划</label>
-            <div class="textarea-wrap"><textarea class="short" id="nextPlan" maxlength="2000" placeholder="请填写下月重点工作计划及具体安排" data-counter></textarea><span class="counter">0 / 2000</span></div>
-          </div>
-          <div class="long-field">
-            <label class="long-label" for="suggestions">意见、建议、需求</label>
-            <div class="textarea-wrap"><textarea class="short" id="suggestions" maxlength="2000" placeholder="针对工作中相关事项的意见和建议，以及自己是否有进一步的需求等，推荐使用“涉及部门”+“具体事项”的形式描述" data-counter></textarea><span class="counter">0 / 2000</span></div>
+          <div id="sixthPeriodReport" class="period-section" hidden>
+            <p class="report-reminder">温馨提示：本次提交的述职报告将归入转正面试配套材料，作为面试评审核心附件，请各位严谨梳理、如实填写。</p>
+            <div class="long-field">
+              <label class="long-label required" for="jobDuties">工作职责及业绩</label>
+              <p class="hint" id="jobDutiesHint">总结个人工作内容与履职情况</p>
+              <div class="textarea-wrap">
+                <textarea class="short" id="jobDuties" maxlength="2000" required aria-describedby="jobDutiesHint" data-counter></textarea>
+                <button class="report-clear" type="button" aria-label="清空工作职责及业绩" hidden>×</button>
+                <span class="counter">0 / 2000</span>
+              </div>
+            </div>
+            <div class="long-field">
+              <label class="long-label required" for="workOverview">工作概述</label>
+              <div class="textarea-wrap">
+                <textarea class="short" id="workOverview" maxlength="2000" required data-counter></textarea>
+                <button class="report-clear" type="button" aria-label="清空工作概述" hidden>×</button>
+                <span class="counter">0 / 2000</span>
+              </div>
+            </div>
+            <div class="long-field">
+              <label class="long-label required" for="finalReflection">心得与感悟</label>
+              <p class="hint" id="finalReflectionHint">在工作中的收获、思考、感悟和体会等</p>
+              <div class="textarea-wrap">
+                <textarea class="short" id="finalReflection" maxlength="2000" required aria-describedby="finalReflectionHint" data-counter></textarea>
+                <button class="report-clear" type="button" aria-label="清空心得与感悟" hidden>×</button>
+                <span class="counter">0 / 2000</span>
+              </div>
+            </div>
+            <div class="long-field">
+              <label class="long-label required" for="futurePlan">未来规划</label>
+              <div class="textarea-wrap">
+                <textarea class="short" id="futurePlan" maxlength="2000" required data-counter></textarea>
+                <button class="report-clear" type="button" aria-label="清空未来规划" hidden>×</button>
+                <span class="counter">0 / 2000</span>
+              </div>
+            </div>
+            <div class="long-field">
+              <label class="long-label" for="thoughtSummary">思考总结</label>
+              <p class="hint" id="thoughtSummaryHint">针对工作中相关事项的意见和建议，以及自己是否有进一步的需求等，推荐使用“涉及部门”+“具体事项”的形式描述</p>
+              <div class="textarea-wrap">
+                <textarea class="short" id="thoughtSummary" maxlength="2000" aria-describedby="thoughtSummaryHint" data-counter></textarea>
+                <button class="report-clear" type="button" aria-label="清空思考总结" hidden>×</button>
+                <span class="counter">0 / 2000</span>
+              </div>
+            </div>
           </div>
         </section>
 
@@ -588,7 +643,11 @@
   <div class="floating-tools" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></div>
 
   <div class="modal-backdrop" id="helpModal" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
-    <div class="modal"><div class="modal-head"><h2 id="helpTitle">填写说明</h2><button class="modal-close" aria-label="关闭">×</button></div><p>请结合试用期阶段性工作情况填写主要工作、心得与感悟及下月计划。意见、建议或需求可按“涉及部门 + 具体事项”的形式描述。带红色星号的字段为必填项。</p></div>
+    <div class="modal">
+      <div class="modal-head"><h2 id="helpTitle">填写说明</h2><button class="modal-close" aria-label="关闭">×</button></div>
+      <p id="regularPeriodHelp" class="period-section">请结合试用期阶段性工作情况填写主要工作、心得与感悟及下月计划。意见、建议或需求可按“涉及部门 + 具体事项”的形式描述。带红色星号的字段为必填项。</p>
+      <p id="sixthPeriodHelp" class="period-section" hidden>请填写工作职责及业绩、工作概述、心得与感悟、未来规划。思考总结为选填，可按“涉及部门 + 具体事项”的形式填写。每项最多2000字。</p>
+    </div>
   </div>
   <div class="modal-backdrop" id="flowModal" role="dialog" aria-modal="true" aria-labelledby="flowTitle">
     <div class="modal"><div class="modal-head"><h2 id="flowTitle">流程图</h2><button class="modal-close" aria-label="关闭">×</button></div><p>新员工填写 → 指导老师评价 → 部门负责人审批 → 人力归档。第3期增加新员工季度总结述职材料上传和部门负责人评价；第6期增加员工对指导老师的评价、轮岗记录和部门负责人评价。</p></div>
@@ -1247,6 +1306,11 @@
     function setPeriod(period) {
       const reportTitle = document.getElementById('reportHeadingTitle');
       reportTitle.textContent = `${getReviewEmployee().name}的2026-09新员工述职报告(第${period}/6期)`;
+      const isSixthPeriod = period === '6';
+      document.getElementById('regularPeriodReport').hidden = isSixthPeriod;
+      document.getElementById('sixthPeriodReport').hidden = !isSixthPeriod;
+      document.getElementById('regularPeriodHelp').hidden = isSixthPeriod;
+      document.getElementById('sixthPeriodHelp').hidden = !isSixthPeriod;
       quarterMaterialsSection.hidden = period !== '3';
       mentorEvaluationSection.hidden = period !== '6';
       document.getElementById('guideTeacherTextOnly').hidden=period==='6';
@@ -1319,7 +1383,16 @@
 
     document.querySelectorAll('[data-counter]').forEach((textarea) => {
       const counter = textarea.parentElement.querySelector('.counter');
-      const update = () => { counter.textContent = `${textarea.value.length} / ${textarea.maxLength}`; };
+      const clearButton = textarea.parentElement.querySelector('.report-clear');
+      const update = () => {
+        counter.textContent = `${textarea.value.length} / ${textarea.maxLength}`;
+        if (clearButton) clearButton.hidden = !textarea.value;
+      };
+      clearButton?.addEventListener('click', () => {
+        textarea.value = '';
+        textarea.focus();
+        update();
+      });
       textarea.addEventListener('input', update);
       textarea.addEventListener('focus', () => textarea.parentElement.classList.add('focused'));
       textarea.addEventListener('blur', () => textarea.parentElement.classList.remove('focused'));
