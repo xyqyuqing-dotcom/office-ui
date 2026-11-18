@@ -677,7 +677,9 @@
     #basicInfoSection { order: 1; } #rotationSection { order: 2; } #reportFormSection { order: 3; } #quarterMaterialsSection { order: 4; }
     #mentorEvaluationSection { order: 5; } #guideTeacherEvaluationSection { order: 6; } #departmentEvaluationSection { order: 7; }
   </style>
-</head>
+<style>
+.workspace{padding-bottom:calc(100px + env(safe-area-inset-bottom))}.review-action-footer{position:fixed;left:50%;bottom:0;z-index:9;transform:translateX(-50%);width:min(100%,664px);min-height:68px;padding:8px 12px calc(8px + env(safe-area-inset-bottom));display:grid;grid-template-columns:48px 48px minmax(0,1fr) minmax(0,1.35fr);align-items:center;gap:8px;background:#fff;border-top:1px solid #e1e8f1;box-shadow:0 -3px 14px rgba(34,52,73,.06)}.review-action-footer button{border:0;cursor:pointer}.review-action-footer .footer-tool{display:flex;min-height:50px;flex-direction:column;justify-content:center;align-items:center;gap:2px;padding:0;background:transparent;color:#3d4955;font-size:12px;line-height:1.2}.review-action-footer svg{width:24px;height:24px;display:block}.review-action-footer .footer-action{min-height:46px;padding:0 8px;border-radius:6px;color:#fff;font-size:16px;font-weight:600;white-space:nowrap}.review-action-footer .reject{background:#ee4b3b}.review-action-footer .approve{background:#3488d7}.review-action-body{margin:10px 0 18px;color:#526174;line-height:1.6}.review-action-body textarea{width:100%;min-height:100px;padding:10px;border:1px solid #d5e0ed;border-radius:8px;resize:vertical;font:inherit;font-size:16px}.review-action-buttons{display:flex;justify-content:flex-end;gap:8px}.review-action-buttons button{min-height:40px;padding:0 16px;border:1px solid #d5e0ed;border-radius:6px;background:#fff;color:#45566b}.review-action-buttons .primary{border-color:#3488d7;background:#3488d7;color:#fff}@media(max-width:340px){.review-action-footer{grid-template-columns:42px 42px minmax(0,1fr) minmax(0,1.2fr);gap:5px;padding-left:8px;padding-right:8px}.review-action-footer .footer-action{font-size:14px}}
+</style></head>
 <body>
   <div class="workspace" id="workspace">
     <main class="main-column" aria-labelledby="reportHeadingTitle">
@@ -863,6 +865,13 @@
   </div>
 
 
+  <footer class="review-action-footer" aria-label="流程操作">
+    <button type="button" class="footer-tool" data-review-action="评论"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4.5h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-7l-4.5 3v-3H4a2 2 0 0 1-2-2v-10a2 2 0 0 1 2-2z"/><path d="M7 9h10M7 13h7"/></svg><span>评论</span></button>
+    <button type="button" class="footer-tool" data-review-action="转交"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="6" r="3.5"/><path d="M3 20v-2.5a6 6 0 0 1 8.5-5.45M13 16h8m-3-3 3 3-3 3"/></svg><span>转交</span></button>
+    <button type="button" class="footer-action reject" data-review-action="退回">驳回意见</button>
+    <button type="button" class="footer-action approve" data-review-action="同意">同意</button>
+  </footer>
+  <div class="modal-backdrop" id="reviewActionModal" role="dialog" aria-modal="true" aria-labelledby="reviewActionTitle"><div class="modal"><div class="modal-head"><h2 id="reviewActionTitle"></h2><button type="button" class="modal-close" aria-label="关闭">×</button></div><div class="review-action-body" id="reviewActionBody"></div><div class="review-action-buttons"><button type="button" class="modal-close">取消</button><button type="button" class="primary" id="reviewActionConfirm">确定</button></div></div></div>
   <div class="modal-backdrop" id="helpModal" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
     <div class="modal">
       <div class="modal-head"><h2 id="helpTitle">填写说明</h2><button class="modal-close" aria-label="关闭">×</button></div>
@@ -1717,6 +1726,11 @@
     }
     reviewTabs.forEach(button => button.addEventListener('click', () => selectReviewTab(button.dataset.reviewTab)));
     selectReviewTab('info');
+
+    let currentReviewAction='';
+    document.querySelectorAll('[data-review-action]').forEach(button=>button.addEventListener('click',()=>{currentReviewAction=button.dataset.reviewAction;document.getElementById('reviewActionTitle').textContent=currentReviewAction==='退回'?'驳回意见':currentReviewAction;const body=document.getElementById('reviewActionBody');body.replaceChildren();if(currentReviewAction==='同意'){body.textContent='确认同意当前流程吗？'}else{const input=document.createElement('textarea');input.placeholder=currentReviewAction==='退回'?'请输入驳回意见':'请输入'+currentReviewAction+'内容';input.setAttribute('aria-label',input.placeholder);body.append(input)}document.getElementById('reviewActionModal').classList.add('open')}));
+    document.getElementById('reviewActionConfirm').addEventListener('click',()=>{const body=document.getElementById('reviewActionBody'),input=body.querySelector('textarea');if(input&&!input.value.trim()){input.focus();return}body.textContent='该操作仅作原型演示，未提交至实际系统。';document.getElementById('reviewActionConfirm').hidden=true;});
+    document.querySelectorAll('[data-review-action]').forEach(button=>button.addEventListener('click',()=>{document.getElementById('reviewActionConfirm').hidden=false}));
   </script>
 </body>
 </html>
