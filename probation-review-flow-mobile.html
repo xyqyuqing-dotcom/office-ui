@@ -179,13 +179,13 @@ body{background:var(--canvas);font-size:var(--font-body)}
 .transfer-rating-directions{gap:8px}.transfer-rating-pane .review-mentor-group{margin:0;border-color:var(--mobile-border);border-radius:10px}.transfer-rating-pane .review-mentor-group>summary{min-height:44px;padding:8px 12px;background:#f7faff}.transfer-rating-pane .review-mentor-body{gap:12px;padding:10px 12px 12px;border-color:var(--mobile-border)}.transfer-rating-pane .transfer-rating-card{padding:0;border:0;border-radius:0}.transfer-rating-pane .transfer-rating-card+.transfer-rating-card{padding-top:10px;border-top:1px solid var(--mobile-border)}.transfer-rating-pane .transfer-rating-head{flex-direction:row;align-items:center;justify-content:space-between;gap:8px}.transfer-rating-pane .transfer-rating-items{grid-template-columns:minmax(0,1fr);gap:0;margin-top:4px}.transfer-rating-pane .transfer-rating-item{gap:8px;min-height:33px;padding:5px 0;border:0;border-bottom:1px solid var(--mobile-border);border-radius:0;background:none}.transfer-rating-pane .transfer-rating-item strong{color:#45566b;font-size:13px}.transfer-rating-pane .transfer-rating-stars{margin-left:auto;gap:0}.transfer-rating-pane .transfer-rating-stars span{width:17px;font-size:17px}.transfer-rating-pane .transfer-rating-value{min-width:30px;font-size:13px}.transfer-rating-pane .transfer-rating-comment{margin:8px 0 4px}.transfer-rating-pane .transfer-rating-note{min-height:0;margin:0;padding:6px 9px;line-height:1.6}body:has(.transfer-detail-backdrop:not([hidden])){overflow:hidden}
 </style><style>
 .workspace{padding-bottom:calc(100px + env(safe-area-inset-bottom))}.footer{position:fixed;left:50%;bottom:0;z-index:10;transform:translateX(-50%);width:min(100%,664px);height:auto;min-height:68px;padding:8px 12px calc(8px + env(safe-area-inset-bottom));display:grid;grid-template-columns:48px 48px minmax(0,1fr) minmax(0,1.35fr);align-items:center;gap:8px;background:#fff;border-top:1px solid #e1e8f1;box-shadow:0 -3px 14px rgba(34,52,73,.06)}.footer .footer-tool{display:flex;min-height:50px;flex-direction:column;justify-content:center;align-items:center;gap:2px;padding:0;color:#3d4955;font-size:12px;line-height:1.2}.footer .footer-tool svg{width:24px;height:24px;display:block}.footer .footer-tool span{font-size:12px;margin:0;vertical-align:baseline}.footer .footer-action{min-height:46px;padding:0 8px;border:0;border-radius:6px;color:#fff;font-size:16px;font-weight:600;white-space:nowrap}.footer .reject{background:#ee4b3b}.footer .approve{background:#3488d7}.footer [hidden]{display:none!important}@media(max-width:340px){.footer{grid-template-columns:42px 42px minmax(0,1fr) minmax(0,1.2fr);gap:5px;padding-left:8px;padding-right:8px}.footer .footer-action{font-size:14px}}
-</style></head>
+</style><style>.form-card .fields{grid-template-columns:repeat(2,minmax(0,1fr))}.form-card .fields .field:first-child{grid-column:1/-1}.form-card .fields .field:nth-child(2){grid-column:auto}.transfer-back{flex:0 0 auto;min-height:44px;padding:0 8px 0 0;border:0;background:transparent;color:#3488f4;font:inherit;font-size:14px;white-space:nowrap;cursor:pointer}.transfer-detail-head{justify-content:flex-start}.mentor-rating-actions:has(#mentorRatingStatus:empty){display:none}</style></head>
 <body>
   <header class="topbar"><strong>转正评价流程</strong><nav class="toplinks" aria-label="顶部导航"><button class="top-text" data-modal="事务中心">▦ 事务中心</button><button class="top-text" data-modal="设置">⚙ 设置</button><span class="divider"></span><button aria-label="首页" data-modal="首页"><svg viewBox="0 0 24 24"><path d="m3 11 9-7 9 7M5 10v10h14V10M10 20v-6h4v6"/></svg></button><button aria-label="消息" data-modal="消息"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4V5Z"/><path d="M8 9h8M8 12h5"/></svg></button></nav></header>
   <main class="workspace" id="workspace">
     <div class="left">
       <section class="card page-head" aria-label="流程概览"><div class="head-row"><div class="title">陈安宁的转正评价</div><div class="head-tools"><span class="stage">管理员确认</span><button class="ghost-icon" aria-label="更多操作" data-modal="更多操作">☷</button></div></div><div class="origin-row"><div class="origin"><span class="bot" aria-hidden="true">🤖</span><span class="person">人力小助手(信息技术部)</span><span>06-03 08:56</span><span>发起</span><span class="priority">一般</span></div><button class="summary" id="summaryBtn" aria-expanded="false">摘要⌄</button></div><div class="summary-detail" id="summaryDetail" hidden>流程：转正评价流程<br>申请人：陈安宁<br>当前节点：管理员确认</div></section>
-      <nav class="mobile-review-tabs" role="tablist" aria-label="转正评价分类"><button type="button" role="tab" aria-selected="true" data-mobile-tab="info">基本信息</button><button type="button" role="tab" aria-selected="false" data-mobile-tab="assessment">考察信息</button></nav><section class="card form-card" aria-label="转正评价表单"><div id="mobileInfoPanel"><section class="mobile-section"><h2 class="section-title">基本信息</h2><div class="fields"><div class="field"><label for="name">姓名</label><input id="name" value="陈安宁" readonly></div><div class="field"><label for="department">部门</label><input id="department" value="信息技术开发" readonly></div><div class="field"><label for="position">岗位</label><input id="position" value="软件开发工程师" readonly></div><div class="field"><label for="leader">直属领导</label><input id="leader" value="李明远" readonly></div><div class="field"><label for="joined">入职时间</label><input id="joined" value="2021-11-29" readonly></div><div class="field"><label for="regular-date">拟转正时间</label><input id="regular-date" value="2026-12-29" readonly></div><div class="field"><label for="evaluationGuideTeacher">指导老师</label><select id="evaluationGuideTeacher" style="width:100%;height:36px;border:1px solid #dce2e9;border-radius:5px;padding:0 10px;font:inherit"><option value="">请选择</option><option>王老师</option><option>李老师</option><option>张老师</option></select></div></div>
+      <nav class="mobile-review-tabs" role="tablist" aria-label="转正评价分类"><button type="button" role="tab" aria-selected="true" data-mobile-tab="info">基本信息</button><button type="button" role="tab" aria-selected="false" data-mobile-tab="assessment">考察信息</button></nav><section class="card form-card" aria-label="转正评价表单"><div id="mobileInfoPanel"><section class="mobile-section"><h2 class="section-title">基本信息</h2><div class="fields"><div class="field"><label for="name">姓名</label><input id="name" value="陈安宁" readonly></div><div class="field"><label for="department">部门</label><input id="department" value="信息技术开发" readonly></div><div class="field"><label for="position">岗位</label><input id="position" value="软件开发工程师" readonly></div><div class="field"><label for="leader">直属领导</label><input id="leader" value="李明远" readonly></div><div class="field"><label for="evaluationGuideTeacher">指导老师</label><input id="evaluationGuideTeacher" value="王老师" readonly aria-readonly="true"></div><div class="field"><label for="joined">入职时间</label><input id="joined" value="2021-11-29" readonly></div><div class="field"><label for="regular-date">拟转正时间</label><input id="regular-date" value="2026-12-29" readonly></div></div>
         </section>
         <section class="transfer-section" aria-labelledby="transferSectionTitle">
           <h2 class="section-title" id="transferSectionTitle">轮岗记录</h2>
@@ -204,7 +204,7 @@ body{background:var(--canvas);font-size:var(--font-body)}
                 <label for="mentor">文字评价</label>
                 <div class="text-wrap"><textarea id="mentor" maxlength="950" required placeholder="请结合具体表现填写文字评价">1</textarea><button class="clear" aria-label="清空指导老师评价" data-clear="mentor">×</button><span class="count" data-count="mentor">1 / 950</span></div>
               </div>
-              <div class="mentor-rating-actions"><span id="mentorRatingStatus" role="status" aria-live="polite"></span><button class="mentor-rating-save" id="saveMentorRating" type="button">保存评价</button></div>
+              <div class="mentor-rating-actions"><span id="mentorRatingStatus" role="status" aria-live="polite"></span></div>
             </section>
           </div>
           <div class="textarea-field"><label for="party"><span class="required">* </span>政委评价</label><div class="text-wrap"><textarea id="party" maxlength="950" required>111111</textarea><button class="clear" aria-label="清空政委评价" data-clear="party">×</button><span class="count" data-count="party">6 / 950</span></div></div></section>
@@ -221,7 +221,7 @@ body{background:var(--canvas);font-size:var(--font-body)}
   </footer><button class="float-tool" aria-label="更多工具" data-modal="更多工具">▦</button>
   <div class="transfer-detail-backdrop" id="transferDetailBackdrop" hidden>
     <section class="transfer-detail-dialog" role="dialog" aria-modal="true" aria-labelledby="transferDetailTitle">
-      <header class="transfer-detail-head"><h2 id="transferDetailTitle">陈安宁 · 轮岗记录</h2></header>
+      <header class="transfer-detail-head"><button class="transfer-back" type="button" data-close-transfer aria-label="返回">‹ 返回</button><h2 id="transferDetailTitle">陈安宁 · 轮岗记录</h2></header>
       <section class="transfer-detail-profile" aria-label="轮岗安排信息">
         <div class="transfer-profile-field"><label for="transferDetailName">姓名</label><input class="transfer-profile-value" id="transferDetailName" readonly></div>
         <div class="transfer-profile-field"><label for="transferDetailPosition">岗位</label><input class="transfer-profile-value" id="transferDetailPosition" readonly></div>
@@ -233,7 +233,7 @@ body{background:var(--canvas);font-size:var(--font-body)}
       <div class="transfer-tab-bar"><div class="transfer-detail-tabs" role="tablist" aria-label="轮岗记录详情分类">
         <button class="transfer-detail-tab active" id="transferLogsTab" type="button" role="tab" aria-selected="true" aria-controls="transferLogsPane">轮岗日志</button>
         <button class="transfer-detail-tab" id="transferRatingsTab" type="button" role="tab" aria-selected="false" aria-controls="transferRatingsPane">轮岗评价</button>
-      </div><button class="transfer-detail-close" type="button" data-close-transfer aria-label="关闭轮岗详情">×</button></div>
+      </div></div>
       <section class="transfer-detail-pane transfer-detail-logs-pane" id="transferLogsPane" role="tabpanel" aria-labelledby="transferLogsTab">
         <div class="transfer-log-picker" id="transferLogPicker" hidden><label for="transferLogSelect">切换日志</label><select id="transferLogSelect"></select></div><div class="transfer-detail-layout"><aside class="transfer-log-sidebar"><div class="transfer-log-sidebar-head">记录列表</div><div class="transfer-log-nav" id="transferLogNav"></div></aside><div class="transfer-log-content" id="transferLogContent"></div></div>
       </section>
@@ -291,22 +291,17 @@ body{background:var(--canvas);font-size:var(--font-body)}
       const rect=star.getBoundingClientRect(),index=Number(star.dataset.dimensionIndex),starIndex=Number(star.dataset.starIndex),full=starIndex+1;
       const value=mentorRatingDraft.ratings[index]===full?full-.5:full;
       mentorRatingDraft.ratings[index]=value;
-      $('mentorRatingStatus').textContent='评分尚未保存';
+      persistMentorRating();
       renderMentorRatingItems();
-      showMobileRatingOptions(rect,starIndex,value,selected=>{mentorRatingDraft.ratings[index]=selected;$('mentorRatingStatus').textContent='评分尚未保存';renderMentorRatingItems()});
+      showMobileRatingOptions(rect,starIndex,value,selected=>{mentorRatingDraft.ratings[index]=selected;persistMentorRating();renderMentorRatingItems()});
     });
     $('mentor').addEventListener('input',event=>{
       mentorRatingDraft.comment=event.currentTarget.value;
-      $('mentorRatingStatus').textContent='评价尚未保存';
+      persistMentorRating();
     });
-    $('saveMentorRating').addEventListener('click',()=>{
-      mentorRatingDraft.comment=$('mentor').value.trim();
-      $('mentor').value=mentorRatingDraft.comment;
-      document.querySelector('[data-count="mentor"]').textContent=`${mentorRatingDraft.comment.length} / 950`;
-      try{localStorage.setItem(mentorRatingStorageKey,JSON.stringify({ratings:mentorRatingDraft.ratings.slice(),comment:mentorRatingDraft.comment,meta:{id:'probation-chen-anning',employee:{name:$('name').value,department:$('department').value,position:$('position').value},teacher:{name:$('evaluationGuideTeacher').value},period:'转正评价',date:new Date().toLocaleDateString('sv-SE')}}))}catch{}
-      $('mentorRatingStatus').textContent='评价已保存';
-      showToast('评价已保存');
-    });
+    function persistMentorRating(){
+      try{localStorage.setItem(mentorRatingStorageKey,JSON.stringify({ratings:mentorRatingDraft.ratings.slice(),comment:mentorRatingDraft.comment,meta:{id:'probation-chen-anning',employee:{name:$('name').value,department:$('department').value,position:$('position').value},teacher:{name:$('evaluationGuideTeacher').value},period:'转正评价',date:new Date().toLocaleDateString('sv-SE')}}));$('mentorRatingStatus').textContent=''}catch{$('mentorRatingStatus').textContent='自动保存失败，请稍后重试'}
+    }
     const transferRecords=[
       {department:'信息技术部',mentor:'罗景行',start:'2026-09-01',end:'2026-10-31',logs:[
         {title:'研发岗位需求梳理与协作流程',date:'2026-10-05',sections:[['工作内容','参与前端研发岗位需求评审，跟随团队梳理岗位画像、工作流程和协作方式。'],['学习收获','了解了需求确认、任务拆分与阶段反馈之间的协作流程。'],['问题困惑','对部分技术能力的分级标准还需要进一步熟悉。'],['后续计划','整理阶段工作要点，并和带教老师复盘需要提升的内容。']],comments:[{author:'陈安宁（轮岗员工）',date:'2026-10-05',text:'老师，岗位能力要求中的熟练度要如何区分？',replies:[{author:'罗景行（带教老师）',date:'2026-10-05',text:'可以结合独立完成任务、排查问题和协作情况综合判断。'}]}]},
