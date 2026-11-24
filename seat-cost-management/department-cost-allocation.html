@@ -47,7 +47,7 @@ body:has(#unplaced) .seatmark.horizontal .markname{display:none}body:not(:has(#u
 .option-manager-head{display:flex;align-items:center;gap:18px;margin-bottom:18px}.option-manager-head>.linkbtn{flex-shrink:0;padding-left:0}.option-manager-filter{display:flex;align-items:center;gap:18px;margin-bottom:14px}.option-manager-filter>input{flex:1;min-width:0}.option-manager-filter>label{display:flex;align-items:center;gap:6px;white-space:nowrap;font-size:13px}.option-manager-filter input[type=checkbox]{width:15px;height:15px}.option-scope{margin-bottom:16px;max-width:350px}.option-manager-list{max-height:420px;overflow:auto;border:1px solid #e7edf5;border-radius:8px}.option-manager-row{display:flex;align-items:center;gap:16px;padding:16px;border-bottom:1px solid #edf1f6}.option-manager-row:last-child{border-bottom:0}.option-manager-main{flex:1;min-width:0}.option-manager-main>strong{font-size:14px;overflow-wrap:anywhere}.option-manager-main>.hint{margin-top:5px;font-size:12px}.option-manager-main>.tag{margin-left:8px}.option-manager-actions{display:flex;gap:12px;align-items:center;flex-wrap:wrap;justify-content:flex-end;font-size:13px}.option-manager-actions .linkbtn{padding:3px 0;font-size:13px}.option-manager-empty{padding:30px 16px;text-align:center;color:#8a9bb0}@media(max-width:600px){.option-manager-row{align-items:flex-start;flex-direction:column}.option-manager-filter{gap:8px}.option-manager-head{align-items:flex-start;flex-direction:column;gap:8px}}
 
 .ledger-column-help{margin:0 0 14px}.ledger-column-sort{max-height:390px;overflow-y:auto;border:1px solid #e4eaf3;border-radius:8px;padding:5px 12px;overscroll-behavior:contain}.ledger-column-row{display:flex;align-items:center;gap:12px;min-height:40px;padding:5px 0;border-bottom:1px solid #edf1f6;background:#fff}.ledger-column-row:last-child{border:0}.ledger-column-row>.check{flex:1;margin:0;font-size:13px}.ledger-column-row>.hint{font-size:11px;white-space:nowrap}.ledger-column-handle{border:0;background:transparent;color:#98a7ba;cursor:grab;width:26px;height:28px;padding:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0;border-radius:4px;touch-action:none}.ledger-column-handle svg{width:12px;height:16px;pointer-events:none}.ledger-column-handle:hover{background:#edf5ff;color:#1677ff}.ledger-column-handle:focus-visible{outline:2px solid #1677ff;outline-offset:1px}.ledger-column-fixed{width:26px;text-align:center;color:#bcc7d5}.ledger-column-row.dragging{background:#eaf4ff;outline:1px solid #8ac0ff;outline-offset:-1px}.ledger-column-sort.sorting{border-color:#8ac0ff}.ledger-column-status{font-size:12px;color:#7b8fa8;min-height:18px;margin:10px 0}.linkbtn:disabled{cursor:default;opacity:.45}
-</style></head><body><div id="app"></div><script>const PAGE=2;const DEFAULT_MAP="";
+.cost-coverage{font-size:12px;color:#8293a7;line-height:1.7;margin-top:12px;text-align:right}@media(max-width:650px){.cost-coverage{text-align:left}}</style></head><body><div id="app"></div><script>const PAGE=2;const DEFAULT_MAP="";
 
 'use strict';
 const $=s=>document.querySelector(s), esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -205,10 +205,11 @@ function costDayBasis(day){const rent=atParam(data.rent,day.slice(0,7)),seats=la
 function saveCostRange(from,to){const output=allocate(from,to),days={...savedCostResults.days},rowsByDay=new Map();for(const row of output.details){if(!rowsByDay.has(row.day))rowsByDay.set(row.day,[]);rowsByDay.get(row.day).push(row)}const computedAt=new Date().toISOString();for(let day=from;day<=to;day=nextDay(day)){const seats=new Map(latest(day).map(r=>[r.seat,r])),details=(rowsByDay.get(day)||[]).map(row=>{const r=seats.get(row.seat);return {...row,nature:r?.nature||'',location:r?.location||'',floor:r?.floor||''}});days[day]={basis:costDayBasis(day),details,total:details.reduce((s,r)=>s+r.cents,0),computedAt}}const candidate={version:1,initialized:true,days};try{localStorage.setItem(COST_RESULTS_KEY,JSON.stringify(candidate))}catch(e){throw Error('计算结果无法保存，浏览器存储空间不足；原有结果未改变')}savedCostResults=candidate}
 function setCostStatus(kind,title,copy=''){const el=$('#coststatus');if(!el)return;el.className='cost-status '+kind;el.innerHTML='<span class="cost-status-tag">'+esc(title)+'</span><span>'+esc(copy)+'</span>'}
 function pendingCostQuery(){result=null;setCostStatus('neutral','待查询','查询条件已变更，点击“查询”读取已生成结果。');$('#results').innerHTML='<section class="card nodata">请点击“查询”；所选日期尚无结果时，点击“重新计算”生成。</section>'}
-function calcPage(){savedCostResults=readCostResults();$('#content').innerHTML='<section class="card filters"><div class="calcfilters">'+field('开始日期','cfrom','date','2026-11-01')+field('结束日期','cto','date','2026-11-30')+select('所属部门','cdept',departments().concat('未分配部门'))+'<div class="field"><label>展示方式</label><div class="segment"><button class="on" id="summary">汇总</button><button id="daily">按天</button></div></div><div class="actions cost-query-actions"><button class="btn primary" id="calculate">查询</button><button class="btn" id="recalculate" title="按最新数据重新计算所选日期内全部部门的分摊结果">重新计算</button></div></div></section><div class="info cost-explanation" id="costexplanation"></div><div id="coststatus" role="status"></div><div id="results"></div>';renderCostExplanation();$('#calculate').onclick=runCalc;$('#recalculate').onclick=recalculateCost;$('#summary').onclick=()=>{displayMode='summary';$('#summary').classList.add('on');$('#daily').classList.remove('on');renderResults()};$('#daily').onclick=()=>{displayMode='daily';$('#daily').classList.add('on');$('#summary').classList.remove('on');renderResults()};$('#cdept').onchange=()=>{if(result)renderResults()};['cfrom','cto'].forEach(id=>$('#'+id).onchange=pendingCostQuery);if(!savedCostResults.initialized){try{saveCostRange('2026-11-01','2026-11-30')}catch(e){setCostStatus('error','尚无结果',e.message);$('#results').innerHTML='<section class="card nodata">补齐参数后，点击“重新计算”生成结果。</section>';return}}runCalc()}
+function calcPage(){savedCostResults=readCostResults();$('#content').innerHTML='<section class="card filters"><div class="calcfilters">'+field('开始日期','cfrom','date','2026-11-01')+field('结束日期','cto','date','2026-11-30')+select('所属部门','cdept',departments().concat('未分配部门'))+'<div class="field"><label>展示方式</label><div class="segment"><button class="on" id="summary">汇总</button><button id="daily">按天</button></div></div><div class="actions cost-query-actions"><button class="btn primary" id="calculate">查询</button><button class="btn" id="recalculate" title="按最新数据重新计算所选日期内全部部门的分摊结果">重新计算</button></div></div><div id="costcoverage" class="cost-coverage" aria-live="polite"></div></section><div class="info cost-explanation" id="costexplanation"></div><div id="coststatus" role="status"></div><div id="results"></div>';renderCostExplanation();$('#calculate').onclick=runCalc;$('#recalculate').onclick=recalculateCost;$('#summary').onclick=()=>{displayMode='summary';$('#summary').classList.add('on');$('#daily').classList.remove('on');renderResults()};$('#daily').onclick=()=>{displayMode='daily';$('#daily').classList.add('on');$('#summary').classList.remove('on');renderResults()};$('#cdept').onchange=()=>{if(result)renderResults()};['cfrom','cto'].forEach(id=>$('#'+id).onchange=pendingCostQuery);updateCostCalculationButton();runCalc()}
+
 function runCalc(){try{const {from,to}=costDateRange();savedCostResults=readCostResults();const missing=[];for(let day=from;day<=to;day=nextDay(day))if(!savedCostResults.days[day])missing.push(day);if(missing.length){result=null;setCostStatus('warning','尚未生成','所选日期中有 '+missing.length+' 天没有分摊结果，请点击“重新计算”生成。');$('#results').innerHTML='<section class="card nodata">未生成日期：'+missing[0]+(missing.length>1?' 至 '+missing.at(-1):'')+'。查询不会自动计算。</section>';return}let details=[],total=0,basisByDay={};for(let day=from;day<=to;day=nextDay(day)){const row=savedCostResults.days[day];details.push(...row.details);total+=row.total;basisByDay[day]=row.basis}result={from,to,details,total,basisByDay,staleDates:[]};renderResults()}catch(e){result=null;setCostStatus('error','查询未完成',e.message);$('#results').innerHTML='<section class="card nodata">请检查查询条件。</section>'}}
 function assessCostResult(){if(!result)return;result.staleDates=[];for(let day=result.from;day<=result.to;day=nextDay(day))if(comparableCostBasis(result.basisByDay[day])!==comparableCostBasis(costDayBasis(day)))result.staleDates.push(day)}
-function renderResults(){if(!result)return;normalizeVisibleDictionaryResult();assessCostResult();drawCostResultTable();if(result.staleDates.length){setCostStatus('warning','待重算','所选区间有 '+result.staleDates.length+' 天的基础数据已调整。当前展示上次计算结果，请点击“重新计算”更新。');$('#recalculate')?.classList.add('needs-recalculation');if($('#exportResult'))$('#exportResult').title='导出上次已生成结果，文件名将标注“待重算”'}else{setCostStatus('good','已生成结果','当前结果与所选日期的座位、系数及成本一致。更换查询日期不会重新计算。');$('#recalculate')?.classList.remove('needs-recalculation')}}
+function renderResults(){if(!result)return;normalizeVisibleDictionaryResult();assessCostResult();drawCostResultTable();updateCostCalculationButton();if(result.staleDates.length){setCostStatus('warning','待重算','所选区间有 '+result.staleDates.length+' 天的基础数据已调整。当前展示上次计算结果，请点击“重新计算”更新。');$('#recalculate')?.classList.add('needs-recalculation');if($('#exportResult'))$('#exportResult').title='导出上次已生成结果，文件名将标注“待重算”'}else{setCostStatus('good','已生成结果','当前结果与所选日期的座位、系数及成本一致。更换查询日期不会重新计算。');$('#recalculate')?.classList.remove('needs-recalculation')}}
 function recalculateCost(){let range;try{range=costDateRange()}catch(e){setCostStatus('error','无法重新计算',e.message);return}const button=$('#recalculate');button.disabled=true;button.textContent='计算中…';setTimeout(()=>{try{saveCostRange(range.from,range.to);runCalc();toast('已重新计算 '+range.from+' 至 '+range.to+' 的全部部门结果')}catch(e){setCostStatus('error','重算未完成',e.message+'；原有结果保留。')}finally{button.disabled=false;button.textContent='重新计算'}},0)}
 function refreshCostSource(){if(PAGE!==2||!$('#coststatus'))return;try{const text=localStorage.getItem(KEY);if(text&&text!==lastSaved){data=JSON.parse(text);lastSaved=text;reviewSourceToken=text;const old=$('#cdept').value,choices=[...new Set([...departments(),...(result?.details.map(r=>r.dept)||[]),'未分配部门'])];$('#cdept').innerHTML=options(choices,old);enhanceSelects();renderCostExplanation();if(result)renderResults()}}catch(e){setCostStatus('error','数据读取未完成','请刷新页面重试。')}}
 window.addEventListener('focus',refreshCostSource);document.addEventListener('visibilitychange',()=>{if(!document.hidden)refreshCostSource()});window.addEventListener('storage',e=>{if(PAGE!==2)return;if(e.key===KEY)refreshCostSource();else if(e.key===COST_RESULTS_KEY&&$('#coststatus')){savedCostResults=readCostResults();if(result)runCalc()}});
@@ -281,7 +282,7 @@ function bindMonthlyCostNote() {
 function renderCostExplanation() {
   const container = $('#costexplanation');
   if (!container) return;
-  const firstLine = 'ⓘ　查询读取已生成结果；基础数据变更后，点击“重新计算”更新所选日期内全部部门结果。';
+  const firstLine = 'ⓘ　查询读取已生成结果；首次点击“生成分摊”，已有结果点击“重新计算”，统一计算所选日期内全部部门。';
   const note = (data.monthlyCostNote || '').trim();
   const secondLine = '月度成本按自然日、工位有效日期及系数分摊，无部门费用列入“未分配部门”。' +
     (note ? ' 成本说明：' + note : '');
@@ -660,7 +661,7 @@ const ledgerColumns = [
   {id:'seat',label:'座位编号',width:120,required:true},{id:'category',label:'分摊大类',width:155},{id:'type',label:'工位类型',width:175},
   {id:'status',label:'座位状态',width:100},{id:'dept',label:'所属部门',width:160},{id:'name',label:'人员姓名',width:115},
   {id:'nature',label:'类别',width:115},{id:'start',label:'生效日期（包含）',width:145},{id:'end',label:'失效日期（不包含）',width:145},
-  {id:'actions',label:'操作',width:145,required:true}
+  {id:'actions',label:'操作',width:110,required:true}
 ];
 const defaultLedgerColumns = ledgerColumns.filter(column => !['number','nature'].includes(column.id)).map(column => column.id);
 function visibleLedgerColumns() {
@@ -693,7 +694,7 @@ function renderSeats() {
     const values = {number:(pageNum-1)*pageSize+index+1,location:record.location,floor:record.floor,seat:record.seat,category:record.category,
       type:record.type,status:isFree(record) ? '空闲' : '占用',dept:record.dept,name:record.name,nature:record.nature,start:date(record.start),end:date(record.end)};
     return '<tr>' + columns.map(column => column.id === 'actions' ? '<td data-col="actions"><button class="linkbtn" data-ledger-view="' + index + '">查看</button>' +
-      '<button class="linkbtn" data-ledger-edit="' + index + '">修改</button>' + ledgerDeleteButton(record,index) + '</td>' :
+      '<button class="linkbtn" data-ledger-edit="' + index + '">修改</button>' + '</td>' :
       '<td data-col="' + column.id + '" title="' + esc(String(values[column.id] ?? '')) + '">' + blank(String(values[column.id] ?? '')) + '</td>').join('') + '</tr>';
   }).join('') || '<tr><td class="nodata" colspan="' + columns.length + '">暂无匹配记录</td></tr>';
   const row = index => filtered[(pageNum-1)*pageSize+Number(index)];
@@ -1029,6 +1030,71 @@ if(PAGE>=3) {
     }
   } catch {}
 }
+
+
+function costResultCoverage(range=costDateRange()) {
+  const cache=readCostResults();let total=0,generated=0;
+  for(let day=range.from;day<=range.to;day=nextDay(day)){total++;if(cache.days[day])generated++;}
+  return {...range,total,generated,missing:total-generated,label:generated?'重新计算':'生成分摊'};
+}
+function updateCostCalculationButton() {
+  const button=$('#recalculate'),description=$('#costcoverage');if(!button)return null;
+  try {
+    const coverage=costResultCoverage();
+    if(!button.disabled)button.textContent=coverage.label;
+    button.classList.toggle('needs-recalculation',!!result?.staleDates?.length&&result.from===coverage.from&&result.to===coverage.to);
+    button.title=coverage.generated?'按最新数据重新计算所选日期内全部部门的结果，并补齐缺失日期':'按最新数据生成所选日期内全部部门的分摊结果';
+    if(description)description.textContent=coverage.generated?
+      '已生成'+coverage.generated+'天'+(coverage.missing?'，缺少'+coverage.missing+'天':'')+'，本次将重新计算全部'+coverage.total+'天。':
+      '所选'+coverage.total+'天尚未生成结果，本次将生成全部'+coverage.total+'天。';
+    return coverage;
+  } catch {
+    if(!button.disabled)button.textContent='计算分摊';
+    if(description)description.textContent='请选择有效的统计日期。';return null;
+  }
+}
+function pendingCostQuery() {
+  result=null;const coverage=updateCostCalculationButton();
+  setCostStatus('neutral','待查询','统计日期已变更，点击“查询”读取已生成结果。');
+  $('#results').innerHTML='<section class="card nodata">请点击“查询”读取结果，或点击“'+(coverage?.label||'计算分摊')+'”计算所选期间全部部门的结果。</section>';
+}
+function runCalc() {
+  try {
+    const range=costDateRange(),coverage=costResultCoverage(range);savedCostResults=readCostResults();updateCostCalculationButton();
+    if(coverage.missing) {
+      result=null;
+      const message=coverage.generated?'所选期间已生成'+coverage.generated+'天，缺少'+coverage.missing+'天。点击“重新计算”更新全部'+coverage.total+'天的结果。':
+        '所选期间尚未生成结果，点击“生成分摊”计算全部'+coverage.total+'天的结果。';
+      setCostStatus('warning',coverage.generated?'结果尚未完整':'尚未生成',message);
+      $('#results').innerHTML='<section class="card nodata">'+message+'</section>';return;
+    }
+    const details=[],basisByDay={};let total=0;
+    for(let day=range.from;day<=range.to;day=nextDay(day)){
+      const saved=savedCostResults.days[day];details.push(...saved.details);total+=saved.total;basisByDay[day]=saved.basis;
+    }
+    result={...range,details,total,basisByDay,staleDates:[]};renderResults();
+  } catch(error) {
+    result=null;updateCostCalculationButton();setCostStatus('error','查询未完成',error.message);
+    $('#results').innerHTML='<section class="card nodata">请检查查询条件。</section>';
+  }
+}
+function recalculateCost() {
+  let range,coverage;
+  try {range=costDateRange();coverage=costResultCoverage(range);}catch(error){setCostStatus('error','计算未开始',error.message);return;}
+  const button=$('#recalculate');button.disabled=true;button.textContent=coverage.generated?'重新计算中…':'生成中…';
+  setTimeout(()=>{
+    try {
+      savedCostResults=readCostResults();saveCostRange(range.from,range.to);runCalc();
+      toast((coverage.generated?'已重新计算':'已生成')+' '+range.from+' 至 '+range.to+' 的全部部门结果');
+    } catch(error) {setCostStatus('error',coverage.generated?'重算未完成':'生成未完成',error.message+'；已保存结果保留。');}
+    finally {button.disabled=false;updateCostCalculationButton();}
+  },0);
+}
+window.addEventListener('storage',event=>{
+  if(PAGE!==2||event.key!==COST_RESULTS_KEY||!$('#coststatus'))return;
+  updateCostCalculationButton();
+  if(!result){setCostStatus('neutral','结果已更新','其他页面已更新分摊结果，请点击“查询”读取所选期间。');$('#results').innerHTML='<section class="card nodata">分摊结果已更新，请点击“查询”。</section>';}
+});
 
 save();shell();[seatsPage,paramsPage,calcPage,mapPage,mapPage][PAGE]();enhanceSelects();
 </script></body></html>
